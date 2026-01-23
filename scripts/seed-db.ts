@@ -117,7 +117,7 @@ const AUTHORS = [
 
 const TEXTS = [
   {
-    title: "Zhu Zi Yu Lei",
+    title: "Zhu Zi Yu Lei (Classified Conversations of Master Zhu)",
     titleOriginalScript: "朱子語類",
     slug: "zhuziyulei",
     languageCode: "zh",
@@ -143,7 +143,7 @@ const TEXTS = [
     compositionEra: "Reign of Constantine VII, Byzantine Empire",
   },
   {
-    title: "Chuan Xi Lu",
+    title: "Chuan Xi Lu (Instructions for Practical Living)",
     titleOriginalScript: "傳習錄",
     slug: "chuanxilu",
     languageCode: "zh",
@@ -208,7 +208,7 @@ const TEXTS = [
     compositionEra: "Norman Kingdom of Sicily",
   },
   {
-    title: "Tongjian Jishi Benmo",
+    title: "Tongjian Jishi Benmo (Narratives from the Comprehensive Mirror)",
     titleOriginalScript: "通鑑紀事本末",
     slug: "tongjian",
     languageCode: "zh",

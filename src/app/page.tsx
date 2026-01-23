@@ -38,7 +38,7 @@ export default async function HomePage() {
           Deltoi
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          Collaborative, open-source interlinear translations of pre-1900 texts.
+          A collaborative wiki of interlinear translations of pre-1900 texts.
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           The goal of this project is to allow translators and scholars to
