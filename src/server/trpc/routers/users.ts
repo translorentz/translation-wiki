@@ -1,9 +1,10 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "../init";
+import { TRPCError } from "@trpc/server";
+import { createTRPCRouter, publicProcedure, adminProcedure } from "../init";
 import { db } from "@/server/db";
 import { users } from "@/server/db/schema";
 import { hash } from "bcryptjs";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 export const usersRouter = createTRPCRouter({
   register: publicProcedure
@@ -60,5 +61,51 @@ export const usersRouter = createTRPCRouter({
         },
       });
       return user ?? null;
+    }),
+
+  listAll: adminProcedure.query(async () => {
+    const allUsers = await db
+      .select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        role: users.role,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .orderBy(asc(users.createdAt));
+    return allUsers;
+  }),
+
+  setRole: adminProcedure
+    .input(
+      z.object({
+        userId: z.number(),
+        role: z.enum(["reader", "editor", "admin"]),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (input.userId === Number(ctx.user.id)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot change your own role",
+        });
+      }
+
+      const [updated] = await db
+        .update(users)
+        .set({ role: input.role, updatedAt: new Date() })
+        .where(eq(users.id, input.userId))
+        .returning({
+          id: users.id,
+          username: users.username,
+          role: users.role,
+        });
+
+      if (!updated) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+      }
+
+      return updated;
     }),
 });

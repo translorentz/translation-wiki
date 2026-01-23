@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../init";
+import { createTRPCRouter, publicProcedure, editorProcedure } from "../init";
 import { db } from "@/server/db";
 import {
   translations,
@@ -34,7 +34,7 @@ export const translationsRouter = createTRPCRouter({
       return translation ?? null;
     }),
 
-  createVersion: protectedProcedure
+  createVersion: editorProcedure
     .input(
       z.object({
         chapterId: z.number(),

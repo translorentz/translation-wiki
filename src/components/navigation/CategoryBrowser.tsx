@@ -28,9 +28,10 @@ interface LanguageGroup {
 
 interface CategoryBrowserProps {
   languages: LanguageGroup[];
+  defaultTab?: string;
 }
 
-export function CategoryBrowser({ languages }: CategoryBrowserProps) {
+export function CategoryBrowser({ languages, defaultTab: defaultTabProp }: CategoryBrowserProps) {
   if (languages.length === 0) {
     return (
       <p className="py-8 text-center text-muted-foreground">
@@ -39,7 +40,8 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
     );
   }
 
-  const defaultTab = languages[0].code;
+  const validTab = defaultTabProp && languages.some((l) => l.code === defaultTabProp);
+  const defaultTab = validTab ? defaultTabProp : languages[0].code;
 
   return (
     <Tabs defaultValue={defaultTab} className="w-full">

@@ -269,3 +269,35 @@ pnpm build  # production build
 pnpm test  # vitest in watch mode
 pnpm test run  # vitest single run
 ```
+
+### Session 3: Local Verification (2026-01-23)
+
+**Issue found:** Schema had `composition_year` and `composition_era` columns in code but not in the Neon database.
+**Fix:** Ran `pnpm db:push` to sync schema. All pages now work.
+
+**Verification results — all pages working:**
+- Home (`/`): 200 — title "Deltoi", renders featured texts
+- Browse texts (`/texts`): 200 — lists texts
+- Text index (`/zh/zhu-xi/zhuziyulei`): 200 — chapter listing
+- Chapter view (ZZYL ch1): 200 — Chinese content + translation rendered
+- Chapter view (Ceremonialis ch1): 200 — Greek content rendered
+- Edit page: 307 redirect to login (correct — protected)
+- Login: 200
+- Register: 200
+- Search: 200
+- Admin/users: 307 redirect to login (correct — protected)
+
+**Uncommitted work still pending:**
+- 66 ZZYL processed chapter files updated
+- 7 Ceremonialis processed chapter files updated
+- New text: chuanxilu (傳習錄) data + processing script
+- Admin pages, home components, schema/auth/trpc changes
+- `fix-chapter-titles.ts`, `process-chuanxilu.ts` scripts
+- New `src/types/` directory
+
+**Next steps:**
+- Commit the pending changes
+- Seed chuanxilu into the database
+- Run more AI translations (most chapters still untranslated)
+- Deploy to Vercel (instructions ready in communications file)
+- Address middleware deprecation warning (non-blocking)

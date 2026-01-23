@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Translation Wiki",
+  title: "Deltoi",
   description:
     "Open-source translations of classical and medieval texts in interlinear format",
 };
@@ -37,7 +37,7 @@ export default function RootLayout({
             <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-6">
                 <Link href="/" className="text-lg font-semibold">
-                  Translation Wiki
+                  Deltoi
                 </Link>
                 <nav className="hidden gap-4 sm:flex">
                   <Link
@@ -69,7 +69,7 @@ export default function RootLayout({
           <footer className="mt-16 border-t border-border">
             <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
               <p className="text-center text-sm text-muted-foreground">
-                Translation Wiki — Open-source translations of classical and
+                Deltoi — Open-source translations of classical and
                 medieval texts.
               </p>
             </div>

@@ -1,39 +1,48 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { getServerTRPC } from "@/trpc/server";
+import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 
-const FEATURED_TEXTS = [
-  {
-    title: "Zhu Zi Yu Lei",
-    originalTitle: "朱子語類",
-    author: "Zhu Xi (朱熹)",
-    description:
-      "Classified Conversations of Master Zhu — 140 chapters of philosophical discussions from Song Dynasty China.",
-    href: "/zh/zhu-xi/zhuziyulei",
-    language: "Classical Chinese",
-  },
-  {
-    title: "De Ceremoniis",
-    originalTitle: "Περὶ τῆς Βασιλείου Τάξεως",
-    author: "Constantine VII Porphyrogennetos",
-    description:
-      "On the Ceremonies of the Byzantine Court — a detailed account of imperial protocol from the 10th century.",
-    href: "/grc/constantine-vii/ceremonialis",
-    language: "Ancient Greek",
-  },
+const LANGUAGE_LINKS = [
+  { code: "zh", label: "Chinese" },
+  { code: "grc", label: "Greek" },
+  { code: "la", label: "Latin" },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const trpc = await getServerTRPC();
+  const allTexts = await trpc.texts.list();
+
+  const featuredTexts = allTexts.map((t) => ({
+    title: t.title,
+    titleOriginalScript: t.titleOriginalScript,
+    slug: t.slug,
+    totalChapters: t.totalChapters,
+    compositionYear: t.compositionYear,
+    compositionEra: t.compositionEra,
+    author: {
+      name: t.author.name,
+      nameOriginalScript: t.author.nameOriginalScript,
+      slug: t.author.slug,
+    },
+    language: {
+      code: t.language.code,
+    },
+  }));
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+    <div className="px-4 py-16 sm:px-6 lg:px-8">
       {/* Hero */}
       <div className="mb-16 text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Translation Wiki
+          Deltoi
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          Open-source translations of classical and medieval texts, displayed in
-          interlinear format with source and translation side by side.
+        <p className="mx-auto mt-2 text-lg text-muted-foreground">
+          A wiki for translations
+        </p>
+        <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+          Collaborative, open-source interlinear translations of world classical
+          and medieval texts
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Button asChild>
@@ -45,31 +54,33 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Featured Texts */}
-      <section>
-        <h2 className="mb-6 text-2xl font-semibold">Featured Texts</h2>
-        <div className="grid gap-6 sm:grid-cols-2">
-          {FEATURED_TEXTS.map((text) => (
-            <Link key={text.href} href={text.href}>
-              <Card className="h-full p-6 transition-colors hover:bg-muted/50">
-                <p className="text-sm text-muted-foreground">
-                  {text.language}
-                </p>
-                <h3 className="mt-1 text-xl font-semibold">{text.title}</h3>
-                <p className="text-base text-muted-foreground">
-                  {text.originalTitle}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {text.author}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {text.description}
-                </p>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Main content: sidebar + featured texts */}
+      <div className="mx-auto flex max-w-5xl gap-8">
+        {/* Sidebar */}
+        <aside className="hidden w-48 shrink-0 md:block">
+          <h2 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">
+            Explore By Language
+          </h2>
+          <ul className="space-y-2">
+            {LANGUAGE_LINKS.map((lang) => (
+              <li key={lang.code}>
+                <Link
+                  href={`/texts?lang=${lang.code}`}
+                  className="text-sm text-foreground transition-colors hover:text-primary"
+                >
+                  {lang.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        {/* Featured texts */}
+        <section className="min-w-0 flex-1">
+          <h2 className="mb-4 text-2xl font-semibold">Featured Texts</h2>
+          <FeaturedTexts texts={featuredTexts} />
+        </section>
+      </div>
     </div>
   );
 }

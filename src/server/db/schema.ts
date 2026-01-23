@@ -20,7 +20,7 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   username: varchar("username", { length: 100 }).notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  role: varchar("role", { length: 20 }).notNull().default("editor"), // reader | editor | admin
+  role: varchar("role", { length: 20 }).notNull().default("reader"), // reader | editor | admin
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -82,6 +82,8 @@ export const texts = pgTable(
     description: text("description"),
     sourceUrl: text("source_url"),
     totalChapters: integer("total_chapters").notNull().default(0),
+    compositionYear: integer("composition_year"),
+    compositionEra: varchar("composition_era", { length: 255 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => [

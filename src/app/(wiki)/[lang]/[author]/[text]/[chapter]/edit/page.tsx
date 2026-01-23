@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { TextEditor } from "@/components/editor/TextEditor";
 
@@ -14,6 +15,14 @@ interface EditPageProps {
 
 export default async function EditPage({ params }: EditPageProps) {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
+
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+  if (session.user.role !== "editor" && session.user.role !== "admin") {
+    redirect(`/${lang}/${author}/${textSlug}/${chapterSlug}`);
+  }
 
   const trpc = await getServerTRPC();
 

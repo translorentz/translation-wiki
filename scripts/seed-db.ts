@@ -65,6 +65,14 @@ const AUTHORS = [
     description:
       "Byzantine emperor and scholar who compiled De Ceremoniis, a treatise on imperial court protocol.",
   },
+  {
+    name: "Wang Yangming",
+    nameOriginalScript: "王陽明",
+    slug: "wang-yangming",
+    era: "Ming Dynasty (1472–1529)",
+    description:
+      "Neo-Confucian philosopher, statesman, and military strategist who developed the philosophy of the unity of knowledge and action and the doctrine of innate moral knowing (良知).",
+  },
 ] as const;
 
 const TEXTS = [
@@ -78,6 +86,8 @@ const TEXTS = [
       "Classified Conversations of Master Zhu — a massive compendium of 140 chapters recording the philosophical discussions of Zhu Xi with his students.",
     sourceUrl: "https://ctext.org/zhuzi-yulei",
     processedDir: "data/processed/zhuziyulei",
+    compositionYear: 1270,
+    compositionEra: "咸淳六年, Southern Song",
   },
   {
     title: "De Ceremoniis Aulae Byzantinae",
@@ -89,6 +99,21 @@ const TEXTS = [
       "On the Ceremonies of the Byzantine Court — a detailed account of the ceremonies and protocol of the Byzantine imperial court, compiled in the 10th century.",
     sourceUrl: "https://archive.org/details/bub_gb_OFpFAAAAYAAJ",
     processedDir: "data/processed/ceremonialis",
+    compositionYear: 959,
+    compositionEra: "Reign of Constantine VII, Byzantine Empire",
+  },
+  {
+    title: "Chuan Xi Lu",
+    titleOriginalScript: "傳習錄",
+    slug: "chuanxilu",
+    languageCode: "zh",
+    authorSlug: "wang-yangming",
+    description:
+      "Instructions for Practical Living — a collection of recorded conversations, letters, and essays by Wang Yangming, compiled by his disciples. The foundational text of the Yangming school of Neo-Confucianism.",
+    sourceUrl: "https://ctext.org/chuan-xi-lu",
+    processedDir: "data/processed/chuanxilu",
+    compositionYear: 1518,
+    compositionEra: "正德十三年, Ming Dynasty",
   },
 ] as const;
 
@@ -185,6 +210,8 @@ async function seedTexts(
           description: text.description,
           sourceUrl: text.sourceUrl,
           totalChapters: 0, // Updated after chapters are inserted
+          compositionYear: text.compositionYear,
+          compositionEra: text.compositionEra,
         })
         .returning({ id: schema.texts.id });
       slugToId.set(text.slug, inserted.id);
@@ -214,7 +241,7 @@ async function seedChapters(textIds: Map<string, number>): Promise<void> {
 
     const files = fs
       .readdirSync(processedDir)
-      .filter((f) => f.startsWith("chapter-") && f.endsWith(".json"))
+      .filter((f) => f.startsWith("chapter-") && f.endsWith(".json") && !f.includes("-translation"))
       .sort();
 
     if (files.length === 0) {
@@ -269,6 +296,111 @@ async function seedChapters(textIds: Map<string, number>): Promise<void> {
   }
 }
 
+async function getOrCreateSystemUser(): Promise<number> {
+  const existing = await db.query.users.findFirst({
+    where: eq(schema.users.username, "ai-translator"),
+  });
+  if (existing) return existing.id;
+
+  const [inserted] = await db
+    .insert(schema.users)
+    .values({
+      email: "ai@deltoi.org",
+      username: "ai-translator",
+      passwordHash: "---none---",
+      role: "editor",
+    })
+    .returning({ id: schema.users.id });
+  console.log("  [add]  System user: ai-translator");
+  return inserted.id;
+}
+
+async function seedTranslations(textIds: Map<string, number>): Promise<void> {
+  console.log("\nSeeding translations...");
+  const systemUserId = await getOrCreateSystemUser();
+
+  for (const text of TEXTS) {
+    const textId = textIds.get(text.slug);
+    if (!textId) continue;
+
+    const processedDir = path.resolve(text.processedDir);
+    if (!fs.existsSync(processedDir)) continue;
+
+    const translationFiles = fs
+      .readdirSync(processedDir)
+      .filter((f) => f.includes("-translation.json"))
+      .sort();
+
+    if (translationFiles.length === 0) continue;
+
+    console.log(`\n  ${text.title}: ${translationFiles.length} translation files`);
+
+    let insertedCount = 0;
+    let skippedCount = 0;
+
+    for (const file of translationFiles) {
+      // Extract chapter number from filename (e.g., "chapter-1-translation.json" → 1)
+      const match = file.match(/chapter-(\d+)-translation\.json/);
+      if (!match) continue;
+      const chapterNumber = parseInt(match[1]);
+
+      // Find the chapter record
+      const chapter = await db.query.chapters.findFirst({
+        where: and(
+          eq(schema.chapters.textId, textId),
+          eq(schema.chapters.chapterNumber, chapterNumber)
+        ),
+      });
+      if (!chapter) {
+        console.warn(`    [warn] Chapter ${chapterNumber} not found for ${text.slug}`);
+        continue;
+      }
+
+      // Check if translation already exists for this chapter
+      const existingTranslation = await db.query.translations.findFirst({
+        where: eq(schema.translations.chapterId, chapter.id),
+      });
+      if (existingTranslation) {
+        skippedCount++;
+        continue;
+      }
+
+      // Read translation content
+      const translationContent = JSON.parse(
+        fs.readFileSync(path.join(processedDir, file), "utf-8")
+      );
+
+      // Create translation record
+      const [translation] = await db
+        .insert(schema.translations)
+        .values({ chapterId: chapter.id })
+        .returning({ id: schema.translations.id });
+
+      // Create version record
+      const [version] = await db
+        .insert(schema.translationVersions)
+        .values({
+          translationId: translation.id,
+          versionNumber: 1,
+          content: translationContent,
+          authorId: systemUserId,
+          editSummary: "Initial AI-generated translation",
+        })
+        .returning({ id: schema.translationVersions.id });
+
+      // Update translation to point to current version
+      await db
+        .update(schema.translations)
+        .set({ currentVersionId: version.id })
+        .where(eq(schema.translations.id, translation.id));
+
+      insertedCount++;
+    }
+
+    console.log(`    Inserted: ${insertedCount}, Skipped: ${skippedCount}`);
+  }
+}
+
 // ============================================================
 // Main
 // ============================================================
@@ -280,6 +412,7 @@ async function main() {
   const authorIds = await seedAuthors();
   const textIds = await seedTexts(languageIds, authorIds);
   await seedChapters(textIds);
+  await seedTranslations(textIds);
 
   console.log("\n=== Seed complete ===");
 

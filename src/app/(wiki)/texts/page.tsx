@@ -19,7 +19,12 @@ interface LanguageGroup {
   }[];
 }
 
-export default async function BrowsePage() {
+interface BrowsePageProps {
+  searchParams: Promise<{ lang?: string }>;
+}
+
+export default async function BrowsePage({ searchParams }: BrowsePageProps) {
+  const { lang } = await searchParams;
   const trpc = await getServerTRPC();
   const allTexts = await trpc.texts.list();
 
@@ -69,7 +74,7 @@ export default async function BrowsePage() {
   return (
     <main className="mx-auto max-w-5xl">
       <h1 className="mb-6 text-3xl font-bold">Browse Texts</h1>
-      <CategoryBrowser languages={languages} />
+      <CategoryBrowser languages={languages} defaultTab={lang} />
     </main>
   );
 }

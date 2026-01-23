@@ -4,6 +4,27 @@ import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { Card } from "@/components/ui/card";
 
+/**
+ * Parses a chapter title that may contain both original language and English.
+ * Formats: "原文 (English Translation)" or "Ελληνικά (English Translation)"
+ * Returns the original-language portion and the English portion separately.
+ */
+function parseChapterTitle(title: string | null): {
+  original: string;
+  english: string | null;
+} {
+  if (!title) return { original: "Untitled", english: null };
+
+  // Match pattern: "Original text (English text)" — using last top-level parenthetical
+  const parenMatch = title.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+  if (parenMatch) {
+    return { original: parenMatch[1].trim(), english: parenMatch[2].trim() };
+  }
+
+  // No parenthetical English — return title as-is
+  return { original: title, english: null };
+}
+
 interface TextPageProps {
   params: Promise<{
     lang: string;
@@ -26,7 +47,7 @@ export async function generateMetadata({
   if (!textData) return { title: "Text Not Found" };
 
   return {
-    title: `${textData.title} — Translation Wiki`,
+    title: `${textData.title} — Deltoi`,
     description:
       textData.description ??
       `Read and translate ${textData.title} by ${textData.author.name}`,
@@ -94,22 +115,32 @@ export default async function TextPage({ params }: TextPageProps) {
           Chapters ({textData.chapters.length})
         </h2>
         <div className="space-y-1">
-          {textData.chapters.map((chapter) => (
-            <Link
-              key={chapter.chapterNumber}
-              href={`${basePath}/${chapter.slug}`}
-              className="block"
-            >
-              <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
-                <div className="flex items-baseline gap-3">
-                  <span className="w-8 text-right text-sm text-muted-foreground">
-                    {chapter.chapterNumber}
-                  </span>
-                  <span>{chapter.title ?? `Chapter ${chapter.chapterNumber}`}</span>
-                </div>
-              </Card>
-            </Link>
-          ))}
+          {textData.chapters.map((chapter) => {
+            const { original, english } = parseChapterTitle(chapter.title);
+            return (
+              <Link
+                key={chapter.chapterNumber}
+                href={`${basePath}/${chapter.slug}`}
+                className="block"
+              >
+                <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-8 shrink-0 text-right text-sm text-muted-foreground">
+                      {chapter.chapterNumber}
+                    </span>
+                    <span>
+                      {original}
+                      {english && (
+                        <span className="ml-2 text-sm text-muted-foreground">
+                          {english}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
 
         {textData.chapters.length === 0 && (

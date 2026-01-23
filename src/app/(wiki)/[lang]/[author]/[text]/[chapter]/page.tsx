@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
@@ -37,13 +38,16 @@ export async function generateMetadata({
     chapterInfo?.title ?? `Chapter ${chapterNumber}`;
 
   return {
-    title: `${chapterTitle} — ${textData.title} — Translation Wiki`,
+    title: `${chapterTitle} — ${textData.title} — Deltoi`,
     description: `Read the translation of ${chapterTitle} from ${textData.title} by ${textData.author.name}`,
   };
 }
 
 export default async function ChapterPage({ params }: ChapterPageProps) {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
+
+  const session = await auth();
+  const canEdit = session?.user?.role === "editor" || session?.user?.role === "admin";
 
   const trpc = await getServerTRPC();
 
@@ -123,9 +127,11 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             Chapter {chapterNumber} of {textData.totalChapters}
           </p>
           <div className="mt-3 flex gap-2">
-            <Button variant="outline" size="sm" asChild>
-              <Link href={`${basePath}/${chapterSlug}/edit`}>Edit</Link>
-            </Button>
+            {canEdit && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`${basePath}/${chapterSlug}/edit`}>Edit</Link>
+              </Button>
+            )}
             <Button variant="ghost" size="sm" asChild>
               <Link href={`${basePath}/${chapterSlug}/history`}>History</Link>
             </Button>
