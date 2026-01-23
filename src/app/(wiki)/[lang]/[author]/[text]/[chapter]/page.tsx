@@ -94,6 +94,14 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           <p className="text-sm text-muted-foreground">
             Chapter {chapterNumber} of {textData.totalChapters}
           </p>
+          <div className="mt-3 flex gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href={`${basePath}/${chapterSlug}/edit`}>Edit</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href={`${basePath}/${chapterSlug}/history`}>History</Link>
+            </Button>
+          </div>
         </div>
 
         {/* Interlinear content */}
