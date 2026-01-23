@@ -2,6 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Session Working Files
+
+**Always read these files at the start of a session:**
+
+| File | Purpose |
+|------|---------|
+| `reference-guide.txt` | Structured quick reference: current state, deployment, file locations, conventions, remaining work |
+| `scratch-notes.txt` | Session-by-session working notes with technical decisions and progress |
+| `communications-to-the-User.txt` | Implementation plan and step-by-step deployment guide |
+
+**Rules for maintaining these files:**
+- Update `scratch-notes.txt` as you work — track decisions, issues found, and progress
+- Update `reference-guide.txt` when project state changes (new features, deployments, schema changes)
+- Never keep large translation content in context — write directly to the database
+- Keep `CLAUDE.md` itself updated when architecture or conventions change
+
 ## Project Overview
 
 A public wiki hosting open-source translations of classical and medieval texts. Users register accounts to edit or endorse AI-generated translations. All edits are publicly tracked with full history. Translations are displayed in a side-by-side columnar format inspired by the [Columbia Digital Dante](https://digitaldante.columbia.edu/) project: original source text on the left, translation on the right, aligned paragraph-by-paragraph or section-by-section.
@@ -10,6 +26,7 @@ A public wiki hosting open-source translations of classical and medieval texts. 
 **Initial texts:**
 - **Zhu Zi Yu Lei** (朱子語類) — 140 chapters of recorded conversations between neo-Confucian philosopher Zhu Xi and his disciples, compiled by Li Jingde (c. 1270). Source: [ctext.org/zhuzi-yulei](https://ctext.org/zhuzi-yulei)
 - **De Ceremoniis** (De cerimoniis aulae Byzantinae) — Byzantine court protocol written/commissioned by Emperor Constantine VII Porphyrogennetos (c. 956–959). Source: [Internet Archive](https://archive.org/details/bub_gb_OFpFAAAAYAAJ) (Reiske/Leich edition)
+- **Chuanxi Lu** (傳習錄) — Record of transmitted instructions by Wang Yangming (王陽明), neo-Confucian philosopher (1472–1529). 3 chapters processed, not yet seeded to database.
 
 **Content organisation:**
 - Each chapter of a longer text is its own page with two columns (source + translation)
@@ -261,6 +278,16 @@ For more control or higher traffic, deploy with Docker on a VPS:
 
 ---
 
+## Current Deployment
+
+- **Live site:** https://deltoi.com
+- **Hosting:** Vercel (auto-deploys from `main` branch on push)
+- **Database:** Neon PostgreSQL (free tier, schema synced via `pnpm db:push`)
+- **GitHub:** https://github.com/translorentz/translation-wiki.git
+- **Translation API:** DeepSeek V3.2 (deepseek-chat, OpenAI-compatible SDK)
+
+---
+
 ## Build & Development Commands
 
 ### Initial project setup (run once):
@@ -271,7 +298,7 @@ cd translation-wiki
 
 # Core dependencies
 pnpm add @trpc/server @trpc/client @trpc/tanstack-react-query @tanstack/react-query \
-  zod superjson drizzle-orm postgres next-auth@beta bcryptjs slugify @anthropic-ai/sdk diff
+  zod superjson drizzle-orm postgres next-auth@beta bcryptjs slugify openai diff
 
 # Dev dependencies
 pnpm add -D drizzle-kit @types/node @types/bcryptjs @types/diff \
@@ -460,8 +487,8 @@ translation-wiki/
 
 ### Phase 6: AI Translation Generation
 
-1. Integrate Claude API (or other LLM) to generate initial translations
-2. Feed source text paragraph-by-paragraph for translation
+1. Integrate DeepSeek V3.2 API (OpenAI-compatible) to generate initial translations
+2. Feed source text in language-aware batches (zh=1500 chars, grc/la=6000 chars per batch)
 3. Store AI-generated translations as the initial TranslationVersion (author = system/AI)
 4. Mark AI translations distinctly in the UI so users know they can be improved
 
@@ -492,7 +519,7 @@ For parallel development with multiple Claude Code instances:
 | **Frontend** | Interlinear viewer, editor, navigation, responsive layout | `src/components/`, `src/app/(wiki)/` |
 | **Backend** | tRPC routers, versioning logic, endorsement API, search | `src/server/trpc/`, `src/app/api/` |
 | **Text Acquisition** | ctext.org fetcher, IA fetcher, text processing, seeding | `scripts/`, `data/` |
-| **AI Translation** | Claude API integration, batch translation, quality checks | `src/server/translation/`, `scripts/translate.ts` |
+| **AI Translation** | DeepSeek API integration, batch translation, quality checks | `src/server/translation/`, `scripts/translate-batch.ts` |
 
 **Coordination rules:**
 - Each agent works on a feature branch and submits PRs

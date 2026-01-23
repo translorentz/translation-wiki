@@ -295,9 +295,20 @@ pnpm test run  # vitest single run
 - `fix-chapter-titles.ts`, `process-chuanxilu.ts` scripts
 - New `src/types/` directory
 
+**Actions taken (continued):**
+- Committed all pending changes: b50ba01 (104 files, +3748/-168 lines)
+- Pushed to GitHub: b2d49af..b50ba01 main → main
+- Vercel auto-deployed successfully (deployment status: success)
+- Verified deltoi.com serves the new code (title "Deltoi", all pages 200)
+- Created reference-guide.txt — structured quick reference for all sessions
+- Updated CLAUDE.md: added session files section, fixed Anthropic→DeepSeek refs,
+  added current deployment info, added Chuanxilu to initial texts list
+
+**Discovered:** AUTH_URL env var on Vercel still set to translation-wiki.vercel.app
+  (visible in Set-Cookie header). User needs to update this in Vercel dashboard.
+
 **Next steps:**
-- Commit the pending changes
+- User: Update AUTH_URL on Vercel to https://deltoi.com
 - Seed chuanxilu into the database
 - Run more AI translations (most chapters still untranslated)
-- Deploy to Vercel (instructions ready in communications file)
 - Address middleware deprecation warning (non-blocking)
