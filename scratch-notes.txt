@@ -312,3 +312,59 @@ pnpm test run  # vitest single run
 - Seed chuanxilu into the database
 - Run more AI translations (most chapters still untranslated)
 - Address middleware deprecation warning (non-blocking)
+
+### Session 4: New Texts Processing & Full Translation (2026-01-23)
+
+**New raw texts discovered in data/raw/:**
+1. `deanima_cassiodorus/De_anima.txt` — Latin, 76KB, Cassiodorus "De Anima" (c. 540)
+2. `elegia/elegia.txt` — Latin, 43KB, Henry of Settimello "Elegia" (c. 1190)
+3. `lombards_of_b/langabardorum.txt` — Latin, 90KB, Erchempert "Historia Langobardorum Beneventanorum" (c. 889)
+4. `regno/regno_sicile.txt` — Latin, 263KB, Hugo Falcandus "Liber de Regno Sicilie" (c. 1169)
+5. `tongjian_jishi_benmo/` — Chinese, 6.4MB (45 files), Yuan Shu "通鑑紀事本末" (c. 1174)
+
+**Processing completed:**
+- Created scripts/process-new-texts.ts — processes all 4 non-trivial texts
+- De Anima: 18 chapters (Roman numeral headers, paragraphs by blank lines)
+- Elegia: 4 chapters/books (processed by earlier agent, verse grouped into paragraphs)
+- Lombards: 82 sections (numbered, mostly single-paragraph sections)
+- Regno: 56 chapters (1 prologue + 55 Roman numeral chapters, paragraphs by blank lines)
+- Tongjian: 45 chapters (2 prefaces + 42 volumes + 1 afterword, deduplicated paragraphs)
+
+**Database seeded:**
+- 6 new authors: Wang Yangming, Cassiodorus, Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu
+- 6 new texts: Chuanxilu, De Anima, Elegia, Lombards, Regno, Tongjian
+- 208 new chapters total (3 + 18 + 4 + 82 + 56 + 45)
+- All pages return 200 on localhost:3000
+
+**Translation progress (7 parallel background processes running):**
+- De Anima (la, 18 ch): IN PROGRESS
+- Elegia (la, 4 ch): IN PROGRESS
+- Lombards (la, 82 ch): IN PROGRESS
+- Regno (la, 56 ch): IN PROGRESS
+- Tongjian (zh, 45 ch): IN PROGRESS — very large volumes, dense Chinese
+- ZZYL (zh, 137 remaining): IN PROGRESS — 13+ batches per chapter
+- Ceremonialis (grc, 5 remaining): IN PROGRESS — massive chapters (150K chars each)
+
+**Translation API:** Using DeepSeek V3.2 (deepseek-chat), $0.28/$0.42 per M tokens
+**All 7 processes running with 0 errors so far.**
+
+**Known issue with Tongjian raw data:** Many paragraphs appear duplicated (each paragraph
+repeated twice consecutively). Processing script deduplicates these automatically.
+
+**Files created/modified this session:**
+- scripts/process-new-texts.ts (NEW) — processes De Anima, Lombards, Regno, Tongjian
+- data/processed/deanima/ (18 files)
+- data/processed/lombards/ (82 files)
+- data/processed/regno/ (56 files)
+- data/processed/tongjian/ (45 files)
+- data/processed/elegia/ (4 files, from earlier agent)
+
+**User permissions granted (Session 4):**
+- Always allowed to write/update logs, scratchpads, markdowns without asking
+- Always allowed to run monitoring bash commands (sleep, tail, curl checks) without user input
+
+**Next steps:**
+- Wait for all 7 translation processes to complete
+- Commit all new processed data + scripts
+- Push to GitHub for Vercel auto-deploy
+- Update reference-guide.txt with final translation counts

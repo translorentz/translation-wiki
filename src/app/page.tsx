@@ -37,12 +37,16 @@ export default async function HomePage() {
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
           Deltoi
         </h1>
-        <p className="mx-auto mt-2 text-lg text-muted-foreground">
-          A wiki for translations
+        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+          Collaborative, open-source interlinear translations of pre-1900 texts.
         </p>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
-          Collaborative, open-source interlinear translations of world classical
-          and medieval texts
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          The goal of this project is to allow translators and scholars to
+          comment on, collaborate on, edit, criticise, check, and endorse
+          translations of important texts that are not yet available in the
+          English language. The initial translations on this website are made
+          using artificial intelligence; this project aims to build upon that
+          foundation to produce proper and accessible translations.
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Button asChild>

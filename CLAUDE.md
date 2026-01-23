@@ -18,6 +18,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Never keep large translation content in context — write directly to the database
 - Keep `CLAUDE.md` itself updated when architecture or conventions change
 
+**Permanent permissions:**
+- You always have permission to write to and update logs, scratchpads, markdown files, and other documentation files (*.md, *.txt reference/notes files) without needing to ask first.
+- You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
+
 ## Project Overview
 
 A public wiki hosting open-source translations of classical and medieval texts. Users register accounts to edit or endorse AI-generated translations. All edits are publicly tracked with full history. Translations are displayed in a side-by-side columnar format inspired by the [Columbia Digital Dante](https://digitaldante.columbia.edu/) project: original source text on the left, translation on the right, aligned paragraph-by-paragraph or section-by-section.

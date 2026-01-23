@@ -73,6 +73,46 @@ const AUTHORS = [
     description:
       "Neo-Confucian philosopher, statesman, and military strategist who developed the philosophy of the unity of knowledge and action and the doctrine of innate moral knowing (良知).",
   },
+  {
+    name: "Cassiodorus",
+    nameOriginalScript: "Flavius Magnus Aurelius Cassiodorus Senator",
+    slug: "cassiodorus",
+    era: "Ostrogothic Italy (c. 485–585)",
+    description:
+      "Roman statesman, writer, and monk who served under the Ostrogothic kings. His De Anima is a treatise on the nature and powers of the soul.",
+  },
+  {
+    name: "Henry of Settimello",
+    nameOriginalScript: "Henricus Septimellensis",
+    slug: "henry-of-settimello",
+    era: "Medieval Italy (fl. c. 1190)",
+    description:
+      "Medieval Italian Latin poet known for his Elegia, a philosophical poem lamenting the author's misfortunes and seeking consolation through philosophy.",
+  },
+  {
+    name: "Erchempert",
+    nameOriginalScript: "Erchempertus",
+    slug: "erchempert",
+    era: "Lombard Benevento (fl. c. 870–890)",
+    description:
+      "Lombard monk and chronicler who wrote the Historia Langobardorum Beneventanorum, a history of the Lombard principality of Benevento.",
+  },
+  {
+    name: "Hugo Falcandus",
+    nameOriginalScript: "Hugo Falcandus",
+    slug: "hugo-falcandus",
+    era: "Norman Sicily (fl. c. 1169–1182)",
+    description:
+      "Pseudonymous Latin chronicler of the Kingdom of Sicily during the later Norman period. His Liber de Regno Sicilie is a vivid account of court intrigue and political upheaval.",
+  },
+  {
+    name: "Yuan Shu",
+    nameOriginalScript: "袁樞",
+    slug: "yuan-shu",
+    era: "Southern Song Dynasty (1131–1205)",
+    description:
+      "Song dynasty historian who reorganized Sima Guang's Zizhi Tongjian into topical narratives, creating the Tongjian Jishi Benmo (通鑑紀事本末), the first Chinese historical work organized by events rather than chronology.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -114,6 +154,71 @@ const TEXTS = [
     processedDir: "data/processed/chuanxilu",
     compositionYear: 1518,
     compositionEra: "正德十三年, Ming Dynasty",
+  },
+  {
+    title: "De Anima",
+    titleOriginalScript: "De Anima",
+    slug: "deanima",
+    languageCode: "la",
+    authorSlug: "cassiodorus",
+    description:
+      "On the Soul — a treatise on the nature, definition, qualities, and powers of the human soul, written after Cassiodorus retired to his monastery at Vivarium.",
+    sourceUrl: "https://www.thelatinlibrary.com/cassiodorus/anima.shtml",
+    processedDir: "data/processed/deanima",
+    compositionYear: 540,
+    compositionEra: "Post-consulship, Ostrogothic Italy",
+  },
+  {
+    title: "Elegia",
+    titleOriginalScript: "Elegia sive de Miseria",
+    slug: "elegia",
+    languageCode: "la",
+    authorSlug: "henry-of-settimello",
+    description:
+      "A medieval Latin elegiac poem in four books lamenting the author's fall from fortune and seeking consolation through philosophy, modeled on Boethius's Consolation of Philosophy.",
+    sourceUrl: "",
+    processedDir: "data/processed/elegia",
+    compositionYear: 1190,
+    compositionEra: "Late 12th century, Tuscany",
+  },
+  {
+    title: "Historia Langobardorum Beneventanorum",
+    titleOriginalScript: "Historia Langobardorum Beneventanorum",
+    slug: "lombards",
+    languageCode: "la",
+    authorSlug: "erchempert",
+    description:
+      "History of the Lombards of Benevento — a chronicle covering the Lombard principality of Benevento from the Carolingian conquest to the late 9th century, written by a monk of Monte Cassino.",
+    sourceUrl: "",
+    processedDir: "data/processed/lombards",
+    compositionYear: 889,
+    compositionEra: "Late 9th century, Southern Italy",
+  },
+  {
+    title: "Liber de Regno Sicilie",
+    titleOriginalScript: "Liber de Regno Sicilie",
+    slug: "regno",
+    languageCode: "la",
+    authorSlug: "hugo-falcandus",
+    description:
+      "The Book of the Kingdom of Sicily — a vivid Latin chronicle of political intrigue, rebellion, and court conspiracy in Norman Sicily during the reign of William I and the regency for William II.",
+    sourceUrl: "",
+    processedDir: "data/processed/regno",
+    compositionYear: 1169,
+    compositionEra: "Norman Kingdom of Sicily",
+  },
+  {
+    title: "Tongjian Jishi Benmo",
+    titleOriginalScript: "通鑑紀事本末",
+    slug: "tongjian",
+    languageCode: "zh",
+    authorSlug: "yuan-shu",
+    description:
+      "Event-by-Event Narrative of the Comprehensive Mirror — the first Chinese historical work organized by topical events rather than chronology, reorganizing Sima Guang's Zizhi Tongjian into 42 self-contained narratives spanning from the Partition of Jin to the Later Zhou dynasty.",
+    sourceUrl: "https://ctext.org/tongjian-jishi-benmo",
+    processedDir: "data/processed/tongjian",
+    compositionYear: 1174,
+    compositionEra: "淳熙元年, Southern Song",
   },
 ] as const;
 
