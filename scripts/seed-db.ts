@@ -130,7 +130,7 @@ const TEXTS = [
     compositionEra: "咸淳六年, Southern Song",
   },
   {
-    title: "De Ceremoniis Aulae Byzantinae",
+    title: "On the Ceremonies of the Byzantine Court",
     titleOriginalScript: "Περὶ τῆς Βασιλείου Τάξεως",
     slug: "ceremonialis",
     languageCode: "grc",
@@ -156,7 +156,7 @@ const TEXTS = [
     compositionEra: "正德十三年, Ming Dynasty",
   },
   {
-    title: "De Anima",
+    title: "On the Soul",
     titleOriginalScript: "De Anima",
     slug: "deanima",
     languageCode: "la",
@@ -169,7 +169,7 @@ const TEXTS = [
     compositionEra: "Post-consulship, Ostrogothic Italy",
   },
   {
-    title: "Elegia",
+    title: "Elegy on Misfortune",
     titleOriginalScript: "Elegia sive de Miseria",
     slug: "elegia",
     languageCode: "la",
@@ -182,7 +182,7 @@ const TEXTS = [
     compositionEra: "Late 12th century, Tuscany",
   },
   {
-    title: "Historia Langobardorum Beneventanorum",
+    title: "History of the Lombards of Benevento",
     titleOriginalScript: "Historia Langobardorum Beneventanorum",
     slug: "lombards",
     languageCode: "la",
@@ -195,7 +195,7 @@ const TEXTS = [
     compositionEra: "Late 9th century, Southern Italy",
   },
   {
-    title: "Liber de Regno Sicilie",
+    title: "The Book of the Kingdom of Sicily",
     titleOriginalScript: "Liber de Regno Sicilie",
     slug: "regno",
     languageCode: "la",
