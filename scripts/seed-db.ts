@@ -43,7 +43,7 @@ interface ProcessedChapter {
 
 const LANGUAGES = [
   { code: "zh", name: "Classical Chinese", displayName: "文言文" },
-  { code: "grc", name: "Ancient Greek", displayName: "Ἀρχαία Ἑλληνική" },
+  { code: "grc", name: "Greek", displayName: "Ἑλληνική" },
   { code: "la", name: "Latin", displayName: "Lingua Latina" },
   { code: "en", name: "English", displayName: "English" },
 ] as const;

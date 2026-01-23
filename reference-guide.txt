@@ -89,7 +89,7 @@ Cost: $0.28/M input, $0.42/M output
 
 Batching strategy (language-aware):
 - Classical Chinese (zh): MAX_CHARS_PER_BATCH = 1500 (very dense, 1 char ~ 3-5 English words)
-- Ancient Greek (grc): MAX_CHARS_PER_BATCH = 6000 (moderate density)
+- Greek (grc): MAX_CHARS_PER_BATCH = 6000 (moderate density)
 - Latin (la): MAX_CHARS_PER_BATCH = 6000
 
 Script: scripts/translate-batch.ts

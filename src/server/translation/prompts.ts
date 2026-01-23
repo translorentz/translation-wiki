@@ -11,12 +11,12 @@ Guidelines:
 - Use standard academic transliteration for proper names
 - Where ambiguity exists, prefer the Neo-Confucian interpretation`,
 
-  grc: `You are translating Ancient Greek (specifically Byzantine Greek) to English.
+  grc: `You are translating Medieval/Byzantine Greek to English.
 Guidelines:
-- This is a court ceremonial text; maintain formal register
-- Transliterate titles and ranks consistently (e.g., βασιλεύς = "emperor", πατρίκιος = "patrikios")
-- Preserve technical ceremonial vocabulary with brief inline explanations where needed
-- For unclear OCR passages, provide your best reading with [?] notation`,
+- Maintain formal register appropriate to the text
+- Transliterate titles and proper names consistently
+- Preserve technical vocabulary with brief inline explanations where needed
+- For unclear passages, provide your best reading with [?] notation`,
 
   la: `You are translating Latin to English.
 Guidelines:

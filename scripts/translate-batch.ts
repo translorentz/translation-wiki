@@ -102,7 +102,7 @@ interface Paragraph {
 // Greek/Latin are closer to English character density.
 const MAX_CHARS_BY_LANG: Record<string, number> = {
   zh: 1500,   // Classical Chinese: extremely dense
-  grc: 6000,  // Ancient Greek: moderate density
+  grc: 6000,  // Greek: moderate density
   la: 6000,   // Latin: similar to Greek
 };
 const DEFAULT_MAX_CHARS = 3000;

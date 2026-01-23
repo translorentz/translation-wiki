@@ -1,15 +1,36 @@
 /**
- * Fixes chapter titles in processed JSON files.
- * - Truncates titles that are too long (likely paragraphs mistakenly used as titles)
- * - Replaces with first few meaningful words + ellipsis
+ * Fixes chapter titles in processed JSON files and updates the database.
+ *
+ * - Zhuziyulei: Uses known correct titles from ctext.org ToC
+ * - Ceremonialis: Uses structured chapter/book titles
+ * - Tongjian: Extracts 【topic】 bracketed event headings from content
+ * - Chuanxilu: Adds content-based subtitles for generic volume titles
+ *
+ * Usage: pnpm tsx scripts/fix-chapter-titles.ts
  */
 
 import fs from "fs";
 import path from "path";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { eq, and } from "drizzle-orm";
+import * as schema from "../src/server/db/schema";
+
+const connectionString = process.env.DATABASE_URL || "";
+const client = postgres(connectionString);
+const db = drizzle(client, { schema });
 
 const PROCESSED_DIR = path.resolve("data/processed");
 
-// Known correct titles for Zhuziyulei chapters (from ctext.org table of contents)
+interface ProcessedChapter {
+  chapterNumber: number;
+  title: string;
+  sourceContent: {
+    paragraphs: { index: number; text: string }[];
+  };
+}
+
+// Known correct titles for Zhuziyulei chapters
 const ZHUZIYULEI_TITLES: Record<number, string> = {
   1: "太極天地上 (The Supreme Ultimate, Heaven & Earth I)",
   2: "太極天地下 (The Supreme Ultimate, Heaven & Earth II)",
@@ -90,26 +111,60 @@ const CEREMONIALIS_TITLES: Record<number, string> = {
   7: "Βιβλίον Βʹ, Κεφ. 31–55 (Book II, Ch. 31–55)",
 };
 
-function truncateTitle(title: string, maxLen: number = 50): string {
-  if (title.length <= maxLen) return title;
-  // Find a good break point
-  const truncated = title.substring(0, maxLen);
-  const lastSpace = truncated.lastIndexOf("，") !== -1
-    ? truncated.lastIndexOf("，")
-    : truncated.lastIndexOf("。") !== -1
-      ? truncated.lastIndexOf("。")
-      : maxLen;
-  return title.substring(0, lastSpace > 20 ? lastSpace : maxLen) + "…";
-}
+// English translations for Tongjian volume topics
+const TONGJIAN_TOPICS_EN: Record<number, string> = {
+  3: "The Three Families Partition Jin",
+  4: "Emperor Gao Destroys Chu",
+  5: "Han Opens Relations with the Southwest Yi",
+  6: "Huo Guang Deposes and Enthrones Emperors",
+  7: "The Ding and Fu Clans Seize Power",
+  8: "Guangwu Pacifies the Red Eyebrows",
+  9: "The Two Xiongnu Submit and Rebel",
+  10: "Eunuchs Destroy Han",
+  11: "Cao Cao Usurps Han",
+  12: "Wu and Shu Establish Relations",
+  13: "Wei Destroys Shu",
+  14: "The Disorders of Western Jin",
+  15: "Liu Yuan Seizes Pingyang",
+  16: "Zu Ti's Northern Expedition",
+  17: "The Eastern Court's Strategies for the Central Plains",
+  18: "Murong Rebels Against Qin and Restores Yan",
+  19: "The Disorder of Pseudo-Chu",
+  20: "Feng Ba Attacks Later Yan",
+  21: "Liu Yu Usurps Jin",
+  22: "The Disorder of the Deposed Emperors",
+  23: "Northern Wei Attacks Qi",
+  24: "Zhao Zhong Seizes Power",
+  25: "Wei Splits into East and West",
+  26: "The Chaos and Fall of Liang",
+  27: "Zhou Destroys Qi",
+  28: "The Turks Submit to Sui",
+  29: "Tang Pacifies the Eastern Capital",
+  30: "Taizong Quells Internal Troubles",
+  31: "Zhenguan-era Discourse on Governance",
+  32: "The Calamity of Empress Wu and Empress Wei",
+  33: "Li Linfu's Autocracy",
+  34: "Liu Zhan's Rebellion",
+  35: "Military Governors War Among Themselves",
+  36: "The Pi-Wen Affair",
+  37: "Nanzhao Submits",
+  38: "Pang Xun's Rebellion",
+  39: "Huang Chao's Rebellion",
+  40: "The Garrisons Attack Each Other",
+  41: "The Qian Clan Holds Wuyue",
+  42: "The Ma Clan Holds Hunan",
+  43: "The Ye Capital Incident",
+  44: "Khitan Destroys Jin",
+};
 
-function getFirstWords(text: string, wordCount: number = 5): string {
-  // For Chinese: just take first N characters
-  const cleaned = text.replace(/\n/g, " ").trim();
-  if (cleaned.length <= wordCount * 3) return cleaned;
-  return cleaned.substring(0, wordCount * 3) + "…";
-}
+// Chuanxilu volume descriptions
+const CHUANXILU_TITLES: Record<number, string> = {
+  1: "卷上：徐愛引言… (Volume 1: Dialogues of Xu Ai and Others)",
+  2: "卷中：錢德洪序… (Volume 2: Letters and Writings)",
+  3: "卷下：門人陳九川錄… (Volume 3: Dialogues of Chen Jiuchuan and Others)",
+};
 
-function fixTextTitles(textDir: string, knownTitles: Record<number, string>) {
+function fixKnownTitles(textDir: string, knownTitles: Record<number, string>): number {
   const files = fs
     .readdirSync(textDir)
     .filter((f) => f.startsWith("chapter-") && f.endsWith(".json") && !f.includes("-translation"))
@@ -119,44 +174,150 @@ function fixTextTitles(textDir: string, knownTitles: Record<number, string>) {
 
   for (const file of files) {
     const filePath = path.join(textDir, file);
-    const chapter = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    const chapter: ProcessedChapter = JSON.parse(fs.readFileSync(filePath, "utf-8"));
     const num = chapter.chapterNumber;
     const oldTitle = chapter.title;
 
-    if (knownTitles[num]) {
+    if (knownTitles[num] && knownTitles[num] !== oldTitle) {
       chapter.title = knownTitles[num];
-    } else if (oldTitle && oldTitle.length > 50) {
-      // Title is too long — likely a paragraph used as title
-      // Use first few meaningful characters
-      chapter.title = getFirstWords(oldTitle, 5);
-    }
-
-    if (chapter.title !== oldTitle) {
-      fs.writeFileSync(filePath, JSON.stringify(chapter, null, 2), "utf-8");
+      fs.writeFileSync(filePath, JSON.stringify(chapter, null, 2) + "\n");
       fixedCount++;
-      console.log(`  [fix] Ch ${num}: "${oldTitle?.substring(0, 30)}..." → "${chapter.title}"`);
+      console.log(`  [fix] Ch ${num}: "${chapter.title}"`);
     }
   }
 
   return fixedCount;
 }
 
-function main() {
-  console.log("Fixing Zhuziyulei chapter titles...");
-  const zhuziyuleiDir = path.join(PROCESSED_DIR, "zhuziyulei");
-  if (fs.existsSync(zhuziyuleiDir)) {
-    const fixed = fixTextTitles(zhuziyuleiDir, ZHUZIYULEI_TITLES);
-    console.log(`  Fixed ${fixed} titles\n`);
+function fixTongjianTitles(): number {
+  const textDir = path.join(PROCESSED_DIR, "tongjian");
+  if (!fs.existsSync(textDir)) return 0;
+
+  const files = fs
+    .readdirSync(textDir)
+    .filter((f) => f.startsWith("chapter-") && f.endsWith(".json") && !f.includes("-translation"))
+    .sort();
+
+  let fixedCount = 0;
+
+  for (const file of files) {
+    const filePath = path.join(textDir, file);
+    const chapter: ProcessedChapter = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+
+    // Only fix volume chapters (3+)
+    if (chapter.chapterNumber < 3) continue;
+
+    const firstPara = chapter.sourceContent.paragraphs[0]?.text || "";
+    // Extract 【topic】 headings
+    const topics = firstPara.match(/【([^】]+)】/g)?.map((t) => t.slice(1, -1)) || [];
+
+    if (topics.length === 0) continue;
+
+    // Build the new title
+    const volumeMatch = chapter.title.match(/第(.+)卷/);
+    const volumeNum = volumeMatch ? volumeMatch[1] : String(chapter.chapterNumber - 2);
+
+    // Chinese title: include up to 2 topics
+    const chineseTopics = topics.length <= 2
+      ? topics.join("　")
+      : topics.slice(0, 2).join("　") + "…";
+
+    const englishTopic = TONGJIAN_TOPICS_EN[chapter.chapterNumber] || `Volume ${volumeNum}`;
+    const newTitle = `第${volumeNum}卷：${chineseTopics} (${englishTopic})`;
+
+    if (newTitle !== chapter.title) {
+      chapter.title = newTitle;
+      fs.writeFileSync(filePath, JSON.stringify(chapter, null, 2) + "\n");
+      fixedCount++;
+      console.log(`  [fix] Ch ${chapter.chapterNumber}: "${newTitle}"`);
+    }
   }
 
-  console.log("Fixing Ceremonialis chapter titles...");
-  const ceremonialisDir = path.join(PROCESSED_DIR, "ceremonialis");
-  if (fs.existsSync(ceremonialisDir)) {
-    const fixed = fixTextTitles(ceremonialisDir, CEREMONIALIS_TITLES);
-    console.log(`  Fixed ${fixed} titles\n`);
-  }
-
-  console.log("Done.");
+  return fixedCount;
 }
 
-main();
+async function updateDatabaseTitles(): Promise<void> {
+  console.log("\nUpdating database chapter titles...");
+
+  const textsToUpdate = ["zhuziyulei", "ceremonialis", "tongjian", "chuanxilu"];
+
+  for (const textSlug of textsToUpdate) {
+    const processedDir = path.join(PROCESSED_DIR, textSlug);
+    if (!fs.existsSync(processedDir)) continue;
+
+    // Find the text record
+    const textRecord = await db.query.texts.findFirst({
+      where: eq(schema.texts.slug, textSlug),
+    });
+    if (!textRecord) {
+      console.log(`  [skip] Text '${textSlug}' not found in database`);
+      continue;
+    }
+
+    const files = fs
+      .readdirSync(processedDir)
+      .filter((f) => f.startsWith("chapter-") && f.endsWith(".json") && !f.includes("-translation"))
+      .sort();
+
+    let dbUpdated = 0;
+    for (const file of files) {
+      const chapter: ProcessedChapter = JSON.parse(
+        fs.readFileSync(path.join(processedDir, file), "utf-8")
+      );
+
+      const result = await db
+        .update(schema.chapters)
+        .set({ title: chapter.title })
+        .where(
+          and(
+            eq(schema.chapters.textId, textRecord.id),
+            eq(schema.chapters.chapterNumber, chapter.chapterNumber)
+          )
+        )
+        .returning({ id: schema.chapters.id });
+
+      if (result.length > 0) dbUpdated++;
+    }
+
+    console.log(`  ${textSlug}: updated ${dbUpdated} chapter titles in DB`);
+  }
+}
+
+async function main() {
+  console.log("=== Fixing Chapter Titles ===\n");
+
+  console.log("Zhuziyulei...");
+  const zhuziyuleiDir = path.join(PROCESSED_DIR, "zhuziyulei");
+  if (fs.existsSync(zhuziyuleiDir)) {
+    const fixed = fixKnownTitles(zhuziyuleiDir, ZHUZIYULEI_TITLES);
+    console.log(`  Fixed ${fixed} titles\n`);
+  }
+
+  console.log("Ceremonialis...");
+  const ceremonialisDir = path.join(PROCESSED_DIR, "ceremonialis");
+  if (fs.existsSync(ceremonialisDir)) {
+    const fixed = fixKnownTitles(ceremonialisDir, CEREMONIALIS_TITLES);
+    console.log(`  Fixed ${fixed} titles\n`);
+  }
+
+  console.log("Tongjian...");
+  const tongjianFixed = fixTongjianTitles();
+  console.log(`  Fixed ${tongjianFixed} titles\n`);
+
+  console.log("Chuanxilu...");
+  const chuanxiluDir = path.join(PROCESSED_DIR, "chuanxilu");
+  if (fs.existsSync(chuanxiluDir)) {
+    const fixed = fixKnownTitles(chuanxiluDir, CHUANXILU_TITLES);
+    console.log(`  Fixed ${fixed} titles\n`);
+  }
+
+  await updateDatabaseTitles();
+
+  console.log("\n=== Done ===");
+  await client.end();
+}
+
+main().catch((err) => {
+  console.error("Error:", err);
+  client.end().then(() => process.exit(1));
+});
