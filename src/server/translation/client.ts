@@ -1,16 +1,19 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 
-let clientInstance: Anthropic | null = null;
+let clientInstance: OpenAI | null = null;
 
-export function getAnthropicClient(): Anthropic {
+export function getTranslationClient(): OpenAI {
   if (!clientInstance) {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = process.env.DEEPSEEK_API_KEY;
     if (!apiKey) {
       throw new Error(
-        "ANTHROPIC_API_KEY environment variable is required for AI translation."
+        "DEEPSEEK_API_KEY environment variable is required for AI translation."
       );
     }
-    clientInstance = new Anthropic({ apiKey });
+    clientInstance = new OpenAI({
+      apiKey,
+      baseURL: "https://api.deepseek.com",
+    });
   }
   return clientInstance;
 }

@@ -41,6 +41,9 @@ yarn-error.log*
 # raw downloaded data (large, regenerable)
 data/raw/
 
+# sensitive files
+API_keys_DO_NOT_COMMIT.txt
+
 # vercel
 .vercel
 

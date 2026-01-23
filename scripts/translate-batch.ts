@@ -5,7 +5,7 @@
  *
  * Prerequisites:
  * - Database seeded with chapters (pnpm db:seed)
- * - ANTHROPIC_API_KEY set in environment
+ * - DEEPSEEK_API_KEY set in environment
  * - DATABASE_URL set in environment
  * - A system user exists in the database (created automatically if needed)
  *
@@ -16,7 +16,7 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { eq, and, isNull, asc, desc, gte, lte } from "drizzle-orm";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import * as schema from "../src/server/db/schema";
 import { buildTranslationPrompt } from "../src/server/translation/prompts";
 
@@ -30,18 +30,18 @@ if (!connectionString) {
   process.exit(1);
 }
 
-const apiKey = process.env.ANTHROPIC_API_KEY;
+const apiKey = process.env.DEEPSEEK_API_KEY;
 if (!apiKey) {
-  console.error("ANTHROPIC_API_KEY is required.");
+  console.error("DEEPSEEK_API_KEY is required.");
   process.exit(1);
 }
 
 const client = postgres(connectionString);
 const db = drizzle(client, { schema });
-const anthropic = new Anthropic({ apiKey });
+const openai = new OpenAI({ apiKey, baseURL: "https://api.deepseek.com" });
 
 const DEFAULT_DELAY_MS = 3000;
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = "deepseek-chat";
 
 // ============================================================
 // Argument parsing
@@ -98,7 +98,40 @@ interface Paragraph {
   text: string;
 }
 
-async function translateParagraphs(
+// Language-specific limits: Chinese is very dense (1 char ≈ 2-4 English words),
+// Greek/Latin are closer to English character density.
+const MAX_CHARS_BY_LANG: Record<string, number> = {
+  zh: 1500,   // Classical Chinese: extremely dense
+  grc: 6000,  // Ancient Greek: moderate density
+  la: 6000,   // Latin: similar to Greek
+};
+const DEFAULT_MAX_CHARS = 3000;
+const BATCH_DELAY_MS = 2000;
+
+function chunkParagraphs(paragraphs: Paragraph[], sourceLanguage: string): Paragraph[][] {
+  const maxChars = MAX_CHARS_BY_LANG[sourceLanguage] ?? DEFAULT_MAX_CHARS;
+  const chunks: Paragraph[][] = [];
+  let current: Paragraph[] = [];
+  let currentChars = 0;
+
+  for (const p of paragraphs) {
+    if (current.length > 0 && currentChars + p.text.length > maxChars) {
+      chunks.push(current);
+      current = [];
+      currentChars = 0;
+    }
+    current.push(p);
+    currentChars += p.text.length;
+  }
+
+  if (current.length > 0) {
+    chunks.push(current);
+  }
+
+  return chunks;
+}
+
+async function translateBatch(
   paragraphs: Paragraph[],
   sourceLanguage: string
 ): Promise<Paragraph[]> {
@@ -107,37 +140,43 @@ async function translateParagraphs(
     paragraphs,
   });
 
-  const response = await anthropic.messages.create({
+  const response = await openai.chat.completions.create({
     model: MODEL,
-    max_tokens: 4096,
-    system,
-    messages: [{ role: "user", content: user }],
+    max_tokens: 8192,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
   });
 
   // Extract text content from response
-  const textBlock = response.content.find((c) => c.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("No text response from Claude");
+  const content = response.choices[0]?.message?.content;
+  if (!content) {
+    throw new Error("No text response from DeepSeek");
   }
 
   // Parse JSON from response (may be wrapped in markdown code block)
-  let jsonStr = textBlock.text.trim();
+  let jsonStr = content.trim();
   if (jsonStr.startsWith("```")) {
     jsonStr = jsonStr.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  const translated: Paragraph[] = JSON.parse(jsonStr);
+  const raw: unknown[] = JSON.parse(jsonStr);
 
   // Validate structure
-  if (!Array.isArray(translated)) {
+  if (!Array.isArray(raw)) {
     throw new Error("Response is not an array");
   }
 
-  for (const p of translated) {
-    if (typeof p.index !== "number" || typeof p.text !== "string") {
-      throw new Error("Invalid paragraph structure in response");
+  // Normalize: coerce string indices to numbers, handle minor format variations
+  const translated: Paragraph[] = raw.map((item: any) => {
+    const index = typeof item.index === "string" ? parseInt(item.index, 10) : item.index;
+    const text = String(item.text ?? "");
+    if (typeof index !== "number" || isNaN(index)) {
+      throw new Error(`Invalid index in response: ${JSON.stringify(item).slice(0, 100)}`);
     }
-  }
+    return { index, text };
+  });
 
   return translated;
 }
@@ -175,10 +214,21 @@ async function translateChapter(
   }
 
   try {
-    const translated = await translateParagraphs(
-      sourceContent.paragraphs,
-      sourceLanguage
-    );
+    const chunks = chunkParagraphs(sourceContent.paragraphs, sourceLanguage);
+    const translated: Paragraph[] = [];
+
+    for (let i = 0; i < chunks.length; i++) {
+      if (i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+      }
+      const batchResult = await translateBatch(chunks[i], sourceLanguage);
+      translated.push(...batchResult);
+      if (chunks.length > 1) {
+        process.stdout.write(
+          `    batch ${i + 1}/${chunks.length} (${batchResult.length} paragraphs)\n`
+        );
+      }
+    }
 
     // Create or get translation record
     let translation = existingTranslation;
@@ -198,7 +248,7 @@ async function translateChapter(
         versionNumber: 1,
         content: { paragraphs: translated },
         authorId: systemUserId,
-        editSummary: "AI-generated initial translation (Claude)",
+        editSummary: "AI-generated initial translation (DeepSeek V3)",
       })
       .returning();
 

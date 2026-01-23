@@ -140,6 +140,112 @@ Actually, earliest useful deployment is after Phase 3 — reading works.
    - Mitigation: paginate by chapter (already planned)
    - Mitigation: lazy-load translation versions
 
+### Translation API Observations (Session 2)
+
+**DeepSeek R1 (deepseek-reasoner):**
+- Very slow — each batch takes 30-60+ seconds due to chain-of-thought reasoning
+- Unnecessary for translation (reasoning overhead provides no benefit)
+- 64K max output — would eliminate batching need, but too slow to be practical
+- Sometimes returns string indices instead of numbers (needed coercion fix)
+
+**DeepSeek V3.2 (deepseek-chat):**
+- Much faster — responses in seconds
+- 8K max output (hard limit enforced by API: "valid range is [1, 8192]")
+- Requires paragraph batching for large chapters
+- $0.28/M input, $0.42/M output — extremely cheap
+
+**Batching strategy:**
+- MAX_CHARS_PER_BATCH = 8000 source chars per batch
+- With 8K output tokens (~32K chars), 8000 source chars translates comfortably within limit
+- ZZYL chapters: 66-100+ paragraphs, short each (classical Chinese) — usually 1-3 batches
+- De Ceremoniis chapters: 2-68 paragraphs, VERY long each (Greek) — needs 5-19 batches
+- Chapter paragraph/char sizes:
+  - Ceremonialis ch1: 2 para, 2K chars
+  - Ceremonialis ch2: 68 para, 150K chars (largest!)
+  - Ceremonialis ch3: 9 para, 41K chars → 7 batches
+  - Ceremonialis ch4: 9 para, 54K chars
+  - Ceremonialis ch5: 7 para, 39K chars
+  - Ceremonialis ch6: 6 para, 46K chars
+  - Ceremonialis ch7: 16 para, 122K chars
+
+**Translation status (current session):**
+- ZZYL ch1: DONE (66 paragraphs, DeepSeek R1)
+- ZZYL ch2: DONE (107 paragraphs, DeepSeek V3.2, 4 batches)
+- ZZYL ch3: DONE (82 paragraphs, DeepSeek V3.2, 12 batches @ 1500 chars/batch)
+- Ceremonialis ch1: DONE (2 paragraphs, DeepSeek R1)
+- Ceremonialis ch3: DONE (9 paragraphs, DeepSeek V3.2, 7 batches @ 3000→6000 chars)
+- Language-aware batching solved the truncation issues (zh=1500, grc=6000)
+
+**API comparison for translation:**
+| Provider | Model | Context | Max Output | Cost (in/out per M) |
+|----------|-------|---------|-----------|---------------------|
+| DeepSeek | deepseek-chat (V3.2) | 128K | 8K | $0.28 / $0.42 |
+| DeepSeek | deepseek-reasoner | 128K | 64K | $0.28 / $0.42 |
+| Kimi | kimi-k2 (0905) | 256K | ~8K | $0.60 / $2.50 |
+| Claude | Haiku 4.5 | 200K | 8K (64K ext) | $1.00 / $5.00 |
+| Claude | Sonnet 4.5 | 1M | 8K (64K ext) | $3.00 / $15.00 |
+
+**Decision:** Using deepseek-chat for cost. Batching handles 8K output limit.
+
+**Language-specific density observation:**
+- Classical Chinese (zh): VERY dense. 1 char ≈ 3-5 English words. 3000 source chars → 8K+ output tokens.
+- Ancient Greek (grc): Moderate. 1 char ≈ 0.5-1 English words. 3000 source chars → ~2-3K output tokens.
+- Latin (la): Similar to Greek.
+- TODO: Make MAX_CHARS_PER_BATCH language-aware (e.g., zh=3000, grc=8000, la=8000)
+
+### Database Setup (Session 2)
+
+- Neon PostgreSQL (cloud, free tier)
+- Schema pushed via `pnpm db:push` (drizzle-kit push)
+- .env.local must be sourced before drizzle-kit commands: `set -a && source .env.local && set +a`
+- Database seeded: 4 languages, 2 authors, 2 texts, 147 chapters (140 ZZYL + 7 Ceremonialis)
+- Dev server works: pages load with correct data from DB
+- Docker NOT available on this system — Neon is the path forward
+
+### Code Changes (Session 2)
+
+- Replaced `@anthropic-ai/sdk` with `openai` package (DeepSeek uses OpenAI-compatible API)
+- `src/server/translation/client.ts` → OpenAI client with baseURL "https://api.deepseek.com"
+- `scripts/translate-batch.ts` → uses `openai.chat.completions.create()`, model "deepseek-chat"
+- Added paragraph chunking (MAX_CHARS_PER_BATCH = 8000)
+- Added robust parsing: coerces string indices to numbers
+- `.env.example` → DEEPSEEK_API_KEY replaces ANTHROPIC_API_KEY
+- `.gitignore` → added API_keys_DO_NOT_COMMIT.txt
+
+### Deployment Plan (Phase 8)
+
+**GitHub remote:** https://github.com/translorentz/translation-wiki.git
+**Current state:** 8 commits (7 ahead of origin), plus uncommitted DeepSeek migration
+
+**Steps to go live:**
+1. Commit DeepSeek migration changes
+2. Push all commits to GitHub
+3. User: Connect GitHub repo to Vercel (vercel.com → import project)
+4. User: Set environment variables on Vercel:
+   - DATABASE_URL = same Neon connection string
+   - AUTH_SECRET = generate with `openssl rand -base64 32`
+   - AUTH_URL = production URL (e.g., https://translation-wiki.vercel.app)
+   - DEEPSEEK_API_KEY = same key (for any server-side translation features)
+5. Deploy triggers automatically on push
+6. Schema already applied to Neon (step already done)
+7. Optional: Custom domain in Vercel dashboard
+
+**Known issues to address:**
+- Next.js 16 warns: "middleware" file convention deprecated, use "proxy" instead
+  - This is non-blocking (still works), but should be migrated eventually
+- NextAuth is beta (5.0.0-beta.30) — monitor for stable release
+- CLAUDE.md still references @anthropic-ai/sdk — cosmetic, not blocking
+- Only 5/147 chapters have translations (3 ZZYL + 2 Ceremonialis)
+  - MVP is fine — shows the structure, more can be added later
+
+**Production environment variables needed:**
+| Variable | Source | Notes |
+|----------|--------|-------|
+| DATABASE_URL | Neon dashboard | Already configured in .env.local |
+| AUTH_SECRET | `openssl rand -base64 32` | Must generate for production |
+| AUTH_URL | Your Vercel domain | e.g., https://translation-wiki.vercel.app |
+| DEEPSEEK_API_KEY | platform.deepseek.com | Same as dev |
+
 ### Commands Cheat Sheet
 
 ```bash
