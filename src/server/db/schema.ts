@@ -1,0 +1,252 @@
+import {
+  pgTable,
+  serial,
+  text,
+  varchar,
+  integer,
+  timestamp,
+  jsonb,
+  uniqueIndex,
+  index,
+} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
+// ============================================================
+// Users
+// ============================================================
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  username: varchar("username", { length: 100 }).notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  role: varchar("role", { length: 20 }).notNull().default("editor"), // reader | editor | admin
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const usersRelations = relations(users, ({ many }) => ({
+  translationVersions: many(translationVersions),
+  endorsements: many(endorsements),
+}));
+
+// ============================================================
+// Languages
+// ============================================================
+
+export const languages = pgTable("languages", {
+  id: serial("id").primaryKey(),
+  code: varchar("code", { length: 10 }).notNull().unique(), // grc, la, zh
+  name: varchar("name", { length: 100 }).notNull(), // Koine Greek, Latin, Classical Chinese
+  displayName: varchar("display_name", { length: 100 }).notNull(),
+});
+
+export const languagesRelations = relations(languages, ({ many }) => ({
+  texts: many(texts),
+}));
+
+// ============================================================
+// Authors
+// ============================================================
+
+export const authors = pgTable("authors", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  nameOriginalScript: varchar("name_original_script", { length: 255 }),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  era: varchar("era", { length: 255 }),
+  description: text("description"),
+});
+
+export const authorsRelations = relations(authors, ({ many }) => ({
+  texts: many(texts),
+}));
+
+// ============================================================
+// Texts
+// ============================================================
+
+export const texts = pgTable(
+  "texts",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 500 }).notNull(),
+    titleOriginalScript: varchar("title_original_script", { length: 500 }),
+    slug: varchar("slug", { length: 500 }).notNull(),
+    languageId: integer("language_id")
+      .notNull()
+      .references(() => languages.id),
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => authors.id),
+    description: text("description"),
+    sourceUrl: text("source_url"),
+    totalChapters: integer("total_chapters").notNull().default(0),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("texts_language_slug_idx").on(table.languageId, table.slug),
+  ]
+);
+
+export const textsRelations = relations(texts, ({ one, many }) => ({
+  language: one(languages, {
+    fields: [texts.languageId],
+    references: [languages.id],
+  }),
+  author: one(authors, {
+    fields: [texts.authorId],
+    references: [authors.id],
+  }),
+  chapters: many(chapters),
+}));
+
+// ============================================================
+// Chapters
+// ============================================================
+
+export const chapters = pgTable(
+  "chapters",
+  {
+    id: serial("id").primaryKey(),
+    textId: integer("text_id")
+      .notNull()
+      .references(() => texts.id, { onDelete: "cascade" }),
+    chapterNumber: integer("chapter_number").notNull(),
+    slug: varchar("slug", { length: 255 }).notNull(),
+    title: varchar("title", { length: 500 }),
+    sourceContent: jsonb("source_content"), // { paragraphs: [{ index, text }] }
+    ordering: integer("ordering").notNull(),
+  },
+  (table) => [
+    uniqueIndex("chapters_text_number_idx").on(
+      table.textId,
+      table.chapterNumber
+    ),
+    index("chapters_text_id_idx").on(table.textId),
+  ]
+);
+
+export const chaptersRelations = relations(chapters, ({ one, many }) => ({
+  text: one(texts, {
+    fields: [chapters.textId],
+    references: [texts.id],
+  }),
+  translations: many(translations),
+}));
+
+// ============================================================
+// Translations
+// ============================================================
+
+export const translations = pgTable(
+  "translations",
+  {
+    id: serial("id").primaryKey(),
+    chapterId: integer("chapter_id")
+      .notNull()
+      .references(() => chapters.id, { onDelete: "cascade" }),
+    currentVersionId: integer("current_version_id"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [index("translations_chapter_id_idx").on(table.chapterId)]
+);
+
+export const translationsRelations = relations(
+  translations,
+  ({ one, many }) => ({
+    chapter: one(chapters, {
+      fields: [translations.chapterId],
+      references: [chapters.id],
+    }),
+    versions: many(translationVersions),
+    currentVersion: one(translationVersions, {
+      fields: [translations.currentVersionId],
+      references: [translationVersions.id],
+      relationName: "currentVersion",
+    }),
+  })
+);
+
+// ============================================================
+// Translation Versions
+// ============================================================
+
+export const translationVersions = pgTable(
+  "translation_versions",
+  {
+    id: serial("id").primaryKey(),
+    translationId: integer("translation_id")
+      .notNull()
+      .references(() => translations.id, { onDelete: "cascade" }),
+    versionNumber: integer("version_number").notNull(),
+    content: jsonb("content").notNull(), // { paragraphs: [{ index, text }] }
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => users.id),
+    editSummary: text("edit_summary"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    previousVersionId: integer("previous_version_id"),
+  },
+  (table) => [
+    index("tv_translation_id_idx").on(table.translationId),
+    index("tv_author_id_idx").on(table.authorId),
+  ]
+);
+
+export const translationVersionsRelations = relations(
+  translationVersions,
+  ({ one, many }) => ({
+    translation: one(translations, {
+      fields: [translationVersions.translationId],
+      references: [translations.id],
+    }),
+    author: one(users, {
+      fields: [translationVersions.authorId],
+      references: [users.id],
+    }),
+    endorsements: many(endorsements),
+    previousVersion: one(translationVersions, {
+      fields: [translationVersions.previousVersionId],
+      references: [translationVersions.id],
+      relationName: "versionChain",
+    }),
+  })
+);
+
+// ============================================================
+// Endorsements
+// ============================================================
+
+export const endorsements = pgTable(
+  "endorsements",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    translationVersionId: integer("translation_version_id")
+      .notNull()
+      .references(() => translationVersions.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("endorsements_user_version_idx").on(
+      table.userId,
+      table.translationVersionId
+    ),
+    index("endorsements_version_id_idx").on(table.translationVersionId),
+  ]
+);
+
+export const endorsementsRelations = relations(endorsements, ({ one }) => ({
+  user: one(users, {
+    fields: [endorsements.userId],
+    references: [users.id],
+  }),
+  translationVersion: one(translationVersions, {
+    fields: [endorsements.translationVersionId],
+    references: [translationVersions.id],
+  }),
+}));
