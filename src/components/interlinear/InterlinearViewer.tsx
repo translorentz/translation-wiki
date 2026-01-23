@@ -11,13 +11,16 @@ interface InterlinearViewerProps {
   sourceContent: { paragraphs: Paragraph[] };
   translationContent: { paragraphs: Paragraph[] } | null;
   sourceLanguage: string;
+  textType?: string;
 }
 
 export function InterlinearViewer({
   sourceContent,
   translationContent,
   sourceLanguage,
+  textType,
 }: InterlinearViewerProps) {
+  const isPoetry = textType === "poetry";
   const translationMap = new Map<number, string>();
   if (translationContent) {
     for (const p of translationContent.paragraphs) {
@@ -28,7 +31,7 @@ export function InterlinearViewer({
   return (
     <div className="relative">
       {/* Column headers */}
-      <div className="sticky top-0 z-10 mb-2 hidden border-b border-border bg-background/95 pb-2 backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-x-6">
+      <div className={`sticky top-0 z-10 mb-2 hidden border-b border-border bg-background/95 pb-2 backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-x-6 ${isPoetry ? "pl-10 md:pl-12" : ""}`}>
         <div className="text-sm font-medium text-muted-foreground">Source</div>
         <div className="text-sm font-medium text-muted-foreground">
           Translation
@@ -44,6 +47,7 @@ export function InterlinearViewer({
             sourceText={paragraph.text}
             translationText={translationMap.get(paragraph.index) ?? null}
             sourceLanguage={sourceLanguage}
+            isPoetry={isPoetry}
           />
         ))}
       </div>

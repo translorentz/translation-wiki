@@ -150,6 +150,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           }
           translationContent={translationContent ?? null}
           sourceLanguage={lang}
+          textType={textData.textType}
         />
 
         {/* Endorsement */}

@@ -7,6 +7,7 @@ interface ParagraphPairProps {
   sourceText: string;
   translationText: string | null;
   sourceLanguage: string;
+  isPoetry?: boolean;
 }
 
 const LANGUAGE_FONTS: Record<string, string> = {
@@ -20,15 +21,37 @@ export function ParagraphPair({
   sourceText,
   translationText,
   sourceLanguage,
+  isPoetry,
 }: ParagraphPairProps) {
   const sourceFontClass = LANGUAGE_FONTS[sourceLanguage] ?? "font-sans";
 
+  // For poetry, show line numbers every 5th line (traditional verse numbering)
+  const showLineNumber = isPoetry && index % 5 === 0;
+
   return (
-    <div className="group grid grid-cols-1 gap-x-6 border-b border-border/50 py-3 last:border-b-0 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      {/* Index gutter */}
-      <span className="col-span-full text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 md:col-span-1 md:absolute md:-ml-8 md:mt-1">
-        {index + 1}
-      </span>
+    <div
+      className={cn(
+        "group relative grid grid-cols-1 gap-x-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
+        isPoetry
+          ? "py-0.5 pl-10 md:pl-12"
+          : "border-b border-border/50 py-3 last:border-b-0"
+      )}
+    >
+      {/* Line number gutter */}
+      {isPoetry ? (
+        <span
+          className={cn(
+            "absolute -ml-10 select-none text-xs tabular-nums text-muted-foreground md:-ml-12",
+            showLineNumber ? "opacity-100" : "opacity-0"
+          )}
+        >
+          {index}
+        </span>
+      ) : (
+        <span className="col-span-full text-xs text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 md:col-span-1 md:absolute md:-ml-8 md:mt-1">
+          {index}
+        </span>
+      )}
 
       {/* Source paragraph */}
       <div
@@ -36,7 +59,8 @@ export function ParagraphPair({
           "leading-relaxed",
           sourceFontClass,
           sourceLanguage === "zh" && "text-lg leading-loose",
-          sourceLanguage === "grc" && "text-base leading-relaxed"
+          sourceLanguage === "grc" && "text-base leading-relaxed",
+          isPoetry && "leading-normal"
         )}
         lang={sourceLanguage}
       >
@@ -44,7 +68,7 @@ export function ParagraphPair({
       </div>
 
       {/* Translation paragraph */}
-      <div className="mt-2 leading-relaxed md:mt-0">
+      <div className={cn("leading-relaxed", isPoetry ? "mt-0 leading-normal" : "mt-2 md:mt-0")}>
         {translationText ? (
           <span>{translationText}</span>
         ) : (

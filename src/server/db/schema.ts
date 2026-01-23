@@ -87,6 +87,7 @@ export const texts = pgTable(
     totalChapters: integer("total_chapters").notNull().default(0),
     compositionYear: integer("composition_year"),
     compositionEra: varchar("composition_era", { length: 255 }),
+    textType: varchar("text_type", { length: 20 }).notNull().default("prose"), // prose | poetry
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => [

@@ -113,6 +113,14 @@ const AUTHORS = [
     description:
       "Song dynasty historian who reorganized Sima Guang's Zizhi Tongjian into topical narratives, creating the Tongjian Jishi Benmo (通鑑紀事本末), the first Chinese historical work organized by events rather than chronology.",
   },
+  {
+    name: "Theodore Prodromos",
+    nameOriginalScript: "Θεόδωρος Πρόδρομος",
+    slug: "theodore-prodromos",
+    era: "Byzantine Empire (c. 1100–1170)",
+    description:
+      "Byzantine poet, novelist, and scholar. The Ptochoprodromika are satirical vernacular Greek poems attributed to him, offering vivid portraits of everyday life in 12th-century Constantinople.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -180,6 +188,7 @@ const TEXTS = [
     processedDir: "data/processed/elegia",
     compositionYear: 1190,
     compositionEra: "Late 12th century, Tuscany",
+    textType: "poetry" as const,
   },
   {
     title: "History of the Lombards of Benevento",
@@ -219,6 +228,20 @@ const TEXTS = [
     processedDir: "data/processed/tongjian",
     compositionYear: 1174,
     compositionEra: "淳熙元年, Southern Song",
+  },
+  {
+    title: "Ptochoprodromika (Poems of Poor Prodromos)",
+    titleOriginalScript: "Πτωχοπροδρομικά",
+    slug: "ptochoprodromos",
+    languageCode: "grc",
+    authorSlug: "theodore-prodromos",
+    description:
+      "Satirical vernacular Greek poems offering vivid portraits of everyday life in 12th-century Constantinople — a scholar lamenting his poverty, a henpecked husband, a monk complaining about monastic food, and a craftsman mocking the educated.",
+    sourceUrl: "",
+    processedDir: "data/processed/ptochoprodromos",
+    compositionYear: 1140,
+    compositionEra: "Reign of Manuel I Komnenos, Byzantine Empire",
+    textType: "poetry" as const,
   },
 ] as const;
 
@@ -317,6 +340,7 @@ async function seedTexts(
           totalChapters: 0, // Updated after chapters are inserted
           compositionYear: text.compositionYear,
           compositionEra: text.compositionEra,
+          ...("textType" in text && { textType: text.textType }),
         })
         .returning({ id: schema.texts.id });
       slugToId.set(text.slug, inserted.id);
