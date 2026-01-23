@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
@@ -9,6 +10,27 @@ interface TextPageProps {
     author: string;
     text: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: TextPageProps): Promise<Metadata> {
+  const { lang, author, text: textSlug } = await params;
+  const trpc = await getServerTRPC();
+  const textData = await trpc.texts.getBySlug({
+    langCode: lang,
+    authorSlug: author,
+    textSlug,
+  });
+
+  if (!textData) return { title: "Text Not Found" };
+
+  return {
+    title: `${textData.title} — Translation Wiki`,
+    description:
+      textData.description ??
+      `Read and translate ${textData.title} by ${textData.author.name}`,
+  };
 }
 
 export default async function TextPage({ params }: TextPageProps) {

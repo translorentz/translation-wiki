@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
@@ -13,6 +14,32 @@ interface ChapterPageProps {
     text: string;
     chapter: string;
   }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ChapterPageProps): Promise<Metadata> {
+  const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
+  const trpc = await getServerTRPC();
+  const textData = await trpc.texts.getBySlug({
+    langCode: lang,
+    authorSlug: author,
+    textSlug,
+  });
+
+  if (!textData) return { title: "Chapter Not Found" };
+
+  const chapterNumber = parseInt(chapterSlug.replace("chapter-", ""));
+  const chapterInfo = textData.chapters.find(
+    (c) => c.chapterNumber === chapterNumber
+  );
+  const chapterTitle =
+    chapterInfo?.title ?? `Chapter ${chapterNumber}`;
+
+  return {
+    title: `${chapterTitle} — ${textData.title} — Translation Wiki`,
+    description: `Read the translation of ${chapterTitle} from ${textData.title} by ${textData.author.name}`,
+  };
 }
 
 export default async function ChapterPage({ params }: ChapterPageProps) {

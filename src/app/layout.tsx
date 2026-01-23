@@ -46,6 +46,12 @@ export default function RootLayout({
                   >
                     Browse
                   </Link>
+                  <Link
+                    href="/search"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Search
+                  </Link>
                 </nav>
               </div>
               <div className="flex items-center gap-2">
