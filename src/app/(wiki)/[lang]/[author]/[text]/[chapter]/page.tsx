@@ -135,6 +135,9 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             <Button variant="ghost" size="sm" asChild>
               <Link href={`${basePath}/${chapterSlug}/history`}>History</Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href={`${basePath}/${chapterSlug}/discussion`}>Discussion</Link>
+            </Button>
           </div>
         </div>
 

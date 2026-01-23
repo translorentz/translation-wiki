@@ -6,6 +6,7 @@ import {
   integer,
   timestamp,
   jsonb,
+  boolean,
   uniqueIndex,
   index,
 } from "drizzle-orm/pg-core";
@@ -28,6 +29,8 @@ export const users = pgTable("users", {
 export const usersRelations = relations(users, ({ many }) => ({
   translationVersions: many(translationVersions),
   endorsements: many(endorsements),
+  discussionThreads: many(discussionThreads),
+  discussionPosts: many(discussionPosts),
 }));
 
 // ============================================================
@@ -135,6 +138,7 @@ export const chaptersRelations = relations(chapters, ({ one, many }) => ({
     references: [texts.id],
   }),
   translations: many(translations),
+  discussionThreads: many(discussionThreads),
 }));
 
 // ============================================================
@@ -252,3 +256,80 @@ export const endorsementsRelations = relations(endorsements, ({ one }) => ({
     references: [translationVersions.id],
   }),
 }));
+
+// ============================================================
+// Discussion Threads
+// ============================================================
+
+export const discussionThreads = pgTable(
+  "discussion_threads",
+  {
+    id: serial("id").primaryKey(),
+    chapterId: integer("chapter_id")
+      .notNull()
+      .references(() => chapters.id, { onDelete: "cascade" }),
+    title: varchar("title", { length: 300 }).notNull(),
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => users.id),
+    isPinned: boolean("is_pinned").notNull().default(false),
+    isResolved: boolean("is_resolved").notNull().default(false),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("discussion_threads_chapter_id_idx").on(table.chapterId),
+  ]
+);
+
+export const discussionThreadsRelations = relations(
+  discussionThreads,
+  ({ one, many }) => ({
+    chapter: one(chapters, {
+      fields: [discussionThreads.chapterId],
+      references: [chapters.id],
+    }),
+    author: one(users, {
+      fields: [discussionThreads.authorId],
+      references: [users.id],
+    }),
+    posts: many(discussionPosts),
+  })
+);
+
+// ============================================================
+// Discussion Posts
+// ============================================================
+
+export const discussionPosts = pgTable(
+  "discussion_posts",
+  {
+    id: serial("id").primaryKey(),
+    threadId: integer("thread_id")
+      .notNull()
+      .references(() => discussionThreads.id, { onDelete: "cascade" }),
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => users.id),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("discussion_posts_thread_id_idx").on(table.threadId),
+  ]
+);
+
+export const discussionPostsRelations = relations(
+  discussionPosts,
+  ({ one }) => ({
+    thread: one(discussionThreads, {
+      fields: [discussionPosts.threadId],
+      references: [discussionThreads.id],
+    }),
+    author: one(users, {
+      fields: [discussionPosts.authorId],
+      references: [users.id],
+    }),
+  })
+);
