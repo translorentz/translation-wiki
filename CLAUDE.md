@@ -559,3 +559,84 @@ For parallel development with multiple Claude Code instances:
 - **Drizzle ORM docs:** https://orm.drizzle.team/
 - **NextAuth.js docs:** https://next-auth.js.org/
 - **tRPC docs:** https://trpc.io/
+
+---
+
+## Current Implementation Status
+
+### Completed Features (as of January 2026)
+
+- **Phases 1-6 fully implemented**: scaffolding, text acquisition, reading experience, editing, endorsements, AI translation
+- **Discussion system**: Wikipedia-style "Discussion" tab on every chapter (threaded, with resolve/pin)
+- **Poetry display mode**: `textType` field ("prose" | "poetry") — poetry shows line numbers every 5th line in left gutter
+- **Search page**: full-text search across titles and content
+- **Auth**: register, login, role-based access (reader/editor/admin)
+- **Admin panel**: user role management at `/admin/users`
+- **SEO**: generateMetadata on all pages, Open Graph tags
+
+### Texts in the System
+
+| Text | Language | Author Slug | Text Slug | Chapters | Type |
+|------|----------|-------------|-----------|----------|------|
+| Zhu Zi Yu Lei (Classified Conversations of Master Zhu) | zh | zhu-xi | zhuziyulei | 140 | prose |
+| On the Ceremonies of the Byzantine Court | grc | constantine-vii | ceremonialis | 7 | prose |
+| Chuan Xi Lu (Instructions for Practical Living) | zh | wang-yangming | chuanxilu | 3 | prose |
+| On the Soul (Cassiodorus) | la | cassiodorus | deanima | 1 | prose |
+| Elegy on Misfortune | la | henry-of-settimello | elegia | 4 | poetry |
+| History of the Lombards of Benevento | la | erchempert | lombards | 1 | prose |
+| The Book of the Kingdom of Sicily | la | hugo-falcandus | regno | 1 | prose |
+| Tongjian Jishi Benmo (Narratives from the Comprehensive Mirror) | zh | yuan-shu | tongjian | 45 | prose |
+| Ptochoprodromika (Poems of Poor Prodromos) | grc | theodore-prodromos | ptochoprodromos | 2 | poetry |
+| Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine) | zh | huangdi | huangdineijing | 55 (Su Wen only) | prose |
+
+### Translation Pipeline
+
+- **Engine**: DeepSeek V3 (`deepseek-chat`) via OpenAI-compatible API
+- **Env var**: `DEEPSEEK_API_KEY`
+- **Script**: `scripts/translate-batch.ts`
+- **Usage**: `pnpm tsx scripts/translate-batch.ts --text <slug> [--start N] [--end N] [--delay MS]`
+- **Parallelization**: Split chapter ranges across multiple background processes (e.g., 4 workers for ZZYL ch 58-78, 79-99, 100-120, 121-140)
+- **Batching**: Paragraphs chunked by character limit (zh=1500, grc/la=6000 chars per API call)
+- **Skip logic**: Already-translated chapters are skipped automatically
+- **JSON repair**: Handles malformed LLM output (truncated arrays, unescaped quotes, missing brackets)
+
+### Adding New Texts
+
+1. Place raw text files in `data/raw/<dirname>/`
+2. Write a processing script: `scripts/process-<name>.ts`
+   - Output: `data/processed/<slug>/chapter-NNN.json`
+   - Format: `{ chapterNumber, title, sourceContent: { paragraphs: [{ index, text }] } }`
+3. Add author entry to `scripts/seed-db.ts` AUTHOR array (if new author)
+4. Add text entry to `scripts/seed-db.ts` TEXTS array with `processedDir` path
+5. Run `pnpm tsx scripts/seed-db.ts` to seed into database
+6. Run `pnpm tsx scripts/translate-batch.ts --text <slug>` to generate AI translations
+
+### Processing Scripts
+
+| Script | Text | Notes |
+|--------|------|-------|
+| `process-ptochoprodromos.ts` | Ptochoprodromika | Strips every-5th-line numbers, splits on 2+ blank lines |
+| `process-huangdi.ts` | Huang Di Nei Jing | Strips `===` separators and section headers, extracts content paragraphs |
+| `process-chuanxilu.ts` | Chuan Xi Lu | Handles dialogue format |
+| `process-lombards.ts` | Historia Langobardorum | Latin chronicle, paragraph splitting |
+
+### Key Schema Notes
+
+- `texts.textType`: "prose" (default) or "poetry" — controls InterlinearViewer display mode
+- `texts.compositionYear`: integer, can be negative for BCE dates (e.g., -200 for 200 BCE)
+- `texts.compositionEra`: human-readable era string
+- `discussion_threads` / `discussion_posts`: threaded per-chapter discussions
+- All translations go through `translations` → `translation_versions` (append-only version chain)
+
+### Translation Prompts
+
+Located in `src/server/translation/prompts.ts`. Language-specific:
+- **zh**: Neo-Confucian terminology guidance (理=principle, 氣=vital force, etc.)
+- **grc**: Medieval/Byzantine Greek register
+- **la**: Latin with genre-appropriate register
+
+Note: The Chinese prompt is tuned for Neo-Confucian texts. Medical texts (Huang Di Nei Jing) and other genres work adequately but could benefit from text-specific prompts in the future.
+
+### GitHub Repository
+
+`https://github.com/translorentz/translation-wiki.git` — deployed to Vercel
