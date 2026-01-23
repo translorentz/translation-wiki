@@ -578,5 +578,153 @@ Hosting (growing traffic):
 - Total: ~$40/month
 
 AI Translation (one-time):
-- Zhu Zi Yu Lei full: ~$5-15 (Claude Sonnet)
-- De Ceremoniis full: ~$10-30 (Claude Sonnet)
+- Zhu Zi Yu Lei full: ~$0.50-2 (DeepSeek V3.2)
+- De Ceremoniis full: ~$1-3 (DeepSeek V3.2)
+
+================================================================================
+## DEPLOYING TO VERCEL — Step-by-Step Guide
+================================================================================
+
+Prerequisites:
+- Code pushed to GitHub (https://github.com/translorentz/translation-wiki.git)
+- Neon database already configured and seeded
+- A Vercel account (free tier is sufficient)
+
+### Step D.1: Import the repository on Vercel
+
+1. Go to https://vercel.com and sign in (or create account with GitHub)
+2. Click "Add New..." → "Project"
+3. Under "Import Git Repository", find `translorentz/translation-wiki`
+   - If it doesn't appear, click "Adjust GitHub App Permissions" to grant
+     Vercel access to the repository
+4. Click "Import"
+
+### Step D.2: Configure project settings
+
+On the "Configure Project" screen:
+- Framework Preset: should auto-detect "Next.js" (leave as-is)
+- Root Directory: leave as "./" (default)
+- Build Command: leave as `next build` (default)
+- Output Directory: leave as default
+- Install Command: leave as default (Vercel auto-detects pnpm from lockfile)
+- Node.js Version: 20.x (default, compatible)
+
+### Step D.3: Set environment variables
+
+Before clicking "Deploy", expand "Environment Variables" and add:
+
+┌──────────────────┬─────────────────────────────────────────────────────────┐
+│ Name             │ Value                                                   │
+├──────────────────┼─────────────────────────────────────────────────────────┤
+│ DATABASE_URL     │ Your Neon connection string                             │
+│                  │ (same value from .env.local, looks like:                │
+│                  │  postgresql://user:pass@ep-xxx.region.aws.neon.tech/db   │
+│                  │  ?sslmode=require)                                      │
+├──────────────────┼─────────────────────────────────────────────────────────┤
+│ AUTH_SECRET      │ Generate a random secret. Run in terminal:              │
+│                  │   openssl rand -base64 32                               │
+│                  │ Paste the output as the value.                          │
+├──────────────────┼─────────────────────────────────────────────────────────┤
+│ AUTH_URL         │ https://translation-wiki.vercel.app                     │
+│                  │ (or your custom domain if you have one)                 │
+│                  │ NOTE: Update this later if you add a custom domain.     │
+├──────────────────┼─────────────────────────────────────────────────────────┤
+│ DEEPSEEK_API_KEY │ Your DeepSeek API key from platform.deepseek.com       │
+│                  │ (Only needed if you plan to run translations via the    │
+│                  │  app in the future. Can be omitted for now.)            │
+└──────────────────┴─────────────────────────────────────────────────────────┘
+
+IMPORTANT: Set all variables for "Production", "Preview", and "Development"
+environments (the checkboxes next to each variable).
+
+### Step D.4: Deploy
+
+Click "Deploy". Vercel will:
+1. Clone the repository
+2. Install dependencies (pnpm install)
+3. Run `next build`
+4. Deploy to a .vercel.app URL
+
+First deploy typically completes in 1-2 minutes.
+
+### Step D.5: Verify the deployment
+
+Once deployed, Vercel gives you a URL like:
+  https://translation-wiki.vercel.app
+
+Check the following pages:
+- Home page: https://translation-wiki.vercel.app/
+- Chinese text: https://translation-wiki.vercel.app/zh/zhu-xi/zhuziyulei/chapter-1
+- Greek text: https://translation-wiki.vercel.app/grc/constantine-vii/ceremonialis/chapter-1
+- Login: https://translation-wiki.vercel.app/login
+- Register: https://translation-wiki.vercel.app/register
+
+If pages load with text data, the DATABASE_URL is working correctly.
+If login/register work, AUTH_SECRET and AUTH_URL are configured correctly.
+
+### Step D.6: Custom domain (optional)
+
+1. In Vercel dashboard → your project → Settings → Domains
+2. Click "Add Domain"
+3. Enter your domain (e.g., translationwiki.org)
+4. Vercel will provide DNS records to add:
+   - For apex domain: A record → 76.76.21.21
+   - For www subdomain: CNAME → cname.vercel-dns.com
+5. Add these records at your domain registrar (Namecheap, Cloudflare, etc.)
+6. Wait for DNS propagation (usually 5-30 minutes)
+7. Vercel automatically provisions SSL (HTTPS)
+8. UPDATE the AUTH_URL environment variable to https://yourdomain.com
+
+### Step D.7: Automatic deployments
+
+After initial setup, every `git push origin main` will trigger a new deployment.
+Vercel also creates "Preview Deployments" for pull requests.
+
+To redeploy manually: Vercel dashboard → Deployments → "Redeploy"
+
+### Troubleshooting
+
+Build fails with "DATABASE_URL is required":
+  → Ensure DATABASE_URL is set in Vercel environment variables
+
+Pages load but show no data:
+  → Verify DATABASE_URL points to the Neon database with seeded data
+  → The database must have schema applied (pnpm db:push was run earlier)
+
+Auth doesn't work (redirect loops, 500 errors):
+  → Check AUTH_SECRET is set (must not be empty)
+  → Check AUTH_URL matches the actual deployment URL exactly
+  → Ensure NEXTAUTH_URL is NOT set (use AUTH_URL instead for NextAuth v5)
+
+500 errors on chapter pages:
+  → Check Vercel Function Logs (dashboard → project → Logs tab)
+  → Most likely a DATABASE_URL or connection issue
+
+Custom domain shows "DNS not configured":
+  → Wait 30 minutes for DNS propagation
+  → Verify DNS records match what Vercel specified
+
+================================================================================
+## POST-DEPLOYMENT: Adding More Translations
+================================================================================
+
+To translate more chapters after deployment:
+
+1. On your local machine, ensure .env.local has DATABASE_URL and DEEPSEEK_API_KEY
+2. Run the batch translation script:
+
+   # Translate specific chapters of Zhu Zi Yu Lei
+   pnpm translate:batch -- --text zhuziyulei --start 4 --end 20
+
+   # Translate specific chapters of De Ceremoniis
+   pnpm translate:batch -- --text ceremonialis --start 2 --end 7
+
+3. Translations are written directly to the Neon database
+4. The deployed site will show new translations immediately (no redeployment needed)
+
+Current translation status:
+- Zhu Zi Yu Lei: Chapters 1-3 translated (of 140)
+- De Ceremoniis: Chapters 1, 3 translated (of 7)
+
+Translation API: DeepSeek V3.2 (deepseek-chat)
+Cost estimate for remaining chapters: ~$1-3 total
