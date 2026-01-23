@@ -1,0 +1,165 @@
+# Scratch Notes — Translation Wiki Project Planning
+
+## Research Summary
+
+### Tech Stack Confirmed
+- Next.js 15+ (App Router, Turbopack) — `npx create-next-app@latest --typescript --tailwind --eslint --app --src-dir`
+- tRPC v11 with @trpc/tanstack-react-query — fetch adapter for App Router API routes
+- Drizzle ORM — relations v1 API (stable), v2 in beta
+- NextAuth.js v5 (Auth.js) — credentials provider + OAuth, JWT strategy
+- Shadcn UI — `npx shadcn@latest init` then add components as needed
+- Vitest + @testing-library/react — jsdom environment, vite-tsconfig-paths
+- PostgreSQL — Neon (free tier: 0.5GB, 190 compute hours) or local Docker
+
+### Key Technical Decisions
+
+1. **Package manager:** pnpm recommended (better shadcn compatibility with React 19)
+2. **tRPC v11 pattern:**
+   - /trpc folder with init.ts, router.ts, client.tsx, server.tsx
+   - fetchRequestHandler at /api/trpc/[trpc]/route.ts
+   - createCaller for server components (no HTTP overhead)
+   - prefetch + HydrateClient for streaming
+3. **Auth pattern:**
+   - auth.config.ts (providers) + auth.ts (adapter + session strategy)
+   - app/api/auth/[...nextauth]/route.ts exports { GET, POST }
+   - JWT strategy (no database session table needed initially)
+   - Middleware for route protection
+4. **Drizzle pattern:**
+   - pgTable definitions with explicit column types
+   - relations() for ORM-level relationships
+   - .references() for FK constraints
+   - drizzle-kit for migrations (drizzle.config.ts)
+5. **Testing:**
+   - Vitest + jsdom for unit/component tests
+   - Playwright for E2E (async server components can't be tested with Vitest)
+   - vitest.config.mts at root
+
+### Source Text Details
+
+**Zhu Zi Yu Lei (朱子語類)**
+- 140 chapters (juan/卷)
+- URN: ctp:zhuzi-yulei
+- Individual chapters: ctp:zhuzi-yulei/1 through /140
+- Each chapter returns `fulltext` (ordered paragraph list)
+- Topics: metaphysics, learning, Four Books commentary, classics, history, misc
+- API requires authentication for subsections enumeration
+- Python `ctext` package available, or raw JSON API calls
+
+**De Ceremoniis**
+- 2 books, ~180+ chapters total
+- Internet Archive: archive.org/details/bub_gb_OFpFAAAAYAAJ (Reiske edition)
+- Greek text + Latin translation in same edition
+- OCR quality varies — polytonic Greek diacritics are problematic
+- Princeton Byzantine Translations may have partial cleaner text
+- Moffatt/Tall 2012 English translation is under copyright — cannot use
+- Need AI-generated English translation from the Greek
+
+### Data Model Notes
+
+Content storage: JSON column with paragraph arrays
+- Source: { paragraphs: [{ index: 0, text: "..." }, ...] }
+- Translation mirrors with matching indices
+- This enables paragraph-aligned rendering in InterlinearViewer
+- For Chinese: each "paragraph" might be a single statement or exchange
+- For Greek: each "paragraph" might be a section or stanza
+
+Versioning:
+- TranslationVersion is append-only
+- Each version stores full content (not diffs) — simplifies reading, costs more storage
+- Diffs computed on-the-fly for display using a library like `diff` or `jsdiff`
+- currentVersionId on Translation points to latest
+
+Endorsements:
+- One per user per version (unique constraint)
+- Count aggregated for display
+- Version with most endorsements = "community preferred"
+
+### Interlinear Viewer Design Notes
+
+Core concept: CSS Grid or Flexbox table with two columns
+- Each row = one ParagraphPair component
+- Left cell: source text (potentially with original script font)
+- Right cell: translation text
+- Rows auto-height to tallest cell (natural CSS grid behaviour)
+- Synchronized scroll NOT needed if using row-based alignment
+- Mobile: stack vertically (source above, translation below)
+- Font considerations:
+  - Chinese: Noto Serif CJK or Source Han Serif
+  - Greek: Noto Serif with polytonic support
+  - Latin: any good serif
+  - English translation: system font stack or Inter
+
+### Deployment Architecture
+
+MVP path (Vercel + Neon):
+- Vercel Hobby (free) handles Next.js deployment
+- Neon free tier for PostgreSQL
+- Vercel automatically builds on git push
+- Environment variables in Vercel dashboard
+- Custom domain via Vercel DNS or external registrar
+
+Production path (self-hosted):
+- Docker Compose: Next.js container + PostgreSQL container
+- Caddy or nginx as reverse proxy with auto-SSL
+- VPS: Hetzner CAX11 (€3.79/mo, ARM) or DigitalOcean $6/mo
+- Backups: pg_dump cron to object storage
+
+### Implementation Order (Dependencies)
+
+Phase 1 must come first: schema, auth, Docker compose
+Phase 2 can parallel with Phase 3 partially
+Phase 3 depends on seeded data (Phase 2)
+Phase 4 depends on Phase 3 (reading UI exists)
+Phase 5 depends on Phase 4 (versions exist to endorse)
+Phase 6 can happen any time after Phase 2
+Phase 7 can happen after Phase 3
+Phase 8 can happen after Phase 1 (deploy empty, then iterate)
+
+Actually, earliest useful deployment is after Phase 3 — reading works.
+
+### Risks and Mitigations
+
+1. ctext.org rate limits / auth requirements
+   - Mitigation: create account, cache aggressively, store raw in data/raw/
+   - Fallback: manually download chapter pages and parse HTML
+
+2. OCR quality of De Ceremoniis
+   - Mitigation: Princeton Byzantine Translations for partial clean text
+   - Mitigation: AI-assisted cleanup of OCR output
+   - Mitigation: start with a few chapters, iterate
+
+3. Paragraph alignment between source and translation
+   - Mitigation: editor enforces paragraph count matching
+   - Mitigation: allow "empty" paragraphs for padding
+
+4. Polytonic Greek rendering
+   - Mitigation: test with Noto Serif early, specify @font-face
+   - Mitigation: Unicode normalization (NFC) on input
+
+5. Scale of Zhu Zi Yu Lei (140 chapters, potentially thousands of paragraphs)
+   - Mitigation: paginate by chapter (already planned)
+   - Mitigation: lazy-load translation versions
+
+### Commands Cheat Sheet
+
+```bash
+# Project setup
+pnpm create next-app@latest translation-wiki --typescript --tailwind --eslint --app --src-dir
+cd translation-wiki
+pnpm add @trpc/server @trpc/client @trpc/tanstack-react-query @tanstack/react-query zod superjson drizzle-orm postgres next-auth@beta
+pnpm add -D drizzle-kit @types/node vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom vite-tsconfig-paths playwright @playwright/test
+npx shadcn@latest init
+npx shadcn@latest add button card input label table tabs dialog dropdown-menu
+
+# Database
+docker compose up -d  # starts local PostgreSQL
+pnpm drizzle-kit generate  # generate migration from schema
+pnpm drizzle-kit migrate  # apply migration
+pnpm drizzle-kit studio  # GUI at localhost:4983
+
+# Development
+pnpm dev  # starts Next.js dev server with Turbopack
+pnpm build  # production build
+pnpm test  # vitest in watch mode
+pnpm test run  # vitest single run
+```
