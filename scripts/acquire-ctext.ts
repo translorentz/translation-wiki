@@ -4,7 +4,7 @@
  * Usage: pnpm acquire:ctext [--start N] [--end N] [--delay MS]
  *
  * The API returns JSON: { title: string, fulltext: string[] }
- * Each chapter is saved as data/raw/zhuzi-yulei/chapter-NNN.json
+ * Each chapter is saved as data/raw/zhuziyulei/chapter-NNN.json
  */
 
 import fs from "fs";
@@ -13,7 +13,7 @@ import path from "path";
 const API_BASE = "https://api.ctext.org/gettext";
 const TEXT_URN = "ctp:zhuzi-yulei";
 const TOTAL_CHAPTERS = 140;
-const OUTPUT_DIR = path.resolve("data/raw/zhuzi-yulei");
+const OUTPUT_DIR = path.resolve("data/raw/zhuziyulei");
 const DEFAULT_DELAY_MS = 2000; // 2 seconds between requests to respect rate limits
 
 interface CtextResponse {

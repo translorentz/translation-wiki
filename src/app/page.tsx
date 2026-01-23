@@ -9,7 +9,7 @@ const FEATURED_TEXTS = [
     author: "Zhu Xi (朱熹)",
     description:
       "Classified Conversations of Master Zhu — 140 chapters of philosophical discussions from Song Dynasty China.",
-    href: "/zh/zhu-xi/zhuzi-yulei",
+    href: "/zh/zhu-xi/zhuziyulei",
     language: "Classical Chinese",
   },
   {
@@ -18,7 +18,7 @@ const FEATURED_TEXTS = [
     author: "Constantine VII Porphyrogennetos",
     description:
       "On the Ceremonies of the Byzantine Court — a detailed account of imperial protocol from the 10th century.",
-    href: "/grc/constantine-vii/de-ceremoniis",
+    href: "/grc/constantine-vii/ceremonialis",
     language: "Ancient Greek",
   },
 ];

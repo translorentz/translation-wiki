@@ -1,7 +1,7 @@
 /**
  * Batch translates untranslated chapters using the Claude API.
  *
- * Usage: pnpm translate:batch [--text zhuzi-yulei|de-ceremoniis] [--start N] [--end N] [--delay MS]
+ * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS]
  *
  * Prerequisites:
  * - Database seeded with chapters (pnpm db:seed)

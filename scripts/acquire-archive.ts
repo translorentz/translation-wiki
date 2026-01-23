@@ -16,8 +16,8 @@ import path from "path";
 const ITEM_ID = "bub_gb_OFpFAAAAYAAJ";
 const TEXT_FILENAME = `${ITEM_ID}_djvu.txt`;
 const DOWNLOAD_URL = `https://archive.org/download/${ITEM_ID}/${TEXT_FILENAME}`;
-const OUTPUT_DIR = path.resolve("data/raw/de-ceremoniis");
-const OUTPUT_FILE = path.join(OUTPUT_DIR, "full-text.txt");
+const OUTPUT_DIR = path.resolve("data/raw/ceremonialis");
+const OUTPUT_FILE = path.join(OUTPUT_DIR, "ceremonialis.txt");
 
 // Also try to get the metadata for reference
 const METADATA_URL = `https://archive.org/metadata/${ITEM_ID}`;

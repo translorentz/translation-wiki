@@ -71,24 +71,24 @@ const TEXTS = [
   {
     title: "Zhu Zi Yu Lei",
     titleOriginalScript: "朱子語類",
-    slug: "zhuzi-yulei",
+    slug: "zhuziyulei",
     languageCode: "zh",
     authorSlug: "zhu-xi",
     description:
       "Classified Conversations of Master Zhu — a massive compendium of 140 chapters recording the philosophical discussions of Zhu Xi with his students.",
     sourceUrl: "https://ctext.org/zhuzi-yulei",
-    processedDir: "data/processed/zhuzi-yulei",
+    processedDir: "data/processed/zhuziyulei",
   },
   {
     title: "De Ceremoniis Aulae Byzantinae",
     titleOriginalScript: "Περὶ τῆς Βασιλείου Τάξεως",
-    slug: "de-ceremoniis",
+    slug: "ceremonialis",
     languageCode: "grc",
     authorSlug: "constantine-vii",
     description:
       "On the Ceremonies of the Byzantine Court — a detailed account of the ceremonies and protocol of the Byzantine imperial court, compiled in the 10th century.",
     sourceUrl: "https://archive.org/details/bub_gb_OFpFAAAAYAAJ",
-    processedDir: "data/processed/de-ceremoniis",
+    processedDir: "data/processed/ceremonialis",
   },
 ] as const;
 

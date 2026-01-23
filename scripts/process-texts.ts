@@ -2,7 +2,7 @@
  * Processes raw text files into structured paragraph-aligned JSON format
  * suitable for database seeding.
  *
- * Usage: pnpm process:texts [--text zhuzi-yulei|de-ceremoniis]
+ * Usage: pnpm process:texts [--text zhuziyulei|ceremonialis]
  *
  * Input:  data/raw/{text}/
  * Output: data/processed/{text}/chapter-NNN.json
@@ -24,11 +24,6 @@ import path from "path";
 // Zhu Zi Yu Lei processing
 // ============================================================
 
-interface CtextRaw {
-  title: string;
-  fulltext: string[];
-}
-
 interface ProcessedChapter {
   chapterNumber: number;
   title: string;
@@ -38,21 +33,25 @@ interface ProcessedChapter {
 }
 
 function processZhuziYulei(): void {
-  const rawDir = path.resolve("data/raw/zhuzi-yulei");
-  const outDir = path.resolve("data/processed/zhuzi-yulei");
+  const rawDir = path.resolve("data/raw/zhuziyulei");
+  const outDir = path.resolve("data/processed/zhuziyulei");
 
   if (!fs.existsSync(rawDir)) {
     console.error(`Raw directory not found: ${rawDir}`);
-    console.error("Run 'pnpm acquire:ctext' first.");
     return;
   }
 
   fs.mkdirSync(outDir, { recursive: true });
 
+  // Support both chapter_N.txt and chapter-NNN.json formats
   const files = fs
     .readdirSync(rawDir)
-    .filter((f) => f.startsWith("chapter-") && f.endsWith(".json"))
-    .sort();
+    .filter((f) => f.startsWith("chapter") && (f.endsWith(".txt") || f.endsWith(".json")))
+    .sort((a, b) => {
+      const numA = parseInt(a.replace(/\D/g, ""));
+      const numB = parseInt(b.replace(/\D/g, ""));
+      return numA - numB;
+    });
 
   if (files.length === 0) {
     console.error("No chapter files found in raw directory.");
@@ -64,23 +63,32 @@ function processZhuziYulei(): void {
   let totalParagraphs = 0;
 
   for (const file of files) {
-    const chapterNumber = parseInt(file.replace("chapter-", "").replace(".json", ""));
-    const raw: CtextRaw = JSON.parse(
-      fs.readFileSync(path.join(rawDir, file), "utf-8")
-    );
+    const chapterNumber = parseInt(file.replace(/\D/g, ""));
+    let title: string;
+    let rawParagraphs: string[];
+
+    if (file.endsWith(".txt")) {
+      // Plain text format: first line is title, subsequent lines are paragraphs
+      const content = fs.readFileSync(path.join(rawDir, file), "utf-8");
+      const lines = content.split("\n");
+      title = lines[0]?.trim() ?? `Chapter ${chapterNumber}`;
+      rawParagraphs = lines.slice(1);
+    } else {
+      // JSON format from ctext API: { title, fulltext: string[] }
+      const raw = JSON.parse(fs.readFileSync(path.join(rawDir, file), "utf-8"));
+      title = raw.title;
+      rawParagraphs = raw.fulltext;
+    }
 
     // Filter out empty paragraphs and trim whitespace
-    const paragraphs = raw.fulltext
-      .map((text, index) => ({
-        index,
-        text: text.trim(),
-      }))
-      .filter((p) => p.text.length > 0)
-      .map((p, i) => ({ index: i, text: p.text })); // Re-index after filtering
+    const paragraphs = rawParagraphs
+      .map((text) => text.trim())
+      .filter((text) => text.length > 0)
+      .map((text, i) => ({ index: i, text }));
 
     const processed: ProcessedChapter = {
       chapterNumber,
-      title: raw.title,
+      title,
       sourceContent: { paragraphs },
     };
 
@@ -89,7 +97,7 @@ function processZhuziYulei(): void {
     totalParagraphs += paragraphs.length;
 
     process.stdout.write(
-      `  [${chapterNumber}] ${raw.title} — ${paragraphs.length} paragraphs\n`
+      `  [${chapterNumber}] ${title} — ${paragraphs.length} paragraphs\n`
     );
   }
 
@@ -101,13 +109,12 @@ function processZhuziYulei(): void {
 // ============================================================
 
 function processDeCeremoniis(): void {
-  const rawDir = path.resolve("data/raw/de-ceremoniis");
-  const outDir = path.resolve("data/processed/de-ceremoniis");
-  const rawFile = path.join(rawDir, "full-text.txt");
+  const rawDir = path.resolve("data/raw/ceremonialis");
+  const outDir = path.resolve("data/processed/ceremonialis");
+  const rawFile = path.join(rawDir, "ceremonialis.txt");
 
   if (!fs.existsSync(rawFile)) {
     console.error(`Raw file not found: ${rawFile}`);
-    console.error("Run 'pnpm acquire:archive' first.");
     return;
   }
 
@@ -116,30 +123,82 @@ function processDeCeremoniis(): void {
   const fullText = fs.readFileSync(rawFile, "utf-8");
   const lines = fullText.split("\n");
 
-  console.log(`Processing De Ceremoniis (${lines.length} lines)...\n`);
+  // Filter to non-empty lines
+  const contentLines = lines
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
 
-  // The Reiske edition OCR is complex. This is a best-effort structural parser.
-  // The text has page breaks (form feeds or blank line clusters) and chapter headings.
-  // Greek text and Latin text appear on alternating pages or sections.
-  //
-  // Strategy: Split into pages, then group pages into chapters.
-  // Chapter headings in the Reiske edition typically contain "CAPUT" or numbered sections.
+  console.log(`Processing De Ceremoniis (${contentLines.length} non-empty lines)...\n`);
 
-  // Split into pages (separated by multiple blank lines or form feed characters)
-  const pages = splitIntoPages(lines);
-  console.log(`  Found ${pages.length} pages\n`);
+  // Structure: first line is the file title/header.
+  // Lines starting with a number pattern like "1.3" or "2.41" are chapter/section markers
+  // (book.page reference from the Reiske edition). Each such line starts a new chapter.
+  // All other lines are paragraphs within the current chapter.
 
-  // Attempt to identify chapter boundaries
-  const chapters = identifyChapters(pages);
+  const chapterMarkerPattern = /^(\d+)\.(\d+)\s/;
+
+  interface ChapterAccum {
+    number: number;
+    title: string;
+    paragraphs: string[];
+  }
+
+  const chapters: ChapterAccum[] = [];
+  let current: ChapterAccum | null = null;
+
+  for (let i = 0; i < contentLines.length; i++) {
+    const line = contentLines[i];
+
+    if (i === 0) {
+      // Skip the file header line
+      continue;
+    }
+
+    const match = line.match(chapterMarkerPattern);
+    if (match) {
+      // Save previous chapter if it has content
+      if (current && current.paragraphs.length > 0) {
+        chapters.push(current);
+      }
+      const titleText = cleanTitle(line);
+      current = {
+        number: 0, // assigned after collection
+        title: titleText,
+        paragraphs: [],
+      };
+    } else if (current) {
+      current.paragraphs.push(cleanText(line));
+    } else {
+      // Lines before the first chapter marker (proem/introduction)
+      current = {
+        number: 0,
+        title: cleanTitle(line.slice(0, 100)),
+        paragraphs: [cleanText(line)],
+      };
+    }
+  }
+
+  // Save last chapter
+  if (current && current.paragraphs.length > 0) {
+    chapters.push(current);
+  }
+
+  // Assign sequential chapter numbers
+  for (let i = 0; i < chapters.length; i++) {
+    chapters[i].number = i + 1;
+  }
+
   console.log(`  Identified ${chapters.length} chapters\n`);
 
   let totalParagraphs = 0;
 
   for (const chapter of chapters) {
+    const paragraphs = chapter.paragraphs.map((text, i) => ({ index: i, text }));
+
     const processed: ProcessedChapter = {
       chapterNumber: chapter.number,
       title: chapter.title,
-      sourceContent: { paragraphs: chapter.paragraphs },
+      sourceContent: { paragraphs },
     };
 
     const outFile = path.join(
@@ -147,137 +206,14 @@ function processDeCeremoniis(): void {
       `chapter-${String(chapter.number).padStart(3, "0")}.json`
     );
     fs.writeFileSync(outFile, JSON.stringify(processed, null, 2), "utf-8");
-    totalParagraphs += chapter.paragraphs.length;
+    totalParagraphs += paragraphs.length;
 
     process.stdout.write(
-      `  [${chapter.number}] ${chapter.title} — ${chapter.paragraphs.length} paragraphs\n`
+      `  [${chapter.number}] ${chapter.title.slice(0, 60)} — ${paragraphs.length} paragraphs\n`
     );
   }
 
   console.log(`\nDe Ceremoniis: ${chapters.length} chapters, ${totalParagraphs} total paragraphs`);
-}
-
-function splitIntoPages(lines: string[]): string[][] {
-  const pages: string[][] = [];
-  let currentPage: string[] = [];
-
-  let blankLineCount = 0;
-  for (const line of lines) {
-    if (line.trim() === "" || line === "\f") {
-      blankLineCount++;
-      if (blankLineCount >= 4 && currentPage.length > 0) {
-        pages.push(currentPage);
-        currentPage = [];
-        blankLineCount = 0;
-      }
-    } else {
-      blankLineCount = 0;
-      currentPage.push(line);
-    }
-  }
-
-  if (currentPage.length > 0) {
-    pages.push(currentPage);
-  }
-
-  return pages;
-}
-
-interface RawChapter {
-  number: number;
-  title: string;
-  paragraphs: { index: number; text: string }[];
-}
-
-function identifyChapters(pages: string[][]): RawChapter[] {
-  const chapters: RawChapter[] = [];
-  let currentChapter: { title: string; lines: string[] } | null = null;
-  let chapterNumber = 0;
-
-  // Patterns that indicate a new chapter/section in the Reiske edition
-  const chapterPattern = /^(CAPUT|CAP\.|ΚΕΦΑΛΑΙΟΝ|Περὶ|De\s)/i;
-  const romanNumeralPattern = /^[IVXLCDM]+[\.\s]/;
-
-  for (const page of pages) {
-    const pageText = page.join(" ").trim();
-
-    // Check if this page starts a new chapter
-    const firstLine = page[0]?.trim() ?? "";
-    const isNewChapter =
-      chapterPattern.test(firstLine) ||
-      (romanNumeralPattern.test(firstLine) && firstLine.length < 100);
-
-    if (isNewChapter) {
-      // Save previous chapter
-      if (currentChapter && currentChapter.lines.length > 0) {
-        chapterNumber++;
-        chapters.push(buildChapter(chapterNumber, currentChapter.title, currentChapter.lines));
-      }
-      currentChapter = {
-        title: cleanTitle(firstLine),
-        lines: page.slice(1), // Rest of the page after title
-      };
-    } else if (currentChapter) {
-      currentChapter.lines.push(...page);
-    } else {
-      // Before first chapter detected — treat as chapter 1
-      currentChapter = {
-        title: cleanTitle(firstLine),
-        lines: page,
-      };
-    }
-  }
-
-  // Save last chapter
-  if (currentChapter && currentChapter.lines.length > 0) {
-    chapterNumber++;
-    chapters.push(buildChapter(chapterNumber, currentChapter.title, currentChapter.lines));
-  }
-
-  // If no chapters were identified, just split into fixed-size chunks
-  if (chapters.length === 0 && pages.length > 0) {
-    console.warn("  Warning: Could not identify chapter structure. Splitting by page groups.");
-    const allLines = pages.flat();
-    const chunkSize = 50; // lines per "chapter"
-    for (let i = 0; i < allLines.length; i += chunkSize) {
-      chapterNumber++;
-      const chunk = allLines.slice(i, i + chunkSize);
-      chapters.push(buildChapter(chapterNumber, `Section ${chapterNumber}`, chunk));
-    }
-  }
-
-  return chapters;
-}
-
-function buildChapter(number: number, title: string, lines: string[]): RawChapter {
-  // Group consecutive non-empty lines into paragraphs
-  const paragraphs: { index: number; text: string }[] = [];
-  let currentParagraph: string[] = [];
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed === "") {
-      if (currentParagraph.length > 0) {
-        paragraphs.push({
-          index: paragraphs.length,
-          text: cleanText(currentParagraph.join(" ")),
-        });
-        currentParagraph = [];
-      }
-    } else {
-      currentParagraph.push(trimmed);
-    }
-  }
-
-  // Don't forget the last paragraph
-  if (currentParagraph.length > 0) {
-    paragraphs.push({
-      index: paragraphs.length,
-      text: cleanText(currentParagraph.join(" ")),
-    });
-  }
-
-  return { number, title, paragraphs };
 }
 
 function cleanTitle(title: string): string {
@@ -308,9 +244,9 @@ function main() {
   const textFlag = args.indexOf("--text");
   const textName = textFlag >= 0 ? args[textFlag + 1] : textArg;
 
-  if (textName === "zhuzi-yulei") {
+  if (textName === "zhuziyulei") {
     processZhuziYulei();
-  } else if (textName === "de-ceremoniis") {
+  } else if (textName === "ceremonialis") {
     processDeCeremoniis();
   } else {
     // Process both
