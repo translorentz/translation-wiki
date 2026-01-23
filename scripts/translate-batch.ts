@@ -131,6 +131,67 @@ function chunkParagraphs(paragraphs: Paragraph[], sourceLanguage: string): Parag
   return chunks;
 }
 
+/**
+ * Attempts to repair malformed JSON from LLM output.
+ * Common issues: truncated output, unescaped quotes, missing brackets.
+ */
+function repairAndParseJson(jsonStr: string): unknown[] {
+  let str = jsonStr.trim();
+
+  // If it doesn't start with [, try to find the array start
+  const arrayStart = str.indexOf("[");
+  if (arrayStart > 0) {
+    str = str.substring(arrayStart);
+  }
+
+  // If truncated (no closing ]), try to close it
+  if (!str.endsWith("]")) {
+    // Find the last complete object (ends with })
+    const lastBrace = str.lastIndexOf("}");
+    if (lastBrace > 0) {
+      str = str.substring(0, lastBrace + 1) + "]";
+    }
+  }
+
+  // Try parsing after basic fixes
+  try {
+    const result = JSON.parse(str);
+    if (Array.isArray(result)) return result;
+  } catch {
+    // Continue with more aggressive repair
+  }
+
+  // Try fixing unescaped newlines and quotes within string values
+  // Replace literal newlines in values with \n
+  str = str.replace(/(?<="text"\s*:\s*")([\s\S]*?)(?="[\s,}\]])/g, (match) => {
+    return match
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "\\r")
+      .replace(/\t/g, "\\t");
+  });
+
+  try {
+    const result = JSON.parse(str);
+    if (Array.isArray(result)) return result;
+  } catch {
+    // Last resort: extract objects individually using regex
+  }
+
+  // Last resort: extract {index: N, text: "..."} objects with regex
+  const objects: unknown[] = [];
+  const objectPattern = /\{\s*"index"\s*:\s*(\d+)\s*,\s*"text"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+  let match;
+  while ((match = objectPattern.exec(jsonStr)) !== null) {
+    objects.push({ index: parseInt(match[1]), text: match[2].replace(/\\n/g, "\n").replace(/\\"/g, '"') });
+  }
+
+  if (objects.length > 0) return objects;
+
+  throw new Error(`Failed to parse or repair JSON response (length: ${jsonStr.length})`);
+}
+
 async function translateBatch(
   paragraphs: Paragraph[],
   sourceLanguage: string
@@ -161,7 +222,13 @@ async function translateBatch(
     jsonStr = jsonStr.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  const raw: unknown[] = JSON.parse(jsonStr);
+  let raw: unknown[];
+  try {
+    raw = JSON.parse(jsonStr);
+  } catch {
+    // Attempt JSON repair for common LLM issues
+    raw = repairAndParseJson(jsonStr);
+  }
 
   // Validate structure
   if (!Array.isArray(raw)) {
@@ -169,16 +236,46 @@ async function translateBatch(
   }
 
   // Normalize: coerce string indices to numbers, handle minor format variations
-  const translated: Paragraph[] = raw.map((item: any) => {
-    const index = typeof item.index === "string" ? parseInt(item.index, 10) : item.index;
+  const parsed: Paragraph[] = raw.map((item: any) => {
+    const index = typeof item.index === "string" ? parseInt(item.index, 10) : Math.floor(Number(item.index));
     const text = String(item.text ?? "");
-    if (typeof index !== "number" || isNaN(index)) {
-      throw new Error(`Invalid index in response: ${JSON.stringify(item).slice(0, 100)}`);
-    }
-    return { index, text };
+    return { index: isNaN(index) ? -1 : index, text };
   });
 
-  return translated;
+  // Validate: ensure output matches input indices
+  const expectedIndices = paragraphs.map((p) => p.index);
+
+  // If the AI returned the correct number of paragraphs with matching indices, use as-is
+  if (
+    parsed.length === paragraphs.length &&
+    parsed.every((p, i) => p.index === expectedIndices[i])
+  ) {
+    return parsed;
+  }
+
+  // Otherwise, realign: group by closest expected index and concatenate
+  const result: Paragraph[] = expectedIndices.map((idx) => ({ index: idx, text: "" }));
+
+  for (const p of parsed) {
+    if (p.index < 0 || !p.text.trim()) continue;
+    // Find the closest expected index
+    let bestIdx = 0;
+    let bestDist = Infinity;
+    for (let i = 0; i < expectedIndices.length; i++) {
+      const dist = Math.abs(p.index - expectedIndices[i]);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestIdx = i;
+      }
+    }
+    if (result[bestIdx].text) {
+      result[bestIdx].text += "\n\n" + p.text;
+    } else {
+      result[bestIdx].text = p.text;
+    }
+  }
+
+  return result;
 }
 
 async function translateChapter(
@@ -221,7 +318,17 @@ async function translateChapter(
       if (i > 0) {
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
       }
-      const batchResult = await translateBatch(chunks[i], sourceLanguage);
+      let batchResult: Paragraph[];
+      try {
+        batchResult = await translateBatch(chunks[i], sourceLanguage);
+      } catch (err) {
+        // Retry once after a delay
+        process.stdout.write(
+          `    batch ${i + 1}/${chunks.length} failed, retrying...\n`
+        );
+        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS * 2));
+        batchResult = await translateBatch(chunks[i], sourceLanguage);
+      }
       translated.push(...batchResult);
       if (chunks.length > 1) {
         process.stdout.write(

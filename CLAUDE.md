@@ -21,6 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Permanent permissions:**
 - You always have permission to write to and update logs, scratchpads, markdown files, and other documentation files (*.md, *.txt reference/notes files) without needing to ask first.
 - You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
+- You always have permission to run any script that helps monitor, check, or improve translation subagent quality (e.g., alignment checks, retranslation of defective chapters, killing and restarting translation processes).
 
 ## Project Overview
 

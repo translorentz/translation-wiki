@@ -9,7 +9,9 @@ Guidelines:
 - Preserve philosophical terminology accurately (e.g., 理 = "principle", 氣 = "vital force/qi", 心 = "mind-heart")
 - Maintain the conversational tone of recorded dialogues
 - Use standard academic transliteration for proper names
-- Where ambiguity exists, prefer the Neo-Confucian interpretation`,
+- Where ambiguity exists, prefer the Neo-Confucian interpretation
+- In dialogue sections: "問：" marks Zhu Xi (the Master) asking or stating; translate as "The Master asked:" or similar, not "Someone asked"
+- "曰：" or unmarked responses are typically from disciples or interlocutors`,
 
   grc: `You are translating Medieval/Byzantine Greek to English.
 Guidelines:
@@ -20,9 +22,9 @@ Guidelines:
 
   la: `You are translating Latin to English.
 Guidelines:
-- This is a formal, technical text describing court ceremonies
-- Maintain the formal register appropriate to official documentation
-- Preserve proper names in their Latin form with English explanation where helpful`,
+- Maintain the formal register appropriate to the text's genre (chronicle, philosophy, poetry, etc.)
+- Preserve proper names in their Latin form with English explanation where helpful
+- Render medieval Latin idiom naturally while preserving the author's rhetorical style`,
 };
 
 export function buildTranslationPrompt({
