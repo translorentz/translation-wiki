@@ -4,6 +4,7 @@ import { getServerTRPC } from "@/trpc/server";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
+import { EndorseButton } from "@/components/endorsement/EndorseButton";
 
 interface ChapterPageProps {
   params: Promise<{
@@ -114,6 +115,20 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           translationContent={translationContent ?? null}
           sourceLanguage={lang}
         />
+
+        {/* Endorsement */}
+        {translation?.currentVersion && (
+          <div className="mt-4 flex items-center gap-2">
+            <EndorseButton
+              translationVersionId={translation.currentVersion.id}
+            />
+            {translation.currentVersion.author && (
+              <span className="text-xs text-muted-foreground">
+                Translated by {translation.currentVersion.author.username}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="mt-8 flex items-center justify-between border-t border-border pt-4">
