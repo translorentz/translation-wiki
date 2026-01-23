@@ -114,6 +114,14 @@ const AUTHORS = [
       "Song dynasty historian who reorganized Sima Guang's Zizhi Tongjian into topical narratives, creating the Tongjian Jishi Benmo (通鑑紀事本末), the first Chinese historical work organized by events rather than chronology.",
   },
   {
+    name: "Huangdi (Traditional Attribution)",
+    nameOriginalScript: "黃帝",
+    slug: "huangdi",
+    era: "Warring States to Han Dynasty (c. 300 BCE – 200 CE)",
+    description:
+      "The Huang Di Nei Jing is traditionally attributed to the legendary Yellow Emperor (黃帝), but is actually a compilation of medical knowledge assembled by numerous anonymous physicians over several centuries.",
+  },
+  {
     name: "Theodore Prodromos",
     nameOriginalScript: "Θεόδωρος Πρόδρομος",
     slug: "theodore-prodromos",
@@ -228,6 +236,19 @@ const TEXTS = [
     processedDir: "data/processed/tongjian",
     compositionYear: 1174,
     compositionEra: "淳熙元年, Southern Song",
+  },
+  {
+    title: "Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine)",
+    titleOriginalScript: "黃帝內經",
+    slug: "huangdineijing",
+    languageCode: "zh",
+    authorSlug: "huangdi",
+    description:
+      "The foundational text of Chinese medicine, comprising two parts: the Su Wen (素問, Basic Questions) and the Ling Shu (靈樞, Spiritual Pivot). A dialogue between the Yellow Emperor and his physician Qi Bo covering physiology, pathology, diagnosis, and treatment according to the principles of yin-yang and the five phases.",
+    sourceUrl: "https://ctext.org/huangdi-neijing",
+    processedDir: "data/processed/huangdineijing",
+    compositionYear: -200,
+    compositionEra: "Warring States to Western Han Dynasty",
   },
   {
     title: "Ptochoprodromika (Poems of Poor Prodromos)",
