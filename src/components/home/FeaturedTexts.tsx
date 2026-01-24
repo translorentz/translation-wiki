@@ -80,7 +80,14 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                 )}
               </p>
               <p className="text-xs text-muted-foreground">
-                {text.compositionEra && <span>{text.compositionEra} — </span>}
+                {text.compositionEra && <span>{text.compositionEra}</span>}
+                {text.compositionYear != null && (
+                  <span>
+                    {text.compositionEra ? " " : ""}
+                    ({Math.abs(text.compositionYear)} {text.compositionYear < 0 ? "BCE" : "CE"})
+                  </span>
+                )}
+                {(text.compositionEra || text.compositionYear != null) && " — "}
                 {text.totalChapters} ch.
               </p>
             </Card>
