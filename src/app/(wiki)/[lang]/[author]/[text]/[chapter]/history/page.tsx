@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
+import { parseChapterTitle } from "@/lib/utils";
 import { HistoryViewer } from "@/components/history/HistoryViewer";
 
 interface HistoryPageProps {
@@ -62,9 +63,19 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
         >
           Back to chapter
         </Link>
-        <h1 className="mt-1 text-2xl font-bold">
-          History: {chapter.title ?? `Chapter ${chapterNumber}`}
-        </h1>
+        {(() => {
+          const { original, english } = parseChapterTitle(chapter.title);
+          return (
+            <h1 className="mt-1 text-2xl font-bold">
+              History: {original}
+              {english && (
+                <span className="ml-2 text-lg font-normal text-muted-foreground">
+                  {english}
+                </span>
+              )}
+            </h1>
+          );
+        })()}
         <p className="text-sm text-muted-foreground">
           {textData.title} — {versions.length} version
           {versions.length !== 1 ? "s" : ""}

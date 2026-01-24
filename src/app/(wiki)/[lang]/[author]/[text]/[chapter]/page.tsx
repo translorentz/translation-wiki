@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
+import { parseChapterTitle } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
@@ -34,8 +35,8 @@ export async function generateMetadata({
   const chapterInfo = textData.chapters.find(
     (c) => c.chapterNumber === chapterNumber
   );
-  const chapterTitle =
-    chapterInfo?.title ?? `Chapter ${chapterNumber}`;
+  const { original, english } = parseChapterTitle(chapterInfo?.title ?? null);
+  const chapterTitle = english ? `${original} (${english})` : original;
 
   return {
     title: `${chapterTitle} — ${textData.title} — Deltoi`,
@@ -120,9 +121,19 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           >
             {textData.title}
           </Link>
-          <h1 className="mt-1 text-2xl font-bold">
-            {chapter.title ?? `Chapter ${chapterNumber}`}
-          </h1>
+          {(() => {
+            const { original, english } = parseChapterTitle(chapter.title);
+            return (
+              <h1 className="mt-1 text-2xl font-bold">
+                {original}
+                {english && (
+                  <span className="ml-2 text-lg font-normal text-muted-foreground">
+                    {english}
+                  </span>
+                )}
+              </h1>
+            );
+          })()}
           <p className="text-sm text-muted-foreground">
             Chapter {chapterNumber} of {textData.totalChapters}
           </p>

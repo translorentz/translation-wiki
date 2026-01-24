@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
+import { parseChapterTitle } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -167,10 +168,21 @@ export default function SearchClient() {
                   href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}`}
                 >
                   <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
-                    <p className="font-medium">
-                      {result.chapterTitle ??
-                        `Chapter ${result.chapterNumber}`}
-                    </p>
+                    {(() => {
+                      const { original, english } = parseChapterTitle(
+                        result.chapterTitle ?? null
+                      );
+                      return (
+                        <p className="font-medium">
+                          {original}
+                          {english && (
+                            <span className="ml-2 text-sm font-normal text-muted-foreground">
+                              {english}
+                            </span>
+                          )}
+                        </p>
+                      );
+                    })()}
                     <p className="text-sm text-muted-foreground">
                       {result.textTitle} — {result.authorName}
                     </p>

@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
+import { parseChapterTitle } from "@/lib/utils";
 import { TextEditor } from "@/components/editor/TextEditor";
 
 interface EditPageProps {
@@ -71,9 +72,19 @@ export default async function EditPage({ params }: EditPageProps) {
         >
           Back to chapter
         </Link>
-        <h1 className="mt-1 text-2xl font-bold">
-          Edit: {chapter.title ?? `Chapter ${chapterNumber}`}
-        </h1>
+        {(() => {
+          const { original, english } = parseChapterTitle(chapter.title);
+          return (
+            <h1 className="mt-1 text-2xl font-bold">
+              Edit: {original}
+              {english && (
+                <span className="ml-2 text-lg font-normal text-muted-foreground">
+                  {english}
+                </span>
+              )}
+            </h1>
+          );
+        })()}
         <p className="text-sm text-muted-foreground">
           {textData.title} — Chapter {chapterNumber}
         </p>

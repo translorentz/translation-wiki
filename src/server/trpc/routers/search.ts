@@ -7,12 +7,13 @@ import { sql, eq, ilike, or, and, inArray } from "drizzle-orm";
 export const searchRouter = createTRPCRouter({
   languages: publicProcedure.query(async () => {
     const result = await db
-      .select({
+      .selectDistinct({
         code: languages.code,
         name: languages.name,
         displayName: languages.displayName,
       })
       .from(languages)
+      .innerJoin(texts, eq(texts.languageId, languages.id))
       .orderBy(languages.displayName);
     return result;
   }),

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
+import { parseChapterTitle } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { DiscussionClient } from "./DiscussionClient";
 
@@ -52,7 +53,19 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
           href={basePath}
           className="text-sm text-muted-foreground hover:text-foreground"
         >
-          {chapter.title ?? `Chapter ${chapterNumber}`}
+          {(() => {
+            const { original, english } = parseChapterTitle(chapter.title);
+            return (
+              <>
+                {original}
+                {english && (
+                  <span className="ml-1 text-muted-foreground">
+                    {english}
+                  </span>
+                )}
+              </>
+            );
+          })()}
         </Link>
         <h1 className="mt-1 text-2xl font-bold">Discussion</h1>
         <p className="text-sm text-muted-foreground">

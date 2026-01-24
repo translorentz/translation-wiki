@@ -3,27 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { Card } from "@/components/ui/card";
-
-/**
- * Parses a chapter title that may contain both original language and English.
- * Formats: "原文 (English Translation)" or "Ελληνικά (English Translation)"
- * Returns the original-language portion and the English portion separately.
- */
-function parseChapterTitle(title: string | null): {
-  original: string;
-  english: string | null;
-} {
-  if (!title) return { original: "Untitled", english: null };
-
-  // Match pattern: "Original text (English text)" — using last top-level parenthetical
-  const parenMatch = title.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
-  if (parenMatch) {
-    return { original: parenMatch[1].trim(), english: parenMatch[2].trim() };
-  }
-
-  // No parenthetical English — return title as-is
-  return { original: title, english: null };
-}
+import { parseChapterTitle } from "@/lib/utils";
 
 interface TextPageProps {
   params: Promise<{

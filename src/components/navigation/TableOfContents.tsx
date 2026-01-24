@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, parseChapterTitle } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Chapter {
@@ -32,6 +32,7 @@ export function TableOfContents({
           {chapters.map((chapter) => {
             const isActive = chapter.chapterNumber === currentChapter;
             const href = `/${langCode}/${authorSlug}/${textSlug}/${chapter.slug}`;
+            const { original, english } = parseChapterTitle(chapter.title);
 
             return (
               <li key={chapter.chapterNumber}>
@@ -47,7 +48,12 @@ export function TableOfContents({
                   <span className="mr-2 inline-block w-6 text-right text-xs opacity-60">
                     {chapter.chapterNumber}
                   </span>
-                  {chapter.title ?? `Chapter ${chapter.chapterNumber}`}
+                  <span>{original}</span>
+                  {english && (
+                    <span className="ml-1 text-xs opacity-70">
+                      {english}
+                    </span>
+                  )}
                 </Link>
               </li>
             );
