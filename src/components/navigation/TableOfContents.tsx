@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { cn, parseChapterTitle } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -25,6 +26,14 @@ export function TableOfContents({
   authorSlug,
   langCode,
 }: TableOfContentsProps) {
+  const activeRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({ block: "nearest", behavior: "instant" });
+    }
+  }, [currentChapter]);
+
   return (
     <ScrollArea className="h-[calc(100vh-12rem)]">
       <nav aria-label="Table of contents">
@@ -37,6 +46,7 @@ export function TableOfContents({
             return (
               <li key={chapter.chapterNumber}>
                 <Link
+                  ref={isActive ? activeRef : undefined}
                   href={href}
                   className={cn(
                     "block rounded-md px-3 py-1.5 text-sm transition-colors",
