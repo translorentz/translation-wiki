@@ -15,8 +15,34 @@ export const searchRouter = createTRPCRouter({
     .query(async ({ input }) => {
       const pattern = `%${input.q}%`;
 
-      // Search chapter titles and source content text
-      const results = await db
+      // First: find texts matching by title or author name (text-level results)
+      const textMatches = await db
+        .select({
+          textId: texts.id,
+          textTitle: texts.title,
+          textSlug: texts.slug,
+          authorName: authors.name,
+          authorSlug: authors.slug,
+          langCode: languages.code,
+          totalChapters: texts.totalChapters,
+        })
+        .from(texts)
+        .innerJoin(authors, eq(texts.authorId, authors.id))
+        .innerJoin(languages, eq(texts.languageId, languages.id))
+        .where(
+          or(
+            ilike(texts.title, pattern),
+            ilike(authors.name, pattern)
+          )
+        )
+        .orderBy(texts.title)
+        .limit(10);
+
+      // Second: find chapters matching by chapter title or source content
+      // Exclude chapters from texts already found above to avoid duplication
+      const matchedTextIds = textMatches.map((t) => t.textId);
+
+      const chapterResults = await db
         .select({
           chapterId: chapters.id,
           chapterNumber: chapters.chapterNumber,
@@ -39,8 +65,17 @@ export const searchRouter = createTRPCRouter({
             sql`${chapters.sourceContent}::text ILIKE ${pattern}`
           )
         )
+        .orderBy(texts.title, chapters.chapterNumber)
         .limit(input.limit);
 
-      return results;
+      // Filter out chapter results from texts already shown as text-level matches
+      const filteredChapterResults = chapterResults.filter(
+        (ch) => !matchedTextIds.includes(ch.textId)
+      );
+
+      return {
+        texts: textMatches,
+        chapters: filteredChapterResults,
+      };
     }),
 });
