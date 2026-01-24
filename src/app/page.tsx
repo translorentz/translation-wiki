@@ -11,7 +11,7 @@ export default async function HomePage() {
   const languageMap = new Map<string, string>();
   for (const t of allTexts) {
     if (!languageMap.has(t.language.code)) {
-      languageMap.set(t.language.code, t.language.displayName);
+      languageMap.set(t.language.code, t.language.name);
     }
   }
   const languageLinks = Array.from(languageMap.entries())
