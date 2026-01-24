@@ -16,6 +16,27 @@ const LANGUAGE_FONTS: Record<string, string> = {
   la: "font-serif",
 };
 
+/**
+ * Renders text with [bracketed commentary] displayed in dark maroon.
+ * Splits on square brackets, alternating between main text and commentary.
+ */
+function renderWithCommentary(text: string): React.ReactNode {
+  // Split on bracket groups, keeping the brackets as delimiters
+  const parts = text.split(/(\[[^\]]*\])/g);
+  if (parts.length === 1) return text; // No brackets found
+
+  return parts.map((part, i) => {
+    if (part.startsWith("[") && part.endsWith("]")) {
+      return (
+        <span key={i} className="text-[#6b2130]">
+          {part}
+        </span>
+      );
+    }
+    return part;
+  });
+}
+
 export function ParagraphPair({
   index,
   sourceText,
@@ -64,13 +85,13 @@ export function ParagraphPair({
         )}
         lang={sourceLanguage}
       >
-        {sourceText}
+        {renderWithCommentary(sourceText)}
       </div>
 
       {/* Translation paragraph */}
       <div className={cn("whitespace-pre-line leading-relaxed", isPoetry ? "mt-0 leading-normal" : "mt-2 md:mt-0")}>
         {translationText ? (
-          <span>{translationText}</span>
+          <span>{renderWithCommentary(translationText)}</span>
         ) : (
           <span className="italic text-muted-foreground">
             Not yet translated
