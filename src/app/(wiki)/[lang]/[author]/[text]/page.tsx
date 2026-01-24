@@ -75,18 +75,6 @@ export default async function TextPage({ params }: TextPageProps) {
             {textData.description}
           </p>
         )}
-        {textData.sourceUrl && (
-          <p className="mt-2 text-sm">
-            <a
-              href={textData.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary underline-offset-4 hover:underline"
-            >
-              View source text
-            </a>
-          </p>
-        )}
       </div>
 
       {/* Chapter list */}
