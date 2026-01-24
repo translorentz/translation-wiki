@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-24 (Session 11)
+# Last updated: 2026-01-24 (Session 17)
 
 ================================================================================
 ## PROJECT IDENTITY
@@ -22,7 +22,7 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-23, commit 4c0f9d8 (split author/era in Featured Texts)
+Latest deploy: 2026-01-24, commit 7fbe9c1 (fix search to match text titles and author names)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
@@ -30,9 +30,12 @@ Environment variables (set in Vercel dashboard):
 - AUTH_URL — should be https://deltoi.com (NOTE: was translation-wiki.vercel.app, needs update)
 - DEEPSEEK_API_KEY — for server-side translation features
 
-Known issue: AUTH_URL env var on Vercel may still be set to
-translation-wiki.vercel.app instead of https://deltoi.com. User should
-update this in Vercel dashboard → Settings → Environment Variables.
+Known issues:
+- AUTH_URL env var on Vercel may still be set to
+  translation-wiki.vercel.app instead of https://deltoi.com. User should
+  update this in Vercel dashboard → Settings → Environment Variables.
+- Search: FIXED (agent a687c60, pushed). Now searches texts.title + authors.name
+  with ILIKE substring matching. UI shows "Texts" and "Chapters" sections.
 
 ================================================================================
 ## TECH STACK (ACTUAL, NOT PLANNED)
@@ -63,11 +66,12 @@ Tables:
 
 Current data:
 - 5 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil)
-- 19 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
+- 23 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
   Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.),
   Theodore Prodromos, Wilhelm Wagner, Guliang Chi, Mudathirumaran, Ban Gu,
-  Zheng Xuan, Zhou Court Scribes, Ying Shao, Huangfu Mi, Nandikkalambakam Poets
-- 20 texts seeded (naming convention: "English Name (Transliteration)"):
+  Zheng Xuan, Zhou Court Scribes, Ying Shao, Huangfu Mi, Nandikkalambakam Poets,
+  Anonymous (Diognetus), Zosimus, Anonymous (Soph. Elenchi), Eustathius of Thessalonica
+- 24 texts seeded (naming convention: "English Name (Transliteration)"):
   - Classified Conversations of Master Zhu (Zhu Zi Yu Lei) — 140 chapters, zh
   - On the Ceremonies of the Byzantine Court — 7 chapters, grc
   - Instructions for Practical Living (Chuan Xi Lu) — 3 chapters, zh
@@ -87,8 +91,24 @@ Current data:
   - Lost Book of Zhou (Yi Zhou Shu) — 62 chapters, zh (commentary in [brackets])
   - Comprehensive Meaning of Customs (Fengsu Tongyi) — 11 chapters, zh
   - The Anthology of Nandi (Nandikkalambakam) — 114 chapters, ta (textType=poetry)
+  - Udayanakumara Kaviyam — 6 chapters, ta (textType=poetry) [NEW — seeded by agent a9ce61b]
 
-Translation coverage (Session 11 — updated 2026-01-24):
+Recently seeded (Session 12 — 2026-01-24):
+  - Epistle to Diognetus — 12 chapters, grc, prose (author: Anonymous (Diognetus))
+  - New History (Historia Nova) — 287 chapters, grc, prose (author: Zosimus)
+  - Paraphrase on Sophistical Refutations — 35 chapters, grc, prose (author: Anonymous)
+  Translation workers: affd974 (12ch), a21b76e (287ch), af2cefd (35ch) — DeepSeek
+
+Recently seeded (Session 13 — 2026-01-24):
+  - Commentary on the Odyssey — 25 chapters, grc, prose (author: Eustathius of Thessalonica)
+    Dual-agent pipeline: Round 1 C+ → Round 2 B+ (both volumes), Reviewer SATISFIED
+    Combined: 6,146 paragraphs, 3.3M characters, 94.7-97.5% Greek
+    Translation: 3 workers (a58c5f4 ch0-8, aa2274c ch9-16, a05fbf7 ch17-24)
+    Source: data/difficult_extra_processing/ (2 volumes OCR)
+    Pipeline: scripts/lib/eustathius/ (6 modules)
+    Docs: docs/eustathius-r2-collaboration.md
+
+Translation coverage (Session 13 — updated 2026-01-24):
 - ZZYL: 140/140 COMPLETE
 - Ceremonialis: 7/7 COMPLETE
 - Chuanxilu: 3/3 COMPLETE
@@ -96,7 +116,7 @@ Translation coverage (Session 11 — updated 2026-01-24):
 - Elegia: 4/4 COMPLETE
 - Lombards: 82/82 COMPLETE
 - Regno: 56/56 COMPLETE
-- Tongjian: IN PROGRESS (workers b83ad01, b76003b still running)
+- Tongjian: 42/45 (~93%) — workers b83ad01, b76003b still running
 - Ptochoprodromos: 2/2 COMPLETE
 - HDNJ: 55/55 COMPLETE
 - Carmina Graeca: 21/21 COMPLETE
@@ -107,7 +127,33 @@ Translation coverage (Session 11 — updated 2026-01-24):
 - Yi Li: 17/17 COMPLETE
 - Yi Zhou Shu: 62/62 COMPLETE (commentary in [brackets] preserved)
 - Fengsu Tongyi: 11/11 COMPLETE
-- Nandikkalambakam: IN PROGRESS (Stage 1: 109/114; Stage 2 Reviewer DONE; Stage 3 pending)
+- Nandikkalambakam: IN PROGRESS (Stage 1: 114/114 DONE; Stage 2 DONE; Stage 3 retranslating — agent aa88334)
+- Udayanakumara Kaviyam: Stage 1 COMPLETE (6/6 chapters translated — agent a9ce61b)
+- Yashodhara Kaviyam: IN PROGRESS (Stage 1 — agent a1cae1c processing + translating)
+- Diognetum: 12/12 COMPLETE (agent affd974, zero errors)
+- Historia Nova: 174/287 (~61%) — 3 workers running (a21b76e, a9d67d7, a63aef9 at ch255+)
+- Sophistici Elenchi: 35/35 COMPLETE (agent af2cefd, zero errors)
+- Eustathius Odyssey Commentary: 3/25 translated (ch0,17,18) — 3 new workers (ab5dae1 ch1-8, a4043fb ch9-16, afff370 ch19-24)
+  NOTE: Previous workers used wrong slug. Correct slug is `eustathius-odyssey` (NOT eustathius-odyssey-commentary)
+- Hesiod Theogony Exegesis: REGROUPED 109→13 chapters, 13/13 COMPLETE (agent adb2433)
+- Periplus Maris Exteri: 31/31 COMPLETE
+- Periplus Maris Interni: 6/6 COMPLETE
+- Artemidori Geographia: 3/3 COMPLETE
+- Kongzi Jiayu: 80/80 COMPLETE
+- Eustathius Odyssey Commentary: 10/27 translated (agents ab5dae1, a4043fb, afff370)
+
+Shisan Jing Zhushu (十三經註疏) — 13 texts, 455 chapters total:
+  Status: 32/455 translated (~7%), ~20 parallel workers active
+  Chapter ordering: VERIFIED CORRECT (all 13 texts, agent a430c04)
+  Original agents (orchestration DONE, background workers running):
+  - Agent 2 (ace30af): zhouyi (2 workers) + shangshu (1 worker)
+  - Agent 3 (a86e80d): zhouli + yili + liji-zy + liji-zs (4 workers)
+  - Agent 4 (ace6429): zuozhuan (3) + gongyang (2) + guliang (1) = 6 workers
+  Reinforcement agents (additional coverage):
+  - Agent A (a7e1ecc): yili-zhushu (2 workers) + erya-zhushu
+  - Agent B (aca4e1f): zhouli-zhushu (2 workers) + xiaojing-zhushu
+  - Agent C (a3bb94a): liji-zhengyi (2 workers) + liji-zhushu
+  - Agent D (a541e9f): lunyu-zhushu + mengzi-zhushu + shangshu-zhengyi
 
 To sync schema after code changes:
   set -a && source .env.local && set +a && pnpm db:push
@@ -161,6 +207,48 @@ IMPORTANT: Do NOT keep translation content in Claude Code context.
 Write translations directly to the database via the translate scripts.
 
 ================================================================================
+## DUAL-AGENT QUALITY PIPELINE (Formalized Workflow G)
+================================================================================
+
+Standard workflow for processing texts requiring quality verification.
+Two agents collaborate via a shared document until both agree output is production-ready.
+
+### Agents
+| Role | Responsibility | Output |
+|------|---------------|--------|
+| Parser/Processor | Analyze source, extend configs, run parser, self-check | Raw .txt + processed .json |
+| Reviewer/Critic | Independent quality review, grade, request fixes | Grade + sign-off |
+
+### Lifecycle
+1. Create joint collaboration doc: `docs/<pipeline>-collaboration.md`
+2. Create scratchpads: `docs/<pipeline>-parser-scratchpad.md`, `docs/<pipeline>-reviewer-scratchpad.md`
+3. Launch Parser Agent (processes texts, writes report to joint doc)
+4. Launch Reviewer Agent (reviews output, writes grade to joint doc)
+5. If NOT SATISFIED: Parser fixes → Reviewer re-reviews (iterate)
+6. When SATISFIED: texts ready for seeding + translation
+7. Post-approval: add to seed-db.ts, run pnpm db:seed, launch translation workers
+
+### Sign-off Protocol
+- Both agents sign entries: `[PARSER]`/`[PROCESSOR]` or `[REVIEWER]`/`[CRITIC]`
+- Grade scale: A (perfect), A- (minor cosmetic), B+ (translatable), B (fixable), C+ (notable issues), C/below (reprocess)
+- B+ or higher = suitable for translation
+- Reviewer must explicitly state SATISFIED or NOT SATISFIED
+
+### Prior Pipelines
+| Pipeline | Texts | Grade | Joint Doc |
+|----------|-------|-------|-----------|
+| Carmina Graeca | 21 medieval Greek poems | A | docs/carmina-graeca-scratchpad.md |
+| Eustathius (R1→R2) | 25 chapters (2 volumes) | B+ | docs/eustathius-r2-collaboration.md |
+| Greek XML R1 | 3 texts (334 chapters) | A | docs/greek-xml-collaboration.md |
+| Greek XML R2 | 4 texts (tlg3156+tlg4003) | IN PROGRESS | docs/greek-xml-r2-collaboration.md |
+
+### Active Pipelines (Session 13)
+- **Greek XML R2**: Parser (a46da65) + Reviewer (ae6bd83)
+  - Texts: Hesiod Theogony Commentary + 3 Marcianus geographical works
+  - Joint: docs/greek-xml-r2-collaboration.md
+  - When complete: seed + translate
+
+================================================================================
 ## KEY FILE LOCATIONS
 ================================================================================
 
@@ -210,7 +298,13 @@ scripts/process-chuanxilu.ts                        — Process Chuanxilu text
 scripts/process-huangdi.ts                          — Process Huang Di Nei Jing
 scripts/process-new-texts.ts                        — Process De Anima, Lombards, Regno, Tongjian
 scripts/process-carmina-graeca.ts                   — Process Carmina Graeca (21 medieval Greek poems)
-scripts/lib/carmina/                                — Carmina processing modules (6 files)
+scripts/process-yashodhara-kaviyam.ts               — Process Yashodhara Kaviyam (5 carukkams, 330 verses)
+scripts/process-udayanakumara-kaviyam.ts            — Process Udayanakumara Kaviyam (6 kandams, 366 verses)
+scripts/process-eustathius.ts                       — Process Eustathius Odyssey Commentary (being built by agent)
+scripts/process-greek-xml.ts                        — Process TEI-XML Greek texts (being built by agent)
+scripts/lib/carmina/                                — Carmina processing modules (6 files, REFERENCE IMPL)
+scripts/lib/eustathius/                             — Eustathius processing modules (being built by agent)
+scripts/lib/greek-xml/                              — TEI-XML parser modules (being built by agent)
 scripts/fix-chapter-titles.ts                       — Add English to chapter titles
 scripts/fill-translation-gaps.ts                    — Retranslate empty paragraphs in existing translations
 scripts/_check-translation-gaps.ts                  — Diagnostic: find chapters with empty paragraphs
@@ -229,8 +323,11 @@ data/processed/regno/chapter-NNN.json               — Regno source (56 files)
 data/processed/tongjian/chapter-NNN.json            — Tongjian source (45 files)
 data/processed/ptochoprodromos/chapter-NNN.json     — Ptochoprodromos source (2 files)
 data/processed/carmina-graeca/chapter-NNN.json      — Carmina Graeca source (21 files)
+data/greek_xml/                                     — TEI-XML Greek source files (3 files, First1KGreek corpus)
+data/difficult_extra_processing/                    — Difficult OCR files needing agent-based processing
 data/raw/                                           — (gitignored) raw downloads
 data/raw/carmina-graeca/                            — 21 clean Greek .txt files (10,957 lines, Grade A quality)
+data/raw/eustathius-odyssey/                        — Eustathius commentary chapters (being built by agent)
 data/raw/sangam/                                    — Cleaned Sangam Tamil texts (Ettuthokai + Pattuppattu)
 data/raw/sangam/ettuthokai/akananuru/               — 400/400 poems extracted (COMPLETE)
 data/raw/sangam/ettuthokai/purananuru/              — 128/400 poems (rest absent from corpus)
@@ -242,6 +339,16 @@ data/raw/udayanakumara-kaviyam/                     — 367 verses in 6 kandams 
 docs/sangam-inspector.md                            — Full corpus inspection report
 docs/sangam-scratchpad.md                           — Sangam agent working notes (TBD)
 docs/sangam-reference.md                            — Sangam corpus reference/catalog (TBD)
+docs/tamil-translation-orchestration.md             — Tamil 3-stage pipeline design doc
+docs/tamil-translation-notes/                       — Tamil pipeline progress + reviewer notes (per text)
+docs/plan-carmina-graeca-processing.md              — Carmina Graeca pipeline plan + results (REFERENCE)
+docs/carmina-graeca-scratchpad.md                   — Carmina Graeca working notes (REFERENCE)
+docs/carmina-graeca-critiques.md                    — Carmina Graeca quality evaluations (REFERENCE)
+docs/plan-eustathius-processing.md                  — Eustathius pipeline plan (written by agent)
+docs/eustathius-scratchpad.md                       — Eustathius working notes (written by agent)
+docs/eustathius-odyssey-agent-instructions.md       — Eustathius coordination (both volumes)
+docs/plan-greek-xml-processing.md                   — Greek XML parser plan (written by agent)
+docs/greek-xml-scratchpad.md                        — Greek XML working notes (written by agent)
 
 ### Config
 drizzle.config.ts                                   — Drizzle ORM config
@@ -275,14 +382,166 @@ Additional features:
 - Discussion pages (fully implemented: threads, replies, resolve, pin)
 
 ================================================================================
+## PROCESSING WORKFLOWS & DOCUMENTATION MAP
+================================================================================
+
+### Workflow A: Adding a New Text (Standard)
+1. Place raw text in `data/raw/<dirname>/`
+2. Write processing script: `scripts/process-<name>.ts`
+   - Output: `data/processed/<slug>/chapter-NNN.json`
+   - Format: `{ chapterNumber, title, sourceContent: { paragraphs: [{ index, text }] } }`
+3. Add author + text entries to `scripts/seed-db.ts`
+   - Title format: "English Name (Transliteration)" — MANDATORY
+4. Run `pnpm tsx scripts/seed-db.ts`
+5. Translate: `pnpm tsx scripts/translate-batch.ts --text <slug>` (DeepSeek, for zh/grc/la)
+   OR: `pnpm tsx scripts/translate-tamil.ts --text <slug>` (Gemini, for ta)
+
+### Workflow B: OCR Text Processing (Difficult Extra Processing)
+Used for: Internet Archive djvu scans, corrupted/noisy OCR files
+Reference implementation: Carmina Graeca pipeline (scripts/lib/carmina/, 6 modules)
+Current instance: Eustathius Odyssey Commentary (scripts/lib/eustathius/)
+
+Pattern:
+1. Source file in `data/difficult_extra_processing/`
+2. Create multi-module pipeline in `scripts/lib/<name>/`:
+   - types.ts, splitter.ts, cleaner.ts, normalizer.ts, validator.ts, index.ts
+3. Create main script: `scripts/process-<name>.ts`
+4. Agent writes documentation: `docs/plan-<name>-processing.md`, `docs/<name>-scratchpad.md`
+5. Quality checks: PASS/WARN/FAIL per chapter, overall grade
+
+Dual-Agent Quality Pattern (Processor + Reviewer):
+- Processing Agent: produces clean text from OCR
+- Reviewer Agent: evaluates output, writes critiques, grades (A/B/C/D/F)
+- Shared collaboration doc: `docs/<name>-collaboration.md` (both read/write)
+- Each agent has its own scratchpad for working notes
+- Iterate: Processor fixes issues raised by Reviewer, Reviewer re-evaluates
+- Goal: Grade A (production-ready, clean, complete, accurate)
+- Reviewer signs entries `[REVIEWER]`, Processor signs `[PROCESSOR]`
+
+Key documents:
+- `docs/plan-carmina-graeca-processing.md` — Processing plan + results (reference)
+- `docs/carmina-graeca-scratchpad.md` — Working notes (read for methodology)
+- `docs/carmina-graeca-critiques.md` — Quality evaluations (FORMAT REFERENCE)
+- `docs/eustathius-odyssey-agent-instructions.md` — Eustathius coordination (both volumes)
+- `docs/eustathius-collaboration.md` — Shared doc for Processor + Reviewer interaction
+- `docs/plan-eustathius-processing.md` — Eustathius plan + results (Processor writes)
+- `docs/eustathius-scratchpad.md` — Eustathius Processor working notes
+- `docs/eustathius-reviewer-scratchpad.md` — Eustathius Reviewer working notes
+
+Critical rule for Greek OCR: Medieval/Ancient Greek NEVER contains Arabic numerals.
+Any digit in the text = page number / apparatus / line reference → STRIP IT.
+
+### Workflow C: TEI-XML Processing (First1KGreek / Perseus)
+Used for: Structured XML files from the First1KGreek or Perseus Digital Library corpus
+Current instance: Greek XML parser agent (scripts/lib/greek-xml/)
+
+Pattern:
+1. Source XML files in `data/greek_xml/` (TEI-XML, EpiDoc schema)
+2. Reusable parser in `scripts/lib/greek-xml/`:
+   - types.ts, tei-parser.ts, text-extractor.ts, chapter-splitter.ts, validator.ts
+3. Main script: `scripts/process-greek-xml.ts` (handles any TLG file)
+4. Agent documentation: `docs/plan-greek-xml-processing.md`, `docs/greek-xml-scratchpad.md`
+
+TEI-XML key elements:
+- `<div type="edition">` — main text body
+- `<div type="textpart" subtype="book|chapter|section">` — structural divisions
+- `<pb n="123"/>` — page breaks (strip)
+- `<lb n="5"/>` — line breaks (milestone, strip)
+- `<note>` — footnotes/apparatus (strip)
+- Namespace: `http://www.tei-c.org/ns/1.0`
+
+### Workflow D: Tamil 3-Stage Quality Pipeline
+Used for: All Tamil (ta) texts requiring quality-assured translations
+Reference: `docs/tamil-translation-orchestration.md`
+Notes directory: `docs/tamil-translation-notes/`
+
+Stages:
+1. **Stage 1 — Translation**: Agent processes raw text, seeds DB, translates via Gemini 2.5 Flash
+   - Script: `scripts/translate-tamil.ts`
+   - Output: TranslationVersion v1 in DB
+   - Coordination file: `docs/tamil-translation-notes/<slug>-pipeline-progress.md`
+
+2. **Stage 2 — Reviewer**: Independent agent reads translations, compares to source
+   - Output: `<slug>-reviewer-notes.md` (overall grade + per-chapter assessment)
+   - Output: `<slug>-retranslation-requests.md` (specific verses + priority)
+   - Grade scale: A/B/C/D/F with +/- modifiers
+   - Per-verse: PROBLEMATIC / ADEQUATE / GOOD
+
+3. **Stage 3 — Master Retranslator**: Reads reviewer notes, improves prompt, retranslates
+   - Creates TranslationVersion v2 (retranslation) + v3 (editorial clarification)
+   - Editorial clarification: English terms with [transliteration] on first use only
+   - Must address any prompt mismatch issues (e.g., Sangam prompt on medieval text)
+
+Pipeline progress files (one per text):
+- `docs/tamil-translation-notes/nandikkalambakam-pipeline-progress.md`
+- `docs/tamil-translation-notes/yashodhara-kaviyam-pipeline-progress.md`
+- `docs/tamil-translation-notes/udayanakumara-kaviyam-pipeline-progress.md`
+
+### Workflow E: Documentation Maintenance (MANDATORY)
+Every session and every agent MUST maintain these files:
+
+| File | What to record | When to update |
+|------|---------------|----------------|
+| `scratch-notes.txt` | Session progress, decisions, agent launches/completions, issues | Continuously during work |
+| `reference-guide.txt` | Project state, new texts, translation coverage, file locations | When state changes |
+| `CLAUDE.md` | Active tasks, architecture changes, conventions, remaining work | When tasks change |
+
+Rules:
+- Start every session by reading all three files
+- Update scratch-notes as you work (don't wait until end)
+- Update reference-guide when a text is seeded, translation completes, or agent finishes
+- Update CLAUDE.md Active Tasks when agents launch/complete
+- Agents that write their own docs (scratchpads, plans) should be noted in CLAUDE.md
+- NEVER leave stale information in these files — always reflect current truth
+
+### Workflow F: Translation Workers (Batch Background)
+Used for: Large texts that need many chapters translated (zh/grc/la via DeepSeek)
+
+Pattern:
+1. Split chapter ranges across multiple background `pnpm tsx scripts/translate-batch.ts` processes
+2. Each worker runs with `--text <slug> --start N --end M --delay 5000`
+3. Workers skip already-translated chapters automatically
+4. Error handling: `translateBatchWithRetry()` — 3 retries + batch splitting on failure
+5. Monitor via background bash task output files
+
+### Workflow H: Chinese Commentary Text Processing (十三經註疏 Pattern)
+Used for: Multi-layered Classical Chinese commentary editions (base text + 註 + 疏)
+Current instance: Shisan Jing Zhushu (13 texts, 455 chapters)
+
+Pattern:
+1. Source .txt files in `data/raw/<corpus>/` — one file per volume (卷)
+2. Index file provides correct chapter ordering
+3. Processing script: `scripts/process-shisan-jing-{1,2,3,4}.ts`
+   - Strips header lines (e.g., "原文(無註)")
+   - Preserves ALL commentary layers (they ARE the text in a 註疏 edition)
+   - Splits on [疏] boundaries and natural textual breaks
+   - Output: `data/processed/<slug>/chapter-NNN.json`
+4. Author + text entries added to `scripts/seed-db.ts`
+5. Seed: `pnpm tsx scripts/seed-db.ts`
+6. Translate: Multiple parallel workers with `--delay 2000`
+
+Commentary format elements:
+- Base text: 子曰：「...」 (Confucius said: "...")
+- Zheng Xuan/He Yan gloss: （parenthetical notes）
+- Sub-commentary: [疏] or [疏正義曰：...]
+- Scholar attributions: 【鄭玄】, ○ markers
+- Section headers: 卷一·學而第一
+
+Key rules:
+- ALL layers preserved in source_content paragraphs
+- Volume numbers = chapter ordering (卷一 < 卷二 < ...)
+- Index cross-references (bare book names without /) are NOT chapters — skip them
+- Chinese numerals and Arabic numerals both used in filenames
+
+================================================================================
 ## REMAINING WORK (PRIORITY ORDER)
 ================================================================================
 
-1. Wait for Nandikkalambakam Stage 1 to finish (109/114 done), then launch Stage 3
-2. Wait for Tongjian workers to finish (2 workers still running)
-3. After Nandikkalambakam: process Yashodhara Kaviyam through full Tamil pipeline
-4. After Yashodhara: process Udayanakumara Kaviyam through full Tamil pipeline
-5. Commit and push all new processed data + scripts + naming changes
+1. Wait for Shisan Jing Zhushu translation (13 texts, 455 ch, 32/455 done, ~20 workers)
+2. Wait for Eustathius translation workers (10/27 done, 3 workers)
+3. Wait for Nandikkalambakam Stage 3 (retranslating all 114 poems)
+4. Wait for Tamil Stage 2 reviewers (Yashodhara + Udayanakumara) → launch Stage 3
+5. Commit and push all new processed data + scripts
 6. Update AUTH_URL on Vercel to https://deltoi.com
 7. Sangam Tamil: 15 more canonical works need sourcing from Project Madurai
 8. Responsive design polish (mobile stacking for interlinear viewer)
@@ -292,16 +551,35 @@ Additional features:
 12. Upgrade NextAuth from beta to stable when available
 13. Add Ling Shu (靈樞) chapters to HDNJ when user provides raw data
 
-ACTIVE AGENTS (Session 11 — 2026-01-24):
-- Tongjian workers: b76003b, b83ad01 — still translating remaining chapters
-- Nandikkalambakam Stage 1 (a472c67): translating poems, 109/114 done
-- Nandikkalambakam Stage 3: PENDING — launch after Stage 1 completes
+ACTIVE AGENTS (Session 17 — 2026-01-24):
+Shisan Jing original orchestration agents (DONE, background workers running):
+  - Agent 2 (ace30af): 3 workers (babf3aa, b6a0f7d, ba80c30) — zhouyi + shangshu
+  - Agent 3 (a86e80d): 4 workers (bfc83a7, b4c8f59, b332ac1, b0508ee) — zhouli/yili/liji
+  - Agent 4 (ace6429): 6 workers (bc593fa, bc3b540, b9c848d, bce1f8a, b624f79, bdcaaab) — spring/autumn
+Shisan Jing reinforcement agents:
+  - Agent A (a7e1ecc): yili (2 workers) + erya
+  - Agent B (aca4e1f): zhouli (2 workers) + xiaojing
+  - Agent C (a3bb94a): liji-zhengyi (2 workers) + liji-zhushu
+  - Agent D (a541e9f): lunyu + mengzi + shangshu
+Eustathius translation:
+  - ab5dae1 (ch1-8), a4043fb (ch9-16), afff370 (ch19-24)
+Tamil:
+  - Nandikkalambakam Stage 3 (aa88334)
 
-COMPLETED RECENTLY:
-✓ Naming consistency: all titles now "English Name (Transliteration)" — DB + seed-db.ts updated
-✓ Guliang Zhuan: 12/12 COMPLETE (agent ae85d94)
-✓ Yi Li: 17/17 COMPLETE (agent a72a764)
-✓ Baihu Tong: 43/43 COMPLETE (agent a2d8baa)
+COMPLETED RECENTLY (Sessions 13-17):
+✓ Kongzi Jiayu: 80/80 COMPLETE
+✓ Hesiod Exegesis: Regrouped 109→13, 13/13 COMPLETE
+✓ Tongjian: 45/45 COMPLETE
+✓ Historia Nova: 287/287 COMPLETE
+✓ Sophistici Elenchi: 35/35 COMPLETE
+✓ Diognetum: 12/12 COMPLETE
+✓ Greek XML R2: 53/53 COMPLETE (all 4 texts)
+✓ Carmina Graeca: 21/21 COMPLETE
+✓ Naming consistency: all titles "English Name (Transliteration)"
+✓ Guliang Zhuan: 12/12 COMPLETE
+✓ Yi Li: 17/17 COMPLETE
+✓ Baihu Tong: 43/43 COMPLETE
+✓ Chapter ordering verification: all 13 Shisan Jing texts CORRECT
 ✓ Fengsu Tongyi: 11/11 COMPLETE (agent a6a5e09)
 ✓ Gaoshi Zhuan: 4/4 COMPLETE (agent a451a68)
 ✓ Yi Zhou Shu: 62/62 COMPLETE with commentary brackets (agent a127b87)
@@ -326,6 +604,23 @@ COMPLETED RECENTLY:
     - e.g., "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
     - e.g., "The War-Bard's Guide (Porunararruppadai)"
     - Texts with already-English original titles (Latin/Greek) stay as-is: "On the Soul"
+12. Documentation maintenance is MANDATORY — not optional. Every session MUST:
+    - Read all 3 reference files (CLAUDE.md, reference-guide.txt, scratch-notes.txt) at start
+    - Update scratch-notes.txt continuously (progress, decisions, agent launches/completions)
+    - Update reference-guide.txt when project state changes
+    - Update CLAUDE.md Active Tasks when agents launch or complete
+    - Mark completed items as COMPLETE in ALL files (no stale info)
+13. Subagents that do complex processing MUST write their own documentation:
+    - Plan file: `docs/plan-<name>-processing.md` (analysis, decisions, results)
+    - Scratchpad: `docs/<name>-scratchpad.md` (working notes, observations)
+    - These docs enable future sessions/agents to understand methodology
+14. OCR Greek text rule: Ancient/Medieval Greek NEVER contains Arabic numerals.
+    Any embedded digit = page number / apparatus / line reference → MUST be stripped.
+15. Tamil texts always go through the 3-stage pipeline (see Workflow D above).
+    Never deploy Tamil translations without reviewer + retranslation pass.
+16. Neon PostgreSQL project ID: `bitter-tooth-04461121` — use for all DB queries
+17. Database column names are snake_case in SQL (e.g., `source_content`, `text_id`)
+    even though Drizzle schema uses camelCase in TypeScript
 
 ================================================================================
 ## COMMON COMMANDS

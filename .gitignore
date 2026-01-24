@@ -40,6 +40,9 @@ yarn-error.log*
 
 # raw downloaded data (large, regenerable)
 data/raw/
+data/difficult_extra_processing/
+data/greek_xml/
+data/yi_li/
 
 # sensitive files
 API_keys_DO_NOT_COMMIT.txt

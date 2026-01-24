@@ -1,5 +1,279 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-24: Shisan Jing Zhushu (十三經註疏) — Processing Plan (Session 16)
+
+### Corpus Overview
+The Thirteen Classics with Commentaries — the complete set of canonical Confucian texts with
+multi-layered Tang dynasty orthodox commentaries (正義) and sub-commentaries (註疏).
+Location: `data/raw/Shisan_Jing_Zhushu/`
+Index: `data/raw/Shisan_Jing_Zhushu/13_books_index.txt` (752 lines)
+
+### Texts to Process (13 active, 1 empty)
+
+| # | Chinese | English | Slug | Chapters | Commentator |
+|---|---------|---------|------|----------|-------------|
+| 1 | 論語註疏 | Analects with Commentary | lunyu-zhushu | 21 | He Yan + Xing Bing |
+| 2 | 孟子註疏 | Mencius with Commentary | mengzi-zhushu | 15 | Zhao Qi + Sun Shi |
+| 3 | 孝經註疏 | Classic of Filial Piety with Commentary | xiaojing-zhushu | 10 | Xing Bing |
+| 4 | 爾雅註疏 | Erya Dictionary with Commentary | erya-zhushu | 11 | Guo Pu + Xing Bing |
+| 5 | 周易正義 | Book of Changes with Commentary | zhouyi-zhengyi | ~102 | Kong Yingda |
+| 6 | 尚書正義 | Book of Documents with Commentary | shangshu-zhengyi | 22 | Kong Yingda |
+| 7 | 周禮註疏 | Rites of Zhou with Commentary | zhouli-zhushu | 44 | Zheng Xuan + Jia Gongyan |
+| 8 | 儀禮註疏 | Ceremonial Rites with Commentary | yili-zhushu | 51 | Zheng Xuan + Jia Gongyan |
+| 9 | 禮記正義 | Book of Rites with Commentary | liji-zhengyi | 56 | Kong Yingda |
+| 10 | 禮記註疏 | Book of Rites — Selected Chapters | liji-zhushu | 29 | Zheng Xuan + Kong Yingda |
+| 11 | 春秋左傳正義 | Zuo Commentary on Spring and Autumn | zuozhuan-zhengyi | 37 | Kong Yingda |
+| 12 | 春秋公羊傳註疏 | Gongyang Commentary on Spring and Autumn | gongyang-zhushu | 30 | He Xiu + Xu Yan |
+| 13 | 春秋穀梁傳註疏 | Guliang Commentary on Spring and Autumn | guliang-zhushu | 21 | Fan Ning + Yang Shixun |
+| — | 毛詩正義 | (EMPTY — skip) | — | 0 | — |
+
+**Total: ~449 chapters across 13 texts**
+
+### 4-Agent Division
+
+**Agent 1: Four Books + Small Classics** (~57 chapters)
+- 論語註疏 (21), 孟子註疏 (15), 孝經註疏 (10), 爾雅註疏 (11)
+
+**Agent 2: Changes + Documents** (~124 chapters)
+- 周易正義 (102), 尚書正義 (22)
+
+**Agent 3: Three Rites** (~180 chapters)
+- 周禮註疏 (44), 儀禮註疏 (51), 禮記正義 (56), 禮記註疏 (29)
+
+**Agent 4: Spring and Autumn Commentaries** (~88 chapters)
+- 春秋左傳正義 (37), 春秋公羊傳註疏 (30), 春秋穀梁傳註疏 (21)
+
+### Text Format Notes
+- Multi-layered: base text + （glosses） + [疏] sub-commentary + 【scholar】 attributions
+- One .txt file = one chapter (volume/卷)
+- Paragraphs: split on [疏] boundaries and natural textual breaks
+- Header lines like "原文(無註)" should be stripped
+- ALL commentary layers are preserved (they ARE the text in a 註疏 edition)
+- Index cross-references (bare book names) are navigation links, NOT content
+
+### Status (updated 2026-01-24, session 17 checkpoint)
+
+**All 13 texts processed and seeded to DB. Translation in progress.**
+
+- Agent 1 (a9f1c24 — Four Books + Small Classics): SEEDED, translating
+  - Script: `scripts/process-shisan-jing-1.ts`
+  - Texts: lunyu-zhushu (21), mengzi-zhushu (15), xiaojing-zhushu (10), erya-zhushu (11) = 57 chapters
+  - DB status: 0/57 translated (translation starting)
+
+- Agent 2 (ace30af — Changes + Documents): AGENT DONE, translation workers running
+  - Script: `scripts/process-shisan-jing-2.ts`
+  - Texts: zhouyi-zhengyi (104), shangshu-zhengyi (22) = 126 chapters
+  - Author added: Kong Yingda (kong-yingda)
+  - Translation workers: babf3aa (zhouyi 1-52), b6a0f7d (zhouyi 53-104), ba80c30 (shangshu 1-22)
+
+- Agent 3 (a86e80d — Three Rites): SEEDED, translating
+  - Script: `scripts/process-shisan-jing-3.ts`
+  - Texts: zhouli-zhushu (42), yili-zhushu (51), liji-zhengyi (56), liji-zhushu (29) = 178 chapters
+  - Authors added: Jia Gongyan (jia-gongyan), Zheng Xuan Liji ed. (zheng-xuan-liji)
+  - DB status: 2/178 translated (liji-zhengyi 2)
+  - Translation workers: bfc83a7 (zhouli), b4c8f59 (yili), b332ac1 (liji-zy), b0508ee (liji-zs)
+  - Key decision: 周禮.txt (6 lines, TOC only) excluded; only 42 actual volumes processed
+
+- Agent 4 (ace6429 — Spring and Autumn): AGENT DONE, 6 translation workers running
+  - Script: `scripts/process-shisan-jing-4.ts`
+  - Texts: zuozhuan-zhengyi (43), gongyang-zhushu (30), guliang-zhushu (21) = 94 chapters
+  - Paragraph stats: zuozhuan avg 94/ch, gongyang avg 101/ch, guliang avg 81/ch
+  - Translation workers: bc593fa (zuozhuan 1-15), bc3b540 (zuozhuan 16-30), b9c848d (zuozhuan 31-43),
+    bce1f8a (gongyang 1-15), b624f79 (gongyang 16-30), bdcaaab (guliang 1-21)
+
+**Kongzi Jiayu: 80/80 COMPLETE** (agent a6fde9f finished)
+**Eustathius Odyssey: 10/27 translated** (agents ab5dae1, a4043fb, afff370 still running)
+
+### Reinforcement Translation Agents (launched session 17)
+4 additional agents to accelerate translation:
+- Agent A (a7e1ecc): yili-zhushu (1-25, 26-51) + erya-zhushu (1-11)
+- Agent B (aca4e1f): zhouli-zhushu (1-21, 22-42) + xiaojing-zhushu (1-10)
+- Agent C (a3bb94a): liji-zhengyi (1-28, 29-56) + liji-zhushu (1-29)
+- Agent D (a541e9f): lunyu-zhushu (1-21) + mengzi-zhushu (1-15) + shangshu-zhengyi (1-22)
+All use --delay 2000, skip logic prevents duplication with existing workers.
+
+---
+
+## 2026-01-24: Hesiod Theogony Exegesis Regrouping (Session 15)
+
+### Task: Merge 109 individual sections into 13 thematic chapters
+
+**Problem:** The "Exegesis on Hesiod's Theogony" had 109 "chapters" in the database,
+each corresponding to commentary on a single line number of the Theogony (e.g.,
+"Section 134", "Section 319b"). This was excessive for the table of contents.
+
+**Solution:** Created `scripts/regroup-hesiod-exegesis.ts` that:
+1. Reads all 109 chapter JSONs
+2. Extracts the Hesiod line number from each title
+3. Groups them into 13 thematic chapters matching the Theogony's structure
+4. Merges paragraphs within each group, re-indexing sequentially
+5. Writes new chapter files and deletes leftovers
+
+**New chapter structure (13 chapters):**
+1. Commentary on the Proem: Invocation of the Muses (Lines 1-115) - 8 paragraphs
+2. Commentary on the Cosmogony: Chaos, Gaia, Tartarus, Eros (Lines 116-153) - 4 paragraphs
+3. Commentary on the Castration of Uranus (Lines 154-210) - 15 paragraphs
+4. Commentary on the Children of Night (Lines 211-232) - 4 paragraphs
+5. Commentary on the Sea Deities: Nereus, Thaumas, Phorcys (Lines 233-269) - 7 paragraphs
+6. Commentary on Sea Monsters and the Gorgons (Lines 270-336) - 15 paragraphs
+7. Commentary on the Rivers, Oceanids, and Titans (Lines 337-452) - 8 paragraphs
+8. Commentary on the Birth and Rise of Zeus (Lines 453-506) - 10 paragraphs
+9. Commentary on Prometheus and the Theft of Fire (Lines 507-616) - 11 paragraphs
+10. Commentary on the Titanomachy (Lines 617-735) - 9 paragraphs
+11. Commentary on Tartarus (Lines 736-819) - 6 paragraphs
+12. Commentary on the Typhonomachy (Lines 820-880) - 3 paragraphs
+13. Commentary on the Marriages of Zeus (Lines 881-929) - 10 paragraphs
+
+**Total paragraphs preserved: 110 (same as original 109 chapters)**
+
+**Database operations:**
+- Ran `scripts/reset-hesiod-chapters.ts` to delete 109 old chapters + 109 translations
+- Ran `scripts/seed-db.ts` to insert 13 new merged chapters
+- Ran `scripts/translate-batch.ts --text hesiod-theogony-exegesis --start 1 --end 13`
+- Result: 13/13 chapters translated, 0 errors
+
+**Files created:**
+- `scripts/regroup-hesiod-exegesis.ts` - the regrouping script
+- `scripts/reset-hesiod-chapters.ts` - DB cleanup script
+
+---
+
+## 2026-01-24: Translation Gap Check & Continuation (Session 14)
+
+### Gap Check Results (verified via Neon DB queries):
+
+**Greek XML R2 Texts — ALL COMPLETE, NO GAPS:**
+- hesiod-theogony-exegesis: 109/109 chapters translated, all paragraphs match source counts
+- periplus-maris-exteri: 31/31 chapters translated, all paragraphs match
+- periplus-maris-interni: 6/6 chapters translated, all paragraphs match
+- artemidori-geographia: 3/3 chapters translated, all paragraphs match
+
+**Eustathius Odyssey (slug: `eustathius-odyssey`, NOT `eustathius-odyssey-commentary`):**
+- Chapter 0: 23/23 paragraphs — OK
+- Chapter 17: 222/222 paragraphs — OK
+- Chapter 18: 197/197 paragraphs — OK
+- Chapters 1-16, 19-24: NOT TRANSLATED (22 chapters missing, ~5,300 paragraphs)
+- ISSUE: Previous session's translation agents used wrong slug (`eustathius-odyssey-commentary`)
+  and thus never found the text. Agents killed and relaunched with correct slug.
+- New agents: 3 workers with correct slug `eustathius-odyssey` (ch 1-8, 9-16, 19-24)
+
+**Kongzi Jiayu — NEW TEXT (agent a6fde9f):**
+- Processing from `data/raw/kongzi_jiayu/` (10 volumes, Classical Chinese)
+- Agent examining, parsing, seeding, and translating
+
+**Hesiod continuation (agent a0f8f84):** Already complete — all 109 chapters were translated
+**Marcianus continuation (agent a04628c):** Already complete — all 40 chapters translated
+
+---
+
+## 2026-01-24: Progress Check (Session Resume)
+
+### Translation Status (DB counts)
+- **Carmina Graeca**: 21/21 COMPLETE
+- **Diognetum**: 12/12 COMPLETE
+- **Historia Nova**: 287/287 COMPLETE (zero errors)
+  - Final worker completed remaining 164 chapters (2026-01-24)
+  - Log: docs/translation-log-historia-nova.md
+- **Sophistici Elenchi**: 35/35 COMPLETE (agent af2cefd, zero errors)
+- **Tongjian**: 42/45 translated (~93%) — 2 workers running (b76003b, b83ad01)
+
+### Eustathius Odyssey Commentary — Volume 2 PROCESSING COMPLETE
+- **Volume 2 Processor (a44a6b7)**: DONE — all 13 chapters (12-24) produced
+  - Modified: book-splitter.ts, content-classifier.ts (interline noise), process-eustathius.ts (--volume flag)
+  - Quality: 2,589 paragraphs, 1,424,824 chars, 94.7-97.4% Greek, 1,151 digits (OCR confusion), 7 verse refs
+- **Volume 2 Reviewer (a20bfed)**: IN PROGRESS — checking digit counts, verse refs across ch 12-24
+- **Combined totals**: 25 chapters, 6,146 paragraphs, 3,318,446 characters
+- **All 25 raw .txt + 25 processed .json files exist** in data/raw/ and data/processed/
+- **Reviewer sign-off**: SATISFIED (B+ both volumes, production-ready)
+- **Seeded to DB**: 25 chapters inserted (author: Eustathius of Thessalonica, slug: eustathius-odyssey)
+- **Translation workers launched** (3 parallel agents, DeepSeek, grc, 6000 chars/batch, 3s delay):
+  - Agent a58c5f4: chapters 0-8 (preface + Books 1-8)
+  - Agent aa2274c: chapters 9-16
+  - Agent a05fbf7: chapters 17-24
+- **User instruction fulfilled**: "When the raw files for the commentary on the Odyssey are complete and clean and ready, enqueue the text for parsing, careful consideration and reading, and translation on the website."
+
+## 2026-01-24: Greek XML R2 Pipeline — Dual-Agent (NEW)
+
+- **New texts to process**:
+  - tlg3156.tlg001: "Exegesis in Hesiodi Theogoniam" (anonymous, 1,644 lines)
+  - tlg4003.tlg001: "Periplus Maris Exteri" (Marcianus of Heraclea, 1,355 lines)
+  - tlg4003.tlg002: "Menippi Periplus Maris Interni" (Marcianus, 523 lines)
+  - tlg4003.tlg003: "Artemidori Geographia" (Marcianus, 317 lines)
+- **Pipeline**: Dual-agent (Parser a46da65 + Reviewer ae6bd83)
+- **Joint doc**: docs/greek-xml-r2-collaboration.md
+- **Decision**: Treat Marcianus's 3 works as 3 separate texts (each small enough)
+- **Workflow formalized**: Added "Workflow G: Dual-Agent Quality Pipeline" to CLAUDE.md and reference-guide.txt
+- **When complete**: Add to seed-db.ts, seed DB, launch translation workers
+
+## 2026-01-24: Eustathius Pipeline — COMPLETE (Reviewer Approved + Seeded + Translating)
+
+- **Reviewer (a20bfed) sign-off**: SATISFIED — Volume 2 Grade B+ (matching Volume 1)
+- **Volume 2 metrics**: 13 chapters, 2,589 paragraphs, 1.4M chars, 94.7-97.4% Greek
+- **Combined**: 25 chapters, 6,146 paragraphs, 3.3M characters
+- **Seeded to DB**: 25 chapters inserted successfully
+- **Translation workers launched** (3 parallel, DeepSeek grc, 6000 chars/batch):
+  - a58c5f4: chapters 0-8
+  - aa2274c: chapters 9-16
+  - a05fbf7: chapters 17-24
+- **User instruction fulfilled**: auto-enqueue when ready
+
+## 2026-01-24: Greek XML Texts — SEEDED + Translation Workers Launched
+
+- **Seeding complete**: 3 new authors + 3 new texts added to seed-db.ts and seeded into DB
+  - Epistle to Diognetus: 12 chapters inserted (author: "Anonymous (Diognetus)", slug: diognetus-author)
+  - New History (Historia Nova): 287 chapters inserted (author: "Zosimus", slug: zosimus)
+  - Paraphrase on Sophistical Refutations: 35 chapters inserted (author: "Anonymous (Aristotelian commentator)", slug: soph-elenchi-paraphrast)
+- **Translation workers launched** (3 parallel agents via DeepSeek):
+  - Agent affd974: Diognetum (12 chapters)
+  - Agent a21b76e: Historia Nova (287 chapters)
+  - Agent af2cefd: Sophistici Elenchi Paraphrasis (35 chapters)
+- **Greek XML pipeline: COMPLETE** — Parser (A) → Reviewer (A) → Seed → Translate
+
+## 2026-01-24: Eustathius Odyssey — Round 2 Dual-Agent Pipeline
+
+- **Round 2 Processor** (agent aa6a9f5): Fixed all 5 Round 1 issues; now processing Volume 2
+- **Round 2 Reviewer** (agent acf68b7): Volume 1 grade: **B+** (translatable); awaiting Volume 2
+- **Volume 1 status**: B+ — digits reduced 60%, verse refs 99.6% stripped, boundaries fixed
+- **Volume 2 status**: NOT YET PROCESSED — critical blocker for overall Grade A
+- **Reviewer's remaining requests**:
+  1. Process Volume 2 (Books 12-24) with same pipeline
+  2. Strip 6 remaining apparatus garble paragraphs (minor)
+  3. Strip 19 remaining verse refs (extremely garbled forms, 0.5% paragraphs)
+- **Round 2 documentation**:
+  - Joint: `docs/eustathius-r2-collaboration.md`
+  - Reviewer scratch: `docs/eustathius-r2-reviewer-scratchpad.md`
+  - Processor scratch: `docs/eustathius-processor-scratchpad.md`
+- **Volume 1 source**: `data/difficult_extra_processing/commentariiadhom01eust_djvu.txt`
+- **Volume 2 source**: `data/difficult_extra_processing/commentariiadhom02eust_djvu.txt`
+- **Volume 2 agents launched**:
+  - Processor: agent a44a6b7 (extends pipeline for Vol 2, Books 12-24)
+  - Reviewer: agent a20bfed (reviews Vol 2 output, waits for Processor)
+- **When both volumes Grade A**: Auto-seed DB + translate via DeepSeek
+
+## 2026-01-24: Greek XML Translation Workers — Status
+
+- **Diognetum** (agent affd974): COMPLETE — 12/12 chapters, 100 paragraphs, 0 errors
+- **Historia Nova** (3 parallel workers):
+  - Agent a21b76e: chapters 1-128 (Books 1-2)
+  - Agent a9d67d7: chapters 129-223 (Books 3-4)
+  - Agent a63aef9: chapters 224-287 (Books 5-6)
+- **Sophistici Elenchi** (agent af2cefd): IN PROGRESS — 35 chapters
+
+## 2026-01-24: Greek XML Reviewer Agent -- Output Review
+
+- **Task**: Review all output from the Greek XML TEI Parser Agent (a95b70a)
+- **Files reviewed**: 334 chapter JSON files + 334 raw text files across 3 texts
+- **Verdict**: GRADE A overall. Zero parser bugs. All issues are source-XML artifacts.
+- **Texts approved for pipeline**:
+  - Diognetum (12 chapters, A-)
+  - Historia Nova (287 chapters, A)
+  - Sophistici Elenchi Paraphrasis (35 chapters, B+)
+- **Critique written to**: `docs/greek-xml-collaboration.md`
+- **Working notes at**: `docs/greek-xml-reviewer-scratchpad.md`
+- **Next steps**: ~~Seed into DB + launch translation workers~~ DONE (see above)
+
+---
+
 ## Research Summary
 
 ### Tech Stack Confirmed
@@ -1163,9 +1437,235 @@ the parenthetical unless the original title is well-known (e.g., "On the Soul (D
 **Background workers still running:**
 - Tongjian: b76003b, b83ad01 (translating remaining chapters 25-45)
 
-**Next steps (in order):**
-1. Wait for Nandikkalambakam Stage 1 to finish (5 more poems)
-2. Launch Nandikkalambakam Stage 3 (Master Retranslator) — reads reviewer notes, improves prompt, retranslates, editorial clarification
-3. After Nandikkalambakam completes: Yashodhara Kaviyam through full Tamil pipeline
-4. After Yashodhara: Udayanakumara Kaviyam through full Tamil pipeline
-5. Commit and push all changes (naming, processed data, new scripts)
+**Actions taken (continued):**
+- Committed and pushed naming changes: de59658 → Vercel deploying
+- Nandikkalambakam Stage 1 confirmed COMPLETE (114/114 via DB query)
+- Launched Nandikkalambakam Stage 3 agent (aa88334): Master Retranslator
+  - Reads reviewer notes, improves Tamil prompt for medieval text, retranslates all 114, editorial clarification
+- Launched Yashodhara Kaviyam Stage 1 agent (a1cae1c) IN PARALLEL:
+  - Processing raw text from data/raw/yashodhara-kaviyam/
+  - Seeding into DB, translating with Gemini 2.5 Flash
+  - Will create pipeline progress file when done
+
+**Currently running (4 agents + 2 Tongjian workers):**
+- aa88334: Nandikkalambakam Stage 3 (Master Retranslator)
+- a1cae1c: Yashodhara Kaviyam Stage 1 (processing + translating)
+- a9ce61b: Udayanakumara Kaviyam Stage 1 (processing + translating)
+- b76003b, b83ad01: Tongjian translation workers
+
+**Udayanakumara Kaviyam Stage 1 COMPLETE (agent a9ce61b, 2026-01-24):**
+- Processed raw text (2,660 lines) into 6 chapters (366 verses, 1 short of stated 367)
+- Created processing script: scripts/process-udayanakumara-kaviyam.ts
+- Added author "Anonymous Jain Poet (Udayana cycle)" + text entry to seed-db.ts
+- Seeded into DB (text ID 22, 6 chapters)
+- Translated all 6 chapters via Gemini 2.5 Flash
+- Cleaned up duplicate translations from parallel runs
+- Pipeline progress: docs/tamil-translation-notes/udayanakumara-kaviyam-pipeline-progress.md
+- STAGE 1 COMPLETE
+
+**Odyssey Commentary Cleaning Agent launched (ad294a1, 2026-01-24):**
+- Source: TWO volumes — `commentariiadhom01eust_djvu.txt` + `commentariiadhom02eust_djvu.txt`
+- Text: Eustathius of Thessalonica, Commentary on Homer's Odyssey (both volumes)
+- Vol 1: ~25,879 lines (Odyssey books 1-12 approx.)
+- Vol 2: exists in same folder, covers Odyssey books 13-24 approx.
+- Agent initially instructed for Vol 1 only; will be resumed for Vol 2 after completion
+- Coordination file: `docs/eustathius-odyssey-agent-instructions.md` (both volumes documented)
+- Agent writes own docs: `docs/plan-eustathius-processing.md`, `docs/eustathius-scratchpad.md`
+- Architecture: Following Carmina Graeca pipeline pattern (`scripts/lib/eustathius/` modules)
+- Output: `data/raw/eustathius-odyssey/` + `data/processed/eustathius-odyssey/chapter-NNN.json`
+- Language: grc, Author: Eustathius of Thessalonica (12th c. CE)
+
+**Yashodhara Kaviyam Stage 1 COMPLETE (agent a1cae1c, 2026-01-24):**
+- Processed raw text (2 files) into 5 chapters (330 verses across 5 carukkams)
+- Created processing script: scripts/process-yashodhara-kaviyam.ts
+- Added author "Anonymous Jain Poet" + text entry to seed-db.ts
+- Seeded into DB (5 chapters), translated all 5 via Gemini 2.5 Flash
+- Pipeline progress: docs/tamil-translation-notes/yashodhara-kaviyam-pipeline-progress.md
+- STAGE 1 COMPLETE
+
+**Stage 2 Reviewers launched (2026-01-24):**
+- afa7e45: Yashodhara Kaviyam Stage 2 Reviewer (reading translations, writing notes)
+- ae734cc: Udayanakumara Kaviyam Stage 2 Reviewer (reading translations, writing notes)
+- Both will write reviewer-notes.md + retranslation-requests.md in docs/tamil-translation-notes/
+
+**Greek XML TEI Parser Agent launched (a95b70a, 2026-01-24):**
+- Source: 3 TEI-XML files in `data/greek_xml/` (First1KGreek/Perseus corpus)
+  1. Epistula ad Diognetum (Pseudo-Justin Martyr, 2nd c. CE) — 50KB
+  2. Historia Nova (Zosimus, 5th-6th c. CE) — 1.2MB
+  3. In Aristotelis Sophisticos Elenchos Paraphrasis (Anonymous) — 489KB
+- Task: Build a flexible, reusable TEI-XML parser for Greek texts
+- Architecture: `scripts/lib/greek-xml/` (types, tei-parser, text-extractor, chapter-splitter, validator)
+- Main script: `scripts/process-greek-xml.ts`
+- Output: `data/raw/<slug>/` + `data/processed/<slug>/chapter-NNN.json`
+- Agent writes own docs: `docs/plan-greek-xml-processing.md`, `docs/greek-xml-scratchpad.md`
+- Self-testing: Agent iterates until all 3 texts produce clean, consistent output
+
+**Eustathius Dual-Agent Quality Pipeline launched (2026-01-24):**
+- Greek Reviewer Agent (a8e9017) launched alongside Processing Agent (ad294a1)
+- Shared collaboration doc: `docs/eustathius-collaboration.md` (both read/write)
+- Reviewer's own scratchpad: `docs/eustathius-reviewer-scratchpad.md`
+- Workflow: Processor produces → Reviewer critiques → Processor fixes → iterate until Grade A
+- Same pattern as Carmina Graeca dual-agent pipeline (which achieved Grade A)
+
+**Currently running (7 agents + 2 Tongjian workers):**
+- aa88334: Nandikkalambakam Stage 3 (Master Retranslator)
+- afa7e45: Yashodhara Kaviyam Stage 2 (Reviewer)
+- ae734cc: Udayanakumara Kaviyam Stage 2 (Reviewer)
+- ad294a1: Odyssey Commentary Processing Agent (OCR pipeline, Vol 1)
+- a8e9017: Odyssey Commentary Reviewer Agent (quality evaluator)
+- a95b70a: Greek XML TEI Parser Agent (building reusable parser for 3 texts)
+- b76003b: Tongjian translation worker (ch 19+)
+- b83ad01: Tongjian translation worker (ch 33+)
+
+**Yashodhara Kaviyam Stage 2 COMPLETE (agent afa7e45, 2026-01-24):**
+- Overall grade: C+ (significant processing bug)
+- CRITICAL: `process-yashodhara-kaviyam.ts` fails to strip commentary from 2nd source file
+  - Chapters 3-5 contaminated with commentary prose (30-46% of paragraphs)
+- Missing translations in Ch 1: verses 57-73 (token exhaustion)
+- 194/330 verses (59%) need retranslation
+- Stage 3 must: fix processing script → re-seed ch 3-5 → retranslate all
+
+**Greek XML Output Reviewer Agent launched (a329f69, 2026-01-24):**
+- Reviews output of Greek XML Parser Agent (a95b70a)
+- Shared doc: `docs/greek-xml-collaboration.md`
+- Reviewer scratchpad: `docs/greek-xml-reviewer-scratchpad.md`
+- Same dual-agent pattern as Eustathius pipeline
+
+**Greek XML TEI Parser COMPLETE (agent a95b70a, 2026-01-24):**
+- All 3 texts processed: 334 chapters, 1,276 paragraphs, 606K chars
+- Epistula ad Diognetum: 12 chapters, 100 paragraphs (all PASS)
+- Historia Nova (Zosimus): 287 chapters, 1,071 paragraphs (all PASS)
+- Sophistici Elenchi Paraphrasis: 35 chapters, 105 paragraphs (all PASS)
+- Pipeline: scripts/lib/greek-xml/ (6 modules) + scripts/process-greek-xml.ts
+- Dependency added: fast-xml-parser v5.3.3
+- Documentation: docs/plan-greek-xml-processing.md, docs/greek-xml-scratchpad.md
+- Next: Greek XML Reviewer Agent (a329f69) evaluating output quality
+
+**Currently running (7 agents + 2 Tongjian workers):**
+- aa88334: Nandikkalambakam Stage 3 (Master Retranslator)
+- ae734cc: Udayanakumara Kaviyam Stage 2 (Reviewer)
+- ad294a1: Odyssey Commentary Processing Agent
+- a8e9017: Odyssey Commentary Reviewer Agent
+- a329f69: Greek XML Output Reviewer Agent (reviewing 334 processed chapters)
+- b76003b: Tongjian translation worker (ch 19+)
+- b83ad01: Tongjian translation worker (ch 33+)
+
+**Next steps:**
+1. When Nandikkalambakam Stage 3 completes: verify quality improvement
+2. When Udayanakumara Stage 2 completes: launch Stage 3 for both Tamil texts
+   - Yashodhara: fix processing script FIRST, re-seed, retranslate
+3. When Greek XML Reviewer (a329f69) confirms quality: launch 3 PARALLEL translation agents
+   - Agent 1: Epistula ad Diognetum (12 chapters) — seed + translate
+   - Agent 2: Historia Nova / Zosimus (287 chapters) — seed + translate (large!)
+   - Agent 3: Sophistici Elenchi Paraphrasis (35 chapters) — seed + translate
+   - All use DeepSeek (grc language, existing translate-batch.ts)
+   - Each agent handles actual text vs commentary distinction
+4. When Odyssey dual agents reach Grade A: resume Processor for Vol 2
+5. After both Odyssey volumes processed: seed into DB + translate (grc)
+6. Commit all new processed data + scripts when agents complete
+
+---
+
+## Session 2026-01-24: Greek XML TEI Parser — COMPLETE
+
+### Task
+Built a modular TEI-XML parser pipeline for First1KGreek corpus files.
+
+### Files Created
+- `scripts/lib/greek-xml/types.ts` — TypeScript interfaces + TEXT_CONFIGS
+- `scripts/lib/greek-xml/tei-parser.ts` — Core XML parsing (fast-xml-parser)
+- `scripts/lib/greek-xml/text-extractor.ts` — Text cleaning/normalization
+- `scripts/lib/greek-xml/chapter-splitter.ts` — Division tree -> flat chapters
+- `scripts/lib/greek-xml/validator.ts` — Quality checking
+- `scripts/lib/greek-xml/index.ts` — Module exports
+- `scripts/process-greek-xml.ts` — CLI processing script
+- `docs/greek-xml-parsing-notes.md` — Structural analysis
+- `docs/plan-greek-xml-processing.md` — Architecture + how-to guide
+- `docs/greek-xml-scratchpad.md` — Working notes
+
+### Results
+| Text | Slug | Chapters | Paragraphs | Characters | Status |
+|------|------|----------|------------|------------|--------|
+| Epistula ad Diognetum | diognetum | 12 | 100 | 16,823 | 12 PASS |
+| Historia Nova (Zosimus) | historia-nova | 287 | 1,071 | 416,216 | 287 PASS |
+| In Soph. Elenchos Paraphrasis | sophistici-elenchi-paraphrasis | 35 | 105 | 173,137 | 35 PASS |
+| **TOTAL** | | **334** | **1,276** | **606,176** | **0 WARN/FAIL** |
+
+### Dependencies Added
+- `fast-xml-parser` v5.3.3
+
+### Remaining Steps
+1. Add author + text entries to `scripts/seed-db.ts`
+2. Run `pnpm tsx scripts/seed-db.ts` to seed into database
+3. Launch translation workers on each text
+
+---
+
+## Session 2026-01-24 — Eustathius Odyssey Commentary Processing Pipeline
+
+### Task
+Process `data/difficult_extra_processing/commentariiadhom01eust_djvu.txt` (25,880 lines OCR) into
+clean structured chapter files. Source: Volume 1 of Eustathius of Thessalonica's Commentary on
+Homer's Odyssey (Leipzig 1825 Weigel edition, Internet Archive scan).
+
+### Architecture
+6-module TypeScript pipeline in `scripts/lib/eustathius/`:
+- `types.ts` — type definitions (RhapsodyEntry, TextSection, ClassifiedLine, etc.)
+- `book-splitter.ts` — hardcoded ΡΑΨΩΔΙΑ boundaries for 12 sections (ch0=preface, ch1-11=Odyssey books)
+- `content-classifier.ts` — 14-rule priority classifier (commentary|page_header|margin_number|page_number|empty|noise)
+- `commentary-extractor.ts` — line joining, margin stripping, paragraph splitting at verse refs
+- `quality-checker.ts` — validates Greek%, paragraph count, noise leakage
+- `output-formatter.ts` — writes JSON to data/processed/ and TXT to data/raw/
+
+Main orchestrator: `scripts/process-eustathius.ts`
+
+### Key Technical Decisions
+1. **Hardcoded boundaries** vs dynamic detection: ΡΑΨΩΔΙΑ headers are too garbled for reliable auto-detection.
+   Manually identified 12 book boundaries by analyzing all 50+ ΡΑΨΩΔΙΑ headers in the file.
+2. **ΡΑΨΩΔΙΑ regex**: Required 3 iterations. Final pattern: `/[»Ῥ]*Ρ{0,2}ΑΨ[ΙΩΏΣΨ1-9\s.,]*[ΩΏΙΊ1ΣΤ][ΔΙ41][ΑΙ4.,\s\d]*/`
+   Key challenge: OCR replaces Greek with numerals (Δ→4, Ι→1) and adds spaces/dots.
+3. **Paragraph splitting**: Uses "(Vers. N.)" references as natural break points, falls back to
+   sentence boundaries (period + space), then character count (MAX_PARAGRAPH_CHARS=800).
+4. **Margin stripping**: Removes Bekker numbers (10,20,30,40,50,60), edition page numbers (3-4 digits),
+   and garbled margin annotations. Applied per-line before joining.
+5. **Short paragraph filter**: Paragraphs <20 chars after cleaning are filtered as noise leakage.
+6. **Leading page number fix**: Pattern updated to handle `1466(Vers...` (no space after digits).
+
+### Results (Final Run — All Issues Fixed)
+- **12 chapters**: 0=Preface/Prooemium, 1-11=Odyssey Books A-Λ
+- **Status**: ALL 12 PASS (previously 7 PASS, 5 WARN)
+- **Total stats**: 20,583 commentary lines, 3,450 paragraphs, 1,955,254 total characters
+- **Greek char %**: 93.9%-96.3% for commentary chapters (59.6% for Latin/Greek preface)
+- **Average paragraph length**: 553-587 chars across chapters
+
+### Chapter Details
+| Ch | Book | Lines | Paragraphs | Chars | Greek% | Status |
+|----|------|-------|------------|-------|--------|--------|
+| 0 | Preface | 181 | 23 | 12,727 | 59.6% | PASS |
+| 1 | Α (Alpha) | 4,740 | 607 | 336,234 | 96.1% | PASS |
+| 2 | Β (Beta) | 3,096 | 406 | 227,932 | 96.1% | PASS |
+| 3 | Γ (Gamma) | 781 | 106 | 61,031 | 96.0% | PASS |
+| 4 | Δ (Delta) | 3,031 | 387 | 225,847 | 95.5% | PASS |
+| 5 | Ε (Epsilon) | 2,592 | 355 | 199,161 | 95.6% | PASS |
+| 6 | Ζ (Zeta) | 1,608 | 225 | 127,933 | 96.0% | PASS |
+| 7 | Η (Eta) | 850 | 107 | 60,952 | 93.9% | PASS |
+| 8 | Θ (Theta) | 1,962 | 271 | 153,554 | 95.9% | PASS |
+| 9 | Ι (Iota) | 3,634 | 508 | 288,047 | 95.7% | PASS |
+| 10 | Κ (Kappa) | 1,879 | 265 | 149,742 | 95.7% | PASS |
+| 11 | Λ (Lambda) | 1,377 | 190 | 112,094 | 96.3% | PASS |
+
+### Issues Investigated and Fixed
+1. **Book 3 short section (781 lines)**: Confirmed legitimate — the Γ→Δ boundary is correct.
+   Odyssey Book 3 commentary is genuinely shorter in this edition.
+2. **Short paragraph leakage** (Ch1: 3 noise fragments like "αὗται quia dn"): Fixed by filtering
+   paragraphs <20 chars in extractor.
+3. **Page number leakage** (Ch2: "...πατὴρ 0 ὡς 1 706", Ch8: "...μνῶν. 1603"):
+   - Fixed leading page number pattern: `^\d{3,4}[᾿'΄]?\s*(?=[\s(])` handles `1466(` case
+   - Added trailing Bekker strip at end of line
+   - Added trailing multi-digit garble strip: `/(\s+\d{1,2}){2,}\s*$/`
+
+### Output Locations
+- Processed JSON: `data/processed/eustathius-odyssey/chapter-000.json` through `chapter-011.json`
+- Raw TXT: `data/raw/eustathius-odyssey/chapter-00-preface-prooemium.txt` through `chapter-11-odyssey-book-11.txt`
+- Quality report: `data/processed/eustathius-odyssey/quality-report.json`
+- Documentation: `docs/plan-eustathius-processing.md`

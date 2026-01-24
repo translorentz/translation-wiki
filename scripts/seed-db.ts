@@ -19,6 +19,18 @@ import postgres from "postgres";
 import { eq, and } from "drizzle-orm";
 import * as schema from "../src/server/db/schema";
 
+// Load .env.local manually (last DATABASE_URL wins, matching dotenv behavior)
+const envPath = path.resolve(__dirname, "../.env.local");
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const match = line.match(/^DATABASE_URL=(.+)$/);
+    if (match) {
+      process.env.DATABASE_URL = match[1].replace(/^['"]|['"]$/g, "");
+    }
+  }
+}
+
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   console.error("DATABASE_URL environment variable is required.");
@@ -201,6 +213,150 @@ const AUTHORS = [
     era: "Pallava period (c. 850 CE)",
     description:
       "The Nandikkalambakam is a kalambakam (multi-genre anthology) composed by multiple poets praising King Nandivarman III Pallava. The kalambakam form features diverse poetic genres unified around a single patron or subject.",
+  },
+  {
+    name: "Anonymous Jain Poet",
+    nameOriginalScript: "சமணக் கவிஞர்",
+    slug: "yashodhara-kaviyam-poet",
+    era: "Chola period (c. 10th-12th century CE)",
+    description:
+      "The author of Yashodhara Kaviyam is an anonymous Jain Tamil poet of the Chola period. The poem narrates the story of King Yashodhara to illustrate the Jain doctrine of karma and the consequences of violence (himsa), demonstrating how souls transmigrate through various animal births due to past actions.",
+  },
+  {
+    name: "Anonymous Jain Poet (Udayana cycle)",
+    nameOriginalScript: "சமணக் கவிஞர்",
+    slug: "udayanakumara-kaviyam-poet",
+    era: "Late medieval period (c. 13th-14th century CE)",
+    description:
+      "The author of Udayanakumara Kaviyam is an anonymous Jain Tamil poet of the late medieval period. The poem belongs to the Perunkathai (Great Narrative) tradition and narrates the story of Prince Udayana of the Vatsa kingdom, incorporating Jain philosophical concepts such as the seven tattvas, ahimsa, and the path to liberation through renunciation.",
+  },
+  {
+    name: "Anonymous (Diognetus)",
+    nameOriginalScript: "Ἀνώνυμος",
+    slug: "diognetus-author",
+    era: "2nd century CE",
+    description:
+      "The author of the Epistle to Diognetus is unknown. The text was formerly attributed to Justin Martyr but is now recognized as an anonymous early Christian apologetic work, possibly from the late 2nd century. It is a rhetorical defense of Christianity addressed to a pagan enquirer named Diognetus.",
+  },
+  {
+    name: "Zosimus",
+    nameOriginalScript: "Ζώσιμος",
+    slug: "zosimus",
+    era: "Byzantine Empire (late 5th – early 6th century CE)",
+    description:
+      "Byzantine historian and former imperial advocate (comes) who wrote the Historia Nova (New History) in 6 books, covering Roman history from Augustus to the sack of Rome in 410 CE. A pagan, Zosimus attributed Rome's decline to the abandonment of traditional religion.",
+  },
+  {
+    name: "Anonymous (Aristotelian commentator)",
+    nameOriginalScript: "Ἀνώνυμος",
+    slug: "soph-elenchi-paraphrast",
+    era: "Byzantine period (date uncertain)",
+    description:
+      "The anonymous author of the Paraphrase on Aristotle's Sophistical Refutations. This Byzantine-era commentary restates and explicates Aristotle's treatise on fallacious reasoning in more accessible Greek prose.",
+  },
+  {
+    name: "Eustathius of Thessalonica",
+    nameOriginalScript: "Εὐστάθιος Θεσσαλονίκης",
+    slug: "eustathius",
+    era: "Byzantine Empire (c. 1115–1195/6 CE)",
+    description:
+      "Byzantine scholar, archbishop of Thessalonica, and author of extensive commentaries on Homer's Iliad and Odyssey. His commentaries are the most comprehensive surviving ancient and medieval exegeses of Homer, preserving fragments of many lost earlier commentaries and scholia. He also wrote works on history, theology, and rhetoric.",
+  },
+  {
+    name: "Marcianus of Heraclea",
+    nameOriginalScript: "Μαρκιανὸς ὁ Ἡρακλεώτης",
+    slug: "marcianus",
+    era: "Late Roman period (c. 400 CE)",
+    description:
+      "Greek geographer from Heraclea Pontica who compiled epitomes of earlier geographical works. His surviving texts include an independent Periplus of the Outer Sea and epitomes of works by Menippus of Pergamon and Artemidorus of Ephesus.",
+  },
+  {
+    name: "Anonymous (Hesiod Commentary)",
+    nameOriginalScript: "Ἀνώνυμος",
+    slug: "anonymous-hesiod",
+    era: "Byzantine period (date uncertain)",
+    description:
+      "Anonymous author of an exegetical commentary on Hesiod's Theogony, preserved in a manuscript edited by Hans Flach. The commentary provides mythological, allegorical, and philosophical interpretations of Hesiod's cosmogonic poem.",
+  },
+  {
+    name: "Kong Anguo",
+    nameOriginalScript: "孔安國",
+    slug: "kong-anguo",
+    era: "Western Han dynasty (c. 156–74 BCE)",
+    description:
+      "Han dynasty Confucian scholar and descendant of Confucius in the eleventh generation. He is traditionally credited with compiling and editing the Kongzi Jiayu (孔子家語), a collection of dialogues and anecdotes of Confucius, though the text likely incorporates material from various periods.",
+  },
+  {
+    name: "He Yan",
+    nameOriginalScript: "何晏",
+    slug: "he-yan",
+    era: "Three Kingdoms (c. 249 CE)",
+    description:
+      "Wei dynasty scholar who compiled the standard commentary on the Analects.",
+  },
+  {
+    name: "Zhao Qi",
+    nameOriginalScript: "趙岐",
+    slug: "zhao-qi",
+    era: "Eastern Han (c. 200 CE)",
+    description:
+      "Han dynasty scholar who wrote the standard commentary on Mencius.",
+  },
+  {
+    name: "Xing Bing",
+    nameOriginalScript: "邢昺",
+    slug: "xing-bing",
+    era: "Northern Song (c. 1000 CE)",
+    description:
+      "Song dynasty scholar who wrote sub-commentaries on several classics.",
+  },
+  {
+    name: "Guo Pu",
+    nameOriginalScript: "郭璞",
+    slug: "guo-pu",
+    era: "Eastern Jin (c. 324 CE)",
+    description:
+      "Jin dynasty scholar and naturalist who annotated the Erya dictionary.",
+  },
+  {
+    name: "Kong Yingda",
+    nameOriginalScript: "孔穎達",
+    slug: "kong-yingda",
+    era: "Sui–Tang dynasty (574–648 CE)",
+    description:
+      "Tang dynasty Confucian scholar who led the imperially commissioned project to produce the Correct Meaning (正義) commentaries on the Five Classics. His sub-commentaries on the Spring and Autumn Annals, Book of Rites, Book of Changes, Book of Documents, and Mao Shi became the orthodox interpretation for the imperial examination system.",
+  },
+  {
+    name: "He Xiu",
+    nameOriginalScript: "何休",
+    slug: "he-xiu",
+    era: "Eastern Han (129–182 CE)",
+    description:
+      "Han dynasty classical scholar who wrote the standard commentary (解詁) on the Gongyang Commentary to the Spring and Autumn Annals. Devoted seventeen years to his work, which became the authoritative interpretation of the Gongyang school's approach to the Chunqiu.",
+  },
+  {
+    name: "Fan Ning",
+    nameOriginalScript: "范寧",
+    slug: "fan-ning",
+    era: "Eastern Jin (339–401 CE)",
+    description:
+      "Jin dynasty scholar who wrote the Collected Commentaries (集解) on the Guliang Commentary to the Spring and Autumn Annals. His work gathered the interpretations of various scholars and became the standard annotation for the Guliang tradition.",
+  },
+  {
+    name: "Jia Gongyan",
+    nameOriginalScript: "賈公彥",
+    slug: "jia-gongyan",
+    era: "Tang Dynasty (c. 650 CE)",
+    description:
+      "Tang dynasty scholar who wrote sub-commentaries on the Rites of Zhou and Ceremonial Rites, expanding on Zheng Xuan's earlier annotations with detailed textual analysis.",
+  },
+  {
+    name: "Zheng Xuan (Liji ed.)",
+    nameOriginalScript: "鄭玄",
+    slug: "zheng-xuan-liji",
+    era: "Eastern Han dynasty (127-200 CE)",
+    description:
+      "The greatest classical scholar of the Han dynasty, who wrote definitive commentaries on the Three Rites and many other classics. His annotations on the Book of Rites remain essential for understanding the text.",
   },
 ] as const;
 
@@ -456,6 +612,320 @@ const TEXTS = [
     compositionYear: 850,
     compositionEra: "Pallava period (c. 850 CE)",
     textType: "poetry" as const,
+  },
+  {
+    title: "The Story of Yashodhara (Yashodhara Kaviyam)",
+    titleOriginalScript: "யசோதர காவியம்",
+    slug: "yashodhara-kaviyam",
+    languageCode: "ta",
+    authorSlug: "yashodhara-kaviyam-poet",
+    description:
+      "A Jain Tamil epic poem in 5 carukkams (chapters) and 330 verses, narrating the story of King Yashodhara and Queen Chandramati to illustrate the Jain doctrine of karma and ahimsa. Through their various rebirths as animals — peacock, dog, snake, boar, fish, goat, and rooster — the poem demonstrates the consequences of violence and the path to liberation through non-violence and right conduct.",
+    sourceUrl: "",
+    processedDir: "data/processed/yashodhara-kaviyam",
+    compositionYear: 1050,
+    compositionEra: "Chola period (c. 10th-12th century CE)",
+    textType: "poetry" as const,
+  },
+  {
+    title: "The Tale of Prince Udayana (Udayanakumara Kaviyam)",
+    titleOriginalScript: "உதயணகுமார காவியம்",
+    slug: "udayanakumara-kaviyam",
+    languageCode: "ta",
+    authorSlug: "udayanakumara-kaviyam-poet",
+    description:
+      "A Jain Tamil narrative poem in 6 kandams (cantos) and 367 verses, telling the story of Prince Udayana (Udayanan) of the Vatsa kingdom. Part of the Perunkathai (Great Narrative) tradition, the poem traces Udayana's adventures, marriages, battles, and eventual renunciation, illustrating Jain philosophical concepts including the seven tattvas and the path from worldly life to spiritual liberation.",
+    sourceUrl: "",
+    processedDir: "data/processed/udayanakumara-kaviyam",
+    compositionYear: 1300,
+    compositionEra: "Late medieval period (c. 13th-14th century CE)",
+    textType: "poetry" as const,
+  },
+  {
+    title: "Epistle to Diognetus",
+    titleOriginalScript: "Πρὸς Διόγνητον",
+    slug: "diognetum",
+    languageCode: "grc",
+    authorSlug: "diognetus-author",
+    description:
+      "An anonymous early Christian apologetic letter addressed to a pagan named Diognetus, defending Christianity against paganism and Judaism. One of the earliest examples of Christian apologetics, notable for its elegant Greek rhetoric and its description of Christians as 'resident aliens' in the world.",
+    sourceUrl: "https://github.com/OpenGreekAndLatin/First1KGreek",
+    processedDir: "data/processed/diognetum",
+    compositionYear: 180,
+    compositionEra: "Late 2nd century CE",
+  },
+  {
+    title: "New History (Historia Nova)",
+    titleOriginalScript: "Ἱστορία Νέα",
+    slug: "historia-nova",
+    languageCode: "grc",
+    authorSlug: "zosimus",
+    description:
+      "A history of the Roman Empire in 6 books, covering from the reign of Augustus to the sack of Rome by Alaric in 410 CE. Written from a pagan perspective, Zosimus attributes Rome's decline to the abandonment of the traditional gods. A major source for late Roman political and military history.",
+    sourceUrl: "https://github.com/OpenGreekAndLatin/First1KGreek",
+    processedDir: "data/processed/historia-nova",
+    compositionYear: 500,
+    compositionEra: "Late 5th – early 6th century CE, Byzantine Empire",
+  },
+  {
+    title: "Paraphrase on Sophistical Refutations",
+    titleOriginalScript: "Εἰς τοὺς Σοφιστικοὺς Ἐλέγχους Παράφρασις",
+    slug: "sophistici-elenchi-paraphrasis",
+    languageCode: "grc",
+    authorSlug: "soph-elenchi-paraphrast",
+    description:
+      "A Byzantine paraphrase of Aristotle's Sophistical Refutations (De Sophisticis Elenchis), restating and explicating Aristotle's treatise on fallacious reasoning. The paraphrase makes Aristotle's dense logical analysis more accessible through expanded explanation in prose Greek.",
+    sourceUrl: "https://github.com/OpenGreekAndLatin/First1KGreek",
+    processedDir: "data/processed/sophistici-elenchi-paraphrasis",
+    compositionYear: 900,
+    compositionEra: "Byzantine period (date uncertain)",
+  },
+  {
+    title: "Commentary on the Odyssey",
+    titleOriginalScript: "Παρεκβολαὶ εἰς τὴν Ὁμήρου Ὀδύσσειαν",
+    slug: "eustathius-odyssey",
+    languageCode: "grc",
+    authorSlug: "eustathius",
+    description:
+      "Eustathius of Thessalonica's commentary on Homer's Odyssey, composed in the 12th century. The work is a vast compendium of ancient and medieval scholarship on the Odyssey, preserving fragments of lost commentaries, lexica, and scholia. It covers all 24 books of the Odyssey with extensive philological, mythological, and historical annotation.",
+    sourceUrl: "https://archive.org/details/commentariiadhom01eust",
+    processedDir: "data/processed/eustathius-odyssey",
+    compositionYear: 1170,
+    compositionEra: "12th century CE, Byzantine Empire",
+  },
+  {
+    title: "Circumnavigation of the Outer Sea (Periplus Maris Exteri)",
+    titleOriginalScript: "Περίπλους τῆς ἔξω θαλάσσης",
+    slug: "periplus-maris-exteri",
+    languageCode: "grc",
+    authorSlug: "marcianus",
+    description:
+      "Marcianus' independent geographical work describing the circumnavigation of the seas beyond the Mediterranean (the 'Outer Sea'), covering the coasts of Africa, Arabia, India, and the Far East. Organized in two books: Book 1 covers the eastern ocean, Book 2 the western.",
+    sourceUrl: "",
+    processedDir: "data/processed/periplus-maris-exteri",
+    compositionYear: 400,
+    compositionEra: "Late Roman period",
+  },
+  {
+    title: "Menippus' Circumnavigation of the Inner Sea (Periplus Maris Interni)",
+    titleOriginalScript: "Μενίππου Περίπλους τῆς ἐντὸς θαλάσσης",
+    slug: "periplus-maris-interni",
+    languageCode: "grc",
+    authorSlug: "marcianus",
+    description:
+      "Marcianus' epitome of the Periplus of the Inner Sea (Mediterranean) by Menippus of Pergamon. A condensed geographical survey of Mediterranean coastlines and distances between ports.",
+    sourceUrl: "",
+    processedDir: "data/processed/periplus-maris-interni",
+    compositionYear: 400,
+    compositionEra: "Late Roman period",
+  },
+  {
+    title: "Artemidorus' Geography (Epitome)",
+    titleOriginalScript: "Ἀρτεμιδώρου Γεωγραφία",
+    slug: "artemidori-geographia",
+    languageCode: "grc",
+    authorSlug: "marcianus",
+    description:
+      "Marcianus' epitome of the Geography by Artemidorus of Ephesus. A fragmentary condensation of Artemidorus' eleven-book geographical work, preserving scattered place names, distances, and ethnographic notes from the original.",
+    sourceUrl: "",
+    processedDir: "data/processed/artemidori-geographia",
+    compositionYear: 400,
+    compositionEra: "Late Roman period",
+  },
+  {
+    title: "Exegesis on Hesiod's Theogony (Exegesis in Hesiodi Theogoniam)",
+    titleOriginalScript: "Ἐξήγησις εἰς τὴν Ἡσιόδου Θεογονίαν",
+    slug: "hesiod-theogony-exegesis",
+    languageCode: "grc",
+    authorSlug: "anonymous-hesiod",
+    description:
+      "An anonymous Byzantine commentary on Hesiod's Theogony, providing section-by-section exegesis with mythological, allegorical, and philosophical interpretations. Edited by Hans Flach.",
+    sourceUrl: "",
+    processedDir: "data/processed/hesiod-theogony-exegesis",
+    compositionYear: 1100,
+    compositionEra: "Byzantine period (date uncertain)",
+  },
+  {
+    title: "The School Sayings of Confucius (Kongzi Jiayu)",
+    titleOriginalScript: "孔子家語",
+    slug: "kongzi-jiayu",
+    languageCode: "zh",
+    authorSlug: "kong-anguo",
+    description:
+      "A collection of 44 chapters recording dialogues, anecdotes, and discourses of Confucius with his disciples and various rulers. Traditionally attributed to Kong Anguo, the text covers topics including governance, ritual propriety, music, virtue, and the conduct of the exemplary person.",
+    sourceUrl: "https://ctext.org/kongzi-jiayu",
+    processedDir: "data/processed/kongzi-jiayu",
+    compositionYear: -100,
+    compositionEra: "Western Han dynasty (c. 2nd–1st century BCE)",
+  },
+  {
+    title: "Analects with Commentary (Lunyu Zhushu)",
+    titleOriginalScript: "論語註疏",
+    slug: "lunyu-zhushu",
+    languageCode: "zh",
+    authorSlug: "he-yan",
+    description:
+      "The Analects of Confucius with He Yan's collected commentary and Xing Bing's sub-commentary, from the Thirteen Classics edition.",
+    sourceUrl: "https://ctext.org/lunyu-zhushu",
+    processedDir: "data/processed/lunyu-zhushu",
+    compositionYear: 249,
+    compositionEra: "Three Kingdoms / Northern Song (249 CE / 999 CE)",
+  },
+  {
+    title: "Mencius with Commentary (Mengzi Zhushu)",
+    titleOriginalScript: "孟子註疏",
+    slug: "mengzi-zhushu",
+    languageCode: "zh",
+    authorSlug: "zhao-qi",
+    description:
+      "The Mencius with Zhao Qi's commentary and Sun Shi's sub-commentary, from the Thirteen Classics edition.",
+    sourceUrl: "https://ctext.org/mengzi-zhushu",
+    processedDir: "data/processed/mengzi-zhushu",
+    compositionYear: 200,
+    compositionEra: "Eastern Han / Northern Song (c. 200 CE / 1000 CE)",
+  },
+  {
+    title: "Classic of Filial Piety with Commentary (Xiaojing Zhushu)",
+    titleOriginalScript: "孝經註疏",
+    slug: "xiaojing-zhushu",
+    languageCode: "zh",
+    authorSlug: "xing-bing",
+    description:
+      "The Classic of Filial Piety with Tang Xuanzong's commentary and Xing Bing's sub-commentary.",
+    sourceUrl: "https://ctext.org/xiaojing-zhushu",
+    processedDir: "data/processed/xiaojing-zhushu",
+    compositionYear: 999,
+    compositionEra: "Northern Song (999 CE)",
+  },
+  {
+    title: "Erya Dictionary with Commentary (Erya Zhushu)",
+    titleOriginalScript: "爾雅註疏",
+    slug: "erya-zhushu",
+    languageCode: "zh",
+    authorSlug: "guo-pu",
+    description:
+      "China's oldest dictionary with Guo Pu's commentary and Xing Bing's sub-commentary, from the Thirteen Classics edition.",
+    sourceUrl: "https://ctext.org/erya-zhushu",
+    processedDir: "data/processed/erya-zhushu",
+    compositionYear: 324,
+    compositionEra: "Eastern Jin / Northern Song (324 CE / 999 CE)",
+  },
+  {
+    title: "Zuo Commentary on Spring and Autumn with Commentary (Zuozhuan Zhengyi)",
+    titleOriginalScript: "春秋左傳正義",
+    slug: "zuozhuan-zhengyi",
+    languageCode: "zh",
+    authorSlug: "kong-yingda",
+    description:
+      "The Zuo Commentary on the Spring and Autumn Annals with Du Yu's commentary and Kong Yingda's sub-commentary. The most detailed narrative history of the Spring and Autumn period (722-468 BCE), with extensive scholarly annotations on political, military, and ritual events.",
+    sourceUrl: "https://ctext.org/zuozhuan-zhengyi",
+    processedDir: "data/processed/zuozhuan-zhengyi",
+    compositionYear: 642,
+    compositionEra: "Tang Dynasty (642 CE)",
+  },
+  {
+    title: "Gongyang Commentary on Spring and Autumn with Commentary (Gongyang Zhushu)",
+    titleOriginalScript: "春秋公羊傳註疏",
+    slug: "gongyang-zhushu",
+    languageCode: "zh",
+    authorSlug: "he-xiu",
+    description:
+      "The Gongyang Commentary with He Xiu's explanatory commentary and Xu Yan's sub-commentary. Emphasizes the moral and political lessons encoded in Confucius's Spring and Autumn Annals through a question-and-answer format.",
+    sourceUrl: "https://ctext.org/gongyang-zhushu",
+    processedDir: "data/processed/gongyang-zhushu",
+    compositionYear: 182,
+    compositionEra: "Eastern Han / Tang (182 CE / c. 650 CE)",
+  },
+  {
+    title: "Guliang Commentary on Spring and Autumn with Commentary (Guliang Zhushu)",
+    titleOriginalScript: "春秋穀梁傳註疏",
+    slug: "guliang-zhushu",
+    languageCode: "zh",
+    authorSlug: "fan-ning",
+    description:
+      "The Guliang Commentary with Fan Ning's commentary and Yang Shixun's sub-commentary. Focuses on ritual propriety and linguistic precision in interpreting the Spring and Autumn Annals.",
+    sourceUrl: "https://ctext.org/guliang-zhushu",
+    processedDir: "data/processed/guliang-zhushu",
+    compositionYear: 401,
+    compositionEra: "Eastern Jin / Tang (401 CE / c. 650 CE)",
+  },
+  {
+    title: "Rites of Zhou with Commentary (Zhouli Zhushu)",
+    titleOriginalScript: "周禮註疏",
+    slug: "zhouli-zhushu",
+    languageCode: "zh",
+    authorSlug: "jia-gongyan",
+    description:
+      "The Rites of Zhou with Zheng Xuan's commentary and Jia Gongyan's sub-commentary. Describes the ideal administrative organization of the Zhou dynasty government with detailed annotations on ritual offices, duties, and protocols.",
+    sourceUrl: "https://ctext.org/zhouli-zhushu",
+    processedDir: "data/processed/zhouli-zhushu",
+    compositionYear: 650,
+    compositionEra: "Tang Dynasty (c. 650 CE)",
+  },
+  {
+    title: "Ceremonial Rites with Commentary (Yili Zhushu)",
+    titleOriginalScript: "儀禮註疏",
+    slug: "yili-zhushu",
+    languageCode: "zh",
+    authorSlug: "jia-gongyan",
+    description:
+      "The Ceremonial Rites with Zheng Xuan's commentary and Jia Gongyan's sub-commentary. Detailed protocols for capping, marriage, archery, audience, and funeral rites with extensive textual analysis.",
+    sourceUrl: "https://ctext.org/yili-zhushu",
+    processedDir: "data/processed/yili-zhushu",
+    compositionYear: 650,
+    compositionEra: "Tang Dynasty (c. 650 CE)",
+  },
+  {
+    title: "Book of Rites with Commentary (Liji Zhengyi)",
+    titleOriginalScript: "禮記正義",
+    slug: "liji-zhengyi",
+    languageCode: "zh",
+    authorSlug: "kong-yingda",
+    description:
+      "The Book of Rites with Kong Yingda's Orthodox Commentary. A comprehensive treatise on ritual, ethics, philosophy, and social organization with the most authoritative sub-commentary in the Confucian classical tradition.",
+    sourceUrl: "https://ctext.org/liji-zhengyi",
+    processedDir: "data/processed/liji-zhengyi",
+    compositionYear: 642,
+    compositionEra: "Tang Dynasty (642 CE)",
+  },
+  {
+    title: "Book of Rites — Selected Chapters (Liji Zhushu)",
+    titleOriginalScript: "禮記註疏",
+    slug: "liji-zhushu",
+    languageCode: "zh",
+    authorSlug: "zheng-xuan-liji",
+    description:
+      "Selected chapters from the Book of Rites with Zheng Xuan's commentary. Includes the Great Learning (大學), Doctrine of the Mean (中庸), and other key treatises on ritual, ethics, and self-cultivation.",
+    sourceUrl: "https://ctext.org/liji-zhushu",
+    processedDir: "data/processed/liji-zhushu",
+    compositionYear: 200,
+    compositionEra: "Eastern Han (c. 200 CE)",
+  },
+  {
+    title: "Book of Changes with Commentary (Zhouyi Zhengyi)",
+    titleOriginalScript: "周易正義",
+    slug: "zhouyi-zhengyi",
+    languageCode: "zh",
+    authorSlug: "kong-yingda",
+    description:
+      "The Book of Changes (Yi Jing) with Wang Bi's commentary and Kong Yingda's Orthodox Commentary (正義). Covers all 64 hexagrams and the Ten Wings appendices, with philosophical interpretations of divination, cosmology, and moral self-cultivation.",
+    sourceUrl: "https://ctext.org/zhouyi-zhengyi",
+    processedDir: "data/processed/zhouyi-zhengyi",
+    compositionYear: 642,
+    compositionEra: "Tang Dynasty (642 CE)",
+  },
+  {
+    title: "Book of Documents with Commentary (Shangshu Zhengyi)",
+    titleOriginalScript: "尚書正義",
+    slug: "shangshu-zhengyi",
+    languageCode: "zh",
+    authorSlug: "kong-yingda",
+    description:
+      "The Book of Documents (Shang Shu) with Kong Anguo's commentary and Kong Yingda's Orthodox Commentary (正義). Contains speeches, proclamations, and historical records attributed to ancient Chinese rulers from Yao and Shun through the early Zhou dynasty.",
+    sourceUrl: "https://ctext.org/shangshu-zhengyi",
+    processedDir: "data/processed/shangshu-zhengyi",
+    compositionYear: 642,
+    compositionEra: "Tang Dynasty (642 CE)",
   },
 ] as const;
 

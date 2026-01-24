@@ -13,6 +13,8 @@
  * These are marked as AI-generated initial translations for human review.
  */
 
+import fs from "fs";
+import path from "path";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { eq, and, isNull, asc, desc, gte, lte } from "drizzle-orm";
@@ -23,6 +25,22 @@ import { buildTranslationPrompt } from "../src/server/translation/prompts";
 // ============================================================
 // Configuration
 // ============================================================
+
+// Load .env.local manually (last DATABASE_URL wins, matching dotenv behavior)
+const envPath = path.resolve(__dirname, "../.env.local");
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const dbMatch = line.match(/^DATABASE_URL=(.+)$/);
+    if (dbMatch) {
+      process.env.DATABASE_URL = dbMatch[1].replace(/^['"]|['"]$/g, "");
+    }
+    const dsMatch = line.match(/^DEEPSEEK_API_KEY=(.+)$/);
+    if (dsMatch) {
+      process.env.DEEPSEEK_API_KEY = dsMatch[1].replace(/^['"]|['"]$/g, "");
+    }
+  }
+}
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {

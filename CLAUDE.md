@@ -12,11 +12,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `scratch-notes.txt` | Session-by-session working notes with technical decisions and progress |
 | `communications-to-the-User.txt` | Implementation plan and step-by-step deployment guide |
 
-**Rules for maintaining these files:**
-- Update `scratch-notes.txt` as you work — track decisions, issues found, and progress
-- Update `reference-guide.txt` when project state changes (new features, deployments, schema changes)
+**Rules for maintaining these files (MANDATORY — never skip):**
+- Update `scratch-notes.txt` CONTINUOUSLY as you work — track decisions, agent launches/completions, issues found, and progress
+- Update `reference-guide.txt` when project state changes (new texts seeded, translations complete, agents finish, schema changes)
+- Update `CLAUDE.md` Active Tasks section whenever agents launch or complete
 - Never keep large translation content in context — write directly to the database
 - Keep `CLAUDE.md` itself updated when architecture or conventions change
+- Mark items COMPLETE in ALL files when done — never leave stale information
+- Check the **Workflow Documentation Map** section (below Active Tasks) for all processing patterns
+- Check `reference-guide.txt` → "PROCESSING WORKFLOWS & DOCUMENTATION MAP" for detailed workflow instructions
+- Agent-produced docs (scratchpads, plans) should always be referenced in CLAUDE.md and scratch-notes
 
 **Permanent permissions:**
 - You always have permission to write to and update logs, scratchpads, markdown files, and other documentation files (*.md, *.txt reference/notes files) without needing to ask first.
@@ -25,26 +30,121 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Active Tasks & Background Workers (2026-01-24)
 
-### Nandikkalambakam Tamil Pipeline — IN PROGRESS
-- **Stage 1** (agent a472c67): 109/114 poems translated, still running
+### Nandikkalambakam Tamil Pipeline — Stage 3 IN PROGRESS
+- **Stage 1** (agent a472c67): COMPLETE — 114/114 poems translated
 - **Stage 2** (agent a28b7f4): COMPLETE — reviewed 64 poems, B- grade
   - Reviewer notes: `docs/tamil-translation-notes/nandikkalambakam-reviewer-notes.md`
   - Retranslation requests: `docs/tamil-translation-notes/nandikkalambakam-retranslation-requests.md`
-- **Stage 3**: PENDING — launch immediately after Stage 1 completes
-  - Must read reviewer notes, improve prompt for medieval Tamil (not Sangam)
-  - Must include MANDATORY editorial clarification pass
+- **Stage 3** (agent aa88334): IN PROGRESS — improving prompt for medieval Tamil, retranslating all 114 poems, then editorial clarification pass
 - **Pipeline docs**: `docs/tamil-translation-orchestration.md`
 
-### Translation Workers (Background)
-- **Tongjian**: 2 workers still running (b76003b, b83ad01)
+### Yashodhara Kaviyam Tamil Pipeline — Stage 1 IN PROGRESS
+- **Stage 1** (agent a1cae1c): Processing raw text, seeding DB, translating with Gemini
+- Raw files: `data/raw/yashodhara-kaviyam/` (5 carukkams, 330 verses)
+- Stage 2 + Stage 3: will be launched when Stage 1 progresses
+
+### Translation Workers (Background) — Session 17 Status
+- **Tongjian**: COMPLETE — 45/45
+- **Diognetum**: COMPLETE — 12/12
+- **Historia Nova**: COMPLETE — 287/287
+- **Sophistici Elenchi**: COMPLETE — 35/35
+- **Kongzi Jiayu**: COMPLETE — 80/80
+- **Eustathius Odyssey**: 10/27 — 3 workers (ab5dae1 ch1-8, a4043fb ch9-16, afff370 ch19-24)
+- **Shisan Jing Zhushu**: 32/455 — ~20 workers across 13 texts (see Shisan Jing section below)
+
+### Search Fix — COMPLETE (agent a687c60, deployed)
+- **Problem**: Search only queried chapters.title + chapters.sourceContent, never texts.title or authors.name
+- **Fix**: Added text-level ILIKE substring search on texts.title + authors.name
+- **UI**: Now shows "Texts" section (matched texts) + "Chapters" section (content matches)
+- **Commit pushed**: Auto-deployed to deltoi.com
+
+### Udayanakumara Kaviyam Tamil Pipeline — Stage 1 COMPLETE
+- **Stage 1** (agent a9ce61b): COMPLETE — 6 chapters, 366 verses processed + translated
+- Raw files: `data/raw/udayanakumara-kaviyam/` (6 kandams)
+- Processing script: `scripts/process-udayanakumara-kaviyam.ts`
+- Pipeline progress: `docs/tamil-translation-notes/udayanakumara-kaviyam-pipeline-progress.md`
+- Stage 2 + Stage 3: will be launched after Yashodhara also completes
+
+### Odyssey Commentary Dual-Agent Pipeline — TRANSLATING (10/27)
+- **Final grade**: B+ (both volumes), Reviewer SATISFIED and signed off
+- **Volumes processed**: 2 volumes → 27 chapters total
+- **Combined stats**: 6,146 paragraphs, 3.3M characters, 94.7-97.5% Greek
+- **DB seeded**: 27 chapters (author: Eustathius of Thessalonica, slug: eustathius-odyssey)
+- **Translation progress**: 10/27 chapters translated
+- **Active workers** (corrected slug, DeepSeek grc, 6000 chars/batch):
+  - Worker ab5dae1: chapters 1-8
+  - Worker a4043fb: chapters 9-16
+  - Worker afff370: chapters 19-24
+- **NOTE**: Previous workers (a58c5f4, aa2274c, a05fbf7) used wrong slug — killed and replaced
+- **Round 2 joint doc**: `docs/eustathius-r2-collaboration.md`
+- **Architecture**: `scripts/lib/eustathius/` (6 modules)
+- **Output**: `data/raw/eustathius-odyssey/` + `data/processed/eustathius-odyssey/chapter-NNN.json`
+
+### Greek XML TEI Pipeline — COMPLETE (Seeded + Translating)
+- **Parser Agent** (a95b70a): COMPLETE — 334 chapters, ALL PASS
+- **Reviewer Agent** (a329f69): COMPLETE — Grade A (zero parser bugs)
+- **DB Seeded**: 3 texts inserted (12 + 287 + 35 = 334 chapters)
+- **Translation**: 3 workers running (affd974, a21b76e, af2cefd) — see Translation Workers above
+- **Collaboration doc**: `docs/greek-xml-collaboration.md`
+- **Architecture**: `scripts/lib/greek-xml/` + `scripts/process-greek-xml.ts`
+
+### Tamil Stage 2 Reviewers
+- **Yashodhara Kaviyam** (agent afa7e45): COMPLETE — Grade C+
+  - CRITICAL: Commentary contamination in chapters 3-5 (processing script bug)
+  - `process-yashodhara-kaviyam.ts` strips commentary from file 1 but NOT file 2
+  - 59% of verses (194/330) need retranslation
+  - Stage 3 must FIRST fix processing script, re-seed chapters 3-5, then retranslate
+  - Reviewer notes: `docs/tamil-translation-notes/yashodhara-kaviyam-reviewer-notes.md`
+  - Retranslation requests: `docs/tamil-translation-notes/yashodhara-kaviyam-retranslation-requests.md`
+- **Udayanakumara Kaviyam** (agent ae734cc): IN PROGRESS — still reviewing
+- Stage 3 retranslators launch after Udayanakumara review also completes
+
+### Greek XML TEI Pipeline Round 2 — COMPLETE
+- **Status**: Parser A, Reviewer SATISFIED — all 4 texts Grade A
+- **Texts produced**: hesiod-theogony-exegesis (13 ch, regrouped from 109), periplus-maris-exteri (31), periplus-maris-interni (6), artemidori-geographia (3)
+- **Translation**: ALL COMPLETE (13+31+6+3 = 53 chapters, 0 gaps, paragraph-verified)
+- **Joint doc**: `docs/greek-xml-r2-collaboration.md`
+
+### Shisan Jing Zhushu (十三經註疏) — TRANSLATING (4 Original + 4 Reinforcement Agents)
+- **Corpus**: The Thirteen Classics with Commentaries — 13 texts, 455 chapters total
+- **Source**: `data/raw/Shisan_Jing_Zhushu/` (762 files, 15 directories)
+- **Index**: `data/raw/Shisan_Jing_Zhushu/13_books_index.txt` (chapter ordering)
+- **All 13 texts processed and seeded to DB** — ~20 parallel translation workers active
+- **Chapter ordering verified**: All 13 texts confirmed correct (verification agent a430c04)
+- **Original orchestration agents** (DONE — launched background workers):
+  - Agent 1 (a9f1c24): 論語/孟子/孝經/爾雅 — 57 ch
+  - Agent 2 (ace30af): 周易正義/尚書正義 — 126 ch (3 workers: babf3aa, b6a0f7d, ba80c30)
+  - Agent 3 (a86e80d): 周禮/儀禮/禮記 — 178 ch (4 workers: bfc83a7, b4c8f59, b332ac1, b0508ee)
+  - Agent 4 (ace6429): 春秋三傳 — 94 ch (6 workers: bc593fa, bc3b540, b9c848d, bce1f8a, b624f79, bdcaaab)
+- **Reinforcement translation agents** (additional coverage):
+  - Agent A (a7e1ecc): yili-zhushu (2 workers) + erya-zhushu
+  - Agent B (aca4e1f): zhouli-zhushu (2 workers) + xiaojing-zhushu
+  - Agent C (a3bb94a): liji-zhengyi (2 workers) + liji-zhushu
+  - Agent D (a541e9f): lunyu-zhushu + mengzi-zhushu + shangshu-zhengyi
+- **Processing scripts**: `scripts/process-shisan-jing-{1,2,3,4}.ts`
+- **Text format**: Multi-layered: base text + （glosses） + [疏] sub-commentary + 【scholar】
+- **Key rule**: ALL commentary layers preserved in source text (they ARE the 註疏 edition)
+- **Skip logic**: translate-batch.ts skips already-translated chapters, so parallel workers are safe
+
+### Kongzi Jiayu — COMPLETE
+- **Status**: 80/80 chapters processed and translated
+- **Text**: 孔子家語 (School Sayings of Confucius), Classical Chinese
+- **Source**: `data/raw/kongzi_jiayu/`, processed dir: `data/processed/kongzi-jiayu/`
 
 ### Remaining Work
-1. Wait for Nandikkalambakam Stage 1 → launch Stage 3 (Master Retranslator)
-2. Wait for Tongjian workers to finish
-3. Process Yashodhara Kaviyam through full Tamil pipeline (next after Nandikkalambakam)
-4. Process Udayanakumara Kaviyam through full Tamil pipeline
-5. Commit and push all new processed data + naming changes
-6. Update AUTH_URL on Vercel to https://deltoi.com
+1. ~~Search fix~~ DONE
+2. ~~Eustathius pipeline~~ DONE → SEEDED → 3 translation workers running (correct slug: eustathius-odyssey)
+3. ~~Greek XML R2~~ DONE (53/53 chapters translated, 0 gaps)
+4. ~~Historia Nova~~ DONE (287/287)
+5. ~~Sophistici Elenchi~~ DONE (35/35)
+6. Wait for Eustathius translation workers to finish (17 of 27 chapters remaining)
+7. ~~Tongjian~~ DONE (45/45)
+8. Wait for Nandikkalambakam Stage 3 to complete
+9. Wait for Tamil Stage 2 reviewers → launch Stage 3 retranslators
+10. Wait for Shisan Jing Zhushu translation (13 texts, 455 ch — 32/455 done, ~20 workers active)
+11. ~~Kongzi Jiayu~~ DONE (80/80)
+12. Commit and push all new processed data + seed-db.ts updates
+13. Update AUTH_URL on Vercel to https://deltoi.com
 
 ### Title Naming Convention (MANDATORY)
 All text titles must follow: **"English Descriptive Name (Transliteration)"**
@@ -52,6 +152,59 @@ All text titles must follow: **"English Descriptive Name (Transliteration)"**
 - e.g., "The War-Bard's Guide (Porunararruppadai)"
 - Texts with English-native original titles keep them as-is: "On the Soul"
 - This applies to ALL new texts added in future sessions
+
+### Workflow Documentation Map (READ `reference-guide.txt` for full details)
+
+All processing workflows are documented in detail in `reference-guide.txt` under "PROCESSING WORKFLOWS & DOCUMENTATION MAP". Here is the quick index:
+
+| Workflow | When to Use | Key Files | Docs Written By Agents |
+|----------|-------------|-----------|------------------------|
+| **A: Standard Text** | Clean source text, simple structure | `scripts/process-<name>.ts` | — |
+| **B: OCR Processing** | Noisy Internet Archive djvu/OCR scans | `scripts/lib/<name>/` (multi-module) | `docs/plan-<name>-processing.md`, `docs/<name>-scratchpad.md` |
+| **C: TEI-XML** | First1KGreek/Perseus structured XML | `scripts/lib/greek-xml/` (reusable parser) | `docs/plan-greek-xml-processing.md`, `docs/greek-xml-scratchpad.md` |
+| **D: Tamil Pipeline** | All Tamil texts (3-stage quality) | `scripts/translate-tamil.ts` | `docs/tamil-translation-notes/<slug>-*` |
+| **E: Documentation** | EVERY session (mandatory) | `scratch-notes.txt`, `reference-guide.txt`, `CLAUDE.md` | — |
+| **F: Batch Translation** | Large zh/grc/la texts via DeepSeek | `scripts/translate-batch.ts` | — |
+| **G: Dual-Agent Quality Pipeline** | Any text requiring quality verification | Parser + Reviewer agents | `docs/<pipeline>-collaboration.md`, `docs/<pipeline>-*-scratchpad.md` |
+
+### Dual-Agent Quality Pipeline (Workflow G) — FORMALIZED
+
+This is the standard workflow for processing texts where quality verification is important. Two agents work in collaboration:
+
+| Role | Responsibility | Writes To |
+|------|---------------|-----------|
+| **Parser Agent** | Analyzes source, extends configs, runs parser, performs self-checks | Own scratchpad + joint collaboration doc |
+| **Reviewer Agent** | Reviews output independently, grades quality, requests fixes | Own scratchpad + joint collaboration doc |
+
+**Lifecycle:**
+1. Create joint collaboration doc (`docs/<pipeline>-collaboration.md`) with text list, rules, status
+2. Create individual scratchpads (`docs/<pipeline>-parser-scratchpad.md`, `docs/<pipeline>-reviewer-scratchpad.md`)
+3. Launch Parser Agent — it processes texts, writes report to collaboration doc
+4. Launch Reviewer Agent — it waits for Parser output, reviews, writes grade
+5. If Reviewer is NOT SATISFIED → Parser fixes issues → Reviewer re-reviews (iterate)
+6. When Reviewer is SATISFIED → texts are ready for seeding + translation
+7. After sign-off: add to `seed-db.ts`, run `pnpm db:seed`, launch translation workers
+
+**Sign-off rules:**
+- Both agents sign entries with `[PARSER]` or `[REVIEWER]`
+- Reviewer gives letter grade (A through F) for each criterion
+- Overall grade B+ or higher = suitable for translation
+- Reviewer must explicitly state `SATISFIED` or `NOT SATISFIED`
+
+**Prior uses:**
+- Carmina Graeca: Processor + Critic (Grade A, 21 poems) → `docs/carmina-graeca-scratchpad.md`
+- Eustathius Odyssey: 2 rounds (C+ → B+ for both volumes) → `docs/eustathius-r2-collaboration.md`
+- Greek XML R1: Parser + Reviewer (Grade A, 334 chapters) → `docs/greek-xml-collaboration.md`
+- Greek XML R2: Parser + Reviewer (IN PROGRESS) → `docs/greek-xml-r2-collaboration.md`
+
+**CRITICAL REMINDERS FOR ALL SESSIONS:**
+1. **Read** `reference-guide.txt`, `scratch-notes.txt`, and `CLAUDE.md` at session start
+2. **Write** to `scratch-notes.txt` continuously as you work (decisions, progress, issues)
+3. **Update** `reference-guide.txt` when project state changes (new texts, agents complete, coverage updates)
+4. **Update** `CLAUDE.md` Active Tasks when agents launch or complete
+5. **Agents write their own docs** — always note the doc paths in CLAUDE.md and scratch-notes
+6. **Never leave stale info** — if something is COMPLETE, mark it COMPLETE everywhere
+7. **Title convention** — "English Name (Transliteration)" for ALL languages, ALWAYS
 
 ## Project Overview
 
@@ -627,6 +780,24 @@ For parallel development with multiple Claude Code instances:
 | Lost Book of Zhou (Yi Zhou Shu) | zh | zhou-scribes | yi-zhou-shu | 62 | prose |
 | Comprehensive Meaning of Customs (Fengsu Tongyi) | zh | ying-shao | fengsutongyi | 11 | prose |
 | The Anthology of Nandi (Nandikkalambakam) | ta | nandikkalambakam-poets | nandikkalambakam | 114 | poetry |
+| Epistle to Diognetus | grc | diognetus-author | diognetum | 12 | prose |
+| New History (Historia Nova) | grc | zosimus | historia-nova | 287 | prose |
+| Paraphrase on Sophistical Refutations | grc | soph-elenchi-paraphrast | sophistici-elenchi-paraphrasis | 35 | prose |
+| Commentary on the Odyssey | grc | eustathius | eustathius-odyssey | 27 | prose |
+| The School Sayings of Confucius (Kongzi Jiayu) | zh | confucius | kongzi-jiayu | 80 | prose |
+| Analects with Commentary (Lunyu Zhushu) | zh | he-yan | lunyu-zhushu | 21 | prose |
+| Mencius with Commentary (Mengzi Zhushu) | zh | zhao-qi | mengzi-zhushu | 15 | prose |
+| Classic of Filial Piety with Commentary (Xiaojing Zhushu) | zh | xing-bing | xiaojing-zhushu | 10 | prose |
+| Erya Dictionary with Commentary (Erya Zhushu) | zh | guo-pu | erya-zhushu | 11 | prose |
+| Book of Changes with Commentary (Zhouyi Zhengyi) | zh | kong-yingda | zhouyi-zhengyi | 104 | prose |
+| Book of Documents with Commentary (Shangshu Zhengyi) | zh | kong-yingda | shangshu-zhengyi | 22 | prose |
+| Rites of Zhou with Commentary (Zhouli Zhushu) | zh | jia-gongyan | zhouli-zhushu | 42 | prose |
+| Ceremonial Rites with Commentary (Yili Zhushu) | zh | jia-gongyan | yili-zhushu | 51 | prose |
+| Book of Rites with Commentary (Liji Zhengyi) | zh | kong-yingda | liji-zhengyi | 56 | prose |
+| Book of Rites — Selected Chapters (Liji Zhushu) | zh | zheng-xuan-liji | liji-zhushu | 29 | prose |
+| Zuo Commentary on Spring and Autumn (Zuozhuan Zhengyi) | zh | kong-yingda | zuozhuan-zhengyi | 43 | prose |
+| Gongyang Commentary on Spring and Autumn (Gongyang Zhushu) | zh | he-xiu | gongyang-zhushu | 30 | prose |
+| Guliang Commentary on Spring and Autumn (Guliang Zhushu) | zh | fan-ning | guliang-zhushu | 21 | prose |
 
 ### Translation Pipeline
 
