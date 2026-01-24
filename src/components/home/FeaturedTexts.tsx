@@ -78,10 +78,10 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                 {text.author.nameOriginalScript && (
                   <span className="ml-1">({text.author.nameOriginalScript})</span>
                 )}
-                {text.compositionEra && (
-                  <span className="ml-1">— {text.compositionEra}</span>
-                )}
-                <span className="ml-1">— {text.totalChapters} ch.</span>
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {text.compositionEra && <span>{text.compositionEra} — </span>}
+                {text.totalChapters} ch.
               </p>
             </Card>
           </Link>
