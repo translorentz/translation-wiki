@@ -510,3 +510,662 @@ repeated twice consecutively). Processing script deduplicates these automaticall
 **HDNJ translation complete:**
 - All 3 workers finished with 0 errors
 - 55 chapters (Su Wen) fully translated
+
+### Session 6: Translation Gap-Filling & Sangam Corpus Organisation (2026-01-23)
+
+**Context:** All prior translation workers from session 5 have stopped (no processes running
+at session start). Many chapters already translated, but gaps remain in ZZYL and Tongjian.
+
+**Translation workers launched (gap-filling, auto-skips translated chapters):**
+
+ZZYL (4 workers, --delay 5000):
+- Worker b69b215: ch 1-35
+- Worker bce854e: ch 36-70
+- Worker b2393ec: ch 71-105
+- Worker b3e2c72: ch 106-140
+
+Tongjian (3 workers, --delay 5000):
+- Worker b3d7c9a: ch 1-15 → COMPLETE IMMEDIATELY (all 15 already translated)
+- Worker b76003b: ch 16-30
+- Worker b83ad01: ch 31-45
+
+**Initial observations from worker output:**
+- ZZYL: workers skipping many chapters (ch 1-3, 52-56, 73-77, 107-111 confirmed translated)
+  meaning significant translation progress from prior sessions
+- Tongjian ch 1-15: fully translated from prior sessions
+- Tongjian ch 16-30, 31-45: some gaps remain (workers actively translating)
+
+**Sangam Tamil Corpus Organiser launched (agent a2e8431):**
+- Task: Survey 1000+ Tamil corpus files, find Ettuthokai & Pattuppāṭṭu texts,
+  clean headers/footers, output pure verse to data/raw/sangam/
+- Agent has its own docs: docs/sangam-scratchpad.md, docs/sangam-reference.md
+- Agent scripts go in: scripts/sangam/
+- Output goes in: data/raw/sangam/ettuthokai/ and data/raw/sangam/pattuppattu/
+- This corpus is NOT for translation — it is for organisation and cleaning only
+
+**Tamil corpus overview (data/difficult_extra_processing/tamil_corpus/):**
+- 1,768,068 total lines across 1000+ .txt files
+- Source: Project Madurai (Tamil Virtual Academy) e-texts
+- Mix of Sangam-era classics, medieval devotional works, modern literature
+- Files named with numeric prefix + Tamil title
+- Typical format: Project Madurai header → verse text → footer/colophon
+- Goal: Extract Sangam-era works (Ettuthokai + Pattuppāṭṭu) as clean text
+
+**Ettuthokai (Eight Anthologies) — works to find:**
+1. நற்றிணை (Narrinai) — 400 poems
+2. குறுந்தொகை (Kuruntokai) — 401 poems
+3. ஐங்குறுநூறு (Ainkurunuru) — 500 poems
+4. பதிற்றுப்பத்து (Patirruppattu) — 100 poems
+5. பரிபாடல் (Paripadal) — 70 poems (22 survive)
+6. கலித்தொகை (Kalittokai) — 150 poems
+7. அகநானூறு (Akananuru) — 400 poems
+8. புறநானூறு (Puranānuru) — 400 poems
+
+**Pattuppāṭṭu (Ten Long Poems) — works to find:**
+1. திருமுருகாற்றுப்படை (Tirumurukarruppadai)
+2. பொருநராற்றுப்படை (Porunararruppadai)
+3. சிறுபாணாற்றுப்படை (Cirupanarruppadai)
+4. பெரும்பாணாற்றுப்படை (Perumpanarruppadai)
+5. முல்லைப்பாட்டு (Mullaippattu)
+6. மதுரைக்காஞ்சி (Maturaikkanci)
+7. நெடுநல்வாடை (Netunalvatai)
+8. குறிஞ்சிப்பாட்டு (Kurincippattu)
+9. பட்டினப்பாலை (Pattinappalai)
+10. மலைபடுகடாம் (Malaipatakatam)
+
+**Translation gap analysis:**
+- Wrote scripts/_check-translation-gaps.ts — finds chapters with empty paragraphs
+- Wrote scripts/_check-empty-source.ts — distinguishes empty-source from genuine gaps
+- Result: 117 genuine gaps across 55 chapters (source non-empty, translation empty)
+- Worst cases: ZZYL ch126 (12 gaps), tongjian ch3 (10 gaps), ZZYL ch139 (8 gaps),
+  ZZYL ch47 (8 gaps), ZZYL ch68 (5 gaps)
+- Root cause: API failures during batch translation left empty strings
+  (not the placeholder text, just empty)
+- The translate-batch.ts skip logic means these chapters won't be retried by workers
+  (they already have currentVersionId set)
+
+**Gap-filler script created and launched:**
+- Script: scripts/fill-translation-gaps.ts
+- Approach: Scan all translations, find empty paragraphs with non-empty source,
+  retranslate just those paragraphs, create a new TranslationVersion with gaps filled
+- Worker b5f5064: running with --delay 3000
+- No conflict with main translation workers (operates on different chapter sets)
+
+**Background processes — FINAL STATUS:**
+
+| Worker | Task | Status | Result |
+|--------|------|--------|--------|
+| b69b215 | ZZYL ch 1-35 | DONE | 2 translated, 33 skipped |
+| bce854e | ZZYL ch 36-70 | DONE | 1 translated, 34 skipped |
+| b2393ec | ZZYL ch 71-105 | DONE | 1 translated, 34 skipped |
+| b3e2c72 | ZZYL ch 106-140 | DONE | 1 translated, 34 skipped |
+| b76003b | Tongjian ch 16-30 | RUNNING | 6 done (ch 19-24), skipped 16-18, on ch 25 |
+| b83ad01 | Tongjian ch 31-45 | RUNNING | 6 done (ch 33-38), skipped 31-32, on ch 39 |
+| b5f5064 | Gap-filler | DONE | 55/55 chapters fixed, 0 failures |
+| a2e8431 | Sangam organiser | DONE | 3 texts extracted (Akananuru, Purananuru, Porunararruppadai) |
+
+**ZZYL Translation: 140/140 COMPLETE**
+- All 140 chapters now have translations (135 from prior sessions, 5 newly translated)
+- Gap-filler fixed 55 chapters with empty paragraphs — 117 paragraphs filled, 0 failures
+
+**Tongjian Translation progress:**
+- Previously done: ch 1-18 (15 from prior + 16-18 from another run)
+- Newly translated this session: ch 19-24, 33-38 (12 chapters)
+- In progress: ch 25-30, 39-45 (12 more chapters)
+- Total when complete: ch 1-45 (all 45 chapters)
+
+**Gap-filler final results:**
+- 55 chapters across multiple texts (ZZYL, Tongjian, Carmina Graeca)
+- 117 genuine gaps all filled successfully
+- Each fixed chapter got a new TranslationVersion (version 2)
+- Notable fills: ZZYL ch126 (12 gaps), ZZYL ch139 (8 gaps), Tongjian ch3 (10 gaps)
+
+**Sangam agent progress — Akananuru sanity check:**
+
+Source file: `229_அகநானுறு - மூலம்.txt` (9,111 lines)
+Script: `scripts/sangam/clean-akananuru.ts` (276 lines, well-documented)
+
+The agent wrote a sophisticated tokenizer-based parser that:
+- Classifies each line as 'num', 'text', or 'section'
+- Identifies the 3 Akananuru sections: களிற்றியாணை நிரை (1-120),
+  மணிமிடை பவளம் (121-300), நித்திலக்கோவை (301-400)
+- Distinguishes poem numbers from in-poem line markers (multiples of 5)
+  using predecessor context (poem numbers preceded by total_count or section header)
+- Extracts verse lines and writes individual poem files
+
+Results: 395/400 poems extracted + invocation.txt = 396 files
+Missing: poems 104, 131, 319, 396, 400
+
+Root cause of missing poems: corrupted line-counts in source file
+- "1 5" instead of "15" (line 2463, before poem 104)
+- 3 total instances of number-with-space in the source
+- The tokenizer classifies "1 5" as text, not num → predecessor check fails
+
+Quality issues found in poem-399.txt:
+1. Poems 399 and 400 merged into one file (boundary not detected at end of text)
+2. Leaked editorial matter:
+   - `.399-18` apparatus marker embedded in verse line 18
+   - `அகநானுறு  முற்றிற்று` (colophon: "Akananuru completed")
+   - `This page was last updated on 3 September 2005.` (Project Madurai footer)
+3. Scattered `.` markers (edition line references) in some lines
+
+Poems verified correct (spot-checked):
+- Poem 001 (19 lines): correct — Palai Patiya Perunkadunko's separation poem
+- Poem 050 (14 lines): correct length for Akananuru
+- Poem 100 (18 lines): correct — neythal landscape poem mentioning Purantai port
+- Poem 300 (22 lines): correct — nittilakovai section, clean verse
+
+Line length distribution: 14-22 lines per poem (expected range 13-31 for Akananuru)
+
+Pattuppattu progress:
+- All 10 directories created in data/raw/sangam/pattuppattu/
+- Porunararruppadai: poem.txt written
+- Other 9: directories exist (agent still working on them)
+
+Other scripts created:
+- scripts/sangam/clean-puranānuru.ts (Puranānuru processing)
+- scripts/sangam/clean-porunar.ts (Porunararruppadai processing)
+
+Agent docs NOT yet written (docs/sangam-scratchpad.md, docs/sangam-reference.md)
+— agent prioritised extraction work over documentation
+
+**Fixes needed (for agent or future session):**
+1. Handle corrupted numbers: treat "N N" (digit-space-digit) as a single number
+2. Fix poem 399/400 boundary (last poem merge)
+3. Strip colophon line "அகநானுறு  முற்றிற்று"
+4. Strip Project Madurai footer "This page was last updated..."
+5. Remove apparatus markers (`.NNN-NN` patterns, stray `.` between lines)
+6. Verify Puranānuru and other Ettuthokai texts similarly
+7. Write docs/sangam-scratchpad.md and docs/sangam-reference.md
+
+### Tamil Literature Search — Results (Session 6)
+
+Searched the Project Madurai corpus for 4 specific texts requested by user:
+
+| Text | Status | Output |
+|------|--------|--------|
+| Perunkathai (Konguvelir) | ABSENT | Only prose retelling + related Udayanakumara Kaviyam found |
+| Culamani (Tolamoli Thevar) | PARTIAL | Carukkams 1-7, 10-12 present; 8-9 missing |
+| Nandikkalambakam | COMPLETE | 88 poems + supplements, 760 lines |
+| Yashodhara Kaviyam | PARTIAL | Carukkams 3-5 only; 1-2 missing |
+
+Processed files placed in:
+- data/raw/udayanakumara-kaviyam/ (2,660 lines, 6 kandams, 367 verses)
+- data/raw/culamani/ (2 part files, 7,172 lines total)
+- data/raw/nandikkalambakam/ (760 lines, all 88 poems)
+- data/raw/yashodhara-kaviyam/ (1,495 lines, carukkams 3-5 with commentary)
+
+Notes:
+- Perunkathai is genuinely rare (massive 10,000+ line epic, not widely digitized)
+- Culamani and Nandikkalambakam are pure verse; Yashodhara has interspersed commentary
+- Missing portions would need sourcing from other digital libraries
+
+### Tamil Translation Module — IMPLEMENTED (Session 6 continued)
+
+Implemented the Gemini-based Tamil translation pipeline as planned:
+
+**Files created/modified:**
+1. `src/server/translation/gemini-client.ts` — GoogleGenAI client wrapper (singleton)
+2. `src/server/translation/prompts.ts` — Added Tamil 'ta' language instructions
+   - Covers Sangam landscape symbolism (tinai), akam/puram themes, archaic vocabulary
+3. `scripts/translate-tamil.ts` — Batch translation script using Gemini 2.5 Flash
+4. `.env.example` — Added GEMINI_API_KEY placeholder
+
+**Dependency added:** `@google/genai` v1.38.0
+
+**Key parameters:**
+- Model: gemini-2.5-flash
+- Temperature: 0.3 (low for faithful translation)
+- MAX_CHARS_PER_BATCH: 4000 (Tamil verse is moderate density)
+- Max output tokens: 8192 per API call
+- Retry logic: 3 attempts + batch splitting (same as DeepSeek pipeline)
+- Skip logic: checks `currentVersionId` (same as DeepSeek pipeline)
+- Filters to language code 'ta' only
+
+**End-to-end test results:**
+- Tested with Akananuru poem 300 (first 4 lines, neytal imagery)
+- Gemini correctly translated classical Tamil, preserving fishing/seashore imagery
+- JSON output format correct: `[{"index": 0, "text": "..."}]`
+- Response wrapped in markdown code fence (handled by stripping logic)
+
+**Usage:**
+```bash
+pnpm tsx scripts/translate-tamil.ts --text <tamil-slug> [--start N] [--end N] [--delay MS]
+```
+
+**Prerequisites before running:**
+1. Tamil language ('ta') must be added to languages table
+2. Tamil author(s) and text(s) must be seeded into DB
+3. Chapters must be seeded with sourceContent
+
+### Tamil Supplement Files Processing (Session 7)
+
+**Task**: Process two supplement files to complete previously-gapped Tamil texts.
+
+**Files found**:
+- `data/difficult_extra_processing/tamil_corpus/supplement_culamani_89.txt` (6,247 lines)
+- `data/difficult_extra_processing/tamil_corpus/supplement_yashodhara-kaviyam.txt` (6,690 lines)
+
+**Yashodhara Kaviyam supplement (carukkams 1-2, verses 1-160)**: GOOD QUALITY
+- Contains: kaappu (invocation, v1-4), first carukkam (v5-73), second carukkam (v74-160)
+- Format: verse + commentary (urai), matching existing carukkams 3-5 file format
+- Encoding: mostly intact Tamil Unicode with minor character drops
+- Verse continuity: ALL 160 verses present, ZERO gaps
+- Boundary: verse 160 -> 161 connects perfectly to existing file
+- Processing: stripped Project Madurai header (lines 1-666), stripped 146 embedded page numbers
+- Output: `data/raw/yashodhara-kaviyam/yashodhara-kaviyam-carukkam-1-2.txt` (5,879 lines)
+- Status: TEXT NOW COMPLETE (verses 1-330, all 5 carukkams)
+
+**Culamani supplement (carukkams 8-9, verses 827-1554)**: SEVERELY CORRUPTED
+- Contains: carukkam 8 (v827-1130), carukkam 9 (v1131-1554)
+- Encoding: HEAVILY CORRUPTED — PDF-to-text extraction with non-Unicode Tamil font
+  - Only ~30-40% of Tamil characters render correctly
+  - Latin characters and symbols mixed into Tamil text
+  - Verse text largely unreadable for translation purposes
+- Verse numbers: intact and detectable (630/728 found via pattern matching)
+- Boundary: verse 1554 -> 1555 connects correctly to existing part-3 file
+- Processing: stripped Project Madurai header (lines 1-71), stripped embedded page numbers
+- Output: `data/raw/culamani/part-2-carukkam-08-09.txt` (6,036 lines)
+- Status: FILE SAVED BUT CORRUPTED — needs replacement from better source
+- Note: The text is unusable for translation without a clean re-digitization
+
+**Completeness assessment**:
+- Yashodhara Kaviyam: NOW COMPLETE (verses 1-330 across 2 files, all 5 carukkams)
+- Culamani: STRUCTURALLY complete (827-1554 fills the gap) but TEXT CORRUPTED
+- Culamani needs re-sourcing from a better digitization for carukkams 8-9
+
+### Nandikkalambakam Cleaning (Session 7)
+
+- Script: `scripts/sangam/clean-nandikkalambakam.ts`
+- Input: `data/raw/nandikkalambakam/nandikkalambakam.txt` (760 lines)
+- Output: `data/raw/nandikkalambakam/nandikkalambakam-clean.txt` (868 lines, 641 verse lines)
+- Poems: 114 total (kappu + 88 main + 22 supplement-many-MSS + 3 supplement-few-MSS)
+- Removed: 113 meter labels, 2 headers, 2 editorial notes, 2 supplement headers
+- Preserved: kalippa structural markers (taravu, taazhisai, aragam, ambotharangam, thanicchol, suritagam)
+- Note: No poem 35 in source (duplicate poem 34 exists — traditional numbering quirk)
+
+### Tamil DB Seeding + First Translation (Session 7)
+
+**Website Language Updater agent (a125fab)**: Adding Tamil ('ta') to DB
+- Adds language entry: code='ta', name='Tamil', displayName='Classical Tamil'
+- Adds author: Mudathirumaran (முடத்திருமாறன்), Sangam period
+- Adds text: Porunararruppadai (பொருநராற்றுப்படை), slug='porunararruppadai', textType='poetry'
+- Processes raw text (248 lines) → JSON paragraphs → seeds into DB
+
+**Tamil Translator agent (aed743c)**: First Gemini Tamil translation
+- Waits for seeding to complete (polls DB up to 10 times)
+- Sanity-checks source text quality in DB
+- Tests Gemini translation with small excerpt
+- Runs full translation: `scripts/translate-tamil.ts --text porunararruppadai`
+- This is our FIRST Tamil translation — quality validation important
+
+**Expected website URL**: https://deltoi.com/ta/mudathirumaran/porunararruppadai/chapter-1
+
+**Next steps for Tamil (after first translation verified):**
+1. Process and seed Akananuru (400 poems → 400 chapters)
+2. Process and seed Nandikkalambakam (114 poems)
+3. Process and seed Yashodhara Kaviyam (5 carukkams)
+4. Process and seed Udayanakumara Kaviyam (6 kandams)
+5. Source clean Culamani carukkams 8-9 from alternative digitization
+6. Source remaining 15 Sangam works from Project Madurai
+
+### Tamil Translation Notes + Review Pipeline (Session 7 cont.)
+
+**Tamil note-writer agent (ad1496f)**: COMPLETED
+- Wrote 2 comprehensive scholarly documents:
+  1. `docs/tamil-translation-notes/porunararruppadai-translator-notes.md` (647 lines, 39.7KB)
+     - All 17 paragraphs analyzed with Tamil quotations and quality ratings
+     - Archaic vocabulary tables (musical instruments, weapons, flora/fauna, court terms)
+     - Tinai imagery analysis + tinai-exchange passage explanation
+     - Proper names catalog, literary devices, verse structure analysis
+     - Genre analysis (arruppadai convention), quality self-assessment
+     - 10 specific difficult passages with confidence levels
+  2. `docs/tamil-translation-notes/gemini-tamil-observations.md` (421 lines, 23.2KB)
+     - Classical vs modern Tamil vocabulary handling (80-85% correct)
+     - JSON format compliance: perfect, no repair needed
+     - Temperature 0.3 analysis: too conservative for poetry, recommends 0.4-0.5
+     - Batch size analysis: 4000-char batches adequate, recommends 6000-8000 for Tamil
+     - 6 specific prompt improvements suggested (genre, vocabulary, similes, cultural context)
+     - Model comparison: Gemini > DeepSeek for Tamil; Gemini Pro recommended for canonical texts
+     - Vocabulary hits/misses: 19 correct vs 16 misses (errors cluster in food, music, material culture)
+     - Key error: "narantham" (citron) mistranslated as "civet" — DEFINITE ERROR
+
+**Tamil reviewer agent (acc837f)**: RUNNING
+- Has read all source materials (Tamil ur-text, English translation, translator notes)
+- Writing independent review with fresh perspective
+
+### New Text Processing Agents (Session 7 cont.)
+
+**Guliang Zhuan agent (ae85d94)**: RUNNING
+- Processed 12 chapters from raw data
+- Seeded into DB (author: Guliang Chi, text: Commentary of Guliang)
+- Translation: ch 1-4 DONE, currently translating ch 5 (batch 2/7 of 12 total chapters)
+- Uses DeepSeek deepseek-chat model with 3000ms delay
+
+**Baihu Tong agent (a2d8baa)**: RUNNING
+- Processed and seeded (author: Ban Gu, text: Baihu Tong)
+- Translation worker launched (background bash bb78898)
+- Processing 43 topics of Confucian classical scholarship
+
+**Yi Zhou Shu agent (a2e691b)**: RUNNING
+- Added author: Zhou Court Scribes (周室史官) to seed-db.ts
+- Added text: Yi Zhou Shu (逸周書), 61 extant chapters
+- Seeding into DB (Zhou Court Scribes author added successfully)
+- Source: ancient Zhou dynasty documents not in canonical Shang Shu
+
+**Yi Li agent (a72a764)**: RUNNING
+- Added author: Zheng Xuan (鄭玄, ed.) to seed-db.ts
+- Added text: Yi Li (儀禮), 17 chapters
+- Seeding into DB (Zheng Xuan author + Yi Li text added, chapters loading)
+- Commentary separation: Zheng Xuan's annotations marked with [注] prefix
+- One of the Three Ritual Classics (三禮) of Confucianism
+
+### Tongjian Translation Workers (Session 7 cont.)
+
+**Worker b83ad01 (ch 31-45)**: RUNNING
+- Chapters 33-40: DONE (368+274+342+372+311+287+445+426 paragraphs)
+- Currently: Chapter 41, batch 5/35
+- 1 retry occurred (ch 35, batch 27/45) — recovered successfully
+- Progress: 10/15 chapters complete
+
+**Worker b76003b (ch 16-30)**: RUNNING
+- Chapters 19-25: DONE (344+351+388+361+321+327+409 paragraphs)
+- Currently: Chapter 26, batch 27/41
+- Progress: 10/15 chapters complete
+
+### Porunararruppadai Master Retranslation (Session 8 — 2026-01-23)
+
+**Task:** Retranslate Porunararruppadai (248-line Sangam Tamil poem) using improved prompt
+**Agent:** Claude Opus 4.5 (Master Reviewer/Translator)
+**Translation engine:** Gemini 2.5 Flash
+
+**What was done:**
+1. Read all 4 scholarly notes files (translator notes, observations, reviewer assessment, retranslation requests)
+2. Expanded Tamil prompt in prompts.ts from 8 lines to 45 lines (6 improvement categories)
+3. Added --retranslate flag to translate-tamil.ts (creates new version instead of skipping)
+4. Reduced MAX_CHARS_PER_BATCH from 4000 to 2500 (prevents output truncation with detailed prompt)
+5. Increased maxOutputTokens from 8192 to 16384
+6. First attempt (4000 chars): 5 empty paragraphs due to output truncation — defective v2 deleted
+7. Second attempt (2000 chars, 4 batches): all 17 paragraphs translated successfully
+8. Cleaned up: deleted defective intermediate, renumbered to clean v1 -> v2 chain
+
+**Results (8 retranslation requests):**
+- 5/8 FULLY FIXED: narantham=citron, celva=vocative, vaNTal=sand-houses, uRaZntum=alternating, food passage specificity
+- 2/8 IMPROVED: evening/morning metaphor (now comprehensible), seven-step sequence (clearer order)
+- 1/8 PARTIAL: garland "not bound by thread" (still not ideal — should be "on invisible thread")
+
+**Grade improvement:** B- -> B/B+
+**Report:** docs/tamil-translation-notes/master-retranslation-report.md
+
+**Key technical insight:** Tamil poetry with a detailed prompt produces much more output per source character than prose. The 4000-char batch size that works for Chinese prose is too large for Sangam poetry + expanded prompt. 2500 chars is the sweet spot.
+
+### Baihu Tong (白虎通義) Processing and Translation (Session 10 — 2026-01-24)
+
+**Task:** Process, seed, and translate the Baihu Tong (Comprehensive Discussions in the White Tiger Hall), a Han dynasty Confucian text by Ban Gu (79 CE).
+
+**Source:** 10 raw files in data/raw/baihu_tong/ (01_卷一.txt through 10_卷十.txt)
+- Structure: topics delimited by ====================\nTitle\n====================
+- 43 topics across 10 juan, 453 paragraphs, 57,776 characters total
+- Traditional Chinese, clean quality, minimal lacunae (□ characters)
+
+**Steps completed:**
+1. Examined all 10 raw files — Traditional Chinese, no OCR issues, section-delimited format
+2. Wrote scripts/process-baihu-tong.ts — maps 43 topics to bilingual titles
+3. Ran processing: 43 chapters output to data/processed/baihu-tong/chapter-NNN.json
+4. Added Ban Gu author and Baihu Tong text entry to scripts/seed-db.ts
+5. Seeded to database: 43 chapters, 453 paragraphs
+6. Translated all 43 chapters: 0 errors, all complete
+7. Verified: 43/43 chapters translated, sample translation quality verified
+
+**Author entry:**
+- Name: "Ban Gu", nameOriginalScript: "班固", slug: "ban-gu"
+- Era: "Eastern Han dynasty (32–92 CE)"
+
+**Text entry:**
+- Title: "Baihu Tong (Comprehensive Discussions in the White Tiger Hall)"
+- slug: "baihu-tong", languageCode: "zh", compositionYear: 79
+- compositionEra: "建初四年, Eastern Han dynasty"
+- processedDir: "data/processed/baihu-tong"
+
+### Non-Sangam Tamil Full Workflow (Session 9 — 2026-01-24)
+
+**Task:** Process and translate 3 complete non-Sangam Tamil texts through the full 4-stage workflow, one at a time.
+
+**Texts (in order):**
+1. Nandikkalambakam (நந்திக்கலம்பகம்) — 114 poems, 868 lines, c. 850 CE, Pallava period
+2. Yashodhara Kaviyam — 5 carukkams, 330 verses (Jain epic)
+3. Udayanakumara Kaviyam — 6 kandams, 367 verses
+
+**Text 1: Nandikkalambakam**
+- Stage 1 agent: a472c67 (processing + seeding + translating via Gemini) — ~59/114 done
+- Stage 2 agent: a28b7f4 (reviewer) — reviewed 64/114 poems, B- grade, waiting for rest
+- Stage 3 agent: PENDING (master retranslator — launch after Stage 1+2 both COMPLETE)
+- Raw: data/raw/nandikkalambakam/nandikkalambakam-clean.txt (868 lines)
+- Structure: kappu + 88 main poems + 22 supplement (many-MSS) + 3 supplement (few-MSS) = 114 chapters
+- Author: "Various Poets" (பல்கவிஞர்கள்), slug: nandikkalambakam-poets
+- Text slug: nandikkalambakam, textType: poetry, language: ta
+- Reviewer findings: 19 GOOD, 31 ADEQUATE, 14 PROBLEMATIC; key issue = Sangam prompt on medieval text
+
+**Porunararruppadai Editorial Clarification (Session 9)**
+- Agent a123b07 completed editorial clarification pass
+- Title updated: "Porunararruppadai" → "The War-Bard's Guide (Porunararruppadai)"
+- TranslationVersion v3 created (editorial clarification of v2)
+- All Tamil terms translated into English with [transliteration] on first use only
+- This approach is now MANDATORY in Agent 3 (Master Retranslator) workflow
+
+**Pipeline Design Update (Session 9)**
+- Updated docs/tamil-translation-orchestration.md with 3-agent staggered pipeline
+- Agent 2 (Reviewer) starts when ≥ 20 poems are translated (staggered with Agent 1)
+- Agent 3 (Master) waits for BOTH Stage 1+2 COMPLETE (systemic prompt improvement)
+- Agent 3 now includes MANDATORY editorial clarification pass (English terms + [transliteration])
+- Shared coordination file: docs/tamil-translation-notes/<text-slug>-pipeline-progress.md
+
+### Fengsu Tongyi (風俗通義) Processing and Translation (Session 10 — 2026-01-24)
+
+**Task:** Process, seed, and translate the Fengsu Tongyi (Comprehensive Meaning of Customs) by Ying Shao (c. 195 CE).
+
+**Source:** 11 raw files in data/raw/Fengsu_Tongyi_Chapters/
+- Mixed structure: some files have `====================` separators + blank lines, others have each line as a paragraph
+- Traditional Chinese, clean quality
+- Total: 311 paragraphs across 11 chapters
+
+**Steps completed:**
+1. Examined all 11 raw files — identified two formats (separator-delimited vs line-per-paragraph)
+2. Wrote scripts/process-fengsu-tongyi.ts — each non-blank, non-separator line = one paragraph
+3. Ran processing: 11 chapters output to data/processed/fengsutongyi/chapter-NNN.json
+4. Added Ying Shao author and Fengsu Tongyi text entry to scripts/seed-db.ts
+5. Seeded to database: 11 chapters, 311 paragraphs
+6. Translated all 11 chapters: 0 errors, all complete
+
+**Chapter paragraph counts:** 5, 21, 34, 19, 17, 24, 48, 16, 47, 40, 40
+
+**Author entry:**
+- Name: "Ying Shao", nameOriginalScript: "應劭", slug: "ying-shao"
+- Era: "Eastern Han dynasty (c. 140-204 CE)"
+
+**Text entry:**
+- Title: "Fengsu Tongyi (Comprehensive Meaning of Customs)"
+- slug: "fengsutongyi", languageCode: "zh", compositionYear: 195
+- compositionEra: "Eastern Han dynasty (c. 195 CE)"
+- processedDir: "data/processed/fengsutongyi"
+
+**Bug fixed during development:**
+- Initial processing script accumulated consecutive lines into single paragraphs
+  (worked for separator-delimited files but broke line-per-paragraph files)
+- Fix: treat every non-blank, non-separator line as its own paragraph
+- Before fix: chapters 1, 4, 5, 6, 8 showed 1 paragraph each
+- After fix: correct counts (5, 19, 17, 24, 16 respectively)
+
+**Website URL:** https://deltoi.com/zh/ying-shao/fengsutongyi/
+
+### Nandikkalambakam Independent Review — Stage 2 (2026-01-24)
+
+**Task:** Review 64 translated Nandikkalambakam poems as independent reviewer (Stage 2 of Tamil pipeline)
+**Agent role:** Reviewer Agent (Stage 2)
+**Poems reviewed:** 64 (chapters 1-64, i.e., kappu + poems 1-63)
+
+**Method:**
+1. Read all 64 translations from Neon DB (mcp__Neon__run_sql)
+2. Read Tamil source texts from data/processed/nandikkalambakam/ for comparison
+3. Read existing prompts.ts to understand what guidance was given to Gemini
+4. Read previous Porunararruppadai review for format reference
+5. Compared each poem's translation against Tamil source for accuracy
+
+**Key findings:**
+- Overall grade: B- (solid first draft with systemic issues)
+- 19/64 GOOD, 31/64 ADEQUATE, 14/64 PROBLEMATIC
+- Critical issue: Sangam-era prompt applied to medieval (850 CE) text — genre mismatch
+- Kalambakam structural labels (taravu, taazhisai, etc.) entirely stripped from translation
+- Battle name "Vellaaru/Thellaaru" spelled 5 different ways across poems
+- "Thondai" polysemy (region/fruit/garland) unresolved — causes confusion in ~5 poems
+- Ironic death-euphemism "ascend to heaven" sometimes reads as reward not punishment
+- "Kali" misidentified as goddess (should be Kali Yuga/turbulence in medieval context)
+- "Kanchukan" wrongly treated as proper name (is epithet of Nandi himself)
+- Poem 50 (ch 51) — untranslatable wordplay (sandalippu) rendered as gibberish
+
+**Outputs created:**
+1. docs/tamil-translation-notes/nandikkalambakam-pipeline-progress.md — Status tracker
+2. docs/tamil-translation-notes/nandikkalambakam-reviewer-notes.md — Full review (B- grade, per-poem table, vocabulary errors, systemic issues, genre observations)
+3. docs/tamil-translation-notes/nandikkalambakam-retranslation-requests.md — Prioritized fix list (5 HIGH, 12 MEDIUM, 8 LOW)
+
+**Recommendations for Stage 4 (Master Retranslator):**
+1. Create Nandikkalambakam-specific prompt supplement (medieval Tamil, Pallava history, kalambakam conventions)
+2. Standardize all proper names before retranslation
+3. Fix the 14 PROBLEMATIC poems
+4. Wait for remaining 50 poems to be translated with improved prompt before retranslating first 64
+
+### Yi Zhou Shu (逸周書) Re-processing with Commentary Brackets (Session 10 — 2026-01-24)
+
+**Task:** Re-process Yi Zhou Shu to preserve [bracketed commentary] annotations from Kong Chao.
+
+**Problem:** The previous processing stripped all brackets. The raw files use [square brackets]
+for inline commentary, which must be preserved for the frontend to render in dark maroon.
+
+**Source:** 62 files in data/raw/yi_zhou_shu/
+- 8 files contain [brackets]; 5 have meaningful commentary in main text
+- Total preserved commentary brackets: 117 out of 121
+
+**Steps completed:**
+1. Rewrote scripts/process-yi-zhou-shu.ts (removed bracket stripping, kept duplicate detection)
+2. Ran processing: 62 chapters, 81 paragraphs, 40,021 chars
+3. Deleted existing Yi Zhou Shu data from DB (62 chapters, 78 translations)
+4. Re-seeded database: 62 chapters with brackets preserved
+5. Translated all 62 chapters: 0 errors
+6. Verified bracket preservation in translations
+
+**Database state:** Text ID 19, slug yi-zhou-shu, 62/62 chapters translated
+**Website URL:** https://deltoi.com/zh/zhou-scribes/yi-zhou-shu/
+
+### Yi Li (儀禮) Processing & Translation (2026-01-24)
+
+**Task:** Process and translate the Yi Li (Ceremonies and Rites), one of the Three Ritual Classics.
+
+**Raw files examined:** 17 .txt files in data/yi_li/ (not data/raw/yi_li/)
+- Named: 01_士冠禮.txt through 17_有司.txt
+- Each file = 1 traditional chapter of the Yi Li
+- Format: plain text, one paragraph per line, no headers or separators
+
+**CRITICAL FINDING — Commentary Status:**
+The raw files contain ONLY the base text (經/jing). NO Zheng Xuan commentary is present.
+Searched for all known commentary markers (注, 鄭注, 注曰, brackets, etc.) — none found.
+All occurrences of 注/傳/疏 characters in the files are regular vocabulary words, not markers.
+The source is a "jing only" edition without the traditional Zheng Xuan annotations.
+
+**Processing approach:**
+- Created scripts/lib/yili/types.ts — type definitions + chapter title reference table
+- Created scripts/lib/yili/parser.ts — parser with commentary detection (for future use)
+- Created scripts/process-yi-li.ts — main processing script
+- Output: data/processed/yi-li/chapter-001.json through chapter-017.json
+- All paragraphs typed as "text" (no commentary present to mark with [注])
+
+**Processing results (17/17 chapters):**
+| Chapter | Chinese | English | Paragraphs |
+|---------|---------|---------|-----------|
+| 1 | 士冠禮 | Capping Ceremony for a Gentleman | 29 |
+| 2 | 士昬禮 | Marriage Ceremony for a Gentleman | 30 |
+| 3 | 士相見禮 | Ceremony of Introduction for a Gentleman | 12 |
+| 4 | 鄉飲酒禮 | District Drinking Ceremony | 26 |
+| 5 | 鄉射禮 | District Archery Ceremony | 51 |
+| 6 | 燕禮 | Banquet Ceremony | 30 |
+| 7 | 大射 | Grand Archery | 46 |
+| 8 | 聘禮 | Ceremony of Embassy | 34 |
+| 9 | 公食大夫禮 | Duke's Feast for a Grand Officer | 18 |
+| 10 | 覲禮 | Ceremony of Audience | 13 |
+| 11 | 喪服 | Mourning Garments | 13 |
+| 12 | 士喪禮 | Funeral Ceremony for a Gentleman | 38 |
+| 13 | 既夕禮 | Eve-of-Burial Ceremony | 18 |
+| 14 | 士虞禮 | Sacrifice of Repose for a Gentleman | 12 |
+| 15 | 特牲饋食禮 | Single-Victim Offering Ceremony | 21 |
+| 16 | 少牢饋食禮 | Lesser Animal Offering Ceremony | 22 |
+| 17 | 有司 | The Assisting Officers | 40 |
+| TOTAL | | | 453 |
+
+**Seed-db.ts additions:**
+- Author: "Zheng Xuan (ed.)" / slug "zheng-xuan" / era "Eastern Han dynasty (127-200 CE)"
+- Text: "Yi Li (Ceremonies and Rites)" / slug "yi-li" / language "zh" / compositionYear -200
+
+**Database seeding:** Successful — 17 chapters inserted
+
+**Translation:** COMPLETE — 17/17 chapters translated with DeepSeek V3.2
+- First worker (ch 1-8): completed before SIGPIPE killed it (head -50 issue)
+- Second worker (ch 9-17): completed all remaining chapters, 0 errors
+- Total paragraphs translated: 453
+
+**Website URL:** https://deltoi.com/zh/zheng-xuan/yi-li/
+
+### Session 11: Naming Consistency & Pipeline Progress (2026-01-24)
+
+**Naming Convention Change — "English Name (Transliteration)" for ALL languages:**
+
+Updated 14 text titles in both the Neon database (via SQL transaction) and scripts/seed-db.ts:
+
+| Old Format | New Format |
+|------------|-----------|
+| Zhu Zi Yu Lei (Classified Conversations...) | Classified Conversations of Master Zhu (Zhu Zi Yu Lei) |
+| Chuan Xi Lu (Instructions for Practical Living) | Instructions for Practical Living (Chuan Xi Lu) |
+| Tongjian Jishi Benmo (Narratives from...) | Narratives from the Comprehensive Mirror (Tongjian Jishi Benmo) |
+| Huang Di Nei Jing (The Yellow Emperor's...) | The Yellow Emperor's Classic of Medicine (Huang Di Nei Jing) |
+| Guliang Zhuan (Commentary of Guliang) | Commentary of Guliang (Guliang Zhuan) |
+| Baihu Tong (Comprehensive Discussions...) | Comprehensive Discussions in the White Tiger Hall (Baihu Tong) |
+| Yi Li (Ceremonies and Rites) | Ceremonies and Rites (Yi Li) |
+| Yi Zhou Shu (Lost Book of Zhou) | Lost Book of Zhou (Yi Zhou Shu) |
+| Fengsu Tongyi (Comprehensive Meaning...) | Comprehensive Meaning of Customs (Fengsu Tongyi) |
+| Gaoshi Zhuan (Biographies of Lofty...) | Biographies of Lofty Scholars (Gaoshi Zhuan) |
+| Ptochoprodromika (Poems of Poor Prodromos) | Poems of Poor Prodromos (Ptochoprodromika) |
+| Carmina Graeca Medii Aevi (Medieval Greek Poems) | Medieval Greek Poems (Carmina Graeca Medii Aevi) |
+| Nandikkalambakam | The Anthology of Nandi (Nandikkalambakam) |
+| Porunararruppadai | The War-Bard's Guide (Porunararruppadai) |
+
+Texts already in English-first format (no change needed): On the Ceremonies of the Byzantine Court,
+On the Soul, Elegy on Misfortune, History of the Lombards of Benevento, The Book of the Kingdom of Sicily.
+
+**Rule for future texts:** Always use "English Descriptive Name (Original Transliteration)" format.
+Latin/Greek texts that are already commonly known by English titles (e.g., "On the Soul") don't need
+the parenthetical unless the original title is well-known (e.g., "On the Soul (De Anima)" is optional).
+
+**Nandikkalambakam Pipeline Status:**
+- Stage 1 (agent a472c67): 109/114 poems translated, still running
+- Stage 2 (agent a28b7f4): COMPLETED — reviewed 64 poems, B- grade
+  - Key issue: Sangam-era prompt applied to medieval (850 CE) text
+  - Outputs: nandikkalambakam-reviewer-notes.md, nandikkalambakam-retranslation-requests.md
+- Stage 3: PENDING — will launch immediately after Stage 1 completes
+  - Must include editorial clarification pass (English terms + [transliteration])
+  - Must address medieval-vs-Sangam prompt mismatch
+
+**Other agents completed this session:**
+- Guliang Zhuan (ae85d94): 12/12 chapters, all translated, COMPLETE
+- Yi Li (a72a764): 17/17 chapters, 453 paragraphs, COMPLETE
+- Baihu Tong (a2d8baa): 43/43 chapters, COMPLETE
+- Fengsu Tongyi (a6a5e09): 11/11 chapters, COMPLETE
+- Gaoshi Zhuan (a451a68): 4/4 chapters, COMPLETE
+- Yi Zhou Shu (a127b87): 62/62 chapters with commentary brackets, COMPLETE
+
+**Background workers still running:**
+- Tongjian: b76003b, b83ad01 (translating remaining chapters 25-45)
+
+**Next steps (in order):**
+1. Wait for Nandikkalambakam Stage 1 to finish (5 more poems)
+2. Launch Nandikkalambakam Stage 3 (Master Retranslator) — reads reviewer notes, improves prompt, retranslates, editorial clarification
+3. After Nandikkalambakam completes: Yashodhara Kaviyam through full Tamil pipeline
+4. After Yashodhara: Udayanakumara Kaviyam through full Tamil pipeline
+5. Commit and push all changes (naming, processed data, new scripts)

@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-23 (Session 5)
+# Last updated: 2026-01-24 (Session 11)
 
 ================================================================================
 ## PROJECT IDENTITY
@@ -22,7 +22,7 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-23, commit 241a6bf (poetry display)
+Latest deploy: 2026-01-23, commit 4c0f9d8 (split author/era in Featured Texts)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
@@ -47,7 +47,8 @@ update this in Vercel dashboard → Settings → Environment Variables.
 - Drizzle ORM (postgres.js driver)
 - NextAuth.js v5 beta (JWT strategy, credentials provider)
 - PostgreSQL (Neon, cloud)
-- DeepSeek V3.2 API (deepseek-chat) for AI translations
+- DeepSeek V3.2 API (deepseek-chat) for AI translations (zh, grc, la)
+- Google Gemini 2.5 Flash (@google/genai SDK) for Tamil translations
 - Vitest + @testing-library/react (testing)
 
 ================================================================================
@@ -61,32 +62,52 @@ Tables:
 - translations, translation_versions, endorsements
 
 Current data:
-- 4 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English)
-- 9 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
-  Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.)
-- 10 texts seeded:
-  - Zhu Zi Yu Lei (140 chapters, zh)
-  - De Ceremoniis (7 chapters, grc)
-  - Chuanxilu (3 chapters, zh)
-  - De Anima (18 chapters, la)
-  - Elegia (4 chapters, la)
-  - Lombards (82 chapters, la)
-  - Regno Sicilie (56 chapters, la)
-  - Tongjian Jishi Benmo (45 chapters, zh)
-  - Ptochoprodromos (2 chapters, grc, textType=poetry)
-  - Huang Di Nei Jing (55 chapters, zh)
+- 5 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil)
+- 19 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
+  Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.),
+  Theodore Prodromos, Wilhelm Wagner, Guliang Chi, Mudathirumaran, Ban Gu,
+  Zheng Xuan, Zhou Court Scribes, Ying Shao, Huangfu Mi, Nandikkalambakam Poets
+- 20 texts seeded (naming convention: "English Name (Transliteration)"):
+  - Classified Conversations of Master Zhu (Zhu Zi Yu Lei) — 140 chapters, zh
+  - On the Ceremonies of the Byzantine Court — 7 chapters, grc
+  - Instructions for Practical Living (Chuan Xi Lu) — 3 chapters, zh
+  - On the Soul — 18 chapters, la
+  - Elegy on Misfortune — 4 chapters, la (textType=poetry)
+  - History of the Lombards of Benevento — 82 chapters, la
+  - The Book of the Kingdom of Sicily — 56 chapters, la
+  - Narratives from the Comprehensive Mirror (Tongjian Jishi Benmo) — 45 chapters, zh
+  - Poems of Poor Prodromos (Ptochoprodromika) — 2 chapters, grc (textType=poetry)
+  - The Yellow Emperor's Classic of Medicine (Huang Di Nei Jing) — 55 chapters, zh
+  - Medieval Greek Poems (Carmina Graeca Medii Aevi) — 21 chapters, grc (textType=poetry)
+  - Commentary of Guliang (Guliang Zhuan) — 12 chapters, zh
+  - The War-Bard's Guide (Porunararruppadai) — 1 chapter, ta (textType=poetry)
+  - Comprehensive Discussions in the White Tiger Hall (Baihu Tong) — 43 chapters, zh
+  - Biographies of Lofty Scholars (Gaoshi Zhuan) — 4 chapters, zh
+  - Ceremonies and Rites (Yi Li) — 17 chapters, zh
+  - Lost Book of Zhou (Yi Zhou Shu) — 62 chapters, zh (commentary in [brackets])
+  - Comprehensive Meaning of Customs (Fengsu Tongyi) — 11 chapters, zh
+  - The Anthology of Nandi (Nandikkalambakam) — 114 chapters, ta (textType=poetry)
 
-Translation coverage (in progress, 8 parallel workers running):
-- ZZYL: ch 1-57 done, ch 58-140 being translated (4 workers)
-- Ceremonialis: ch 1-7 translated
-- Chuanxilu: 3 chapters translated
-- De Anima: 18 chapters translated
-- Elegia: 4 chapters translated
-- Lombards: 82 chapters translated
-- Regno: 56 chapters translated
-- Tongjian: in progress (1 worker, very large chapters)
-- Ptochoprodromos: 2 chapters translated
-- HDNJ: in progress (3 workers, ch 1-55)
+Translation coverage (Session 11 — updated 2026-01-24):
+- ZZYL: 140/140 COMPLETE
+- Ceremonialis: 7/7 COMPLETE
+- Chuanxilu: 3/3 COMPLETE
+- De Anima: 18/18 COMPLETE
+- Elegia: 4/4 COMPLETE
+- Lombards: 82/82 COMPLETE
+- Regno: 56/56 COMPLETE
+- Tongjian: IN PROGRESS (workers b83ad01, b76003b still running)
+- Ptochoprodromos: 2/2 COMPLETE
+- HDNJ: 55/55 COMPLETE
+- Carmina Graeca: 21/21 COMPLETE
+- Guliang Zhuan: 12/12 COMPLETE
+- The War-Bard's Guide (Porunararruppadai): 1/1 COMPLETE (v3: editorial clarification)
+- Baihu Tong: 43/43 COMPLETE
+- Gaoshi Zhuan: 4/4 COMPLETE
+- Yi Li: 17/17 COMPLETE
+- Yi Zhou Shu: 62/62 COMPLETE (commentary in [brackets] preserved)
+- Fengsu Tongyi: 11/11 COMPLETE
+- Nandikkalambakam: IN PROGRESS (Stage 1: 109/114; Stage 2 Reviewer DONE; Stage 3 pending)
 
 To sync schema after code changes:
   set -a && source .env.local && set +a && pnpm db:push
@@ -112,8 +133,32 @@ Batching strategy (language-aware):
 Script: scripts/translate-batch.ts
 Config: src/server/translation/client.ts (OpenAI SDK with DeepSeek baseURL)
 
+### Gemini (for Tamil)
+Provider: Google AI (Gemini API)
+Model: gemini-2.5-flash
+SDK: @google/genai v1.38.0
+Max output: 8192 tokens (per call; model supports 65K)
+Temperature: 0.3 (low for faithful translation)
+
+Batching:
+- Tamil (ta): MAX_CHARS_PER_BATCH = 4000 (moderate density Sangam verse)
+
+Script: scripts/translate-tamil.ts
+Config: src/server/translation/gemini-client.ts (GoogleGenAI singleton)
+Prompts: src/server/translation/prompts.ts (LANGUAGE_INSTRUCTIONS['ta'])
+
+Tamil Quality Pipeline (docs/tamil-translation-orchestration.md):
+  Stage 1: Translation (Gemini 2.5 Flash, temp 0.3) — starts immediately
+  Stage 2: Reviewer (starts when ≥20 poems translated, writes notes + retranslation requests)
+  Stage 3: Master Retranslator (waits for both Stage 1+2 COMPLETE, prompt improvement + retranslation + editorial clarification pass)
+  Shared coordination: docs/tamil-translation-notes/<text-slug>-pipeline-progress.md
+  Notes directory: docs/tamil-translation-notes/
+  IMPORTANT: Stage 3 includes MANDATORY editorial clarification (English terms + [transliteration] on first use)
+
+Usage: pnpm tsx scripts/translate-tamil.ts --text <slug> [--start N] [--end N] [--delay MS]
+
 IMPORTANT: Do NOT keep translation content in Claude Code context.
-Write translations directly to the database via the translate-batch script.
+Write translations directly to the database via the translate scripts.
 
 ================================================================================
 ## KEY FILE LOCATIONS
@@ -151,10 +196,13 @@ src/server/trpc/routers/users.ts                    — User management
 src/server/trpc/routers/discussions.ts              — Discussion threads (planned)
 src/server/auth/index.ts                            — NextAuth config
 src/server/translation/client.ts                    — DeepSeek API client
+src/server/translation/gemini-client.ts             — Gemini API client (Tamil)
+src/server/translation/prompts.ts                   — Language-specific translation prompts
 
 ### Scripts
 scripts/seed-db.ts                                  — Seed DB from processed data
-scripts/translate-batch.ts                          — AI translation batch runner
+scripts/translate-batch.ts                          — AI translation (DeepSeek, zh/grc/la)
+scripts/translate-tamil.ts                          — AI translation (Gemini, Tamil)
 scripts/acquire-ctext.ts                            — Fetch from ctext.org
 scripts/acquire-archive.ts                          — Fetch from Internet Archive
 scripts/process-texts.ts                            — Clean raw → processed
@@ -164,6 +212,10 @@ scripts/process-new-texts.ts                        — Process De Anima, Lombar
 scripts/process-carmina-graeca.ts                   — Process Carmina Graeca (21 medieval Greek poems)
 scripts/lib/carmina/                                — Carmina processing modules (6 files)
 scripts/fix-chapter-titles.ts                       — Add English to chapter titles
+scripts/fill-translation-gaps.ts                    — Retranslate empty paragraphs in existing translations
+scripts/_check-translation-gaps.ts                  — Diagnostic: find chapters with empty paragraphs
+scripts/_check-empty-source.ts                      — Diagnostic: verify gaps are genuine (not empty source)
+scripts/sangam/                                     — Tamil corpus processing scripts (Sangam agent)
 
 ### Data
 data/processed/zhuziyulei/chapter-NNN.json          — ZZYL source (140 files)
@@ -179,6 +231,17 @@ data/processed/ptochoprodromos/chapter-NNN.json     — Ptochoprodromos source (
 data/processed/carmina-graeca/chapter-NNN.json      — Carmina Graeca source (21 files)
 data/raw/                                           — (gitignored) raw downloads
 data/raw/carmina-graeca/                            — 21 clean Greek .txt files (10,957 lines, Grade A quality)
+data/raw/sangam/                                    — Cleaned Sangam Tamil texts (Ettuthokai + Pattuppattu)
+data/raw/sangam/ettuthokai/akananuru/               — 400/400 poems extracted (COMPLETE)
+data/raw/sangam/ettuthokai/purananuru/              — 128/400 poems (rest absent from corpus)
+data/raw/sangam/pattuppattu/porunararruppadai/      — 248 lines (COMPLETE)
+data/raw/nandikkalambakam/                          — Original + cleaned (114 poems, 641 verse lines)
+data/raw/culamani/                                  — Parts 1+3 clean, Part 2 CORRUPTED (needs re-sourcing)
+data/raw/yashodhara-kaviyam/                        — COMPLETE (all 5 carukkams, 330 verses)
+data/raw/udayanakumara-kaviyam/                     — 367 verses in 6 kandams (related to Perunkathai)
+docs/sangam-inspector.md                            — Full corpus inspection report
+docs/sangam-scratchpad.md                           — Sangam agent working notes (TBD)
+docs/sangam-reference.md                            — Sangam corpus reference/catalog (TBD)
 
 ### Config
 drizzle.config.ts                                   — Drizzle ORM config
@@ -199,11 +262,11 @@ communications-to-the-User.txt                      — Implementation plan & de
 ================================================================================
 
 Phase 1 (Scaffolding):        COMPLETE
-Phase 2 (Text Acquisition):   COMPLETE (11 texts, 433 chapters total)
+Phase 2 (Text Acquisition):   COMPLETE (20 texts, 600+ chapters total)
 Phase 3 (Reading UI):          COMPLETE (prose + poetry display modes)
 Phase 4 (Editing/Versioning): COMPLETE
 Phase 5 (Endorsements):       COMPLETE
-Phase 6 (AI Translation):     IN PROGRESS (~300+ chapters translated, 8 workers running)
+Phase 6 (AI Translation):     NEAR COMPLETE (580+ chapters translated; Tongjian + Nandikkalambakam in progress)
 Phase 7 (Search/Polish):      PARTIAL (search page exists, SEO metadata added)
 Phase 8 (Deployment):         COMPLETE (live at deltoi.com)
 
@@ -215,20 +278,35 @@ Additional features:
 ## REMAINING WORK (PRIORITY ORDER)
 ================================================================================
 
-1. Wait for translation workers to finish:
-   - ZZYL: 2 workers still running (ch71+, ch96+); 2 workers completed (40 chapters done)
-   - Tongjian: 2 workers running (ch16-30, ch31-45)
-   - Carmina Graeca: 3 workers running (ch1-7, ch8-14, ch15-21) — SEEDED 2026-01-23
-2. ~~Seed Carmina Graeca into DB~~ — DONE (21 chapters inserted)
-3. ~~Translate Carmina Graeca chapters~~ — IN PROGRESS (3 parallel workers)
-4. Commit and push all new processed data + translations
-4. Update AUTH_URL on Vercel to https://deltoi.com
-5. Responsive design polish (mobile stacking for interlinear viewer)
-6. Error boundaries and loading skeletons
-7. Full-text search improvements (currently basic)
-8. Migrate "middleware" to "proxy" convention (Next.js 16 deprecation)
-9. Upgrade NextAuth from beta to stable when available
-10. Add Ling Shu (靈樞) chapters to HDNJ when user provides raw data
+1. Wait for Nandikkalambakam Stage 1 to finish (109/114 done), then launch Stage 3
+2. Wait for Tongjian workers to finish (2 workers still running)
+3. After Nandikkalambakam: process Yashodhara Kaviyam through full Tamil pipeline
+4. After Yashodhara: process Udayanakumara Kaviyam through full Tamil pipeline
+5. Commit and push all new processed data + scripts + naming changes
+6. Update AUTH_URL on Vercel to https://deltoi.com
+7. Sangam Tamil: 15 more canonical works need sourcing from Project Madurai
+8. Responsive design polish (mobile stacking for interlinear viewer)
+9. Error boundaries and loading skeletons
+10. Full-text search improvements (currently basic)
+11. Migrate "middleware" to "proxy" convention (Next.js 16 deprecation)
+12. Upgrade NextAuth from beta to stable when available
+13. Add Ling Shu (靈樞) chapters to HDNJ when user provides raw data
+
+ACTIVE AGENTS (Session 11 — 2026-01-24):
+- Tongjian workers: b76003b, b83ad01 — still translating remaining chapters
+- Nandikkalambakam Stage 1 (a472c67): translating poems, 109/114 done
+- Nandikkalambakam Stage 3: PENDING — launch after Stage 1 completes
+
+COMPLETED RECENTLY:
+✓ Naming consistency: all titles now "English Name (Transliteration)" — DB + seed-db.ts updated
+✓ Guliang Zhuan: 12/12 COMPLETE (agent ae85d94)
+✓ Yi Li: 17/17 COMPLETE (agent a72a764)
+✓ Baihu Tong: 43/43 COMPLETE (agent a2d8baa)
+✓ Fengsu Tongyi: 11/11 COMPLETE (agent a6a5e09)
+✓ Gaoshi Zhuan: 4/4 COMPLETE (agent a451a68)
+✓ Yi Zhou Shu: 62/62 COMPLETE with commentary brackets (agent a127b87)
+✓ Porunararruppadai editorial clarification v3 (agent a123b07)
+✓ Nandikkalambakam Stage 2 Review COMPLETE (agent a28b7f4, B- grade, 64 poems reviewed)
 
 ================================================================================
 ## CONVENTIONS & RULES
@@ -244,6 +322,10 @@ Additional features:
 8. All text content is UTF-8 NFC normalized
 9. DeepSeek (not Anthropic/Claude) is the translation API — uses OpenAI SDK
 10. Keep scratch-notes.txt and reference-guide.txt updated every session
+11. Title naming convention: "English Name (Transliteration)" for ALL languages
+    - e.g., "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
+    - e.g., "The War-Bard's Guide (Porunararruppadai)"
+    - Texts with already-English original titles (Latin/Greek) stay as-is: "On the Soul"
 
 ================================================================================
 ## COMMON COMMANDS
@@ -278,6 +360,73 @@ gh api repos/translorentz/translation-wiki/deployments --jq '.[0]'  # Check depl
 - Translation workers in progress — ~100+ chapters still being translated
 - Discussion pages implemented but not yet tested end-to-end in production
 - HDNJ currently only has Su Wen (55 ch); Ling Shu (81 ch) to be added later
+
+================================================================================
+## SANGAM TAMIL CORPUS NOTES
+================================================================================
+
+Source: data/difficult_extra_processing/tamil_corpus/ (1,768,068 lines, 1000+ files)
+Origin: Project Madurai (Tamil Virtual Academy) e-texts
+Purpose: Organise and clean for future inclusion in the wiki (NOT for translation yet)
+
+### Source File Format (Project Madurai pattern)
+- Lines 1-20: Project info header (title, encoding, credits, copyright notice)
+- Content: Tamil verse/prose text with embedded line markers
+- End: Footer (colophon, "This page was last updated on..." line)
+- Numbers: Standalone integers = poem numbers OR line counts OR in-poem markers (every 5th line)
+- Corruptions: Some numbers have spaces inside ("1 5" = 15), OCR artifacts
+
+### Ettuthokai Source Files Found
+| Anthology | Corpus File | Status |
+|-----------|------------|--------|
+| Akananuru | 229_அகநானுறு - மூலம்.txt | 395/400 poems extracted |
+| Puranānuru | (TBD — agent searching) | Script written |
+| Narrinai | (TBD) | Not yet found |
+| Kuruntokai | (TBD) | Not yet found |
+| Ainkurunuru | (TBD) | Not yet found |
+| Patirruppattu | (TBD) | Not yet found |
+| Paripadal | (TBD) | Not yet found |
+| Kalittokai | (TBD) | Not yet found |
+
+### Pattuppattu Source Files Found
+| Poem | Corpus File | Status |
+|------|------------|--------|
+| Porunararruppadai | (found) | Extracted |
+| Others (9) | (TBD) | Directories created |
+
+### Known Cleaning Challenges
+1. Corrupted numbers (spaces inside: "1 5" = 15) — 3 instances in Akananuru
+2. End-of-text boundary (last 2 poems merged, colophon/footer leaked)
+3. Apparatus markers (.NNN-NN) embedded in verse lines
+4. Line markers (multiples of 5) vs poem numbers — disambiguated by context
+5. Section headers (numbered Tamil titles) — must be separated from verse
+6. Multi-part files: some works split across 2-3 files (பாகம் 1, 2, 3)
+
+### Scripts
+| Script | Purpose |
+|--------|---------|
+| scripts/sangam/clean-akananuru.ts | Tokenizer-based parser, 3-section aware |
+| scripts/sangam/clean-puranānuru.ts | Puranānuru processing |
+| scripts/sangam/clean-porunar.ts | Porunararruppadai processing |
+| scripts/sangam/clean-nandikkalambakam.ts | Strips meter labels, extracts pure verse (114 poems) |
+
+### Output Structure
+data/raw/sangam/
+├── ettuthokai/
+│   ├── akananuru/ (invocation.txt + poem-NNN.txt, 1-400)
+│   ├── puranānuru/ (TBD)
+│   └── ... (6 more anthologies)
+└── pattuppattu/
+    ├── porunararruppadai/poem.txt
+    ├── tirumurukarruppadai/
+    ├── cirupanarruppadai/
+    ├── perumpanarruppadai/
+    ├── mullaippattu/
+    ├── maturaikkanci/
+    ├── netunalvatai/
+    ├── kurincippattu/
+    ├── pattinappalai/
+    └── malaipatakatam/
 
 ================================================================================
 ## TRANSLATION PARALLELIZATION NOTES

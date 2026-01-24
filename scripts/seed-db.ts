@@ -46,6 +46,7 @@ const LANGUAGES = [
   { code: "grc", name: "Greek", displayName: "Ἑλληνική" },
   { code: "la", name: "Latin", displayName: "Lingua Latina" },
   { code: "en", name: "English", displayName: "English" },
+  { code: "ta", name: "Tamil", displayName: "தமிழ்" },
 ] as const;
 
 const AUTHORS = [
@@ -137,11 +138,75 @@ const AUTHORS = [
     description:
       "German classical philologist who edited the Carmina Graeca Medii Aevi, a collection of 21 medieval vernacular Greek poems from manuscripts in various European libraries.",
   },
+  {
+    name: "Guliang Chi",
+    nameOriginalScript: "穀梁赤",
+    slug: "guliang-chi",
+    era: "Warring States period (c. 300 BCE)",
+    description:
+      "Traditional author of the Guliang Zhuan, one of the three classical commentaries on the Spring and Autumn Annals. The commentary was likely compiled by his disciples and transmitted orally before being written down during the Han dynasty.",
+  },
+  {
+    name: "Mudathirumaran",
+    nameOriginalScript: "முடத்திருமாறன்",
+    slug: "mudathirumaran",
+    era: "Sangam period (c. 100-300 CE)",
+    description:
+      "Sangam Tamil poet, author of Porunararruppadai, one of the Ten Idylls (Pattuppattu). The poem describes the journey of a bard seeking patronage from a Chola king.",
+  },
+  {
+    name: "Ban Gu",
+    nameOriginalScript: "班固",
+    slug: "ban-gu",
+    era: "Eastern Han dynasty (32–92 CE)",
+    description:
+      "Eastern Han dynasty historian, compiler of the Book of Han (漢書). He presided over the White Tiger Hall conference of 79 CE and compiled the Baihu Tong (白虎通義), recording the debates on Confucian classical scholarship held before Emperor Zhang.",
+  },
+  {
+    name: "Zheng Xuan (ed.)",
+    nameOriginalScript: "鄭玄",
+    slug: "zheng-xuan",
+    era: "Eastern Han dynasty (127–200 CE)",
+    description:
+      "Han dynasty classical scholar whose authoritative commentary on the Yi Li (儀禮) has been transmitted alongside the base text for nearly two millennia. His annotations clarify ritual procedures, resolve textual ambiguities, and connect the Ceremonies and Rites to broader Confucian canonical traditions.",
+  },
+  {
+    name: "Zhou Court Scribes",
+    nameOriginalScript: "周室史官",
+    slug: "zhou-scribes",
+    era: "Western Zhou to Warring States (c. 1000-300 BCE)",
+    description:
+      "Collective attribution for the scribes and officials who composed the documents compiled in the Yi Zhou Shu. The texts were edited and annotated by Kong Chao (孔晁) during the Jin dynasty.",
+  },
+  {
+    name: "Ying Shao",
+    nameOriginalScript: "應劭",
+    slug: "ying-shao",
+    era: "Eastern Han dynasty (c. 140-204 CE)",
+    description:
+      "Eastern Han dynasty scholar and official who served as Prefect of Taishan. His Fengsu Tongyi (風俗通義) is an encyclopedic work on customs, etymology, beliefs, and social practices, preserving valuable information about Han dynasty folk culture and correcting popular misconceptions.",
+  },
+  {
+    name: "Huangfu Mi",
+    nameOriginalScript: "皇甫謐",
+    slug: "huangfu-mi",
+    era: "Western Jin dynasty (215-282 CE)",
+    description:
+      "Western Jin dynasty scholar, physician, and historian. Despite suffering from a debilitating illness, he devoted himself to scholarship and refused all official appointments. His Gaoshi Zhuan (高士傳) is a collection of biographies of recluses and scholars who refused office.",
+  },
+  {
+    name: "Various Poets",
+    nameOriginalScript: "பல்கவிஞர்கள்",
+    slug: "nandikkalambakam-poets",
+    era: "Pallava period (c. 850 CE)",
+    description:
+      "The Nandikkalambakam is a kalambakam (multi-genre anthology) composed by multiple poets praising King Nandivarman III Pallava. The kalambakam form features diverse poetic genres unified around a single patron or subject.",
+  },
 ] as const;
 
 const TEXTS = [
   {
-    title: "Zhu Zi Yu Lei (Classified Conversations of Master Zhu)",
+    title: "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)",
     titleOriginalScript: "朱子語類",
     slug: "zhuziyulei",
     languageCode: "zh",
@@ -167,7 +232,7 @@ const TEXTS = [
     compositionEra: "Reign of Constantine VII, Byzantine Empire",
   },
   {
-    title: "Chuan Xi Lu (Instructions for Practical Living)",
+    title: "Instructions for Practical Living (Chuan Xi Lu)",
     titleOriginalScript: "傳習錄",
     slug: "chuanxilu",
     languageCode: "zh",
@@ -233,7 +298,7 @@ const TEXTS = [
     compositionEra: "Norman Kingdom of Sicily",
   },
   {
-    title: "Tongjian Jishi Benmo (Narratives from the Comprehensive Mirror)",
+    title: "Narratives from the Comprehensive Mirror (Tongjian Jishi Benmo)",
     titleOriginalScript: "通鑑紀事本末",
     slug: "tongjian",
     languageCode: "zh",
@@ -246,7 +311,7 @@ const TEXTS = [
     compositionEra: "淳熙元年, Southern Song",
   },
   {
-    title: "Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine)",
+    title: "The Yellow Emperor's Classic of Medicine (Huang Di Nei Jing)",
     titleOriginalScript: "黃帝內經",
     slug: "huangdineijing",
     languageCode: "zh",
@@ -259,7 +324,7 @@ const TEXTS = [
     compositionEra: "Warring States to Western Han Dynasty",
   },
   {
-    title: "Ptochoprodromika (Poems of Poor Prodromos)",
+    title: "Poems of Poor Prodromos (Ptochoprodromika)",
     titleOriginalScript: "Πτωχοπροδρομικά",
     slug: "ptochoprodromos",
     languageCode: "grc",
@@ -273,7 +338,7 @@ const TEXTS = [
     textType: "poetry" as const,
   },
   {
-    title: "Carmina Graeca Medii Aevi (Medieval Greek Poems)",
+    title: "Medieval Greek Poems (Carmina Graeca Medii Aevi)",
     titleOriginalScript: "Carmina Graeca Medii Aevi",
     slug: "carmina-graeca",
     languageCode: "grc",
@@ -284,6 +349,112 @@ const TEXTS = [
     processedDir: "data/processed/carmina-graeca",
     compositionYear: 1874,
     compositionEra: "Published Leipzig, 1874 (poems date 12th–15th c.)",
+    textType: "poetry" as const,
+  },
+  {
+    title: "Commentary of Guliang (Guliang Zhuan)",
+    titleOriginalScript: "穀梁傳",
+    slug: "guliang-zhuan",
+    languageCode: "zh",
+    authorSlug: "guliang-chi",
+    description:
+      "One of the three classical commentaries on the Spring and Autumn Annals (Chunqiu). The Guliang Zhuan interprets the terse chronicle entries through a question-and-answer format, emphasizing ritual propriety, the praise-and-blame principles of the Annals, and the moral significance of word choices in the original text.",
+    sourceUrl: "https://ctext.org/guliang-zhuan",
+    processedDir: "data/processed/guliang-zhuan",
+    compositionYear: -200,
+    compositionEra: "Warring States to Western Han Dynasty",
+  },
+  {
+    title: "The War-Bard's Guide (Porunararruppadai)",
+    titleOriginalScript: "பொருநராற்றுப்படை",
+    slug: "porunararruppadai",
+    languageCode: "ta",
+    authorSlug: "mudathirumaran",
+    description:
+      "A Sangam Tamil poem from the Pattuppattu (Ten Idylls), describing the journey of a bard seeking patronage from a Chola king. One of the earliest examples of Tamil bardic poetry.",
+    sourceUrl: "https://www.projectmadurai.org/",
+    processedDir: "data/processed/porunararruppadai",
+    compositionYear: 200,
+    compositionEra: "Sangam period (c. 100-300 CE)",
+    textType: "poetry" as const,
+  },
+  {
+    title: "Comprehensive Discussions in the White Tiger Hall (Baihu Tong)",
+    titleOriginalScript: "白虎通義",
+    slug: "baihu-tong",
+    languageCode: "zh",
+    authorSlug: "ban-gu",
+    description:
+      "Comprehensive Discussions in the White Tiger Hall — a record of debates on Confucian classical scholarship held at the White Tiger Hall conference of 79 CE, covering 43 topics including ritual, governance, cosmology, human nature, and social institutions.",
+    sourceUrl: "https://ctext.org/bai-hu-tong",
+    processedDir: "data/processed/baihu-tong",
+    compositionYear: 79,
+    compositionEra: "建初四年, Eastern Han dynasty",
+  },
+  {
+    title: "Ceremonies and Rites (Yi Li)",
+    titleOriginalScript: "儀禮",
+    slug: "yi-li",
+    languageCode: "zh",
+    authorSlug: "zheng-xuan",
+    description:
+      "One of the Three Ritual Classics (三禮) of Confucianism, detailing ceremonies for the scholar-official class including capping, marriage, audience, archery, funeral, and sacrificial rites. This edition presents the base text (經) of all 17 traditional chapters.",
+    sourceUrl: "https://ctext.org/yi-li",
+    processedDir: "data/processed/yi-li",
+    compositionYear: -200,
+    compositionEra: "Western Han (base text, c. 200 BCE); Eastern Han (Zheng Xuan commentary, c. 180 CE)",
+  },
+  {
+    title: "Lost Book of Zhou (Yi Zhou Shu)",
+    titleOriginalScript: "逸周書",
+    slug: "yi-zhou-shu",
+    languageCode: "zh",
+    authorSlug: "zhou-scribes",
+    description:
+      "A collection of ancient Zhou dynasty documents not included in the canonical Book of Documents (Shang Shu). Contains historical narratives, royal speeches, administrative records, and ritual texts from the Western Zhou period. The received text has 70 traditional chapters, of which 61 are extant plus a preface.",
+    sourceUrl: "https://ctext.org/lost-book-of-zhou",
+    processedDir: "data/processed/yi-zhou-shu",
+    compositionYear: -800,
+    compositionEra: "Western Zhou to Warring States (c. 1000-300 BCE)",
+  },
+  {
+    title: "Comprehensive Meaning of Customs (Fengsu Tongyi)",
+    titleOriginalScript: "風俗通義",
+    slug: "fengsutongyi",
+    languageCode: "zh",
+    authorSlug: "ying-shao",
+    description:
+      "An encyclopedic work on customs, beliefs, etymology, and social practices by Ying Shao (應劭) of the Eastern Han dynasty (c. 195 CE). Covers topics ranging from ancient kings and hegemons to ritual practices, music, spirits, and geography.",
+    sourceUrl: "https://ctext.org/fengsu-tongyi",
+    processedDir: "data/processed/fengsutongyi",
+    compositionYear: 195,
+    compositionEra: "Eastern Han dynasty (c. 195 CE)",
+  },
+  {
+    title: "Biographies of Lofty Scholars (Gaoshi Zhuan)",
+    titleOriginalScript: "高士傳",
+    slug: "gaoshizhuan",
+    languageCode: "zh",
+    authorSlug: "huangfu-mi",
+    description:
+      "A collection of biographies of hermits, recluses, and virtuous scholars who refused office, compiled by Huangfu Mi (皇甫謐) of the Western Jin dynasty (c. 270 CE). Covers figures from mythical antiquity through the Han dynasty.",
+    sourceUrl: "https://ctext.org/gaoshi-zhuan",
+    processedDir: "data/processed/gaoshizhuan",
+    compositionYear: 270,
+    compositionEra: "Western Jin dynasty (c. 270 CE)",
+  },
+  {
+    title: "The Anthology of Nandi (Nandikkalambakam)",
+    titleOriginalScript: "நந்திக்கலம்பகம்",
+    slug: "nandikkalambakam",
+    languageCode: "ta",
+    authorSlug: "nandikkalambakam-poets",
+    description:
+      "A kalambakam (multi-genre anthology) praising King Nandivarman III Pallava (c. 850 CE). The work comprises 88 poems plus supplements in diverse Tamil poetic genres, unified in praise of the Pallava king and his military achievements.",
+    sourceUrl: "",
+    processedDir: "data/processed/nandikkalambakam",
+    compositionYear: 850,
+    compositionEra: "Pallava period (c. 850 CE)",
     textType: "poetry" as const,
   },
 ] as const;

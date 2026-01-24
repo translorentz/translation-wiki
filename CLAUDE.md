@@ -23,40 +23,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
 - You always have permission to run any script that helps monitor, check, or improve translation subagent quality (e.g., alignment checks, retranslation of defective chapters, killing and restarting translation processes).
 
-## Active Tasks & Background Workers (2026-01-23)
+## Active Tasks & Background Workers (2026-01-24)
 
-### Carmina Graeca Dual-Agent Quality Pipeline — COMPLETE
-- **Status**: DONE — 21 clean .txt files in `data/raw/carmina-graeca/`, 10,957 total lines
-- **Final grade**: A (Critic Agent grade after all fixes applied)
-- **Shared scratchpad**: `docs/carmina-graeca-scratchpad.md`
-- **Critiques file**: `docs/carmina-graeca-critiques.md`
-- **Source file**: `data/difficult_extra_processing/carmina_graeca_medii_aevi_multiple_titles.txt` (23,770 lines OCR)
-- **Pipeline modules**: `scripts/lib/carmina/` (6 files) + `scripts/process-carmina-graeca.ts`
-- **Key insight**: Medieval Greek verse NEVER contains Arabic numerals — any embedded digit = apparatus
-- **Next step**: Seed into DB + translate (21 poems, ~10,900 verse lines of medieval Greek)
+### Nandikkalambakam Tamil Pipeline — IN PROGRESS
+- **Stage 1** (agent a472c67): 109/114 poems translated, still running
+- **Stage 2** (agent a28b7f4): COMPLETE — reviewed 64 poems, B- grade
+  - Reviewer notes: `docs/tamil-translation-notes/nandikkalambakam-reviewer-notes.md`
+  - Retranslation requests: `docs/tamil-translation-notes/nandikkalambakam-retranslation-requests.md`
+- **Stage 3**: PENDING — launch immediately after Stage 1 completes
+  - Must read reviewer notes, improve prompt for medieval Tamil (not Sangam)
+  - Must include MANDATORY editorial clarification pass
+- **Pipeline docs**: `docs/tamil-translation-orchestration.md`
 
 ### Translation Workers (Background)
-- **Carmina Graeca**: 3 workers translating chapters 1-21 (language: grc, medieval Greek)
-  - Worker bb3ea15: chapters 1-7
-  - Worker b98d8d4: chapters 8-14
-  - Worker b6eb325: chapters 15-21
-- **ZZYL (Zhu Zi Yu Lei)**: 2 workers still running (b6a3898 at ch71, b0ab038 at ch96); 2 workers DONE (bd76b8e, b7ea0d0 — 20 chapters each, 0 errors)
-- **Tongjian**: 2 workers translating chapters 16-45 (workers b28bb83, b10363e)
-  - Chapters 1-15: DONE (visible on website)
-  - Improved error handling in `translate-batch.ts`: `translateBatchWithRetry()` — 3 retries + batch splitting
-
-### Carmina Graeca Processing Pipeline (COMPLETE)
-- All 21 chapters processed: PASS=13, WARN=8, FAIL=0
-- Output: `data/processed/carmina-graeca/chapter-001.json` through `chapter-021.json`
-- seed-db.ts updated with Wagner author + Carmina Graeca text entry
-- Detailed results in `docs/plan-carmina-graeca-processing.md` (see "Implementation Results" section)
+- **Tongjian**: 2 workers still running (b76003b, b83ad01)
 
 ### Remaining Work
-1. Wait for ZZYL + Tongjian translation workers to finish
-2. ~~Carmina Graeca agents to produce clean .txt files + quality critiques~~ DONE
-3. Seed Carmina Graeca into DB + launch translation workers — IN PROGRESS
-4. Commit and push all new processed data
-5. Update AUTH_URL on Vercel to https://deltoi.com
+1. Wait for Nandikkalambakam Stage 1 → launch Stage 3 (Master Retranslator)
+2. Wait for Tongjian workers to finish
+3. Process Yashodhara Kaviyam through full Tamil pipeline (next after Nandikkalambakam)
+4. Process Udayanakumara Kaviyam through full Tamil pipeline
+5. Commit and push all new processed data + naming changes
+6. Update AUTH_URL on Vercel to https://deltoi.com
+
+### Title Naming Convention (MANDATORY)
+All text titles must follow: **"English Descriptive Name (Transliteration)"**
+- e.g., "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
+- e.g., "The War-Bard's Guide (Porunararruppadai)"
+- Texts with English-native original titles keep them as-is: "On the Soul"
+- This applies to ALL new texts added in future sessions
 
 ## Project Overview
 
@@ -613,16 +608,25 @@ For parallel development with multiple Claude Code instances:
 
 | Text | Language | Author Slug | Text Slug | Chapters | Type |
 |------|----------|-------------|-----------|----------|------|
-| Zhu Zi Yu Lei (Classified Conversations of Master Zhu) | zh | zhu-xi | zhuziyulei | 140 | prose |
+| Classified Conversations of Master Zhu (Zhu Zi Yu Lei) | zh | zhu-xi | zhuziyulei | 140 | prose |
 | On the Ceremonies of the Byzantine Court | grc | constantine-vii | ceremonialis | 7 | prose |
-| Chuan Xi Lu (Instructions for Practical Living) | zh | wang-yangming | chuanxilu | 3 | prose |
-| On the Soul (Cassiodorus) | la | cassiodorus | deanima | 18 | prose |
+| Instructions for Practical Living (Chuan Xi Lu) | zh | wang-yangming | chuanxilu | 3 | prose |
+| On the Soul | la | cassiodorus | deanima | 18 | prose |
 | Elegy on Misfortune | la | henry-of-settimello | elegia | 4 | poetry |
 | History of the Lombards of Benevento | la | erchempert | lombards | 82 | prose |
 | The Book of the Kingdom of Sicily | la | hugo-falcandus | regno | 56 | prose |
-| Tongjian Jishi Benmo (Narratives from the Comprehensive Mirror) | zh | yuan-shu | tongjian | 45 | prose |
-| Ptochoprodromika (Poems of Poor Prodromos) | grc | theodore-prodromos | ptochoprodromos | 2 | poetry |
-| Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine) | zh | huangdi | huangdineijing | 55 (Su Wen only) | prose |
+| Narratives from the Comprehensive Mirror (Tongjian Jishi Benmo) | zh | yuan-shu | tongjian | 45 | prose |
+| Poems of Poor Prodromos (Ptochoprodromika) | grc | theodore-prodromos | ptochoprodromos | 2 | poetry |
+| The Yellow Emperor's Classic of Medicine (Huang Di Nei Jing) | zh | huangdi | huangdineijing | 55 (Su Wen only) | prose |
+| Medieval Greek Poems (Carmina Graeca Medii Aevi) | grc | wagner | carmina-graeca | 21 | poetry |
+| Commentary of Guliang (Guliang Zhuan) | zh | guliang-chi | guliang-zhuan | 12 | prose |
+| The War-Bard's Guide (Porunararruppadai) | ta | mudathirumaran | porunararruppadai | 1 | poetry |
+| Comprehensive Discussions in the White Tiger Hall (Baihu Tong) | zh | ban-gu | baihu-tong | 43 | prose |
+| Biographies of Lofty Scholars (Gaoshi Zhuan) | zh | huangfu-mi | gaoshizhuan | 4 | prose |
+| Ceremonies and Rites (Yi Li) | zh | zheng-xuan | yi-li | 17 | prose |
+| Lost Book of Zhou (Yi Zhou Shu) | zh | zhou-scribes | yi-zhou-shu | 62 | prose |
+| Comprehensive Meaning of Customs (Fengsu Tongyi) | zh | ying-shao | fengsutongyi | 11 | prose |
+| The Anthology of Nandi (Nandikkalambakam) | ta | nandikkalambakam-poets | nandikkalambakam | 114 | poetry |
 
 ### Translation Pipeline
 
@@ -635,6 +639,53 @@ For parallel development with multiple Claude Code instances:
 - **Skip logic**: Already-translated chapters are skipped automatically
 - **JSON repair**: Handles malformed LLM output (truncated arrays, unescaped quotes, missing brackets)
 
+### Tamil Translation Workflow (MANDATORY — 3-Agent Staggered Pipeline)
+
+**When the user says "translate this Tamil text", you MUST follow this 3-agent staggered pipeline:**
+
+**Agent 1 (Translator)** — Launch immediately:
+1. Process raw text → JSON + seed into DB (if not already done)
+2. Create shared progress file: `docs/tamil-translation-notes/<text-slug>-pipeline-progress.md`
+3. Run `scripts/translate-tamil.ts --text <slug> --delay 5000`
+4. Update progress file after every ~20-30 poems with completion status
+5. Mark "STAGE 1 COMPLETE" when done
+
+**Agent 2 (Reviewer)** — Launch when ≥ 20 poems are translated (staggered start):
+1. Read completed translations from DB + Tamil source from processed JSONs
+2. Review poems in batches of 15-20 (scholarly notes, quality ratings, vocabulary errors)
+3. Update progress file after each batch
+4. After ALL poems reviewed: write `<text-slug>-reviewer-notes.md` and `<text-slug>-retranslation-requests.md`
+5. Mark "STAGE 2 COMPLETE" in progress file
+
+**Agent 3 (Master Retranslator)** — Launch after BOTH Stage 1 and Stage 2 COMPLETE:
+1. Read all reviewer notes and retranslation requests
+2. Identify systemic prompt improvements (patterns across many poems)
+3. Update Tamil prompt in `prompts.ts` if needed
+4. Run `scripts/translate-tamil.ts --text <slug> --retranslate --delay 5000`
+5. Verify HIGH-priority fixes
+6. **Editorial clarification pass (MANDATORY)**: Translate all Tamil terms into English with [transliteration] on first use only (e.g., "war-bard [porunar]", "lyre [yaazh]"). After first use, English only. Make text fully accessible to non-Tamil readers. Create as new TranslationVersion (v3).
+7. Write `<text-slug>-retranslation-report.md`
+
+**Key constraint:** Agent 3 waits for Agent 2's FULL assessment because prompt improvements are *systemic* (affect all poems). Per-poem retranslation without the full error pattern wastes API calls.
+
+**Coordination:** All 3 agents read/write the shared progress file (`<text-slug>-pipeline-progress.md`). This tracks per-poem status and inter-agent communication. See `docs/tamil-translation-orchestration.md` for the full format and design rationale.
+
+**Technical details:**
+- Pipeline documented in: `docs/tamil-translation-orchestration.md`
+- Notes directory: `docs/tamil-translation-notes/`
+- Script: `scripts/translate-tamil.ts` (uses `@google/genai` SDK, NOT DeepSeek)
+- Prompt: `src/server/translation/prompts.ts` → `ta:` entry (45 lines of Tamil-specific guidance)
+- The `--retranslate` flag creates a new version instead of skipping already-translated chapters
+- For large anthology works (400+ poems): run Agent 1 only, spot-check quality on a sample of 20-30
+
+**Available complete Tamil raw texts (non-Sangam, ready for processing):**
+
+| Text | Location | Size |
+|------|----------|------|
+| Nandikkalambakam | `data/raw/nandikkalambakam/nandikkalambakam-clean.txt` | 114 poems, 641 verse lines |
+| Yashodhara Kaviyam | `data/raw/yashodhara-kaviyam/` | 5 carukkams, 330 verses |
+| Udayanakumara Kaviyam | `data/raw/udayanakumara-kaviyam/` | 6 kandams, 367 verses |
+
 ### Adding New Texts
 
 1. Place raw text files in `data/raw/<dirname>/`
@@ -644,7 +695,8 @@ For parallel development with multiple Claude Code instances:
 3. Add author entry to `scripts/seed-db.ts` AUTHOR array (if new author)
 4. Add text entry to `scripts/seed-db.ts` TEXTS array with `processedDir` path
 5. Run `pnpm tsx scripts/seed-db.ts` to seed into database
-6. Run `pnpm tsx scripts/translate-batch.ts --text <slug>` to generate AI translations
+6. For non-Tamil texts: run `pnpm tsx scripts/translate-batch.ts --text <slug>`
+7. For Tamil texts: follow the 3-agent staggered Tamil Translation Workflow above
 
 ### Processing Scripts
 
@@ -664,6 +716,8 @@ For parallel development with multiple Claude Code instances:
 | `docs/plan-carmina-graeca-agents.md` | Dual-agent quality pipeline: Processor + Critic agents working together to produce clean .txt files |
 | `docs/carmina-graeca-scratchpad.md` | Shared working notes between Processor and Critic agents (read this for latest status) |
 | `docs/carmina-graeca-critiques.md` | Critic agent's formal per-chapter quality evaluations |
+| `docs/tamil-translation-orchestration.md` | Multi-agent Tamil translation quality pipeline: 4 stages (translate → notes → review → retranslate) |
+| `docs/tamil-translation-notes/` | Directory of Tamil pipeline outputs: translator notes, Gemini observations, reviewer assessment, retranslation requests, master report |
 
 ### Key Schema Notes
 
