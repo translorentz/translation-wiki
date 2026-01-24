@@ -33,7 +33,7 @@ export function ParagraphPair({
       className={cn(
         "group relative grid grid-cols-1 gap-x-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]",
         isPoetry
-          ? "py-0.5 pl-10 md:pl-12"
+          ? "border-b border-border/20 py-1.5 pl-10 last:border-b-0 md:pl-12"
           : "border-b border-border/50 py-3 last:border-b-0"
       )}
     >
