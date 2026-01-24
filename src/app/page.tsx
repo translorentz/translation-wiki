@@ -3,15 +3,20 @@ import { Button } from "@/components/ui/button";
 import { getServerTRPC } from "@/trpc/server";
 import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 
-const LANGUAGE_LINKS = [
-  { code: "zh", label: "Chinese" },
-  { code: "grc", label: "Greek" },
-  { code: "la", label: "Latin" },
-];
-
 export default async function HomePage() {
   const trpc = await getServerTRPC();
   const allTexts = await trpc.texts.list();
+
+  // Derive language links dynamically from the texts in the database
+  const languageMap = new Map<string, string>();
+  for (const t of allTexts) {
+    if (!languageMap.has(t.language.code)) {
+      languageMap.set(t.language.code, t.language.displayName);
+    }
+  }
+  const languageLinks = Array.from(languageMap.entries())
+    .map(([code, label]) => ({ code, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   const featuredTexts = allTexts.map((t) => ({
     title: t.title,
@@ -66,7 +71,7 @@ export default async function HomePage() {
             Explore By Language
           </h2>
           <ul className="space-y-2">
-            {LANGUAGE_LINKS.map((lang) => (
+            {languageLinks.map((lang) => (
               <li key={lang.code}>
                 <Link
                   href={`/texts?lang=${lang.code}`}
