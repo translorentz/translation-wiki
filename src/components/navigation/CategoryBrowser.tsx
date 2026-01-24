@@ -73,21 +73,21 @@ export function CategoryBrowser({ languages, defaultTab: defaultTabProp }: Categ
                   )}
                 </h3>
 
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {author.texts.map((text) => (
                     <Link
                       key={text.slug}
                       href={`/${lang.code}/${author.slug}/${text.slug}`}
                     >
-                      <Card className="p-4 transition-colors hover:bg-muted/50">
-                        <p className="font-medium">{text.title}</p>
+                      <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
+                        <p className="text-sm font-medium leading-tight">{text.title}</p>
                         {text.titleOriginalScript && (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs text-muted-foreground">
                             {text.titleOriginalScript}
                           </p>
                         )}
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {text.totalChapters} chapters
+                        <p className="text-xs text-muted-foreground">
+                          {text.totalChapters} ch.
                         </p>
                       </Card>
                     </Link>

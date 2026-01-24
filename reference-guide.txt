@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-23 (Session 3)
+# Last updated: 2026-01-23 (Session 5)
 
 ================================================================================
 ## PROJECT IDENTITY
@@ -22,7 +22,7 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-23, commit b50ba01
+Latest deploy: 2026-01-23, commit 241a6bf (poetry display)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
@@ -62,14 +62,31 @@ Tables:
 
 Current data:
 - 4 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English)
-- 2 authors seeded: Zhu Xi (朱熹), Constantine VII
-- 2 texts seeded: Zhu Zi Yu Lei (140 chapters), De Ceremoniis (7 chapters)
-- 1 text NOT yet seeded: Chuanxilu / 傳習錄 (data in data/processed/chuanxilu/)
+- 9 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
+  Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.)
+- 10 texts seeded:
+  - Zhu Zi Yu Lei (140 chapters, zh)
+  - De Ceremoniis (7 chapters, grc)
+  - Chuanxilu (3 chapters, zh)
+  - De Anima (18 chapters, la)
+  - Elegia (4 chapters, la)
+  - Lombards (82 chapters, la)
+  - Regno Sicilie (56 chapters, la)
+  - Tongjian Jishi Benmo (45 chapters, zh)
+  - Ptochoprodromos (2 chapters, grc, textType=poetry)
+  - Huang Di Nei Jing (55 chapters, zh)
 
-Translation coverage:
-- ZZYL: chapters 1-3 translated (of 140)
-- Ceremonialis: chapters 1, 3 translated (of 7)
-- Chuanxilu: 3 chapters with translations in data/processed/ but NOT in DB
+Translation coverage (in progress, 8 parallel workers running):
+- ZZYL: ch 1-57 done, ch 58-140 being translated (4 workers)
+- Ceremonialis: ch 1-7 translated
+- Chuanxilu: 3 chapters translated
+- De Anima: 18 chapters translated
+- Elegia: 4 chapters translated
+- Lombards: 82 chapters translated
+- Regno: 56 chapters translated
+- Tongjian: in progress (1 worker, very large chapters)
+- Ptochoprodromos: 2 chapters translated
+- HDNJ: in progress (3 workers, ch 1-55)
 
 To sync schema after code changes:
   set -a && source .env.local && set +a && pnpm db:push
@@ -108,6 +125,7 @@ src/app/(wiki)/texts/page.tsx                       — Browse all texts
 src/app/(wiki)/[lang]/[author]/[text]/page.tsx      — Text index/TOC
 src/app/(wiki)/[lang]/[author]/[text]/[chapter]/page.tsx — Chapter view
 src/app/(wiki)/[lang]/[author]/[text]/[chapter]/edit/page.tsx — Edit page
+src/app/(wiki)/[lang]/[author]/[text]/[chapter]/discussion/page.tsx — Discussion (planned)
 src/app/(wiki)/admin/users/page.tsx                 — Admin user mgmt
 src/app/(wiki)/search/page.tsx                      — Search page
 src/app/(auth)/login/page.tsx                       — Login
@@ -124,12 +142,13 @@ src/components/history/                             — Version history/diff
 src/components/home/FeaturedTexts.tsx               — Home page featured texts
 
 ### Server
-src/server/db/schema.ts                             — Drizzle schema (all tables)
+src/server/db/schema.ts                             — Drizzle schema (all tables + textType)
 src/server/db/index.ts                              — DB client
 src/server/trpc/init.ts                             — tRPC setup + context
 src/server/trpc/routers/texts.ts                    — Text listing queries
 src/server/trpc/routers/translations.ts             — Translation CRUD
 src/server/trpc/routers/users.ts                    — User management
+src/server/trpc/routers/discussions.ts              — Discussion threads (planned)
 src/server/auth/index.ts                            — NextAuth config
 src/server/translation/client.ts                    — DeepSeek API client
 
@@ -140,14 +159,26 @@ scripts/acquire-ctext.ts                            — Fetch from ctext.org
 scripts/acquire-archive.ts                          — Fetch from Internet Archive
 scripts/process-texts.ts                            — Clean raw → processed
 scripts/process-chuanxilu.ts                        — Process Chuanxilu text
+scripts/process-huangdi.ts                          — Process Huang Di Nei Jing
+scripts/process-new-texts.ts                        — Process De Anima, Lombards, Regno, Tongjian
+scripts/process-carmina-graeca.ts                   — Process Carmina Graeca (21 medieval Greek poems)
+scripts/lib/carmina/                                — Carmina processing modules (6 files)
 scripts/fix-chapter-titles.ts                       — Add English to chapter titles
 
 ### Data
-data/processed/zhuziyulei/chapter-NNN.json          — ZZYL source paragraphs
-data/processed/ceremonialis/chapter-NNN.json        — Ceremonialis source
-data/processed/chuanxilu/chapter-N.json             — Chuanxilu source
-data/processed/chuanxilu/chapter-N-translation.json — Chuanxilu translations
+data/processed/zhuziyulei/chapter-NNN.json          — ZZYL source (140 files)
+data/processed/ceremonialis/chapter-NNN.json        — Ceremonialis source (7 files)
+data/processed/chuanxilu/chapter-N.json             — Chuanxilu source (3 files)
+data/processed/huangdineijing/chapter-NNN.json      — HDNJ source (55 files)
+data/processed/deanima/chapter-NNN.json             — De Anima source (18 files)
+data/processed/elegia/chapter-NNN.json              — Elegia source (4 files)
+data/processed/lombards/chapter-NNN.json            — Lombards source (82 files)
+data/processed/regno/chapter-NNN.json               — Regno source (56 files)
+data/processed/tongjian/chapter-NNN.json            — Tongjian source (45 files)
+data/processed/ptochoprodromos/chapter-NNN.json     — Ptochoprodromos source (2 files)
+data/processed/carmina-graeca/chapter-NNN.json      — Carmina Graeca source (21 files)
 data/raw/                                           — (gitignored) raw downloads
+data/raw/carmina-graeca/                            — 21 clean Greek .txt files (10,957 lines, Grade A quality)
 
 ### Config
 drizzle.config.ts                                   — Drizzle ORM config
@@ -168,26 +199,36 @@ communications-to-the-User.txt                      — Implementation plan & de
 ================================================================================
 
 Phase 1 (Scaffolding):        COMPLETE
-Phase 2 (Text Acquisition):   COMPLETE (ZZYL + Ceremonialis + Chuanxilu data)
-Phase 3 (Reading UI):          COMPLETE
+Phase 2 (Text Acquisition):   COMPLETE (11 texts, 433 chapters total)
+Phase 3 (Reading UI):          COMPLETE (prose + poetry display modes)
 Phase 4 (Editing/Versioning): COMPLETE
 Phase 5 (Endorsements):       COMPLETE
-Phase 6 (AI Translation):     COMPLETE (infrastructure; most chapters untranslated)
+Phase 6 (AI Translation):     IN PROGRESS (~300+ chapters translated, 8 workers running)
 Phase 7 (Search/Polish):      PARTIAL (search page exists, SEO metadata added)
 Phase 8 (Deployment):         COMPLETE (live at deltoi.com)
+
+Additional features:
+- Poetry display mode (line numbers every 5th line, compact spacing)
+- Discussion pages (fully implemented: threads, replies, resolve, pin)
 
 ================================================================================
 ## REMAINING WORK (PRIORITY ORDER)
 ================================================================================
 
-1. Update AUTH_URL on Vercel to https://deltoi.com
-2. Seed Chuanxilu (傳習錄) into the database
-3. Run AI translations for remaining chapters (~137 ZZYL + 5 Ceremonialis)
-4. Responsive design polish (mobile stacking for interlinear viewer)
-5. Error boundaries and loading skeletons
-6. Full-text search improvements (currently basic)
-7. Migrate "middleware" to "proxy" convention (Next.js 16 deprecation)
-8. Upgrade NextAuth from beta to stable when available
+1. Wait for translation workers to finish:
+   - ZZYL: 2 workers still running (ch71+, ch96+); 2 workers completed (40 chapters done)
+   - Tongjian: 2 workers running (ch16-30, ch31-45)
+   - Carmina Graeca: 3 workers running (ch1-7, ch8-14, ch15-21) — SEEDED 2026-01-23
+2. ~~Seed Carmina Graeca into DB~~ — DONE (21 chapters inserted)
+3. ~~Translate Carmina Graeca chapters~~ — IN PROGRESS (3 parallel workers)
+4. Commit and push all new processed data + translations
+4. Update AUTH_URL on Vercel to https://deltoi.com
+5. Responsive design polish (mobile stacking for interlinear viewer)
+6. Error boundaries and loading skeletons
+7. Full-text search improvements (currently basic)
+8. Migrate "middleware" to "proxy" convention (Next.js 16 deprecation)
+9. Upgrade NextAuth from beta to stable when available
+10. Add Ling Shu (靈樞) chapters to HDNJ when user provides raw data
 
 ================================================================================
 ## CONVENTIONS & RULES
@@ -234,6 +275,25 @@ gh api repos/translorentz/translation-wiki/deployments --jq '.[0]'  # Check depl
 - Next.js 16 "middleware" deprecation warning (non-blocking, still works)
 - NextAuth v5 beta (5.0.0-beta.30) — no stable release yet
 - AUTH_URL on Vercel may still reference translation-wiki.vercel.app
-- Only 5/147 chapters have AI translations
-- Chuanxilu text data exists but is not seeded into the database
-- CLAUDE.md still references @anthropic-ai/sdk in some places (code uses DeepSeek)
+- Translation workers in progress — ~100+ chapters still being translated
+- Discussion pages implemented but not yet tested end-to-end in production
+- HDNJ currently only has Su Wen (55 ch); Ling Shu (81 ch) to be added later
+
+================================================================================
+## TRANSLATION PARALLELIZATION NOTES
+================================================================================
+
+For large texts (ZZYL 140ch, HDNJ 55ch), split into parallel workers:
+  pnpm translate:batch -- --text zhuziyulei --start 58 --end 78 --delay 4000
+
+Key flags:
+- --start N / --end N: chapter range
+- --delay N: milliseconds between chapters (4000ms per worker when 4+ workers)
+- Script auto-skips chapters with existing translations (checks currentVersionId)
+
+Rate limit strategy:
+- 1-2 workers: --delay 2000
+- 3-4 workers: --delay 4000
+- 5+ workers: --delay 5000+
+
+Never pipe translation output through `head` or other truncating commands (SIGPIPE kills process).

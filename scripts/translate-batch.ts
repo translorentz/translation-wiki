@@ -278,6 +278,61 @@ async function translateBatch(
   return result;
 }
 
+/**
+ * Translate a batch with robust retry logic:
+ * 1. Try up to 3 times with increasing delays
+ * 2. If still failing, split the batch in half and retry each half
+ * 3. If a single paragraph still fails, mark it as untranslatable
+ */
+async function translateBatchWithRetry(
+  paragraphs: Paragraph[],
+  sourceLanguage: string,
+  batchNum: number,
+  totalBatches: number,
+  depth: number = 0
+): Promise<{ results: Paragraph[]; failed: number }> {
+  const MAX_RETRIES = 3;
+  const label = totalBatches > 1 ? `    batch ${batchNum}/${totalBatches}` : "    batch 1/1";
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const result = await translateBatch(paragraphs, sourceLanguage);
+      process.stdout.write(`${label} (${result.length} paragraphs)\n`);
+      return { results: result, failed: 0 };
+    } catch (err) {
+      if (attempt < MAX_RETRIES) {
+        const delay = BATCH_DELAY_MS * (attempt + 1);
+        process.stdout.write(`${label} attempt ${attempt} failed, retrying in ${delay}ms...\n`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  // All retries failed — try splitting the batch
+  if (paragraphs.length > 1 && depth < 3) {
+    const mid = Math.ceil(paragraphs.length / 2);
+    const firstHalf = paragraphs.slice(0, mid);
+    const secondHalf = paragraphs.slice(mid);
+
+    process.stdout.write(`${label} splitting batch (${paragraphs.length} → ${firstHalf.length}+${secondHalf.length})\n`);
+
+    await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+    const r1 = await translateBatchWithRetry(firstHalf, sourceLanguage, batchNum, totalBatches, depth + 1);
+    await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+    const r2 = await translateBatchWithRetry(secondHalf, sourceLanguage, batchNum, totalBatches, depth + 1);
+
+    return { results: [...r1.results, ...r2.results], failed: r1.failed + r2.failed };
+  }
+
+  // Single paragraph that still fails — return placeholder
+  process.stdout.write(`${label} FAILED (${paragraphs.length} paragraphs skipped)\n`);
+  const placeholders: Paragraph[] = paragraphs.map((p) => ({
+    index: p.index,
+    text: "[Translation pending — automated translation failed for this paragraph]",
+  }));
+  return { results: placeholders, failed: paragraphs.length };
+}
+
 async function translateChapter(
   chapter: {
     id: number;
@@ -313,28 +368,24 @@ async function translateChapter(
   try {
     const chunks = chunkParagraphs(sourceContent.paragraphs, sourceLanguage);
     const translated: Paragraph[] = [];
+    let failedParagraphs = 0;
 
     for (let i = 0; i < chunks.length; i++) {
       if (i > 0) {
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
       }
-      let batchResult: Paragraph[];
-      try {
-        batchResult = await translateBatch(chunks[i], sourceLanguage);
-      } catch (err) {
-        // Retry once after a delay
-        process.stdout.write(
-          `    batch ${i + 1}/${chunks.length} failed, retrying...\n`
-        );
-        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS * 2));
-        batchResult = await translateBatch(chunks[i], sourceLanguage);
-      }
-      translated.push(...batchResult);
-      if (chunks.length > 1) {
-        process.stdout.write(
-          `    batch ${i + 1}/${chunks.length} (${batchResult.length} paragraphs)\n`
-        );
-      }
+      const batchResult = await translateBatchWithRetry(chunks[i], sourceLanguage, i + 1, chunks.length);
+      translated.push(...batchResult.results);
+      failedParagraphs += batchResult.failed;
+    }
+
+    if (translated.length === 0) {
+      console.log(`  [err]  Chapter ${chapter.chapterNumber}: all batches failed`);
+      return false;
+    }
+
+    if (failedParagraphs > 0) {
+      process.stdout.write(`    ⚠ ${failedParagraphs} paragraphs could not be translated\n`);
     }
 
     // Create or get translation record

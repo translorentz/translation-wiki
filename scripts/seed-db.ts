@@ -129,6 +129,14 @@ const AUTHORS = [
     description:
       "Byzantine poet, novelist, and scholar. The Ptochoprodromika are satirical vernacular Greek poems attributed to him, offering vivid portraits of everyday life in 12th-century Constantinople.",
   },
+  {
+    name: "Wilhelm Wagner (editor)",
+    nameOriginalScript: "Wilhelm Wagner",
+    slug: "wagner",
+    era: "19th century (1843–1907)",
+    description:
+      "German classical philologist who edited the Carmina Graeca Medii Aevi, a collection of 21 medieval vernacular Greek poems from manuscripts in various European libraries.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -262,6 +270,20 @@ const TEXTS = [
     processedDir: "data/processed/ptochoprodromos",
     compositionYear: 1140,
     compositionEra: "Reign of Manuel I Komnenos, Byzantine Empire",
+    textType: "poetry" as const,
+  },
+  {
+    title: "Carmina Graeca Medii Aevi (Medieval Greek Poems)",
+    titleOriginalScript: "Carmina Graeca Medii Aevi",
+    slug: "carmina-graeca",
+    languageCode: "grc",
+    authorSlug: "wagner",
+    description:
+      "A collection of 21 medieval vernacular Greek poems from the 12th–15th centuries, including romances, beast fables, satirical verse, laments, and historical narratives. Texts include the Tale of Belisarius, Poulologos (Tale of the Birds), and works by Sachlikis, Georgillas, and Pikatorios.",
+    sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
+    processedDir: "data/processed/carmina-graeca",
+    compositionYear: 1874,
+    compositionEra: "Published Leipzig, 1874 (poems date 12th–15th c.)",
     textType: "poetry" as const,
   },
 ] as const;

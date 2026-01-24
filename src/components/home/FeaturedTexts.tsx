@@ -58,39 +58,30 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
         </Button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-2">
         {sorted.map((text) => (
           <Link
             key={text.slug}
             href={`/${text.language.code}/${text.author.slug}/${text.slug}`}
           >
-            <Card className="p-5 transition-colors hover:bg-muted/50">
-              <h3 className="text-lg font-semibold">
+            <Card className="px-4 py-2.5 transition-colors hover:bg-muted/50">
+              <h3 className="text-base font-semibold leading-tight">
                 {text.title}
                 {text.titleOriginalScript && (
-                  <span className="ml-2 text-base font-normal text-muted-foreground">
+                  <span className="ml-2 text-sm font-normal text-muted-foreground">
                     ({text.titleOriginalScript})
                   </span>
                 )}
               </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {text.author.name}
                 {text.author.nameOriginalScript && (
                   <span className="ml-1">({text.author.nameOriginalScript})</span>
                 )}
-              </p>
-              {text.compositionEra && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {text.compositionEra}
-                  {text.compositionYear && (
-                    <span className="ml-1">
-                      ({text.compositionYear > 0 ? `${text.compositionYear} AD` : `${Math.abs(text.compositionYear)} BC`})
-                    </span>
-                  )}
-                </p>
-              )}
-              <p className="mt-1 text-xs text-muted-foreground">
-                {text.totalChapters} chapters
+                {text.compositionEra && (
+                  <span className="ml-1">— {text.compositionEra}</span>
+                )}
+                <span className="ml-1">— {text.totalChapters} ch.</span>
               </p>
             </Card>
           </Link>

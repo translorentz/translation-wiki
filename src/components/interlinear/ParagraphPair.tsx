@@ -56,7 +56,7 @@ export function ParagraphPair({
       {/* Source paragraph */}
       <div
         className={cn(
-          "leading-relaxed",
+          "whitespace-pre-line leading-relaxed",
           sourceFontClass,
           sourceLanguage === "zh" && "text-lg leading-loose",
           sourceLanguage === "grc" && "text-base leading-relaxed",
@@ -68,7 +68,7 @@ export function ParagraphPair({
       </div>
 
       {/* Translation paragraph */}
-      <div className={cn("leading-relaxed", isPoetry ? "mt-0 leading-normal" : "mt-2 md:mt-0")}>
+      <div className={cn("whitespace-pre-line leading-relaxed", isPoetry ? "mt-0 leading-normal" : "mt-2 md:mt-0")}>
         {translationText ? (
           <span>{translationText}</span>
         ) : (

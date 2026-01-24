@@ -23,6 +23,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
 - You always have permission to run any script that helps monitor, check, or improve translation subagent quality (e.g., alignment checks, retranslation of defective chapters, killing and restarting translation processes).
 
+## Active Tasks & Background Workers (2026-01-23)
+
+### Carmina Graeca Dual-Agent Quality Pipeline — COMPLETE
+- **Status**: DONE — 21 clean .txt files in `data/raw/carmina-graeca/`, 10,957 total lines
+- **Final grade**: A (Critic Agent grade after all fixes applied)
+- **Shared scratchpad**: `docs/carmina-graeca-scratchpad.md`
+- **Critiques file**: `docs/carmina-graeca-critiques.md`
+- **Source file**: `data/difficult_extra_processing/carmina_graeca_medii_aevi_multiple_titles.txt` (23,770 lines OCR)
+- **Pipeline modules**: `scripts/lib/carmina/` (6 files) + `scripts/process-carmina-graeca.ts`
+- **Key insight**: Medieval Greek verse NEVER contains Arabic numerals — any embedded digit = apparatus
+- **Next step**: Seed into DB + translate (21 poems, ~10,900 verse lines of medieval Greek)
+
+### Translation Workers (Background)
+- **Carmina Graeca**: 3 workers translating chapters 1-21 (language: grc, medieval Greek)
+  - Worker bb3ea15: chapters 1-7
+  - Worker b98d8d4: chapters 8-14
+  - Worker b6eb325: chapters 15-21
+- **ZZYL (Zhu Zi Yu Lei)**: 2 workers still running (b6a3898 at ch71, b0ab038 at ch96); 2 workers DONE (bd76b8e, b7ea0d0 — 20 chapters each, 0 errors)
+- **Tongjian**: 2 workers translating chapters 16-45 (workers b28bb83, b10363e)
+  - Chapters 1-15: DONE (visible on website)
+  - Improved error handling in `translate-batch.ts`: `translateBatchWithRetry()` — 3 retries + batch splitting
+
+### Carmina Graeca Processing Pipeline (COMPLETE)
+- All 21 chapters processed: PASS=13, WARN=8, FAIL=0
+- Output: `data/processed/carmina-graeca/chapter-001.json` through `chapter-021.json`
+- seed-db.ts updated with Wagner author + Carmina Graeca text entry
+- Detailed results in `docs/plan-carmina-graeca-processing.md` (see "Implementation Results" section)
+
+### Remaining Work
+1. Wait for ZZYL + Tongjian translation workers to finish
+2. ~~Carmina Graeca agents to produce clean .txt files + quality critiques~~ DONE
+3. Seed Carmina Graeca into DB + launch translation workers — IN PROGRESS
+4. Commit and push all new processed data
+5. Update AUTH_URL on Vercel to https://deltoi.com
+
 ## Project Overview
 
 A public wiki hosting open-source translations of classical and medieval texts. Users register accounts to edit or endorse AI-generated translations. All edits are publicly tracked with full history. Translations are displayed in a side-by-side columnar format inspired by the [Columbia Digital Dante](https://digitaldante.columbia.edu/) project: original source text on the left, translation on the right, aligned paragraph-by-paragraph or section-by-section.
@@ -581,10 +616,10 @@ For parallel development with multiple Claude Code instances:
 | Zhu Zi Yu Lei (Classified Conversations of Master Zhu) | zh | zhu-xi | zhuziyulei | 140 | prose |
 | On the Ceremonies of the Byzantine Court | grc | constantine-vii | ceremonialis | 7 | prose |
 | Chuan Xi Lu (Instructions for Practical Living) | zh | wang-yangming | chuanxilu | 3 | prose |
-| On the Soul (Cassiodorus) | la | cassiodorus | deanima | 1 | prose |
+| On the Soul (Cassiodorus) | la | cassiodorus | deanima | 18 | prose |
 | Elegy on Misfortune | la | henry-of-settimello | elegia | 4 | poetry |
-| History of the Lombards of Benevento | la | erchempert | lombards | 1 | prose |
-| The Book of the Kingdom of Sicily | la | hugo-falcandus | regno | 1 | prose |
+| History of the Lombards of Benevento | la | erchempert | lombards | 82 | prose |
+| The Book of the Kingdom of Sicily | la | hugo-falcandus | regno | 56 | prose |
 | Tongjian Jishi Benmo (Narratives from the Comprehensive Mirror) | zh | yuan-shu | tongjian | 45 | prose |
 | Ptochoprodromika (Poems of Poor Prodromos) | grc | theodore-prodromos | ptochoprodromos | 2 | poetry |
 | Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine) | zh | huangdi | huangdineijing | 55 (Su Wen only) | prose |
@@ -619,6 +654,16 @@ For parallel development with multiple Claude Code instances:
 | `process-huangdi.ts` | Huang Di Nei Jing | Strips `===` separators and section headers, extracts content paragraphs |
 | `process-chuanxilu.ts` | Chuan Xi Lu | Handles dialogue format |
 | `process-lombards.ts` | Historia Langobardorum | Latin chronicle, paragraph splitting |
+| `process-carmina-graeca.ts` | Carmina Graeca Medii Aevi | **IMPLEMENTED** — 6-module pipeline in `scripts/lib/carmina/`, source at `data/difficult_extra_processing/carmina_graeca_medii_aevi_multiple_titles.txt`, 21 poems extracted (see docs/) |
+
+### Plans & Design Documents
+
+| Document | Purpose |
+|----------|---------|
+| `docs/plan-carmina-graeca-processing.md` | Processing plan + implementation results for the Carmina Graeca pipeline (21 poems, 10,952 verse lines) |
+| `docs/plan-carmina-graeca-agents.md` | Dual-agent quality pipeline: Processor + Critic agents working together to produce clean .txt files |
+| `docs/carmina-graeca-scratchpad.md` | Shared working notes between Processor and Critic agents (read this for latest status) |
+| `docs/carmina-graeca-critiques.md` | Critic agent's formal per-chapter quality evaluations |
 
 ### Key Schema Notes
 

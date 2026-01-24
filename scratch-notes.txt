@@ -368,3 +368,145 @@ repeated twice consecutively). Processing script deduplicates these automaticall
 - Commit all new processed data + scripts
 - Push to GitHub for Vercel auto-deploy
 - Update reference-guide.txt with final translation counts
+
+### Session 5: Poetry Display, HDNJ Processing, Parallel Translation (2026-01-23)
+
+**Poetry display mode implemented:**
+- Added `textType` field to texts table schema (varchar, "prose" | "poetry")
+- Ptochoprodromos text set to textType="poetry" in seed-db.ts
+- InterlinearViewer: accepts `textType` prop, passes `isPoetry` to ParagraphPair
+- ParagraphPair: poetry mode uses:
+  - Line numbers every 5th line (absolute positioned, tabular-nums)
+  - Compact spacing (py-0.5 instead of py-3)
+  - No row separators (border removed)
+  - Left padding (pl-10 md:pl-12) for line number gutter
+  - Header alignment padding matches content
+- Chapter page passes `textData.textType` to InterlinearViewer
+- Build verified, curl tested (correct CSS classes present)
+- Committed as 241a6bf
+
+**Ptochoprodromos translation:**
+- Chapter 1 already had translation
+- Chapter 2 translated successfully (poetry/verse text)
+- First attempt killed by `| head -10` SIGPIPE — re-ran without pipe
+
+**ZZYL translation parallelized:**
+- Previous: 1 sequential worker (killed at ch 57/140)
+- New: 4 parallel workers with --delay 4000:
+  - Worker 1: ch 58-78
+  - Worker 2: ch 79-99
+  - Worker 3: ch 100-120
+  - Worker 4: ch 121-140
+- translate-batch.ts skips already-translated chapters (checks currentVersionId)
+
+**Huang Di Nei Jing (黃帝內經) processing:**
+- Found 55 raw files in data/raw/huang_di_nei_jing/ (Su Wen section only)
+- File format: NNN_素問_Su_Wen_Title.txt
+- Each file: title line, === separator, then alternating section headers + content
+- Created scripts/process-huangdi.ts:
+  - Strips === separators and section headers (lines ending with :)
+  - Extracts content paragraphs with 1-based indexing
+  - Output: data/processed/huangdineijing/chapter-NNN.json (55 files)
+- Added to seed-db.ts:
+  - Author: "Huangdi (Traditional Attribution)", slug "huangdi"
+  - Text: "Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine)", slug "huangdineijing"
+  - Language: zh, compositionYear: -200
+
+**HDNJ title scope fix:**
+- User said HDNJ will be 81+81 chapters (Su Wen + Ling Shu) so title shouldn't be just Su Wen
+- Updated seed-db.ts: title="Huang Di Nei Jing (The Yellow Emperor's Classic of Medicine)"
+- Updated titleOriginalScript from "黃帝內經素問" to "黃帝內經"
+- Updated description to mention both sections
+- Fixed in database via temporary script _fix-hdnj-title.ts
+- Note: inline `tsx -e` failed due to esbuild not supporting `!` non-null assertion
+
+**HDNJ translation started (3 parallel workers):**
+- Worker 1: ch 1-18
+- Worker 2: ch 19-37
+- Worker 3: ch 38-55
+- All with --delay 4000
+
+**Discussion pages plan created:**
+- Plan file: ~/.claude/plans/radiant-spinning-scone.md
+- New tables: discussion_threads, discussion_posts
+- tRPC router: discussions.ts (listByChapter, getThread, createThread, createPost, toggleResolved, togglePinned)
+- Pages: /[chapter]/discussion/ and /[chapter]/discussion/[threadId]
+- Components: ThreadList, ThreadView, CreateThreadForm, PostReplyForm
+- All logged-in users can create/reply; admins can pin
+
+**Background translation status (end of session):**
+- be044fa: Tongjian (in progress, batch 35/42 on current chapter)
+- b6a3898: ZZYL 58-78 (in progress, batch 19/20)
+- b0ab038: ZZYL 79-99 (in progress, batch 10/15)
+- bd76b8e: ZZYL 100-120 (completed ch 101-102)
+- b7ea0d0: ZZYL 121-140 (completed ch 123)
+- bd051ef: HDNJ 1-18 (completed ch 9-13)
+- bb4c2cb: HDNJ 19-37 (completed ch 26-30)
+- b503646: HDNJ 38-55 (completed ch 47-51)
+
+**Errors this session:**
+- `| head -10` kills translation script with SIGPIPE — never pipe long-running scripts
+- `tsx -e` inline code can't use `!` non-null assertion — use temp script file instead
+- Created SCRATCH.md when convention is scratch-notes.txt — deleted via git rm
+
+**Files created this session:**
+- scripts/process-huangdi.ts (NEW)
+- data/processed/huangdineijing/ (55 chapter files)
+
+**Files modified this session:**
+- src/components/interlinear/InterlinearViewer.tsx (textType/isPoetry prop)
+- src/components/interlinear/ParagraphPair.tsx (poetry display mode)
+- src/app/(wiki)/[lang]/[author]/[text]/[chapter]/page.tsx (passes textType)
+- scripts/seed-db.ts (added HDNJ author/text, textType for ptochoprodromos)
+- src/server/db/schema.ts (added textType column to texts table)
+
+**Carmina Graeca Medii Aevi — FULLY COMPLETE (raw files + processed JSON done):**
+- Raw .txt files: 21 files in data/raw/carmina-graeca/, total 10,957 lines
+- Quality: Grade A (Critic Agent evaluation after all fixes)
+- See docs/carmina-graeca-scratchpad.md for full agent notes
+- See docs/carmina-graeca-critiques.md for per-chapter quality evaluations
+
+**Carmina Graeca Medii Aevi — Implementation Details:**
+- File: data/difficult_extra_processing/carmina_graeca_medii_aevi_multiple_titles.txt
+- 1.4MB, 23,770 lines of OCR from W. Wagner's 1874 edition
+- Contains 21 distinct medieval Greek poems/narratives in one file
+- Pipeline: scripts/lib/carmina/ (6 modules + orchestrator)
+  - title-finder.ts: 21 hardcoded title positions + heuristic ALL-CAPS detector
+  - text-splitter.ts: splits file into 21 sections by title boundaries
+  - content-classifier.ts: classifies lines as verse/apparatus/noise/intro/empty
+  - verse-extractor.ts: extracts clean verse, strips numbers, groups into 15-line paragraphs
+  - quality-checker.ts: validates output with thresholds
+  - output-formatter.ts: writes standard chapter JSON
+- Key insight: medieval Greek verse NEVER contains Arabic numerals
+  - Any embedded digit (not at line start) = apparatus
+  - This is the most powerful discriminator since Latin editorial text is OCR'd into Greek Unicode
+- Classifier patterns for apparatus detection:
+  - hasEmbeddedNumbers(): strips leading editorial number, checks for remaining digits
+  - MULTIPLE_NUMBERS: 3+ numbers on one line (standalone, no sigla needed)
+  - EDITORIAL_BRACKETS: [ ] { } never appear in verse
+  - CODEX_ABBREV: οοα/οοά (= Latin "cod." rendered as Greek)
+  - LATIN_IN_GREEK: known Latin-in-Greek-script patterns (Βατγβίαπ = "Bursian", etc.)
+  - VERSE_REF: ν. + digit pattern
+  - Extended sigla set: Α, Β, Μ, Ρ, Δ, Κ, Υ, Ν, Τ
+- Results: PASS=13, WARN=8, FAIL=0, 10,952 verse lines, 1,270 paragraphs
+- Contamination rate: 0.055% (6 lines, all OCR artifacts not real apparatus)
+- CONTENT_END_LINE fixed from 21200 to 22885 (Belisarius poem extends to line 22882)
+- Chapter 21 ending verified: final verse "οὐδὲ θεάσονταί ποτε ὅσα κ᾿ ἂν τραγῳδοῦσιν" present
+- Output: data/processed/carmina-graeca/chapter-001.json through chapter-021.json
+- seed-db.ts updated: added Wagner as author, Carmina Graeca as text (poetry type)
+- Pipeline COMPLETE — ready for database seeding when DATABASE_URL is available
+- Background translation workers still running (ZZYL 66+, 117+)
+- Tongjian translation: chapters 1-15 done, chapters 16-45 being translated by 2 new workers
+  - Old workers killed (had JSON parse errors, single-retry only)
+  - translate-batch.ts improved: translateBatchWithRetry() — 3 retries + batch splitting + placeholder fallback
+  - Worker 1 (b28bb83): chapters 16-30
+  - Worker 2 (b10363e): chapters 31-45
+
+**Discussion pages verification:**
+- Schema, router, components, client wrappers, pages all exist and build cleanly
+- Confirmed in `pnpm build` output: routes listed correctly
+- Schema tables already synced to Neon (db:push returned "No changes detected")
+
+**HDNJ translation complete:**
+- All 3 workers finished with 0 errors
+- 55 chapters (Su Wen) fully translated
