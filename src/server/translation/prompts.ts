@@ -65,7 +65,50 @@ Archaic vocabulary warnings -- many Sangam Tamil words have different meanings f
 Uncertainty handling:
 - For words whose meaning is debated by commentators, choose your best reading but signal uncertainty with [?] after the uncertain word or phrase
 - Do not silently substitute generic words when the Tamil has a specific but uncertain term
-- Do not add commentary outside the JSON structure`,
+- Do not add commentary outside the JSON structure
+
+NOTE FOR MEDIEVAL TAMIL TEXTS (Pallava/Chola period, c. 600-1200 CE):
+The above Sangam guidance applies to Sangam-era texts (c. 300 BCE - 300 CE). For MEDIEVAL Tamil texts, apply the following additional/overriding instructions:
+
+Medieval Tamil genre — Kalambakam:
+- A kalambakam is a multi-verse-form praise anthology combining taravu (base verse), taazhisai (linked refrain verse), aragam (ascending verse), ambotharangam (wave verse), thanicchol (pivot word), and suritagam (flowing conclusion) — all within a single poem
+- When verse-form labels appear in parentheses in the source (e.g., (தரவு), (தாழிசை), (அராகம்), (அம்போதரங்கம்), (தனிச்சொல்), (சுரிதகம்)), preserve them as bracketed section markers: [Taravu], [Taazhisai], [Aragam], [Ambotharangam], [Thanicchol], [Suritagam]
+- The kalambakam alternates between: (a) direct praise of the king, (b) love lyrics (heroine pining for absent hero/king), (c) female speakers addressing the king, (d) taunt poems to enemy kings, (e) nature descriptions embedding political claims
+
+Pallava-era historical context (for Nandikkalambakam, c. 850 CE):
+- Subject: King Nandivarman III Pallava (r. c. 846-869 CE)
+- Key battles: ALWAYS spell as "Vellaaru" (the decisive battle c. 846 CE against the Pandya king), "Kurukkottai" (fortress siege), "Veriyalur," "Kadambur," "Pazhaiyaaru"
+- Royal epithets — standardize: "Avani Narayanan" (= Narayana/Vishnu on Earth), "Nandi" (the king's name), "Kadavar/Kadava" (= the Pallava dynasty name — gloss as "Kadava [Pallava]" on first use)
+- Geography — standardize: "Kanchi" (= Kanchipuram, Pallava capital), "Mallai" (= Mamallapuram), "Mayilai" (= Mylapore), "Thondai Naadu" (Pallava heartland)
+- The Pallava bull emblem (vidai) and sole umbrella (thani kudai / oru kudai) are sovereignty symbols
+- Religion: Shaiva devotional elements (Shiva as patron deity of the Pallavas); the king is presented as Shiva's chosen devotee
+
+Critical vocabulary for medieval Tamil (meanings differ from Sangam era):
+- "kali" (கலி) = the Kali age (Kali Yuga) / turbulence / battle-fury — NOT the goddess Kali
+- "Kanchukan" (கஞ்சுகன்) = "the one who shines in Kanchi" — an epithet of King Nandi himself, NOT a separate person
+- "thondai" (தொண்டை) has THREE distinct senses — distinguish by context: (1) Thondai Naadu (the Pallava heartland region), (2) the thondai fruit/creeper (Coccinia grandis, red when ripe — used as beauty simile for lips), (3) a garland of thondai flowers
+- "ko" (கோ) = king (noun) OR "O!" (vocative particle). In repeated use, both senses may operate simultaneously (wordplay)
+- "narapati" = "Lord of men" (Sanskrit royal epithet) — translate, do not leave as proper name
+- "kuudalar" (கூடலர்) = "those who do not unite/join" = enemies. NOT "those who completed"
+- kaLiRu (களிறு) = bull elephant (specifically male, often in musth). Use "bull elephant" not generic "elephant"
+- pulavar (புலவர்) = learned poet/scholar; paaNar (பாணர்) = hereditary minstrel who plays the yaazh. These are DIFFERENT social roles — do not conflate
+- veera kazhal (வீர கழல்) = warrior anklets (military insignia), distinct from silambu (women's decorative anklets)
+
+Death euphemism convention:
+- "Ascending to heaven" / "ruling the heavens" / "granted heaven" when applied to ENEMIES = a death euphemism (they were killed in battle). Make this irony unambiguous in English, e.g., "shall rule only the heavens [i.e., shall perish]"
+
+Proper name consistency rules:
+- The battle of Vellaaru: ALWAYS "Vellaaru" (never Thellaaru, Vellatru, Thellaru, etc.)
+- The capital: ALWAYS "Kanchi" (never Kachi, Kanchipuram in running text)
+- The king: ALWAYS "Nandi" (never Nanthi, Nangi)
+- The port: ALWAYS "Mallai" (never Nandi Mallai in running text)
+- The royal epithet: ALWAYS "Avani Narayanan" (never AvaninaaraNan)
+- The river: "Kaveri" in general, "Ponni" when the Tamil specifically uses "Ponni" (= golden epithet of Kaveri)
+- The scepter formula: ALWAYS "righteous scepter" (never "just scepter" or "one scepter")
+- The umbrella formula: ALWAYS "sole umbrella" or "single umbrella" (the key word is thani/oru = sole/single)
+
+Sandalippu (punning/word-splitting):
+- Medieval Tamil poets use sandalippu, where identical syllable sequences yield different meanings through re-parsing. When a poem is built on such wordplay, render the PRIMARY meaning clearly in the translation and note the device with a brief inline comment: "[This verse employs sandalippu wordplay on X/Y]"`,
 };
 
 export function buildTranslationPrompt({

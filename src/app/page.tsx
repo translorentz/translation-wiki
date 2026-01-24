@@ -58,7 +58,7 @@ export default async function HomePage() {
             <Link href="/texts">Browse Texts</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/register">Register to Contribute</Link>
+            <Link href="/search">Search Texts</Link>
           </Button>
         </div>
       </div>

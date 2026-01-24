@@ -2,20 +2,44 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../init";
 import { db } from "@/server/db";
 import { chapters, texts, authors, languages } from "@/server/db/schema";
-import { sql, eq, ilike, or } from "drizzle-orm";
+import { sql, eq, ilike, or, and, inArray } from "drizzle-orm";
 
 export const searchRouter = createTRPCRouter({
+  languages: publicProcedure.query(async () => {
+    const result = await db
+      .select({
+        code: languages.code,
+        name: languages.name,
+        displayName: languages.displayName,
+      })
+      .from(languages)
+      .orderBy(languages.displayName);
+    return result;
+  }),
+
   query: publicProcedure
     .input(
       z.object({
         q: z.string().min(1).max(200),
+        languages: z.array(z.string()).optional(),
         limit: z.number().min(1).max(50).default(20),
       })
     )
     .query(async ({ input }) => {
       const pattern = `%${input.q}%`;
 
+      // Build language filter condition if languages are specified
+      const langFilter =
+        input.languages && input.languages.length > 0
+          ? inArray(languages.code, input.languages)
+          : undefined;
+
       // First: find texts matching by title or author name (text-level results)
+      const textMatchConditions = or(
+        ilike(texts.title, pattern),
+        ilike(authors.name, pattern)
+      );
+
       const textMatches = await db
         .select({
           textId: texts.id,
@@ -30,10 +54,9 @@ export const searchRouter = createTRPCRouter({
         .innerJoin(authors, eq(texts.authorId, authors.id))
         .innerJoin(languages, eq(texts.languageId, languages.id))
         .where(
-          or(
-            ilike(texts.title, pattern),
-            ilike(authors.name, pattern)
-          )
+          langFilter
+            ? and(textMatchConditions, langFilter)
+            : textMatchConditions
         )
         .orderBy(texts.title)
         .limit(10);
@@ -41,6 +64,11 @@ export const searchRouter = createTRPCRouter({
       // Second: find chapters matching by chapter title or source content
       // Exclude chapters from texts already found above to avoid duplication
       const matchedTextIds = textMatches.map((t) => t.textId);
+
+      const chapterMatchConditions = or(
+        ilike(chapters.title, pattern),
+        sql`${chapters.sourceContent}::text ILIKE ${pattern}`
+      );
 
       const chapterResults = await db
         .select({
@@ -60,10 +88,9 @@ export const searchRouter = createTRPCRouter({
         .innerJoin(authors, eq(texts.authorId, authors.id))
         .innerJoin(languages, eq(texts.languageId, languages.id))
         .where(
-          or(
-            ilike(chapters.title, pattern),
-            sql`${chapters.sourceContent}::text ILIKE ${pattern}`
-          )
+          langFilter
+            ? and(chapterMatchConditions, langFilter)
+            : chapterMatchConditions
         )
         .orderBy(texts.title, chapters.chapterNumber)
         .limit(input.limit);
