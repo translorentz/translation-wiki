@@ -137,13 +137,9 @@ The text contains scenes of physical violence (torture of peasants for unpaid ta
 Translation of chapters 1-38 needs to be started manually. Run:
 
 ```bash
-# Option 1: Use the shell script
-chmod +x scripts/run-kaitser-translation.sh
-./scripts/run-kaitser-translation.sh
-
-# Option 2: Run directly with env vars
-DATABASE_URL='postgresql://neondb_owner:***REMOVED***@REDACTED_DB_HOST/neondb?sslmode=require&channel_binding=require' \
-DEEPSEEK_API_KEY='***REMOVED***' \
+# Load environment variables and run translation
+# NEVER hardcode secrets - always use .env.local
+set -a && source .env.local && set +a
 pnpm tsx scripts/translate-armenian.ts --text kaitser --start 1 --end 38 --delay 5000
 ```
 
@@ -212,19 +208,53 @@ The chapter titles show a BOM (byte order mark) artifact. For example:
 This does not affect the paragraph content or translation quality. The actual title text is concatenated with the first paragraph, which is a cosmetic issue.
 
 ### Translation Progress
-Translation started: 2026-01-24 ~20:37
-Status: IN PROGRESS
-- Chapters completed so far: 39, 40, 41, 42, 43 (as of last check)
-- Remaining: 44-76 (33 chapters)
-- Background task ID: bade82b
 
-### Translation Command Used
+#### First Run (Task bade82b - chapters 39-58)
+Translation started: 2026-01-24 ~20:37
+Status: COMPLETED (20 chapters)
+
+Completed chapters with paragraph counts:
+| Chapter | Paragraphs | Chapter | Paragraphs |
+|---------|------------|---------|------------|
+| 39 | 60 | 49 | 46 |
+| 40 | 44 | 50 | 107 |
+| 41 | 108 | 51 | 98 |
+| 42 | 96 | 52 | 115 |
+| 43 | 135 | 53 | 61 |
+| 44 | 132 | 54 | 96 |
+| 45 | 92 | 55 | 161 |
+| 46 | 77 | 56 | 52 |
+| 47 | 151 | 57 | 94 |
+| 48 | 92 | 58 | 95 |
+
+Process terminated after chapter 58 (unknown cause). Restarted with second run.
+
+#### Second Run (Task b6fce83 - chapters 59-76)
+Translation restarted: 2026-01-25 ~21:51
+Status: IN PROGRESS
+
+Completed chapters (59-66) with paragraph counts:
+| Chapter | Paragraphs | Chapter | Paragraphs |
+|---------|------------|---------|------------|
+| 59 | 149 | 63 | 44 |
+| 60 | 92 | 64 | 124 |
+| 61 | 151 | 65 | 57 |
+| 62 | 154 | 66 | 148 |
+
+Currently translating: Chapter 67 (batch 3/11)
+Remaining: chapters 67-76 (10 chapters)
+
+### Translation Commands Used
 ```bash
+# First run (chapters 39-58)
 pnpm tsx scripts/translate-armenian.ts --text kaitser --start 39 --end 76 --delay 5000
+
+# Second run (restart for chapters 59-76)
+pnpm tsx scripts/translate-armenian.ts --text kaitser --start 59 --end 76 --delay 5000
 ```
 
-### Estimated Completion
-- 38 chapters total (39-76)
-- ~3,400 paragraphs (based on first 5 chapters averaging ~88 paragraphs each)
-- At ~1-2 minutes per chapter average
-- Estimated total time: 1-2 hours
+### Total Statistics (chapters 39-66 completed)
+- Total chapters completed: 28 of 38
+- Total paragraphs translated: ~2,756 (estimated)
+- Average paragraphs per chapter: ~98.4
+- Remaining chapters: 10 (chapters 67-76)
