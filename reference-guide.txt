@@ -218,6 +218,12 @@ To seed/re-seed (NEW records only):
 To fix Armenian text in database (after "delays" bug):
   pnpm tsx scripts/fix-armenian-db.ts
 
+Chapter title convention:
+  - Non-English chapter titles MUST include English translation
+  - Format: "Original Title (English Translation)" or just English if original is complex
+  - The website shows original title with grey English translation underneath
+  - Run audit: pnpm tsx scripts/audit-chapter-titles.ts (checks all texts)
+
 ================================================================================
 ## TRANSLATION API DETAILS
 ================================================================================

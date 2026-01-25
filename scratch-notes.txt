@@ -43,6 +43,22 @@ Full report: `docs/armenian-delays-fix-report.md`
 - If Armenian displays as "delays", check processing scripts for corruption
 - Unicode reference in `docs/armenian-delays-fix-report.md`
 
+### Chapter Title Convention
+Chapter titles in non-English texts should include an English translation in parentheses.
+The website displays the original title with a grey English translation underneath.
+
+**Format**: `"Original Title (English Translation)"` or just English if original is complex.
+
+**Examples**:
+- Chinese: `"理氣 (Principle and Vital Force)"`
+- Armenian: `" Delays (Family)"`
+- Greek: `"Περὶ τῆς ψυχῆς (On the Soul)"`
+
+If chapter titles are only in the original language without English, users cannot navigate.
+Audit agent (a2792fa) checking all texts for missing English translations.
+
+---
+
 ### CRITICAL: Seed Script Workflow
 The seed script (`pnpm db:seed`) is **IDEMPOTENT** — it SKIPS existing records.
 
