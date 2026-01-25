@@ -4,7 +4,24 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-24 (Session 19)
+# Last updated: 2026-01-25 (Session 21)
+
+################################################################################
+# ⚠️  CRITICAL SECURITY WARNING — READ FIRST  ⚠️
+################################################################################
+#
+# INCIDENT (2026-01-25): A swap file (.env.local.swp) containing API keys was
+# committed to the public repository. This is a SEVERE security breach.
+#
+# MANDATORY RULES:
+# 1. NEVER commit: .env*, *.swp, *.swo, *credentials*, *secret*, *token*
+# 2. ALWAYS verify staged files before commit: git diff --cached --name-only
+# 3. Use specific file adds: git add <file1> <file2> — NOT git add . or git add -A
+# 4. GEMINI API KEY IS REVOKED AND FORBIDDEN — use DeepSeek only
+#
+# If you see .swp or .env files in git status, DO NOT ADD THEM.
+# This behaviour will not be tolerated.
+################################################################################
 
 ================================================================================
 ## PROJECT IDENTITY

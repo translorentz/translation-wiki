@@ -1,5 +1,26 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+################################################################################
+# ⚠️  SECURITY INCIDENT RECORD (2026-01-25)  ⚠️
+################################################################################
+#
+# A swap file (.env.local.swp) containing API keys was committed to the public
+# repository at commit 0e5f5b1. This is UNACCEPTABLE.
+#
+# CONSEQUENCES:
+# - Google/Gemini API key has been revoked
+# - Claude Code is FORBIDDEN from using Gemini API until further notice
+# - All translation must use DeepSeek API only
+#
+# PREVENTION:
+# - NEVER use git add . or git add -A
+# - ALWAYS verify staged files: git diff --cached --name-only
+# - NEVER commit .env*, *.swp, *.swo, *credentials*, *secret*, *token* files
+#
+# This incident is documented in CLAUDE.md, reference-guide.txt, and here.
+# Three independent audit agents have been launched to scan for additional leaks.
+################################################################################
+
 ## 2026-01-24 Session: Chapter Title Audit & Fix — COMPLETE
 
 **Agent**: Chapter title audit agent

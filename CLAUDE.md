@@ -2,6 +2,49 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+## ⚠️ CRITICAL SECURITY RULES — READ FIRST ⚠️
+
+### NEVER COMMIT SECRETS TO THE REPOSITORY
+
+**INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result.
+
+**MANDATORY RULES:**
+
+1. **NEVER stage or commit files matching these patterns:**
+   - `.env*` (all environment files)
+   - `*.swp`, `*.swo`, `*.swn` (vim swap files)
+   - `*.bak`, `*.backup` (backup files)
+   - `*credentials*`, `*secret*`, `*token*`, `*apikey*`
+   - Any file in `.gitignore`
+
+2. **BEFORE EVERY COMMIT, verify:**
+   ```bash
+   git status  # Check for sensitive files
+   git diff --cached --name-only  # Review staged files
+   ```
+
+3. **If you see `.swp`, `.env`, or similar files in `git status`:**
+   - DO NOT add them
+   - Add them to `.gitignore` if not already present
+   - Use `git add <specific-files>` instead of `git add .` or `git add -A`
+
+4. **GEMINI API KEY PROHIBITION:**
+   - The Gemini API key has been revoked due to this incident
+   - Claude Code is FORBIDDEN from using any Gemini API functionality
+   - All translation work must use DeepSeek API only
+   - This prohibition remains until explicitly lifted by the User
+
+5. **If secrets are accidentally committed:**
+   - IMMEDIATELY notify the User
+   - The secret MUST be rotated/revoked — it cannot be "uncommitted"
+   - Document the incident in this file
+
+**This security breach is unacceptable and will not be tolerated. Diligent verification of all commits is mandatory.**
+
+---
+
 ## Session Working Files
 
 **Always read these files at the start of a session:**
