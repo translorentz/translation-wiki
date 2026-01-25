@@ -178,10 +178,12 @@ async function findGaps(textSlug?: string): Promise<GapInfo[]> {
     const sourceContent = t.chapter.sourceContent as { paragraphs: Para[] } | null;
     if (!translationContent?.paragraphs || !sourceContent?.paragraphs) continue;
 
-    // Find gaps: empty translation but non-empty source
+    // Find gaps: empty translation, placeholder text, or non-empty source
     const gapIndices: number[] = [];
     for (const tp of translationContent.paragraphs) {
-      if (tp.text.trim() === "") {
+      const isEmpty = tp.text.trim() === "";
+      const isPlaceholder = tp.text.includes("[Translation pending");
+      if (isEmpty || isPlaceholder) {
         const sp = sourceContent.paragraphs.find((s) => s.index === tp.index);
         if (sp && sp.text.trim().length > 0) {
           gapIndices.push(tp.index);

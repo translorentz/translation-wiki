@@ -175,11 +175,21 @@ Armenian Initiative (Session 20) — 6 texts, ~5 MB total:
 
 Utility Agents (Session 20-21):
   - a0a3adf: Translation Gap Fixer — finding/fixing all gaps across DB (RUNNING)
-  - a9fb74b: Armenian "Delays" Bug Fix — fixing character substitution in code (RUNNING)
-  - ab470fa: Featured Texts Reorganization — grouping by language, collapsible menus (RUNNING)
+  - a9fb74b: Armenian "Delays" Bug Fix — COMPLETE (all code + processed JSON fixed)
+  - ab470fa: Featured Texts Reorganization — grouping by language, collapsible menus (COMPLETE)
+  - aecb8ba: English Language Labels — ensure labels in English not native script (COMPLETE)
+  - ab41354: Yerkir Nairi Paragraphing Fix — fixing epigraphs/structure (RUNNING)
   - a4fc5f0: Site Terminology Update — "pre-1900" → "pre-contemporary" (COMPLETE)
   - acf75d6: Armenian Encoding Investigation — documented "delays" issue (COMPLETE)
   - a85a667: Anna Saroyan Processor — 23 chapters processed, translation running (COMPLETE)
+
+Armenian "Delays" Bug — RESOLVED:
+  - Root cause: Armenian Unicode chars replaced with "delays" during text operations
+  - Fix method: Python with Unicode codepoints to rebuild correct Armenian text
+  - Files fixed: seed-db.ts, prompts.ts, 6 processing scripts, 60 JSON files regenerated
+  - Verification: grep confirms no "delays" corruption in scripts or processed JSON
+  - Report: docs/armenian-delays-fix-report.md
+  - Prevention: always use Unicode escape sequences for Armenian text in code
 
 Shisan Jing Zhushu (十三經註疏) — 13 texts, 455 chapters total:
   Status: 32/455 translated (~7%), ~20 parallel workers active

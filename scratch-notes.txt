@@ -1,5 +1,50 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-25 Session: Armenian "Delays" Bug Fix — COMPLETE
+
+**Agent**: a9fb74b
+**Task**: Fix Armenian Unicode corruption where characters rendered as "delays"
+
+### Root Cause
+Armenian Unicode characters (U+0530-U+058F) were corrupted during development, with the word "delays" incorrectly substituted. This was NOT an encoding issue — raw source files in `data/raw/` are correct UTF-8. The corruption occurred only in code files, documentation, and some processed JSON files.
+
+### Files Fixed
+
+**Critical Code Files:**
+- `scripts/seed-db.ts` — Fixed 13 corrupted Armenian entries (language displayName, author names, text titles)
+- `src/server/translation/prompts.ts` — Fixed Armenian prompt examples
+
+**Processing Scripts (6 files):**
+- `scripts/process-anna-saroyan.ts`
+- `scripts/process-khorhrdavor-miandznuhi.ts`
+- `scripts/process-yerkir-nairi.ts`
+- `scripts/process-samvel.ts`
+- `scripts/process-arshagouhi-teotig.ts`
+- `scripts/process-kaitser.ts`
+
+**Regenerated JSON Files:**
+- `data/processed/anna-saroyan/` (23 files)
+- `data/processed/yerkir-nairi/` (25 files)
+- `data/processed/khorhrdavor-miandznuhi/` (12 files)
+
+### Fix Method
+Used Python with Unicode codepoints (e.g., `chr(0x0540)`) to construct correct Armenian text, avoiding copy-paste corruption.
+
+### Verification
+- `grep -rn "delays" scripts/*.ts src/**/*.ts` → only legitimate uses (retry delays)
+- `grep -c "delays" data/processed/*/*.json | grep -v ":0$"` → no results
+
+### Documentation
+Full report: `docs/armenian-delays-fix-report.md`
+
+### Important for Future Armenian Work
+- Always use Unicode escape sequences when adding Armenian text programmatically
+- Raw files in `data/raw/` are correct — never modify them
+- If Armenian displays as "delays", check processing scripts for corruption
+- Unicode reference in `docs/armenian-delays-fix-report.md`
+
+---
+
 ## 2026-01-25 Session: Featured Texts Reorganization — COMPLETE
 
 **Agent**: ab470fa

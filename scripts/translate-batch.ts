@@ -71,15 +71,17 @@ function parseArgs() {
   let start: number | undefined;
   let end: number | undefined;
   let delay = DEFAULT_DELAY_MS;
+  let retranslate = false;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--text" && args[i + 1]) textSlug = args[i + 1];
     if (args[i] === "--start" && args[i + 1]) start = parseInt(args[i + 1]);
     if (args[i] === "--end" && args[i + 1]) end = parseInt(args[i + 1]);
     if (args[i] === "--delay" && args[i + 1]) delay = parseInt(args[i + 1]);
+    if (args[i] === "--retranslate") retranslate = true;
   }
 
-  return { textSlug, start, end, delay };
+  return { textSlug, start, end, delay, retranslate };
 }
 
 // ============================================================
@@ -452,11 +454,15 @@ async function translateChapter(
 // ============================================================
 
 async function main() {
-  const { textSlug, start, end, delay } = parseArgs();
+  const { textSlug, start, end, delay, retranslate } = parseArgs();
 
   console.log("=== Batch Translation ===\n");
   console.log(`Model: ${MODEL}`);
-  console.log(`Delay: ${delay}ms between requests\n`);
+  console.log(`Delay: ${delay}ms between requests`);
+  if (retranslate) {
+    console.log(`Mode: RETRANSLATE (existing translations will be replaced)`);
+  }
+  console.log();
 
   const systemUserId = await getOrCreateSystemUser();
 
@@ -499,6 +505,25 @@ async function main() {
 
     for (let i = 0; i < chapters.length; i++) {
       const chapter = chapters[i];
+
+      // If retranslate mode, delete existing translations first
+      if (retranslate) {
+        const existingTranslation = await db.query.translations.findFirst({
+          where: eq(schema.translations.chapterId, chapter.id),
+        });
+        if (existingTranslation) {
+          // Delete all versions first (due to foreign key constraints)
+          await db
+            .delete(schema.translationVersions)
+            .where(eq(schema.translationVersions.translationId, existingTranslation.id));
+          // Delete the translation record
+          await db
+            .delete(schema.translations)
+            .where(eq(schema.translations.id, existingTranslation.id));
+          console.log(`  [del]  Chapter ${chapter.chapterNumber}: removed existing translation`);
+        }
+      }
+
       const success = await translateChapter(
         chapter,
         text.language.code,
