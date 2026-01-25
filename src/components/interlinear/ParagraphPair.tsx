@@ -15,6 +15,8 @@ const LANGUAGE_FONTS: Record<string, string> = {
   zh: "font-serif",
   grc: "font-serif",
   la: "font-serif",
+  hy: "font-serif",
+  ta: "font-serif",
 };
 
 /**

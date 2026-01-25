@@ -67,9 +67,12 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     });
   }
 
-  const languages = Array.from(languageMap.values()).sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  // Sort languages by descending text count (most prolific first)
+  const languages = Array.from(languageMap.values()).sort((a, b) => {
+    const countA = a.authors.reduce((sum, author) => sum + author.texts.length, 0);
+    const countB = b.authors.reduce((sum, author) => sum + author.texts.length, 0);
+    return countB - countA;
+  });
 
   return (
     <main className="mx-auto max-w-5xl">

@@ -126,6 +126,18 @@ Guidelines:
 - Historical context: papal politics, conclaves, Roman civic governance (Senatore, Conservatori), noble faction warfare
 - The text alternates between matter-of-fact chronicle entries and more dramatic narrative passages — preserve this tonal variation
 - For unclear Romanesco vocabulary, provide your best reading with [?] notation`,
+
+  hy: `You are translating 19th and early 20th century Armenian literature to English.
+Guidelines:
+- This is classical/literary Armenian (գdelays Հdelays) from the Armenian literary renaissance period
+- Preserve the emotional depth and literary style characteristic of this era
+- Armenian literature of this period often deals with national identity, social critique, and the Armenian experience
+- Proper names should be transliterated (e.g., Մdelays → Mariam, Հdelays → Hayastan)
+- Armenian uses unique punctuation: «» for quotes, ։ for period, ՝ for comma in some texts
+- Maintain the narrative voice - whether first-person memoir, epistolary, or third-person
+- Some texts may reference historical events (massacres, displacement) - translate with appropriate gravity
+- Preserve metaphors and imagery that are central to Armenian literary tradition
+- Where archaic or regional vocabulary appears, provide natural English equivalents`,
 };
 
 export function buildTranslationPrompt({

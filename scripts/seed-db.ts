@@ -60,6 +60,7 @@ const LANGUAGES = [
   { code: "en", name: "English", displayName: "English" },
   { code: "ta", name: "Tamil", displayName: "தமிழ்" },
   { code: "it", name: "Italian", displayName: "Italian" },
+  { code: "hy", name: "Armenian", displayName: "Հայdelays" },
 ] as const;
 
 const AUTHORS = [
@@ -374,6 +375,38 @@ const AUTHORS = [
     era: "Ming-Qing transition (1613–1682)",
     description:
       "One of the greatest scholars of the early Qing dynasty, known for his emphasis on practical learning (實學) and evidential research (考據學). His Rizhilu represents decades of meticulous philological, historical, and philosophical investigation.",
+  },
+  {
+    name: "Raffi",
+    nameOriginalScript: "Րdelays (Հdelays Մdelays-Հdelays)",
+    slug: "raffi",
+    era: "1835–1888",
+    description:
+      "Father of Armenian historical fiction, Raffi (pen name of Hakob Melik-Hakobian) was the most influential Armenian novelist of the 19th century. His works, including Khent, Davit Bek, and Kaytser, shaped Armenian national consciousness and literary tradition.",
+  },
+  {
+    name: "Perch Proshyan",
+    nameOriginalScript: "Պdelays Պdelays",
+    slug: "perch-proshyan",
+    era: "1837–1907",
+    description:
+      "Armenian novelist and educator known for his realistic depictions of Armenian village life. His epistolary novel Anna Saroyan explores themes of social change, family misfortune, and women's inner lives in 19th-century Tiflis (Tbilisi).",
+  },
+  {
+    name: "Arshagouhi Teotig",
+    nameOriginalScript: "Արdelays Թdelays",
+    slug: "arshagouhi-teotig",
+    era: "1875–1960s",
+    description:
+      "Armenian writer, feminist, and eyewitness chronicler of the 1909 Adana massacre. Wife of the writer Teotig (Teotoros Lapjinjian). Her memoir 'Adana's Wounds and Orphans' documenting her journey through the massacre's aftermath is a key primary source for the events of April 1909.",
+  },
+  {
+    name: "Yeghishe Charents",
+    nameOriginalScript: "Delays Delays",
+    slug: "yeghishe-charents",
+    era: "1897–1937",
+    description:
+      "Major Armenian poet and writer of the early Soviet period. Charents fought in World War I and briefly joined the Armenian Revolutionary Federation before embracing communism. His poetic novel 'Yerkir Nairi' (Land of Nairi, 1922) is considered a modernist masterpiece. He was arrested during the Stalinist purges and died in prison in 1937. His famous patriotic poem 'Ես իdelays սdelays' (I Love My Sweet Armenia) contains an acrostic message critical of Soviet rule.",
   },
 ] as const;
 
@@ -969,6 +1002,84 @@ const TEXTS = [
     processedDir: "data/processed/rizhilu",
     compositionYear: 1670,
     compositionEra: "Early Qing Dynasty",
+  },
+  {
+    title: "The Spark (Kaytser)",
+    titleOriginalScript: "Կdelays",
+    slug: "kaitser",
+    languageCode: "hy",
+    authorSlug: "raffi",
+    description:
+      "An autobiographical novel depicting childhood memories under Persian rule in Eastern Armenia. Kaytser (The Spark) is a foundational work of modern Armenian literature, offering vivid portraits of village life, family, and the oppression of Armenian peasants by tax collectors, feudal lords, and foreign rulers.",
+    sourceUrl: "",
+    processedDir: "data/processed/kaitser",
+    compositionYear: 1883,
+    compositionEra: "Late 19th century, Russian Armenia",
+  },
+  {
+    title: "Samvel",
+    titleOriginalScript: "Սdelays",
+    slug: "samvel",
+    languageCode: "hy",
+    authorSlug: "raffi",
+    description:
+      "A historical novel set in 4th-century Armenia during the struggle against Persian domination. Samvel depicts the conflict between Christianity and Zoroastrianism, the tensions between Armenian princes and the Sasanian Empire, and the heroic resistance of Armenians under figures like Nerses the Great and the Mamikonian family. One of Raffi's masterpieces, it shaped Armenian national consciousness and remains a classic of Armenian literature.",
+    sourceUrl: "",
+    processedDir: "data/processed/samvel",
+    compositionYear: 1886,
+    compositionEra: "Late 19th century, Russian Armenia",
+  },
+  {
+    title: "Anna Saroyan (Աdelays Սdelays)",
+    titleOriginalScript: "Delays Delays",
+    slug: "anna-saroyan",
+    languageCode: "hy",
+    authorSlug: "perch-proshyan",
+    description:
+      "An epistolary novel in 23 letters written from Tiflis (Tbilisi) between September 1880 and October 1881. Anna Saroyan chronicles a young Armenian woman's descent from comfortable bourgeois life into poverty following her father's gambling debts, paralysis, and madness. The letters reveal her psychological transformation, the death of her beloved brother, and her growing despair culminating in suicide.",
+    sourceUrl: "",
+    processedDir: "data/processed/anna-saroyan",
+    compositionYear: 1881,
+    compositionEra: "Late 19th century, Tiflis (Tbilisi)",
+  },
+  {
+    title: "Adana's Wounds and Orphans",
+    titleOriginalScript: "Delays Delays Delays Delays",
+    slug: "arshagouhi-teotig",
+    languageCode: "hy",
+    authorSlug: "arshagouhi-teotig",
+    description:
+      "An eyewitness memoir documenting the author's journey through Cilicia (October 1909 – January 1910) in the aftermath of the April 1909 Adana massacre. Arshagouhi traveled from Istanbul to Mersin, Adana, Misis, Hamidie, Erzin, Dörtyol, and Tarsus, recording the devastation, meeting survivors, widows, and orphans, and helping to organize relief efforts. A primary historical source for the massacres that killed over 20,000 Armenians.",
+    sourceUrl: "",
+    processedDir: "data/processed/arshagouhi-teotig",
+    compositionYear: 1910,
+    compositionEra: "Early 20th century, Ottoman Empire",
+  },
+  {
+    title: "Land of Nairi (Yerkir Nairi)",
+    titleOriginalScript: "Delays Delays",
+    slug: "yerkir-nairi",
+    languageCode: "hy",
+    authorSlug: "yeghishe-charents",
+    description:
+      "A lyrical prose poem and modernist masterpiece of Armenian literature. Written in Moscow in 1921, 'Yerkir Nairi' (Land of Nairi) is structured in three parts with a preface and epilogue. The work meditates on Armenian identity and the mythical 'Land of Nairi' (an ancient name for the Armenian highlands) through vivid portraits of provincial town life, its characters, and their struggles. The narrator seeks to discover whether Nairi is real or merely 'a cerebral ache, a sickness of the heart.'",
+    sourceUrl: "",
+    processedDir: "data/processed/yerkir-nairi",
+    compositionYear: 1922,
+    compositionEra: "Early Soviet period, Moscow",
+  },
+  {
+    title: "The Mysterious Solitary Woman (Khorhrdavor Miandznuhi)",
+    titleOriginalScript: "Delays Delays",
+    slug: "khorhrdavor-miandznuhi",
+    languageCode: "hy",
+    authorSlug: "perch-proshyan",
+    description:
+      "A first-person diary/memoir set in 1884-1887 in the mountains of Syunik, Armenia. The narrator, a man recovering from illness, travels to a remote village and encounters 'Sister Anna' — a remarkable woman who has devoted herself to education, social reform, and village improvement. Through her anonymous work running schools, training teachers, and reforming harmful customs, she embodies the ideal of selfless service to the common good.",
+    sourceUrl: "",
+    processedDir: "data/processed/khorhrdavor-miandznuhi",
+    compositionYear: 1884,
+    compositionEra: "Late 19th century, Russian Armenia",
   },
 ] as const;
 

@@ -28,7 +28,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
 - You always have permission to run any script that helps monitor, check, or improve translation subagent quality (e.g., alignment checks, retranslation of defective chapters, killing and restarting translation processes).
 
-## Active Tasks & Background Workers (2026-01-24, Session 19)
+## Active Tasks & Background Workers (2026-01-25, Session 20)
 
 ### Rizhilu (日知錄) — Translation IN PROGRESS
 - **Agent** (a400ec2): COMPLETE — processing + seeding
@@ -36,6 +36,74 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Chapters**: 32 (one per volume, 498,926 characters)
 - **Translation**: 4 workers running (logs at /tmp/rizhilu-worker{1,2,3,4}.log)
 - **Files**: `scripts/process-rizhilu.ts`, `data/processed/rizhilu/`, `docs/rizhilu-processing.md`
+
+### Armenian Initiative — 7 AGENTS PROCESSING + TRANSLATING
+- **Status**: 7 parallel agents launched for full Armenian corpus (6 texts)
+- **Language code**: `hy` (added to languages table, ID: 7)
+- **Translation engine**: DeepSeek V3 (Gemini blocked due to historical content)
+- **Sample review**: Kaitser Chapter 1 → Grade A-
+
+**Active Agents:**
+| Agent | Text | Author | Chapters | Status |
+|-------|------|--------|----------|--------|
+| a9cd5db | Kaitser | Raffi | 1-38 | Processing + translating |
+| a0a5d32 | Kaitser | Raffi | 39-76 | Processing + translating |
+| a85a667 | Anna Saroyan | Perch Proshyan | 23 ch | COMPLETE ✓ (translation running) |
+| a1babe9 | Arshagouhi Teotig memoir | Arshagouhi Teotig | 35 ch | Processing + translating |
+| a28b9b8 | Khorhrdavor Miandznuhi | TBD | 12 files | Processing + translating |
+| afc0b52 | Yerkir Nairi | TBD | 5 files | Processing + translating |
+| a773dc8 | Samvel | Raffi | 41 ch (3 books) | Processing + translating |
+
+**Workflow:**
+1. Examine raw text files for structure/encoding
+2. Create processing script (`scripts/process-<name>.ts`)
+3. Add author/text to `seed-db.ts`
+4. Process → seed → translate with `translate-armenian.ts`
+5. Document in `docs/armenian-<name>-processing.md`
+
+**Files:**
+- `scripts/translate-armenian.ts` — DeepSeek-based Armenian translator (max_tokens: 8192)
+- `data/armenian-sample-review/` — sample translation + A- review
+- `docs/armenian-translation-observations.md` — workflow documentation
+- `docs/armenian-encoding-investigation.md` — "delays" substitution issue
+- `docs/armenian-arshagouhi-teotig-processing.md` — massacre memoir docs (by agent)
+
+**Key Findings:**
+- Gemini 2.5 Flash BLOCKS Armenian historical content (PROHIBITED_CONTENT error)
+- DeepSeek V3 handles historical violence appropriately
+- Raw Armenian source files are correct; "delays" word substitution occurred in code/docs
+
+### Translation Gap Fixer — IN PROGRESS
+- **Agent**: a0a3adf
+- **Task**: Catalogue all translation gaps (placeholders, empty paragraphs, missing) across DB
+- **Output**: `docs/translation-gaps-audit.md`
+- **Action**: Retranslate gaps using appropriate scripts per language
+
+### Site Terminology Update — COMPLETE ✓
+- **Agent**: a4fc5f0
+- **Change**: "pre-1900" → "pre-contemporary" (to include 1909-1910 Armenian texts)
+- **Files updated**: `src/app/page.tsx`, `src/app/layout.tsx`, `CLAUDE.md`
+
+### Armenian Encoding Investigation — COMPLETE ✓
+- **Agent**: acf75d6
+- **Finding**: Word "delays" substituted for Armenian Unicode chars in code/docs
+- **Root cause**: Text rendering issue during development (NOT Unicode encoding error)
+- **Report**: `docs/armenian-encoding-investigation.md`
+
+### Armenian "Delays" Bug Fix — IN PROGRESS
+- **Agent**: a9fb74b
+- **Task**: Find and fix ALL instances of "Delays" substitution in codebase
+- **Targets**: seed-db.ts, prompts.ts, processing scripts, processed JSON files
+- **Output**: `docs/armenian-delays-fix-report.md`
+
+### Featured Texts Reorganization — COMPLETE ✓
+- **Agent**: ab470fa
+- **Changes implemented**:
+  - Featured Texts: Collapsible accordion groups by language, sorted by count descending
+  - Sidebar: Languages sorted by work count with "(N)" suffix
+  - Browse: Language tabs with counts, mobile horizontal scroll
+- **Files modified**: FeaturedTexts.tsx, CategoryBrowser.tsx, page.tsx, texts/page.tsx
+- **New component**: accordion.tsx (Shadcn UI)
 
 ### Diarium Urbis Romae — TRANSLATION COMPLETE ✓
 - **Translation**: 66/66 chapters, 0 errors (Session 19)
@@ -167,8 +235,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 9. Wait for Tamil Stage 2 reviewers → launch Stage 3 retranslators
 10. Wait for Shisan Jing Zhushu translation (13 texts, 455 ch — 32/455 done, ~20 workers active)
 11. ~~Kongzi Jiayu~~ DONE (80/80)
-12. Commit and push all new processed data + seed-db.ts updates
-13. Update AUTH_URL on Vercel to https://deltoi.com
+12. Wait for Rizhilu translation workers to finish (4 workers, 32 chapters)
+13. ~~Armenian texts~~ IN PROGRESS — 4 agents processing + translating (kaitser×2, anna_saroyan, arshagouhi_teotig)
+14. Commit and push all new processed data + seed-db.ts updates
+15. Update AUTH_URL on Vercel to https://deltoi.com
 
 ### Title Naming Convention (MANDATORY)
 All text titles must follow: **"English Descriptive Name (Transliteration)"**
@@ -232,7 +302,7 @@ This is the standard workflow for processing texts where quality verification is
 
 ## Project Overview
 
-A public wiki hosting open-source translations of classical and medieval texts. Users register accounts to edit or endorse AI-generated translations. All edits are publicly tracked with full history. Translations are displayed in a side-by-side columnar format inspired by the [Columbia Digital Dante](https://digitaldante.columbia.edu/) project: original source text on the left, translation on the right, aligned paragraph-by-paragraph or section-by-section.
+A public wiki hosting open-source translations of classical and historical texts. Users register accounts to edit or endorse AI-generated translations. All edits are publicly tracked with full history. Translations are displayed in a side-by-side columnar format inspired by the [Columbia Digital Dante](https://digitaldante.columbia.edu/) project: original source text on the left, translation on the right, aligned paragraph-by-paragraph or section-by-section.
 
 **Initial languages:** Koine Greek, Latin, Classical Chinese
 **Initial texts:**

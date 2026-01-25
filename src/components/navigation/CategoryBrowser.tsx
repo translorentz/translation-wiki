@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { useMemo } from "react";
 
 interface TextSummary {
   title: string;
@@ -31,8 +32,34 @@ interface CategoryBrowserProps {
   defaultTab?: string;
 }
 
+/**
+ * Displays texts grouped by language in a tabbed interface.
+ * Languages are sorted by descending text count (most prolific first).
+ * Tabs show text count for each language.
+ */
 export function CategoryBrowser({ languages, defaultTab: defaultTabProp }: CategoryBrowserProps) {
-  if (languages.length === 0) {
+  // Sort languages by descending text count
+  const sortedLanguages = useMemo(() => {
+    return [...languages].sort((a, b) => {
+      const countA = a.authors.reduce((sum, author) => sum + author.texts.length, 0);
+      const countB = b.authors.reduce((sum, author) => sum + author.texts.length, 0);
+      return countB - countA;
+    });
+  }, [languages]);
+
+  // Calculate text count per language for display
+  const textCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const lang of sortedLanguages) {
+      counts.set(
+        lang.code,
+        lang.authors.reduce((sum, author) => sum + author.texts.length, 0)
+      );
+    }
+    return counts;
+  }, [sortedLanguages]);
+
+  if (sortedLanguages.length === 0) {
     return (
       <p className="py-8 text-center text-muted-foreground">
         No texts available yet.
@@ -40,21 +67,30 @@ export function CategoryBrowser({ languages, defaultTab: defaultTabProp }: Categ
     );
   }
 
-  const validTab = defaultTabProp && languages.some((l) => l.code === defaultTabProp);
-  const defaultTab = validTab ? defaultTabProp : languages[0].code;
+  const validTab = defaultTabProp && sortedLanguages.some((l) => l.code === defaultTabProp);
+  const defaultTab = validTab ? defaultTabProp : sortedLanguages[0].code;
 
   return (
     <Tabs defaultValue={defaultTab} className="w-full">
-      <TabsList className="mb-4">
-        {languages.map((lang) => (
-          <TabsTrigger key={lang.code} value={lang.code}>
-            <span className="mr-1.5">{lang.displayName}</span>
-            <span className="text-xs text-muted-foreground">({lang.name})</span>
-          </TabsTrigger>
-        ))}
-      </TabsList>
+      {/* Mobile: scrollable horizontal container */}
+      <div className="mb-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <TabsList className="inline-flex w-max sm:w-auto sm:flex-wrap">
+          {sortedLanguages.map((lang) => (
+            <TabsTrigger
+              key={lang.code}
+              value={lang.code}
+              className="whitespace-nowrap"
+            >
+              <span className="mr-1">{lang.displayName}</span>
+              <span className="text-xs text-muted-foreground">
+                ({textCounts.get(lang.code) ?? 0})
+              </span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
 
-      {languages.map((lang) => (
+      {sortedLanguages.map((lang) => (
         <TabsContent key={lang.code} value={lang.code}>
           <div className="space-y-6">
             {lang.authors.map((author) => (

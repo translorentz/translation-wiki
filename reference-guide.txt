@@ -65,12 +65,13 @@ Tables:
 - translations, translation_versions, endorsements
 
 Current data:
-- 5 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil)
-- 23 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
+- 7 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil), it (Italian), hy (Armenian)
+- 26 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
   Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.),
   Theodore Prodromos, Wilhelm Wagner, Guliang Chi, Mudathirumaran, Ban Gu,
   Zheng Xuan, Zhou Court Scribes, Ying Shao, Huangfu Mi, Nandikkalambakam Poets,
-  Anonymous (Diognetus), Zosimus, Anonymous (Soph. Elenchi), Eustathius of Thessalonica
+  Anonymous (Diognetus), Zosimus, Anonymous (Soph. Elenchi), Eustathius of Thessalonica,
+  Raffi (Armenian), Perch Proshyan (Armenian), Arshagouhi Teotig (Armenian)
 - 25 texts seeded (naming convention: "English Name (Transliteration)"):
   - Classified Conversations of Master Zhu (Zhu Zi Yu Lei) — 140 chapters, zh
   - On the Ceremonies of the Byzantine Court — 7 chapters, grc
@@ -145,6 +146,40 @@ Translation coverage (Session 13 — updated 2026-01-24):
 - Eustathius Odyssey Commentary: 10/27 translated (agents ab5dae1, a4043fb, afff370)
 - Diarium Urbis Romae: 66/66 COMPLETE (Session 19, paragraph segmentation v2 applied)
 - Rizhilu: 0/32 IN PROGRESS (4 workers running, agent a400ec2)
+
+Armenian Initiative (Session 20) — 6 texts, ~5 MB total:
+  Language: hy (Armenian), 19th-20th century literary Armenian
+  Translation: DeepSeek V3 (Gemini blocked due to historical violence content)
+  Sample review: Kaitser ch1 → Grade A-
+  Active agents (7 total):
+  - a9cd5db: Kaitser (Raffi) chapters 1-38 — processing + translating
+  - a0a5d32: Kaitser (Raffi) chapters 39-76 — processing + translating
+  - a85a667: Anna Saroyan (Perch Proshyan) — processing + translating
+  - a1babe9: Arshagouhi Teotig memoir (1909 massacre) — processing + translating
+  - a28b9b8: Khorhrdavor Miandznuhi (12 files, diary format) — processing + translating
+  - afc0b52: Yerkir Nairi (5 files, 3-part novel) — processing + translating
+  - a773dc8: Samvel (Raffi, 41 chapters, 3 books) — processing + translating
+  Texts:
+  - Kaitser (The Spark) — 76 chapters, ~1.5 MB, autobiographical novel by Raffi
+  - Anna Saroyan — epistolary novel by Perch Proshyan, ~175 KB
+  - Arshagouhi Teotig memoir — 1909 Adana massacre eyewitness, ~393 KB
+  - Khorhrdavor Miandznuhi — diary format, 12 files, ~468 KB
+  - Yerkir Nairi (Land of Nairi) — 3-part novel, ~619 KB
+  - Samvel — historical novel (4th-c. Armenia), 41 chapters, ~1.8 MB, by Raffi
+  Files: scripts/translate-armenian.ts, docs/armenian-*.md
+
+  Key findings:
+  - Gemini 2.5 Flash blocks Armenian historical content (PROHIBITED_CONTENT)
+  - DeepSeek max_tokens limit is 8192 (fixed in translate-armenian.ts)
+  - Raw Armenian files correct; "delays" substitution in code/docs (see docs/armenian-encoding-investigation.md)
+
+Utility Agents (Session 20-21):
+  - a0a3adf: Translation Gap Fixer — finding/fixing all gaps across DB (RUNNING)
+  - a9fb74b: Armenian "Delays" Bug Fix — fixing character substitution in code (RUNNING)
+  - ab470fa: Featured Texts Reorganization — grouping by language, collapsible menus (RUNNING)
+  - a4fc5f0: Site Terminology Update — "pre-1900" → "pre-contemporary" (COMPLETE)
+  - acf75d6: Armenian Encoding Investigation — documented "delays" issue (COMPLETE)
+  - a85a667: Anna Saroyan Processor — 23 chapters processed, translation running (COMPLETE)
 
 Shisan Jing Zhushu (十三經註疏) — 13 texts, 455 chapters total:
   Status: 32/455 translated (~7%), ~20 parallel workers active

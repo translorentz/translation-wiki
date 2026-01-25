@@ -8,15 +8,19 @@ export default async function HomePage() {
   const allTexts = await trpc.texts.list();
 
   // Derive language links dynamically from the texts in the database
-  const languageMap = new Map<string, string>();
+  // Count texts per language and sort by descending count (most prolific first)
+  const languageCounts = new Map<string, { name: string; count: number }>();
   for (const t of allTexts) {
-    if (!languageMap.has(t.language.code)) {
-      languageMap.set(t.language.code, t.language.name);
+    const existing = languageCounts.get(t.language.code);
+    if (existing) {
+      existing.count++;
+    } else {
+      languageCounts.set(t.language.code, { name: t.language.name, count: 1 });
     }
   }
-  const languageLinks = Array.from(languageMap.entries())
-    .map(([code, label]) => ({ code, label }))
-    .sort((a, b) => a.label.localeCompare(b.label));
+  const languageLinks = Array.from(languageCounts.entries())
+    .map(([code, data]) => ({ code, label: data.name, count: data.count }))
+    .sort((a, b) => b.count - a.count);
 
   const featuredTexts = allTexts.map((t) => ({
     title: t.title,
@@ -32,6 +36,8 @@ export default async function HomePage() {
     },
     language: {
       code: t.language.code,
+      name: t.language.name,
+      displayName: t.language.displayName,
     },
   }));
 
@@ -43,7 +49,7 @@ export default async function HomePage() {
           Deltoi
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          A collaborative wiki of interlinear translations of pre-1900 texts.
+          A collaborative wiki of interlinear translations of pre-contemporary texts.
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           The goal of this project is to allow translators and scholars to
@@ -77,7 +83,8 @@ export default async function HomePage() {
                   href={`/texts?lang=${lang.code}`}
                   className="text-sm text-foreground transition-colors hover:text-primary"
                 >
-                  {lang.label}
+                  {lang.label}{" "}
+                  <span className="text-muted-foreground">({lang.count})</span>
                 </Link>
               </li>
             ))}

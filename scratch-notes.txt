@@ -1,5 +1,316 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-25 Session: Featured Texts Reorganization — COMPLETE
+
+**Agent**: ab470fa
+**Task**: Reorganize text display to group by language with collapsible menus
+
+### What Was Done
+1. Installed Shadcn UI accordion component (`npx shadcn@latest add accordion`)
+2. Updated `FeaturedTexts.tsx` to group texts by language in collapsible accordions
+   - Languages sorted by descending text count (most prolific first)
+   - Each language header shows "Display Name (N works)"
+   - All accordions expanded by default
+   - Texts within each language sortable by title/author
+3. Updated home page sidebar (`src/app/page.tsx`) to sort languages by count
+   - Shows count next to each language name
+4. Updated `CategoryBrowser.tsx` (Browse page) with:
+   - Languages sorted by descending text count
+   - Tab labels show text count: "Chinese (15)"
+   - Mobile-friendly horizontal scroll for tabs
+5. Updated Browse page (`texts/page.tsx`) to sort languages by count
+
+### Files Modified
+- `/src/components/home/FeaturedTexts.tsx` — Complete rewrite with accordion grouping
+- `/src/components/navigation/CategoryBrowser.tsx` — Added sorting + counts + mobile support
+- `/src/app/page.tsx` — Language sidebar now sorted by count with count display
+- `/src/app/(wiki)/texts/page.tsx` — Languages sorted by count
+- `/src/components/ui/accordion.tsx` — New file (Shadcn component)
+
+### Testing
+- Type check: PASS
+- Build: PASS
+- Lint: PASS (no errors in modified files)
+
+---
+
+## 2026-01-24 Session: Raffi's Samvel Processing — COMPLETE
+
+**Agent**: Samvel processor agent
+**Task**: Process and translate Raffi's historical novel *Samvel*
+
+### What Was Done
+1. Examined raw text structure in `data/raw/samvel/` (41 files, 3 books)
+2. Created `scripts/process-samvel.ts` processing script
+3. Processed all 41 chapters into `data/processed/samvel/`
+4. Verified Raffi already exists in seed-db.ts (from Kaitser agent)
+5. Added Samvel text entry to seed-db.ts
+6. Seeded database successfully (41 chapters)
+7. Started translation via `translate-armenian.ts` (DeepSeek V3)
+8. Created documentation: `docs/armenian-samvel-processing.md`
+
+### Statistics
+- 41 chapters across 3 books
+- 4,138 paragraphs
+- 946,703 characters (~1 MB)
+- Average 101 paragraphs/chapter
+
+### Book Structure
+| Book | Chapters | Paragraphs | Characters |
+|------|----------|------------|------------|
+| Book 1 | 21 (Ch 1-21) | 1,540 | 337,757 |
+| Book 2 | 14 (Ch 22-35) | 1,702 | 387,424 |
+| Book 3 | 6 (Ch 36-41) | 896 | 221,522 |
+
+### Historical Context
+Set in 4th-century Armenia during conflict with Sasanian Persia:
+- Christianity vs Zoroastrianism struggle
+- Nerses the Great and the Mamikonian family
+- One of Raffi's three major historical novels (with Khent and Davit Bek)
+
+### Translation Status
+IN PROGRESS — worker bdfd0dc running in background
+- Chapters 1-2 done at time of note
+- Using DeepSeek V3 (Gemini blocks Armenian historical violence content)
+
+---
+
+## 2026-01-24 Session: Anna Saroyan Processing — COMPLETE
+
+**Agent**: a85a667 continuation
+**Task**: Process and translate Perch Proshyan's epistolary novel "Anna Saroyan"
+
+### What Was Done
+1. Read and analyzed raw text (175 KB, 680 lines)
+2. Discovered structure: 23 letters from September 1880 to October 1881
+3. Implemented Armenian numeral parsing (Delays-Delays = 1-9, Delays = 10, Delays = 20, etc.)
+4. Created `scripts/process-anna-saroyan.ts`
+5. Processed to 23 JSON files in `data/processed/anna-saroyan/`
+6. Added author (Perch Proshyan) and text entries to `seed-db.ts`
+7. Seeded database successfully
+8. Started translation via `translate-batch.ts` (DeepSeek V3)
+9. Created documentation: `docs/armenian-anna-saroyan-processing.md`
+
+### Statistics
+- 23 letters/chapters
+- 317 paragraphs
+- 95,816 characters
+
+### Issues Found
+- Original text has numbering irregularities (two letters marked "15", jump from 22 to 24)
+- `translate-armenian.ts` encountered max_tokens API errors; used `translate-batch.ts` instead
+
+### Translation Status
+IN PROGRESS — worker bd4d062 running in background
+
+---
+
+## 2026-01-25 (Session 20-21): Armenian Corpus Initiative — ACTIVE
+
+### Overview
+Launched comprehensive Armenian language support with 7 agents processing 6 texts (~5 MB total).
+DeepSeek V3 used exclusively (Gemini blocks Armenian historical content).
+
+### Active Agents Summary
+
+| Agent | Task | Status | Notes |
+|-------|------|--------|-------|
+| a9cd5db | Kaitser (Raffi) ch 1-38 | Running | Processing + translating |
+| a0a5d32 | Kaitser (Raffi) ch 39-76 | Running | Waiting for/using process script |
+| a85a667 | Anna Saroyan | DONE ✓ | 23 letters, translation running (bd4d062) |
+| a1babe9 | Arshagouhi Teotig | Running | 35 chapters, translation started |
+| a28b9b8 | Khorhrdavor Miandznuhi | Running | 12-file diary format |
+| afc0b52 | Yerkir Nairi | Running | 3-part novel |
+| a773dc8 | Samvel (Raffi) | Running | 41 chapters, 3 books |
+| a0a3adf | Translation Gap Fixer | Running | Finding/fixing all gaps across DB |
+| a9fb74b | Armenian "Delays" Bug Fix | Running | Fixing character substitution issue |
+| ab470fa | Featured Texts Reorganization | DONE | Grouping by language, collapsible, counts |
+| a4fc5f0 | Pre-1900 → Pre-contemporary | DONE ✓ | Updated site descriptions |
+| acf75d6 | Armenian Encoding Investigation | DONE ✓ | Found "delays" substitution issue |
+
+### Key Findings This Session
+
+1. **Gemini Content Filtering**: Gemini 2.5 Flash blocks 19th-century Armenian literature containing historical violence (PROHIBITED_CONTENT). DeepSeek V3 handles it appropriately.
+
+2. **Sample Translation Quality**: Kaitser Chapter 1 received Grade A- from reviewer agent.
+
+3. **Armenian Encoding Issue**: The word "delays" was substituted for Armenian characters in code/docs. Raw source files are correct. See `docs/armenian-encoding-investigation.md`.
+
+4. **Site Terminology Update**: Changed "pre-1900" to "pre-contemporary" to include early 20th-century texts (1909 massacre memoir).
+
+5. **DeepSeek max_tokens**: Fixed translate-armenian.ts to use 8192 (DeepSeek's actual limit) instead of 16384.
+
+### Files Created/Modified This Session
+
+**New Scripts:**
+- `scripts/translate-armenian.ts` — DeepSeek-based Armenian translator
+- `scripts/process-arshagouhi-teotig.ts` — Massacre memoir processor
+- `scripts/process-anna-saroyan.ts` — Epistolary novel processor (by agent)
+- Additional processing scripts created by agents
+
+**New Documentation:**
+- `docs/armenian-translation-observations.md` — Workflow documentation
+- `docs/armenian-encoding-investigation.md` — Encoding issue analysis
+- `docs/armenian-arshagouhi-teotig-processing.md` — Text-specific docs
+- `docs/translation-gaps-audit.md` — Gap finder report (in progress)
+
+**Database:**
+- Added language: Armenian (hy, ID: 7)
+- Added authors: Raffi, Perch Proshyan, Arshagouhi Teotig (more by agents)
+- Added texts: Being seeded by agents
+
+---
+
+## 2026-01-25 (Session 21): Arshagouhi Teotig Processing Complete
+
+### Arshagouhi Teotig — Adana's Wounds and Orphans
+
+**Status:** Processing complete, translation in progress
+
+**Text:** Eyewitness memoir of the 1909 Adana massacre
+**Author:** Arshagouhi Teotig (1875–1960s)
+**Language:** Western Armenian
+**Chapters:** 35
+**Total paragraphs:** 743
+
+### Work Completed
+
+1. **Processing script created:** `scripts/process-arshagouhi-teotig.ts`
+   - Text structure: Each line = one paragraph (no blank line separators)
+   - Chapter headers in ALL CAPS Armenian
+   - Optional date line after chapter title
+   - Section breaks marked by standalone `*`
+   - Output: 35 JSON files in `data/processed/arshagouhi-teotig/`
+
+2. **Database seeding:**
+   - Author entry added: `arshagouhi-teotig` (Armenian feminist writer)
+   - Text entry added: "Adana's Wounds and Orphans" (hy language, arshagouhi-teotig slug)
+   - 35 chapters successfully seeded
+
+3. **Translation started:**
+   - Worker `bbbc6be` running with DeepSeek V3
+   - Fixed max_tokens issue (16384 → 8192 for DeepSeek limit)
+   - Progress: Chapters 1-9 done at time of note
+
+4. **Documentation written:**
+   - `docs/armenian-arshagouhi-teotig-processing.md` created
+   - Includes: historical context, author bio, journey itinerary, chapter list, processing notes
+
+### Bug Fix: max_tokens in translate-armenian.ts
+
+DeepSeek V3's max_tokens limit is 8192, not 16384. Changed line 199:
+```typescript
+max_tokens: 8192,  // was 16384
+```
+
+### Historical Context
+
+The 1909 Adana massacre killed over 20,000 Armenians. Arshagouhi Teotig traveled to Cilicia in October-November 1909 as a relief worker. Her memoir documents:
+- Aftermath of the massacres
+- Orphanages in Mersin and Adana
+- Refugee conditions in various towns
+- Personal encounters with survivors
+
+This is one of the few female-authored primary sources for these events.
+
+---
+
+## 2026-01-25 (Session 20): Armenian Translation Review Complete
+
+### Translation Review Results
+- **Agent** a740e5e completed quality review of Kaitser Chapter 1 translation
+- **Grade**: A- (high quality, suitable for publication)
+- **Strengths**:
+  - Excellent accuracy in capturing meaning
+  - Literary voice and melancholic tone preserved
+  - All proper names correctly transliterated (Shushan, Nigyar, Farhat, Sahak)
+  - Cultural terms appropriately retained (ferrashes, shahis, arak)
+  - Historical sensitivity maintained for persecution content
+- **Weaknesses** (minor):
+  - Occasional stilted phrasing ("foolish-filled past")
+  - One formatting artifact with ellipses within words
+- **Recommendation**: Proceed with full Armenian corpus using DeepSeek V3
+
+### Critical Finding Confirmed
+- Gemini 2.5 Flash BLOCKED kaitser translation with PROHIBITED_CONTENT
+- Reason: Historical violence (tax collector torture, slavery threats)
+- DeepSeek V3 translated successfully with high quality
+- **Decision**: Use DeepSeek for ALL Armenian texts
+
+### Files Produced
+- `data/armenian-sample-review/translation-review.md` — detailed quality review
+
+### Armenian Translator Fixed
+- `scripts/translate-armenian.ts` was using Gemini (would fail due to content filtering)
+- Updated to use DeepSeek V3 via `getTranslationClient()` from `client.ts`
+- Now consistent with sample translation that received A- grade
+
+### Armenian 7-Agent Pipeline Launched
+7 parallel agents for full Armenian corpus (6 texts):
+
+| Agent | Text | Author | Chapters | Task |
+|-------|------|--------|----------|------|
+| a9cd5db | Kaitser | Raffi | 1-38 | Create process script, seed, translate |
+| a0a5d32 | Kaitser | Raffi | 39-76 | Wait for process script, then seed + translate |
+| a85a667 | Anna Saroyan | Perch Proshyan | All | Examine, process, seed, translate |
+| a1babe9 | Arshagouhi Teotig memoir | Arshagouhi Teotig | All | Examine, process, seed, translate |
+| a28b9b8 | Khorhrdavor Miandznuhi | TBD | 12 files | Examine diary format, process, translate |
+| afc0b52 | Yerkir Nairi | TBD | 5 files | Examine 3-part novel, process, translate |
+| a773dc8 | Samvel | Raffi | 41 ch | Historical novel (4th-c. Armenia), process, translate |
+
+**Workflow per agent:**
+1. Read raw text, understand structure
+2. Create `scripts/process-<name>.ts`
+3. Add author + text to `seed-db.ts`
+4. Run processing → seeding → `translate-armenian.ts`
+5. Document in `docs/armenian-<name>-processing.md`
+
+**Note on Gemini blocking:**
+Gemini 2.5 Flash blocks 19th-century Armenian literature containing historical violence
+(tax collector torture, massacre accounts). This is disappointing for foundational works
+like Raffi's Kaytser. DeepSeek V3 handles this content appropriately and received A- grade.
+
+### Rizhilu Translation Progress
+- 4 workers running; Worker 3 currently on chapter 23
+- Estimated completion: within next few hours
+
+### Documentation Updated
+- CLAUDE.md: Added Armenian Initiative section, updated session date, added to Remaining Work
+- This file: Added Session 20 entry
+
+### Next Steps for Armenian
+1. Create processing scripts: `process-kaitser.ts`, `process-anna-saroyan.ts`, `process-arshagouhi-teotig.ts`
+2. Add authors to seed-db.ts: Raffi, Perch Proshyan, Arshagouhi Teotig
+3. Add text entries to seed-db.ts with language `hy`
+4. Create `scripts/translate-armenian-deepseek.ts` (based on translate-batch.ts)
+5. Run full translation pipeline
+
+---
+
+## 2026-01-24: Armenian Language Support Added
+
+### Changes
+- Added Armenian language to database: code=`hy`, name=`Armenian`, displayName=`Հdelays` (Hayeren)
+- Added `hy` to LANGUAGE_FONTS in ParagraphPair.tsx for serif font styling
+
+### Database State
+7 languages now in `languages` table: Armenian, Classical Chinese, English, Greek, Italian, Latin, Tamil
+
+### Website Integration Verification
+- CategoryBrowser.tsx: Languages passed as prop from parent, dynamically rendered as tabs
+- BrowsePage (/texts): Queries `trpc.texts.list()`, groups by language — Armenian tab will appear when texts exist
+- SearchClient.tsx: Language filter from `trpc.search.languages()` — uses INNER JOIN with texts, so only shows languages with texts
+- FeaturedTexts.tsx: Uses language.code from text data — works for any language
+- InterlinearViewer + ParagraphPair: Added hy to LANGUAGE_FONTS for serif font
+
+### Notes
+- Armenian script uses unique characters (Unicode range U+0530-U+058F)
+- Geist font (default) doesn't include Armenian glyphs — browser falls back to system fonts
+- System font fallback works well for Armenian on most platforms
+- No additional Google Fonts needed — serif fallback is sufficient
+
+---
+
 ## 2026-01-24: Rizhilu (日知錄) — Complete Pipeline
 
 ### Text Information
@@ -1940,5 +2251,55 @@ Agent a400ec2 completed full pipeline:
 | Rizhilu | 4 | 🔄 In Progress |
 | Shisan Jing Zhushu | ~128 | 🔄 In Progress |
 | Eustathius Odyssey | ~16 | 🔄 In Progress |
+
+---
+
+---
+
+## 2026-01-24: Armenian Language Initiative (Session 19 continued)
+
+### Overview
+Three new Armenian texts discovered in `data/raw/`:
+1. **kaitser** (76 files) - "Կայdelays" (The Sparks) by Raffi - autobiographical novel
+2. **anna_saroyan** (1 file) - Epistolary novel by Perch Proshyan
+3. **arshagouhi_teotig** (1 file) - Travel memoir about 1909 Adana massacre
+
+### Agents Launched
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| aecc115 | Create Armenian Gemini translator module | ✅ COMPLETE |
+| a744647 | Prepare website for Armenian language | ✅ COMPLETE |
+| a1eba8e | Translate sample kaitser chapter to txt | ✅ COMPLETE |
+
+### Files Created/Modified
+
+**New Files:**
+- `scripts/translate-armenian.ts` - Armenian translation script (Gemini-based)
+- `data/armenian-sample-review/kaitser-ch1-original.txt` - Sample original (25,966 bytes)
+- `data/armenian-sample-review/kaitser-ch1-translation.txt` - Sample translation (15,495 bytes)
+- `data/armenian-sample-review/translation-info.md` - Translation metadata
+
+**Modified Files:**
+- `scripts/seed-db.ts` - Added Armenian language
+- `src/server/translation/prompts.ts` - Added Armenian translation prompt
+- `src/components/interlinear/ParagraphPair.tsx` - Added Armenian font mapping
+
+### Key Finding: Gemini Content Filtering
+- **Issue**: Gemini 2.5 Flash BLOCKED the kaitser translation with "PROHIBITED_CONTENT"
+- **Reason**: Historical themes (tax collector torture, poverty, threats of slavery)
+- **Solution**: DeepSeek V3 successfully translated the content
+- **Recommendation**: Use DeepSeek for Armenian texts with difficult historical content
+
+### Database State
+- Armenian language added: code `hy`, display name `Հdelays`
+- Language ID: 7
+- Website ready to display Armenian texts
+
+### Next Steps
+1. ~~Spin up translation review agent~~ IN PROGRESS
+2. Write Armenian translation observations doc
+3. Decide: Use DeepSeek or Gemini for Armenian based on review
+4. Process kaitser, anna_saroyan, arshagouhi_teotig texts
 
 ---
