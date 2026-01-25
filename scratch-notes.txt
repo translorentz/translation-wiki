@@ -1,5 +1,47 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-25 Session 21: Security Remediation Complete + Armenian Translations Done
+
+### Security Incident — FULLY REMEDIATED
+
+**Actions completed this session:**
+1. ✅ Installed gitleaks pre-commit hook
+   - Configuration: `.gitleaks.toml` (committed)
+   - Hook: `.git/hooks/pre-commit` (local, not committed)
+   - Tested: blocks commits with secrets, allows clean commits
+
+2. ✅ Purged git history with `git filter-repo`
+   - Removed: `.env.local.swp` file from all commits
+   - Replaced: All credential patterns with `REDACTED`
+   - Patterns purged: DeepSeek key, Gemini key, DB password, Auth secret, DB hostname
+
+3. ✅ Force-pushed cleaned history to GitHub
+   - Verified: Fresh clone contains no credentials
+   - All 5 secret patterns confirmed absent from history
+
+4. ✅ Wrote security incident report
+   - File: `docs/security-incident-report-claude.md`
+   - Contains: Timeline of failures, what I should have done, guardrails in place, remorse
+
+### Armenian Translations — ALL 6 TEXTS COMPLETE
+
+| Text | Chapters | Status |
+|------|----------|--------|
+| Kaitser | 76/76 | ✅ 100% |
+| Arshagouhi Teotig | 35/35 | ✅ 100% |
+| Anna Saroyan | 23/23 | ✅ 100% |
+| Samvel | 41/41 | ✅ 100% |
+| Khorhrdavor Miandznuhi | 12/12 | ✅ 100% |
+| Yerkir Nairi | 8/8 | ✅ 100% |
+
+**Total**: 195 chapters, 100% complete
+
+### Remaining Work
+- Gap filler running for Chinese texts (21 chapters with placeholders)
+- Rizhilu translation in progress (4 workers)
+
+---
+
 ################################################################################
 # ⚠️  SECURITY INCIDENT RECORD (2026-01-25)  ⚠️
 ################################################################################

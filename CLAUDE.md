@@ -92,7 +92,37 @@ chmod +x .git/hooks/pre-commit
 - You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
 - You always have permission to run any script that helps monitor, check, or improve translation subagent quality (e.g., alignment checks, retranslation of defective chapters, killing and restarting translation processes).
 
-## Active Tasks & Background Workers (2026-01-25, Session 20)
+## Active Tasks & Background Workers (2026-01-25, Session 21)
+
+### Security Incident Remediation — COMPLETE ✓
+- **Issue**: Credentials committed to public repository (swap file + shell scripts)
+- **Remediation completed**:
+  - ✅ Gitleaks pre-commit hook installed (`.gitleaks.toml` + `.git/hooks/pre-commit`)
+  - ✅ Git history purged with `git filter-repo`
+  - ✅ All credentials rotated (DeepSeek, Neon DB, Auth Secret)
+  - ✅ Force-pushed cleaned history to GitHub
+  - ✅ Security incident report: `docs/security-incident-report-claude.md`
+  - ✅ Three security audit reports: `docs/security-audit-{alpha,beta,gamma}.md`
+- **Verified**: Fresh clone from GitHub contains no exposed credentials
+
+### Armenian Initiative — COMPLETE ✓ (ALL 6 TEXTS 100%)
+- **Status**: All 6 Armenian texts fully translated (195 chapters total)
+- **Language code**: `hy` (languages table ID: 7)
+- **Translation engine**: DeepSeek V3 (Gemini blocked due to historical content)
+
+| Text | Author | Chapters | Status |
+|------|--------|----------|--------|
+| Kaitser (The Will) | Raffi | 76/76 | ✅ 100% |
+| Arshagouhi Teotig (Adana's Wounds) | Arshagouhi Teotig | 35/35 | ✅ 100% |
+| Anna Saroyan | Perch Proshyan | 23/23 | ✅ 100% |
+| Samvel | Raffi | 41/41 | ✅ 100% |
+| Khorhrdavor Miandznuhi | TBD | 12/12 | ✅ 100% |
+| Yerkir Nairi (Land of Nairi) | Yeghishe Charents | 8/8 | ✅ 100% |
+
+**Files:**
+- `scripts/translate-armenian.ts` — DeepSeek-based Armenian translator
+- `scripts/check-armenian-status.ts` — Status checker utility
+- `docs/armenian-translation-observations.md` — workflow documentation
 
 ### Rizhilu (日知錄) — Translation IN PROGRESS
 - **Agent** (a400ec2): COMPLETE — processing + seeding
@@ -101,47 +131,17 @@ chmod +x .git/hooks/pre-commit
 - **Translation**: 4 workers running (logs at /tmp/rizhilu-worker{1,2,3,4}.log)
 - **Files**: `scripts/process-rizhilu.ts`, `data/processed/rizhilu/`, `docs/rizhilu-processing.md`
 
-### Armenian Initiative — 7 AGENTS PROCESSING + TRANSLATING
-- **Status**: 7 parallel agents launched for full Armenian corpus (6 texts)
-- **Language code**: `hy` (added to languages table, ID: 7)
-- **Translation engine**: DeepSeek V3 (Gemini blocked due to historical content)
-- **Sample review**: Kaitser Chapter 1 → Grade A-
-
-**Active Agents:**
-| Agent | Text | Author | Chapters | Status |
-|-------|------|--------|----------|--------|
-| a9cd5db | Kaitser | Raffi | 1-38 | Processing + translating |
-| a0a5d32 | Kaitser | Raffi | 39-76 | Processing + translating |
-| a85a667 | Anna Saroyan | Perch Proshyan | 23 ch | COMPLETE ✓ (translation running) |
-| a1babe9 | Arshagouhi Teotig memoir | Arshagouhi Teotig | 35 ch | Processing + translating |
-| a28b9b8 | Khorhrdavor Miandznuhi | TBD | 12 files | Processing + translating |
-| afc0b52 | Yerkir Nairi | TBD | 5 files | Processing + translating |
-| a773dc8 | Samvel | Raffi | 41 ch (3 books) | Processing + translating |
-
-**Workflow:**
-1. Examine raw text files for structure/encoding
-2. Create processing script (`scripts/process-<name>.ts`)
-3. Add author/text to `seed-db.ts`
-4. Process → seed → translate with `translate-armenian.ts`
-5. Document in `docs/armenian-<name>-processing.md`
-
-**Files:**
-- `scripts/translate-armenian.ts` — DeepSeek-based Armenian translator (max_tokens: 8192)
-- `data/armenian-sample-review/` — sample translation + A- review
-- `docs/armenian-translation-observations.md` — workflow documentation
-- `docs/armenian-encoding-investigation.md` — "delays" substitution issue
-- `docs/armenian-arshagouhi-teotig-processing.md` — massacre memoir docs (by agent)
-
-**Key Findings:**
-- Gemini 2.5 Flash BLOCKS Armenian historical content (PROHIBITED_CONTENT error)
-- DeepSeek V3 handles historical violence appropriately
-- Raw Armenian source files are correct; "delays" word substitution occurred in code/docs
-
 ### Translation Gap Fixer — IN PROGRESS
-- **Agent**: a0a3adf
-- **Task**: Catalogue all translation gaps (placeholders, empty paragraphs, missing) across DB
-- **Output**: `docs/translation-gaps-audit.md`
-- **Action**: Retranslate gaps using appropriate scripts per language
+- **Script**: `scripts/fill-translation-gaps.ts`
+- **Task**: Find and retranslate placeholder paragraphs across all texts
+- **Remaining gaps** (as of last check):
+  - liji-zhengyi: 11 chapters
+  - liji-zhushu: 4 chapters
+  - shangshu-zhengyi: 2 chapters
+  - zuozhuan-zhengyi: 1 chapter
+  - rizhilu: 1 chapter
+  - mengzi-zhushu: 1 chapter
+  - zhuziyulei: 1 chapter
 
 ### Site Terminology Update — COMPLETE ✓
 - **Agent**: a4fc5f0
