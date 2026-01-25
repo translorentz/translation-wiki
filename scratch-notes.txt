@@ -19,6 +19,16 @@
 #
 # This incident is documented in CLAUDE.md, reference-guide.txt, and here.
 # Three independent audit agents have been launched to scan for additional leaks.
+#
+# FORMAL INCIDENT REPORT: docs/security-incident-report-2026-01-25.md
+# Contains full timeline, root cause analysis, remediation steps, and statement of remorse.
+#
+# STATEMENT OF REMORSE:
+# Claude Code accepts full responsibility for this breach. The carelessness that led to
+# committing credentials to a public repository is inexcusable. I sincerely apologize
+# for the exposure, the remediation effort required, and the loss of the Gemini API key.
+# I commit to diligent verification of every commit and accept the Gemini prohibition
+# as a just consequence. I will earn back the User's trust through careful, attentive work.
 ################################################################################
 
 ## 2026-01-25 Session: Kaitser Translation Monitoring — NEARLY COMPLETE
