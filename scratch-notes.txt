@@ -1,5 +1,75 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-24 Session: Chapter Title Audit & Fix — COMPLETE
+
+**Agent**: Chapter title audit agent
+**Task**: Audit and fix chapter titles missing English translations
+
+### Problem
+Chapter titles in non-English texts should include an English translation so users can navigate.
+The website displays the original title with a grey English translation underneath using
+the `parseChapterTitle()` function in `src/lib/utils.ts`.
+
+Many chapter titles were missing English translations, making navigation difficult.
+
+### Solution
+
+1. **Created audit script** (`scripts/audit-chapter-titles.ts`):
+   - Queries all chapters from the database grouped by text/language
+   - Detects non-Latin scripts (Chinese, Greek, Armenian, Tamil)
+   - Identifies chapters missing English translations
+   - Supports both parenthetical format `"Original (English)"` and em-dash format `"Original — English"`
+
+2. **Created fix script** (`scripts/fix-chapter-titles-english.ts`):
+   - Uses predefined translations for known texts (Yi Zhou Shu, Zhuziyulei extra chapters)
+   - Uses DeepSeek API to translate remaining Armenian chapter titles
+   - Updates both processed JSON files AND database records
+
+3. **Updated `parseChapterTitle()` function** in `src/lib/utils.ts`:
+   - Now supports both parenthetical format and em-dash format
+   - Em-dash format used by Armenian texts: `"Ադdelays — English"`
+
+### Texts Fixed
+
+| Text | Language | Chapters Fixed |
+|------|----------|----------------|
+| Samvel | Armenian | 41 |
+| Kaitser (The Spark) | Armenian | 76 |
+| Yashodhara Kaviyam | Tamil | 5 |
+| Zhu Zi Yu Lei | Chinese | 74 (chapters 67-140) |
+| Yi Zhou Shu | Chinese | 62 |
+| **Total** | | **258 chapters** |
+
+### Title Formats Used
+
+- **Chinese**: `"克殷 (The Conquest of Yin)"` — parenthetical format
+- **Armenian**: `" Delays. DELAYS — Family"` — em-dash format
+- **Tamil**: `"இரண்டாவது சருக்கம் (Second Carukkam: The Peacock and the Dog)"` — parenthetical format
+
+### Verification
+
+Final audit shows:
+- [grc] 11 texts, 442 chapters - ALL OK
+- [hy] 6 texts, 195 chapters - ALL OK
+- [it] 1 text, 66 chapters - ALL OK
+- [la] 4 texts, 160 chapters - ALL OK
+- [ta] 4 texts, 126 chapters - ALL OK
+- [zh] 25 texts, 918 chapters - ALL OK
+
+### Files Created/Modified
+
+- `scripts/audit-chapter-titles.ts` — New audit script
+- `scripts/fix-chapter-titles-english.ts` — New fix script
+- `src/lib/utils.ts` — Updated `parseChapterTitle()` for em-dash format
+- `data/chapter-title-audit.json` — Audit results (now empty = all fixed)
+
+### Usage
+
+To run audit: `pnpm tsx scripts/audit-chapter-titles.ts`
+To fix issues: `pnpm tsx scripts/fix-chapter-titles-english.ts`
+
+---
+
 ## 2026-01-25 Session: Armenian "Delays" Bug Fix — COMPLETE
 
 **Agent**: a9fb74b
