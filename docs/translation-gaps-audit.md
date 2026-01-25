@@ -2,166 +2,157 @@
 
 **Generated:** 2026-01-24
 **Auditor:** Claude Code (Translation Quality Auditor Agent)
-**Status:** IN PROGRESS
+**Status:** PARTIALLY COMPLETE (API authentication failure)
 
 ---
 
 ## Executive Summary
 
-This audit identifies all translation gaps across the database, including:
+This audit identified and attempted to fix all translation gaps across the database:
 1. **Placeholder text** — Paragraphs containing "[Translation pending — automated translation failed for this paragraph]"
 2. **Empty translations** — Paragraphs with empty or whitespace-only text
 3. **Missing translations** — Chapters that have source content but no translation at all
 
-### Gap Counts by Category
+### Gap Fixing Results
 
-| Category | Texts Affected | Total Gaps |
-|----------|---------------|------------|
-| Missing Translations (whole chapters) | 4 | 112 chapters |
-| Placeholder Text | 9 | ~25 paragraphs |
-| Empty Paragraphs | ~30+ | ~300 paragraphs |
-
----
-
-## Part 1: Missing Translations (No Translation at All)
-
-These chapters have source content but no translation record exists.
-
-### Armenian Texts (hy)
-
-| Text | Chapters Missing | Chapter Numbers |
-|------|-----------------|-----------------|
-| kaitser | 74 | 1-38, 41-76 (all except 39-40) |
-| arshagouhi-teotig | 21 | 15-35 |
-| anna-saroyan | 14 | 9-23 |
-
-### Chinese Texts (zh)
-
-| Text | Chapters Missing | Chapter Numbers |
-|------|-----------------|-----------------|
-| yili-zhushu | 3 | 49, 50, 51 |
-
-**Total Missing: 112 chapters**
+| Phase | Status | Details |
+|-------|--------|---------|
+| Phase 1a (Empty paragraphs) | COMPLETE | 107 chapters fixed, 0 failures |
+| Phase 1b (Placeholder paragraphs) | PARTIAL | 18 chapters fixed, 20 failed (API auth error) |
+| Phase 2 (Armenian) | NOT STARTED | Blocked by API auth failure |
+| Phase 3 (Chinese missing) | NOT STARTED | Blocked by API auth failure |
+| Phase 4 (Tamil) | NOT STARTED | Blocked by API auth failure |
 
 ---
 
-## Part 2: Placeholder Text Gaps
+## Fix Run 1: Empty Paragraph Gaps (COMPLETE)
 
-These chapters have translation versions containing placeholder text.
+**Script:** `scripts/fill-translation-gaps.ts`
+**Time:** 2026-01-24 ~20:50-21:40 UTC
 
-| Text | Language | Chapter | Paragraphs with Placeholders |
-|------|----------|---------|------------------------------|
-| liji-zhengyi | zh | 6 | 1 |
-| liji-zhengyi | zh | 13 | 1 |
-| liji-zhengyi | zh | 22 | 1 |
-| liji-zhengyi | zh | 27 | 1 |
-| liji-zhengyi | zh | 30 | 1 |
-| liji-zhengyi | zh | 52 | 1 |
-| liji-zhengyi | zh | 56 | 1 |
-| liji-zhushu | zh | 16 | 1 |
-| liji-zhushu | zh | 22 | 1 |
-| arshagouhi-teotig | hy | 1 | 6 (full chapter) |
-| arshagouhi-teotig | hy | 5 | 11 (full chapter) |
-| shangshu-zhengyi | zh | 4 | 1 |
-| anna-saroyan | hy | 1 | 5 (full chapter) |
-| zuozhuan-zhengyi | zh | 3 | 1 |
-| mengzi-zhushu | zh | 3 | 1 |
-| rizhilu | zh | 27 | 1 |
-| zhuziyulei | zh | 112 | 1 |
+Found 266 gaps across 107 chapters (empty paragraphs only).
+All 107 chapters successfully filled.
 
-**Total Placeholder Paragraphs: ~35**
+Texts fixed:
+- baihu-tong, erya-zhushu, fengsutongyi, guliang-zhuan, guliang-zhushu
+- gongyang-zhushu, historia-nova, liji-zhengyi, liji-zhushu, rizhilu
+- tongjian, udayanakumara-kaviyam, yashodhara-kaviyam, yili-zhushu
+- zhouli-zhushu, zhouyi-zhengyi, zhuziyulei, zuozhuan-zhengyi
+- carmina-graeca, eustathius-odyssey
 
 ---
 
-## Part 3: Empty Paragraph Gaps
+## Fix Run 2: Placeholder Paragraphs (PARTIAL - API FAILURE)
 
-These are chapters where some paragraphs have empty text despite having non-empty source.
+**Script:** `scripts/fill-translation-gaps.ts` (updated to include placeholder detection)
+**Time:** 2026-01-24 ~21:56-23:30 UTC
 
-### By Text (sorted by gap count)
+Found 257 gaps across 38 chapters (placeholders + empty).
+- **18 chapters successfully filled**
+- **20 chapters failed** (DeepSeek API key authentication failure mid-run)
 
-| Text | Language | Chapters Affected | Total Empty Paragraphs |
-|------|----------|-------------------|------------------------|
-| zhuziyulei | zh | 39 | ~80 |
-| tongjian | zh | 20 | ~80 |
-| eustathius-odyssey | grc | 20+ | ~70 |
-| yili-zhushu | zh | 16 | ~30 |
-| gongyang-zhushu | zh | 12 | ~20 |
-| zuozhuan-zhengyi | zh | 6 | ~10 |
-| zhouli-zhushu | zh | 4 | ~4 |
-| carmina-graeca | grc | 4 | ~7 |
-| guliang-zhushu | zh | 2 | ~9 |
-| zhouyi-zhengyi | zh | 3 | ~5 |
-| fengsutongyi | zh | 1 | 4 |
-| baihu-tong | zh | 1 | 1 |
-| erya-zhushu | zh | 1 | 2 |
-| guliang-zhuan | zh | 1 | 1 |
-| historia-nova | grc | 1 | 1 |
-| liji-zhengyi | zh | 1 | 1 |
-| liji-zhushu | zh | 1 | 1 |
-| rizhilu | zh | 1 | 1 |
-| yashodhara-kaviyam | ta | 1 | 5 |
-| udayanakumara-kaviyam | ta | 1 | 1 |
+### Successfully Fixed
 
-**Estimated Total Empty Paragraphs: ~350**
+Armenian texts:
+- anna-saroyan ch1: 5 gaps filled
+- arshagouhi-teotig ch1, 5, 9, 13, 17, 21, 24, 29, 33: all gaps filled
+- kaitser ch44, 45, 50: all gaps filled
 
----
+Chinese texts:
+- liji-zhengyi ch6 (x2), ch22 (x2), ch30: filled
 
-## Part 4: Fix Plan
+### Failed (API Auth Error)
 
-### Phase 1: Fix Empty/Placeholder Paragraphs (Chinese, Greek, Latin, Italian)
-Use `scripts/fill-translation-gaps.ts` which:
-- Scans for empty paragraphs with non-empty source
-- Translates only the missing paragraphs
-- Creates new TranslationVersion with gaps filled
+These chapters still have placeholder text and need re-running when API key is valid:
 
-**Command:** `pnpm tsx scripts/fill-translation-gaps.ts --delay 3000`
-
-### Phase 2: Fix Armenian Texts
-Armenian texts need `scripts/translate-armenian.ts`:
-
-1. **kaitser** (74 missing chapters)
-   - `pnpm tsx scripts/translate-armenian.ts --text kaitser --start 1 --end 38 --delay 5000`
-   - `pnpm tsx scripts/translate-armenian.ts --text kaitser --start 41 --end 76 --delay 5000`
-
-2. **arshagouhi-teotig** (21 missing + 2 placeholder chapters)
-   - `pnpm tsx scripts/translate-armenian.ts --text arshagouhi-teotig --start 1 --end 35 --delay 5000`
-
-3. **anna-saroyan** (14 missing + 1 placeholder chapter)
-   - `pnpm tsx scripts/translate-armenian.ts --text anna-saroyan --start 1 --end 23 --delay 5000`
-
-### Phase 3: Fix Chinese Missing Chapters
-- **yili-zhushu** chapters 49-51
-  - `pnpm tsx scripts/translate-batch.ts --text yili-zhushu --start 49 --end 51 --delay 3000`
-
-### Phase 4: Tamil Empty Paragraphs
-- **yashodhara-kaviyam** ch1: 5 empty
-- **udayanakumara-kaviyam** ch1: 1 empty
-
-These need `scripts/translate-tamil.ts` with `--retranslate` flag or manual gap filling.
+| Text | Chapter | Reason |
+|------|---------|--------|
+| liji-zhengyi | 13, 27, 56 | API authentication failure |
+| liji-zhushu | 16, 22 | API authentication failure |
+| mengzi-zhushu | 3 | API authentication failure |
+| rizhilu | 27 | API authentication failure |
+| shangshu-zhengyi | 4 (x2) | API authentication failure |
+| tongjian | 23, 43 | API authentication failure |
+| yili-zhushu | 49, 50, 51 | API authentication failure |
+| zhuziyulei | 112 | API authentication failure |
+| zuozhuan-zhengyi | 3 | API authentication failure |
 
 ---
 
-## Progress Log
+## Remaining Gaps (as of 2026-01-24 23:30)
 
-### 2026-01-24 — Initial Audit
-- [x] Catalogued all gaps via database queries
-- [x] Created this audit document
-- [ ] Phase 1: Fill empty/placeholder paragraphs (zh/grc/la)
-- [ ] Phase 2: Translate missing Armenian chapters
-- [ ] Phase 3: Translate missing Chinese chapters
-- [ ] Phase 4: Fix Tamil empty paragraphs
+### Chapters with Placeholder Text Still Remaining
+
+| Text | Language | Chapters |
+|------|----------|----------|
+| arshagouhi-teotig | hy | 9 chapters |
+| liji-zhengyi | zh | 6 chapters |
+| liji-zhushu | zh | 2 chapters |
+| kaitser | hy | 1 chapter |
+| rizhilu | zh | 1 chapter |
+| shangshu-zhengyi | zh | 1 chapter |
+| zhuziyulei | zh | 1 chapter |
+| anna-saroyan | hy | 1 chapter |
+| zuozhuan-zhengyi | zh | 1 chapter |
+| mengzi-zhushu | zh | 1 chapter |
+
+### Chapters Without Any Translation
+
+| Text | Language | Chapters Missing |
+|------|----------|-----------------|
+| kaitser | hy | 74 chapters (1-38, 41-76) |
+| arshagouhi-teotig | hy | ~21 chapters (15-35) |
+| anna-saroyan | hy | ~14 chapters (9-23) |
+| yili-zhushu | zh | 3 chapters (49, 50, 51) |
+
+---
+
+## To Complete the Audit
+
+When the DeepSeek API key is renewed/fixed:
+
+1. **Re-run gap filler:**
+   ```bash
+   set -a && source .env.local && set +a && pnpm tsx scripts/fill-translation-gaps.ts --delay 3000
+   ```
+
+2. **Translate missing Armenian chapters:**
+   ```bash
+   pnpm tsx scripts/translate-armenian.ts --text kaitser --start 1 --end 38 --delay 5000
+   pnpm tsx scripts/translate-armenian.ts --text kaitser --start 41 --end 76 --delay 5000
+   pnpm tsx scripts/translate-armenian.ts --text arshagouhi-teotig --start 1 --end 35 --delay 5000
+   pnpm tsx scripts/translate-armenian.ts --text anna-saroyan --start 1 --end 23 --delay 5000
+   ```
+
+3. **Translate missing Chinese chapters:**
+   ```bash
+   pnpm tsx scripts/translate-batch.ts --text yili-zhushu --start 49 --end 51 --delay 3000
+   ```
+
+---
+
+## Script Enhancement Made
+
+Updated `/Users/bryancheong/claude_projects/translation-wiki/scripts/fill-translation-gaps.ts` to detect both empty paragraphs AND placeholder text:
+
+```typescript
+// Before: only empty paragraphs
+if (tp.text.trim() === "") {
+
+// After: empty OR placeholder
+const isEmpty = tp.text.trim() === "";
+const isPlaceholder = tp.text.includes("[Translation pending");
+if (isEmpty || isPlaceholder) {
+```
 
 ---
 
 ## Notes
 
-1. The existing `scripts/_check-translation-gaps.ts` found 186 chapter entries with issues (some chapters appear multiple times due to multiple translation versions).
+1. The DeepSeek API key became invalid mid-run. Error: `401 Authentication Fails, Your api key: ****9072 is invalid`
 
-2. Empty paragraphs are often caused by:
-   - API timeout during translation
-   - JSON parsing errors
-   - Source paragraphs that are very long or contain unusual characters
+2. Some Chinese classical texts (liji-zhengyi, liji-zhushu) had persistent JSON parsing errors even before the auth failure, suggesting very long or complex source paragraphs.
 
-3. Armenian texts have the most missing content because the translation workers were started recently and may not have completed.
+3. The first run (empty paragraphs only) was 100% successful, filling all 266 gaps across 107 chapters.
 
-4. The `fill-translation-gaps.ts` script only handles empty paragraphs, not placeholders. Placeholder paragraphs need different handling (they need to be identified and retranslated).
+4. Armenian texts (arshagouhi-teotig, kaitser, anna-saroyan) had many placeholder gaps because their translation workers had not completed before this audit.

@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### NEVER COMMIT SECRETS TO THE REPOSITORY
 
-**INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result.
+**INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result. Claude has apologized deeply and sincerely after this incident. Claude Code has remorsefully promised never to commit such a mistake ever again.
 
 **MANDATORY RULES:**
 
@@ -32,7 +32,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 4. **GEMINI API KEY PROHIBITION:**
    - The Gemini API key has been revoked due to this incident
-   - Claude Code is FORBIDDEN from using any Gemini API functionality
+   - Claude Code is FORBIDDEN from using any Gemini API functionality until it earns the User's forgiveness
    - All translation work must use DeepSeek API only
    - This prohibition remains until explicitly lifted by the User
 

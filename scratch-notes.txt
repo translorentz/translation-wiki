@@ -21,6 +21,35 @@
 # Three independent audit agents have been launched to scan for additional leaks.
 ################################################################################
 
+## 2026-01-25 Session: Kaitser Translation Monitoring — NEARLY COMPLETE
+
+**Agent**: bade82b (Second Kaitser agent - chapters 39-76)
+**Task**: Monitor and complete translation of Raffi's Kaytser chapters 39-76
+
+### Summary
+- **Chapters 39-75**: COMPLETE (37 chapters translated successfully)
+- **Chapter 76**: PARTIAL (batches 1-9 of 11 completed, ~80% done)
+- **Cause of stop**: DeepSeek API key invalidated mid-translation (old key ending in 9072)
+- **Resolution**: New API key is in .env.local (ending in 099a), needs manual restart
+
+### Statistics
+| Metric | Value |
+|--------|-------|
+| Chapters translated | 37 of 38 |
+| Estimated paragraphs | ~4,400 |
+| Translation engine | DeepSeek V3 |
+| Batch size | 4000 chars |
+
+### To Complete Chapter 76
+```bash
+pnpm tsx scripts/translate-armenian.ts --text kaitser --start 76 --end 76 --delay 5000
+```
+
+### Documentation Updated
+- `/Users/bryancheong/claude_projects/translation-wiki/docs/armenian-kaitser-processing.md`
+
+---
+
 ## 2026-01-24 Session: Chapter Title Audit & Fix — COMPLETE
 
 **Agent**: Chapter title audit agent

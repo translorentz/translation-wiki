@@ -229,32 +229,95 @@ Completed chapters with paragraph counts:
 
 Process terminated after chapter 58 (unknown cause). Restarted with second run.
 
-#### Second Run (Task b6fce83 - chapters 59-76)
-Translation restarted: 2026-01-25 ~21:51
-Status: IN PROGRESS
+#### Second Run (Task bade82b continued - chapters 59-76)
+Translation continued: 2026-01-25
+Status: NEARLY COMPLETE (37 of 38 chapters done)
 
-Completed chapters (59-66) with paragraph counts:
+The first run (bade82b) actually continued processing chapters 59-76 after initially stopping at 58. All chapters 39-75 completed successfully.
+
+Completed chapters (59-75) with paragraph counts:
 | Chapter | Paragraphs | Chapter | Paragraphs |
 |---------|------------|---------|------------|
-| 59 | 149 | 63 | 44 |
-| 60 | 92 | 64 | 124 |
-| 61 | 151 | 65 | 57 |
-| 62 | 154 | 66 | 148 |
+| 59 | 149 | 68 | 203 |
+| 60 | 92 | 69 | 148 |
+| 61 | 151 | 70 | 98 |
+| 62 | 154 | 71 | 156 |
+| 63 | 44 | 72 | 168 |
+| 64 | 124 | 73 | 103 |
+| 65 | 57 | 74 | 94 |
+| 66 | 148 | 75 | 92 |
+| 67 | 127 | | |
 
-Currently translating: Chapter 67 (batch 3/11)
-Remaining: chapters 67-76 (10 chapters)
+#### Chapter 76 Status: PARTIAL
+Chapter 76 translation stopped at batch 9/11 due to DeepSeek API key invalidation:
+- Batches 1-9: COMPLETED (~200+ paragraphs translated)
+- Batches 10-11: FAILED (API key error: 401 Authentication Fails)
+- Paragraphs skipped: ~40 (estimated, from remaining 2 batches)
+
+**Error observed:**
+```
+batch 10/11 attempt 1 failed (401 Authentication Fails, Your api key: ****9072 is invalid)
+```
+
+The API key in .env.local has been updated (now ends in 099a). To complete chapter 76:
+```bash
+pnpm tsx scripts/translate-armenian.ts --text kaitser --start 76 --end 76 --delay 5000
+```
 
 ### Translation Commands Used
 ```bash
-# First run (chapters 39-58)
+# First run (chapters 39-75 completed, 76 partial)
 pnpm tsx scripts/translate-armenian.ts --text kaitser --start 39 --end 76 --delay 5000
 
-# Second run (restart for chapters 59-76)
-pnpm tsx scripts/translate-armenian.ts --text kaitser --start 59 --end 76 --delay 5000
+# To complete chapter 76 (with new API key)
+pnpm tsx scripts/translate-armenian.ts --text kaitser --start 76 --end 76 --delay 5000
 ```
 
-### Total Statistics (chapters 39-66 completed)
-- Total chapters completed: 28 of 38
-- Total paragraphs translated: ~2,756 (estimated)
-- Average paragraphs per chapter: ~98.4
-- Remaining chapters: 10 (chapters 67-76)
+### Total Statistics (chapters 39-75 completed, 76 partial)
+- Total chapters fully completed: 37 of 38
+- Total paragraphs translated: ~4,400 (estimated)
+- Average paragraphs per chapter: ~119
+- Chapter 76: ~80% translated (batches 1-9 of 11)
+
+---
+
+## Final Summary
+
+### What Was Accomplished (Agent bade82b)
+
+1. **Verified processing infrastructure**: Confirmed all 76 chapters were processed into JSON format by first agent
+2. **Fixed translate-armenian.ts**: Added automatic .env.local loading to resolve DATABASE_URL errors
+3. **Translated chapters 39-75**: All 37 chapters completed successfully with DeepSeek V3
+4. **Partial translation of chapter 76**: Batches 1-9 completed before API key invalidation
+
+### Remaining Work
+
+1. **Complete chapter 76**: Run translation with updated API key to finish batches 10-11
+2. **Verify database**: Confirm all translations are stored correctly in PostgreSQL
+
+### Key Statistics for Chapters 39-76
+
+| Metric | Value |
+|--------|-------|
+| Chapters assigned | 38 (39-76) |
+| Chapters fully translated | 37 |
+| Chapters partially translated | 1 (chapter 76) |
+| Estimated paragraphs translated | ~4,400 |
+| Translation engine | DeepSeek V3 (deepseek-chat) |
+| Batch size | 4000 characters |
+| Inter-chapter delay | 5000ms |
+
+### Files Modified
+
+- `/Users/bryancheong/claude_projects/translation-wiki/scripts/translate-armenian.ts` - Added .env.local loading
+- `/Users/bryancheong/claude_projects/translation-wiki/docs/armenian-kaitser-processing.md` - This documentation
+
+### Translation Quality Notes
+
+DeepSeek V3 handled the 19th-century Armenian literary text well, including:
+- Armenian-specific punctuation (« » for quotes, ։ for period)
+- Historical terminology (tax collectors, money lenders, village customs)
+- Dialect variations and archaic forms
+- Long descriptive passages characteristic of Raffi's style
+
+No content blocking occurred, unlike Gemini 2.5 Flash which rejected the text due to historical violence themes.
