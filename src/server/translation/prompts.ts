@@ -129,10 +129,10 @@ Guidelines:
 
   hy: `You are translating 19th and early 20th century Armenian literature to English.
 Guidelines:
-- This is classical/literary Armenian (գdelays Հdelays) from the Armenian literary renaissance period
+- This is classical/literary Armenian (գրաբար Հայերեն) from the Armenian literary renaissance period
 - Preserve the emotional depth and literary style characteristic of this era
 - Armenian literature of this period often deals with national identity, social critique, and the Armenian experience
-- Proper names should be transliterated (e.g., Մdelays → Mariam, Հdelays → Hayastan)
+- Proper names should be transliterated (e.g., Մարիամ → Mariam, Հայաստան → Hayastan)
 - Armenian uses unique punctuation: «» for quotes, ։ for period, ՝ for comma in some texts
 - Maintain the narrative voice - whether first-person memoir, epistolary, or third-person
 - Some texts may reference historical events (massacres, displacement) - translate with appropriate gravity

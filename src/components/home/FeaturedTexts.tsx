@@ -107,7 +107,7 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
           <AccordionItem key={langGroup.code} value={langGroup.code}>
             <AccordionTrigger className="text-base font-semibold hover:no-underline">
               <span>
-                {langGroup.displayName}{" "}
+                {langGroup.name}{" "}
                 <span className="text-sm font-normal text-muted-foreground">
                   ({langGroup.texts.length} {langGroup.texts.length === 1 ? "work" : "works"})
                 </span>

@@ -60,7 +60,7 @@ const LANGUAGES = [
   { code: "en", name: "English", displayName: "English" },
   { code: "ta", name: "Tamil", displayName: "தமிழ்" },
   { code: "it", name: "Italian", displayName: "Italian" },
-  { code: "hy", name: "Armenian", displayName: "Հայdelays" },
+  { code: "hy", name: "Armenian", displayName: "Հայերեն" },
 ] as const;
 
 const AUTHORS = [
@@ -378,7 +378,7 @@ const AUTHORS = [
   },
   {
     name: "Raffi",
-    nameOriginalScript: "Րdelays (Հdelays Մdelays-Հdelays)",
+    nameOriginalScript: "Ռաֆֆի (Հակոբ Մելիք-Հակոբյան)",
     slug: "raffi",
     era: "1835–1888",
     description:
@@ -386,7 +386,7 @@ const AUTHORS = [
   },
   {
     name: "Perch Proshyan",
-    nameOriginalScript: "Պdelays Պdelays",
+    nameOriginalScript: "Պերճ Պրոշյան",
     slug: "perch-proshyan",
     era: "1837–1907",
     description:
@@ -394,7 +394,7 @@ const AUTHORS = [
   },
   {
     name: "Arshagouhi Teotig",
-    nameOriginalScript: "Արdelays Թdelays",
+    nameOriginalScript: "Արշագուհի Թեոտիգ",
     slug: "arshagouhi-teotig",
     era: "1875–1960s",
     description:
@@ -402,11 +402,11 @@ const AUTHORS = [
   },
   {
     name: "Yeghishe Charents",
-    nameOriginalScript: "Delays Delays",
+    nameOriginalScript: "Եղիշե Չարենց",
     slug: "yeghishe-charents",
     era: "1897–1937",
     description:
-      "Major Armenian poet and writer of the early Soviet period. Charents fought in World War I and briefly joined the Armenian Revolutionary Federation before embracing communism. His poetic novel 'Yerkir Nairi' (Land of Nairi, 1922) is considered a modernist masterpiece. He was arrested during the Stalinist purges and died in prison in 1937. His famous patriotic poem 'Ես իdelays սdelays' (I Love My Sweet Armenia) contains an acrostic message critical of Soviet rule.",
+      "Major Armenian poet and writer of the early Soviet period. Charents fought in World War I and briefly joined the Armenian Revolutionary Federation before embracing communism. His poetic novel 'Yerkir Nairi' (Land of Nairi, 1922) is considered a modernist masterpiece. He was arrested during the Stalinist purges and died in prison in 1937. His famous patriotic poem 'Ես սիրում եմ իմ անուշ Հայաստանը' (I Love My Sweet Armenia) contains an acrostic message critical of Soviet rule.",
   },
 ] as const;
 
@@ -1005,7 +1005,7 @@ const TEXTS = [
   },
   {
     title: "The Spark (Kaytser)",
-    titleOriginalScript: "Կdelays",
+    titleOriginalScript: "Կայցեր",
     slug: "kaitser",
     languageCode: "hy",
     authorSlug: "raffi",
@@ -1018,7 +1018,7 @@ const TEXTS = [
   },
   {
     title: "Samvel",
-    titleOriginalScript: "Սdelays",
+    titleOriginalScript: "Սամվել",
     slug: "samvel",
     languageCode: "hy",
     authorSlug: "raffi",
@@ -1030,8 +1030,8 @@ const TEXTS = [
     compositionEra: "Late 19th century, Russian Armenia",
   },
   {
-    title: "Anna Saroyan (Աdelays Սdelays)",
-    titleOriginalScript: "Delays Delays",
+    title: "Anna Saroyan (Աննա Սարոյան)",
+    titleOriginalScript: "Աննա Սարոյան",
     slug: "anna-saroyan",
     languageCode: "hy",
     authorSlug: "perch-proshyan",
@@ -1044,7 +1044,7 @@ const TEXTS = [
   },
   {
     title: "Adana's Wounds and Orphans",
-    titleOriginalScript: "Delays Delays Delays Delays",
+    titleOriginalScript: "Ադանայի Վերքերն ու Որբերը",
     slug: "arshagouhi-teotig",
     languageCode: "hy",
     authorSlug: "arshagouhi-teotig",
@@ -1057,7 +1057,7 @@ const TEXTS = [
   },
   {
     title: "Land of Nairi (Yerkir Nairi)",
-    titleOriginalScript: "Delays Delays",
+    titleOriginalScript: "Երկիր Նաիրի",
     slug: "yerkir-nairi",
     languageCode: "hy",
     authorSlug: "yeghishe-charents",
@@ -1070,7 +1070,7 @@ const TEXTS = [
   },
   {
     title: "The Mysterious Solitary Woman (Khorhrdavor Miandznuhi)",
-    titleOriginalScript: "Delays Delays",
+    titleOriginalScript: "Խորհրդավոր Միանձնուհի",
     slug: "khorhrdavor-miandznuhi",
     languageCode: "hy",
     authorSlug: "perch-proshyan",

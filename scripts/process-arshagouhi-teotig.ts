@@ -8,7 +8,7 @@
  * the April 1909 massacres.
  *
  * The work's full title is: "Adanayi Verq u Vordiner" (Adana's Wounds and Orphans)
- * Original Armenian: Delays Delays Delays
+ * Original Armenian: Ադանայի Վերքերն ու Որբերը
  *
  * Usage: pnpm tsx scripts/process-arshagouhi-teotig.ts
  */
@@ -103,7 +103,7 @@ function main() {
 
     if (chapterLines[1]) {
       const secondLine = chapterLines[1].trim();
-      // Armenian date patterns: "14 Հոկdelays. 1909", "22 Նdelays.", etc.
+      // Armenian date patterns: "14 Հոկտեմբեր. 1909", "22 Նոյեմբեր.", etc.
       if (/^\d+\s+\S+\.?\s*\d*$/.test(secondLine) && secondLine.length < 25) {
         dateStr = secondLine;
         contentStartIndex = 2;

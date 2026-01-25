@@ -9,7 +9,7 @@
  *
  * Text structure:
  *   - Line 1: Empty or zero-width space (page marker - skip)
- *   - Line 2: Armenian chapter numeral (e.g., Delays, Բ, Գ...)
+ *   - Line 2: Armenian chapter numeral (e.g., Ա, Բ, Գ...)
  *   - Line 3: Chapter title in Armenian (e.g., DELAYS
  *   - Lines 4+: Each line is a paragraph (one line = one paragraph)
  *   - Lines containing only zero-width space (​) are page breaks - skip

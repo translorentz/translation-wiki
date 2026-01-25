@@ -2,11 +2,11 @@
  * Processes Yeghishe Charents' "Yerkir Nairi" (Land of Nairi) raw text into structured JSON.
  *
  * The raw files are organized as:
- * - 01_Առdelays.txt: Preface (Arajaban)
- * - 02_Մdelays_delays.txt: Part One (Masn Arajin)
- * - 03_Մdelays_delays.txt: Part Two (Masn Erkrord)
- * - 04_Մdelays_delays_delays_delays.txt: Part Three and Final (Masn Yerrord yev Verjin)
- * - 05_Վdelays.txt: Epilogue (Verjaban)
+ * - 01_Առաջաբան.txt: Preface (Arajaban)
+ * - 02_Մասն_առաջին.txt: Part One (Masn Arajin)
+ * - 03_Մասն_առաջին.txt: Part Two (Masn Erkrord)
+ * - 04_Մասն_երրորդ_և_վերջին.txt: Part Three and Final (Masn Yerrord yev Verjin)
+ * - 05_Վերջաբան.txt: Epilogue (Verjaban)
  *
  * The text uses zero-width spaces (U+200B) as section/paragraph markers.
  * Each large part is split into chapters of roughly 10-15 sections each.
@@ -39,35 +39,35 @@ interface PartConfig {
 
 const PARTS: PartConfig[] = [
   {
-    file: "01_Առdelays.txt",
-    titleArm: "Delays",
+    file: "01_Առաջաբան.txt",
+    titleArm: "Առաջաբան",
     titleEng: "Preface",
     sectionsPerChapter: 999, // Keep as single chapter
   },
   {
-    file: "02_Մdelays_delays.txt",
-    titleArm: "Մdelays delays",
+    file: "02_Մասն_առաջին.txt",
+    titleArm: "Մասն առաջին",
     titleEng: "Part One: The City and Its Inhabitants",
-    subtitle: "Delays Delays Delays",
+    subtitle: "Քաղաք և իր բնակիչներ",
     sectionsPerChapter: 12,
   },
   {
-    file: "03_Μdelays_delays.txt",
-    titleArm: "Μdelays delays",
+    file: "03_Մասն_երկրորդ.txt",
+    titleArm: "Մասն երկրորդ",
     titleEng: "Part Two: Toward Nairi",
-    subtitle: "Delays Delays",
+    subtitle: "Դեպի Նաիրի",
     sectionsPerChapter: 12,
   },
   {
-    file: "04_Μdelays_delays_delays_delays.txt",
-    titleArm: "Μdelays delays delays delays",
+    file: "04_Մասն_երրորդ_և_վերջին.txt",
+    titleArm: "Մասն երրորդ և վերջին",
     titleEng: "Part Three and Final: The Land of Nairi",
-    subtitle: "Delays Delays",
+    subtitle: "Դեպի Նաիրի",
     sectionsPerChapter: 12,
   },
   {
-    file: "05_Վdelays.txt",
-    titleArm: "Վdelays",
+    file: "05_Վերջաբան.txt",
+    titleArm: "Վերջաբան",
     titleEng: "Epilogue",
     sectionsPerChapter: 999, // Keep as single chapter
   },

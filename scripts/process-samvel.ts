@@ -12,7 +12,7 @@
  *
  * Text structure:
  *   - Line 1: Armenian chapter numeral (e.g., Ա, ԺԱ, etc.)
- *   - Line 2: Chapter title in Armenian (e.g., ԵՐdelays Սdelays)
+ *   - Line 2: Chapter title in Armenian (e.g., ԵՐԿՈՒ ՍՈՒՀԱՆԴԱԿՆԵՐ)
  *   - Lines 3+: Each line is a paragraph (one line = one paragraph)
  *   - Lines containing only dots or whitespace may be section separators
  *
@@ -91,7 +91,7 @@ function processChapter(filePath: string): ProcessedChapter {
     startIdx++;
   }
 
-  // Line at startIdx is the Armenian numeral (e.g., " Delays" for chapter 1)
+  // Line at startIdx is the Armenian numeral (e.g., " Ա" for chapter 1)
   // Line at startIdx+1 is the title (e.g., "DELAYS DELAYS")
   const armenianNumeral = lines[startIdx]?.trim() || "";
   const armenianTitle = lines[startIdx + 1]?.trim() || "";

@@ -81,7 +81,7 @@ export function CategoryBrowser({ languages, defaultTab: defaultTabProp }: Categ
               value={lang.code}
               className="whitespace-nowrap"
             >
-              <span className="mr-1">{lang.displayName}</span>
+              <span className="mr-1">{lang.name}</span>
               <span className="text-xs text-muted-foreground">
                 ({textCounts.get(lang.code) ?? 0})
               </span>

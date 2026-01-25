@@ -4,13 +4,13 @@
  *
  * The text is a first-person diary/memoir in Armenian, set in 1884-1887.
  * A narrator recovering from illness travels to a remote village in the Syunik
- * region of Armenia and encounters "Sister Anna" (Քdelays-Delays), a woman who
+ * region of Armenia and encounters "Sister Anna" (Քույր-Աննա), a woman who
  * has devoted herself to education and social reform.
  *
  * Input: data/raw/khorhrdavor_miandznuhi/*.txt (12 files)
  *   - 00_Intro.txt: Epigraph and framing preface
  *   - 01-10: Diary entries with Armenian date filenames
- *   - 11_1887_delays_5.txt: Epilogue from Tiflis
+ *   - 11_1887_հունիս_5.txt: Epilogue from Tiflis
  *
  * Output: data/processed/khorhrdavor-miandznuhi/chapter-NNN.json
  *
@@ -41,62 +41,62 @@ const CHAPTER_INFO: Record<
 > = {
   "00": {
     number: 1,
-    titleArmenian: "Նdelays",
+    titleArmenian: "Ներածություն",
     titleEnglish: "Introduction",
   },
   "01": {
     number: 2,
-    titleArmenian: "188* delays 25",
+    titleArmenian: "188* Մայիսի 25",
     titleEnglish: "May 25",
   },
   "02": {
     number: 3,
-    titleArmenian: "Հdelays 1",
+    titleArmenian: "Հունիսի 1",
     titleEnglish: "June 1",
   },
   "03": {
     number: 4,
-    titleArmenian: "Հdelays 2",
+    titleArmenian: "Հունիսի 2",
     titleEnglish: "June 2",
   },
   "04": {
     number: 5,
-    titleArmenian: "Հdelays 3",
+    titleArmenian: "Հունիսի 3",
     titleEnglish: "June 3",
   },
   "05": {
     number: 6,
-    titleArmenian: "Հdelays 4",
+    titleArmenian: "Հունիսի 4",
     titleEnglish: "June 4",
   },
   "06": {
     number: 7,
-    titleArmenian: "Հdelays 5",
+    titleArmenian: "Հունիսի 5",
     titleEnglish: "June 5",
   },
   "07": {
     number: 8,
-    titleArmenian: "Հdelays 7",
+    titleArmenian: "Հունիսի 7",
     titleEnglish: "June 7",
   },
   "08": {
     number: 9,
-    titleArmenian: "Հdelays 10",
+    titleArmenian: "Հունիսի 10",
     titleEnglish: "June 10",
   },
   "09": {
     number: 10,
-    titleArmenian: "Հdelays 11",
+    titleArmenian: "Հունիսի 11",
     titleEnglish: "June 11",
   },
   "10": {
     number: 11,
-    titleArmenian: "Սdelays 15",
+    titleArmenian: "Սեպտեմբերի 15",
     titleEnglish: "September 15",
   },
   "11": {
     number: 12,
-    titleArmenian: "1887, delays 5, Delays",
+    titleArmenian: "1887, հունիս 5, Թիֆլիս",
     titleEnglish: "Epilogue: June 5, 1887, Tiflis",
   },
 };

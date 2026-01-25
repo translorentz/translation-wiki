@@ -6,8 +6,8 @@
  * an Armenian numeral (e.g., Ա, Բ, Գ... ԻԴ) followed by a date and salutation.
  *
  * Armenian numerals:
- *    Delays-Delays = 1-9, Delays = 10, Delays = 20, etc.
- *   Compound numerals: Delays Delays = 11 (10+1), Delays Delays = 21 (20+1), Delays Delays = 24 (20+4)
+ *    Ա-Թ = 1-9, Ժ = 10, Ի = 20, etc.
+ *   Compound numerals: Ժ Ա = 11 (10+1), Ի Ա = 21 (20+1), Ի Դ = 24 (20+4)
  *
  * Input: data/raw/anna_saroyan/anna_saroyan.txt
  * Output: data/processed/anna-saroyan/chapter-NNN.json
@@ -32,30 +32,30 @@ interface ProcessedChapter {
 /**
  * Convert Armenian numeral(s) to Arabic number.
  * Armenian numerals use letters with specific values:
- * Delays=1, Delays=2, Delays=3, Delays=4, Delays=5, Delays=6, Delays=7, Delays=8, Delays=9
- * Delays=10, Delays=20, etc.
+ * Ա=1, Բ=2, Գ=3, Դ=4, Ե=5, Զ=6, Է=7, Ը=8, Թ=9
+ * Ժ=10, Ի=20, etc.
  */
 function armenianToArabic(armenian: string): number {
   const values: Record<string, number> = {
-    "\u0531": 1, // Delays
-    "\u0532": 2, // Delays
-    "\u0533": 3, // Delays
-    "\u0534": 4, // Delays
-    "\u0535": 5, // Delays
-    "\u0536": 6, // Delays
-    "\u0537": 7, // Delays
-    "\u0538": 8, // Delays
-    "\u0539": 9, // Delays
-    "\u053A": 10, // Delays
-    "\u053B": 20, // Delays
-    "\u053C": 30, // Delays
-    "\u053D": 40, // Delays
-    "\u053E": 50, // Delays
-    "\u053F": 60, // Delays
-    "\u0540": 70, // Delays
-    "\u0541": 80, // Delays
-    "\u0542": 90, // Delays
-    "\u0543": 100, // Delays
+    "\u0531": 1, // Ա
+    "\u0532": 2, // Բ
+    "\u0533": 3, // Գ
+    "\u0534": 4, // Դ
+    "\u0535": 5, // Ե
+    "\u0536": 6, // Զ
+    "\u0537": 7, // Է
+    "\u0538": 8, // Ը
+    "\u0539": 9, // Թ
+    "\u053A": 10, // Ժ
+    "\u053B": 20, // Ի
+    "\u053C": 30, // Լ
+    "\u053D": 40, // Խ
+    "\u053E": 50, // Ծ
+    "\u053F": 60, // Կ
+    "\u0540": 70, // Հ
+    "\u0541": 80, // Ձ
+    "\u0542": 90, // Ղ
+    "\u0543": 100, // Ճ
   };
 
   let total = 0;
@@ -132,7 +132,7 @@ function main() {
     // First line is the numeral
     const numeral = chapterLines[0].trim();
 
-    // Find the date line (contains city, date, year like "Delays, 6 Delaysdelays, 1880")
+    // Find the date line (contains city, date, year like "Թիֆլիս, 6 սեպտեմբերի, 1880")
     let dateLineIdx = 1;
     while (
       dateLineIdx < chapterLines.length &&
@@ -153,7 +153,7 @@ function main() {
 
     // Build title: "Letter [N] — [date]"
     const letterNum = i + 1; // Use sequential numbering for chapter files
-    const title = `Նdelays ${numeral} — ${dateLine} (Letter ${letterNum})`;
+    const title = `Նամակ ${numeral} — ${dateLine} (Letter ${letterNum})`;
 
     // Content starts after the salutation
     let contentStartIdx = salutationIdx;
