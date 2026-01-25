@@ -13,12 +13,12 @@ This audit identified **multiple critical security vulnerabilities** in the tran
 
 ### Exposed Credentials Summary
 
-| Secret Type | Value (TRUNCATED) | Status |
-|-------------|-------------------|--------|
-| DeepSeek API Key | `REDACTED` | EXPOSED in git history AND current files |
-| Neon Database Password | `REDACTED` | EXPOSED in git history AND current files |
-| Gemini API Key | `REDACTED_GEMINI_PREFIXBWAs...JeEM` | EXPOSED in git history (swap file) |
-| AUTH_SECRET | `REDACTED` | EXPOSED in git history (swap file) |
+| Secret Type | Status |
+|-------------|--------|
+| DeepSeek API Key | EXPOSED - ROTATED |
+| Neon Database Password | EXPOSED - ROTATED |
+| Gemini API Key | EXPOSED - REVOKED |
+| AUTH_SECRET | EXPOSED - ROTATED |
 
 ---
 

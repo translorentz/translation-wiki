@@ -13,13 +13,13 @@ This audit identified **multiple critical security vulnerabilities** in the git 
 
 ### Secrets Exposed
 
-| Secret Type | Value (Redacted) | Status |
-|-------------|------------------|--------|
-| DeepSeek API Key | `REDACTED...49072` | **STILL IN HEAD** |
-| Gemini API Key | `REDACTED-D42fH...JeEM` | In git history |
-| Neon Database Password | `***REMOVED***` | **STILL IN HEAD** |
-| Neon Database Host | `REDACTED_DB_HOST` | **STILL IN HEAD** |
-| Auth Secret | `REDACTEDRmBqOb...Z6M=` | In git history |
+| Secret Type | Status |
+|-------------|--------|
+| DeepSeek API Key | EXPOSED - ROTATED |
+| Gemini API Key | EXPOSED - REVOKED |
+| Neon Database Password | EXPOSED - ROTATED |
+| Neon Database Host | EXPOSED (infrastructure detail) |
+| Auth Secret | EXPOSED - ROTATED |
 
 ---
 
@@ -236,7 +236,7 @@ To verify the presence of secrets in git history:
 git show 0e5f5b1:.env.local.swp | strings | grep -E "(KEY|URL|SECRET)"
 
 # Search for API key pattern in all commits
-git log -p --all -S "REDACTED" -- . | head -50
+git log -p --all -S "sk-[REDACTED]" -- . | head -50
 
 # Search for database password in all commits
 git log -p --all -S "***REMOVED***" -- . | head -50
