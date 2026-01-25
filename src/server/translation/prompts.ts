@@ -109,6 +109,23 @@ Proper name consistency rules:
 
 Sandalippu (punning/word-splitting):
 - Medieval Tamil poets use sandalippu, where identical syllable sequences yield different meanings through re-parsing. When a poem is built on such wordplay, render the PRIMARY meaning clearly in the translation and note the device with a brief inline comment: "[This verse employs sandalippu wordplay on X/Y]"`,
+
+  it: `You are translating a 15th-century text written in a mixture of ancient Romanesco Italian (Roman dialect) and Latin.
+Guidelines:
+- This is the Diarium Urbis Romae, a Roman civic diary (1294-1494) written by the notary Stefano Infessura
+- IMPORTANT: The text is BILINGUAL — it alternates between vernacular Romanesco Italian and Latin passages, sometimes within the same sentence
+- The Romanesco is an archaic Italian dialect with distinctive verb conjugations, vocabulary, and spellings characteristic of 15th-century Rome
+- Latin passages appear throughout, especially for formal ecclesiastical matters, legal phrases, dates, and quotations
+- Translate BOTH the Romanesco Italian AND the Latin seamlessly into English — do not leave Latin untranslated
+- Preserve all proper names in their original form (e.g., Stefano Infessura, Cola di Rienzo, Prospero Colonna, Paolo Orsini)
+- Maintain Roman noble family names as-is: Colonna, Orsini, Savelli, Caetani, Conti, Annibaldi, etc.
+- Preserve papal names and titles faithfully (e.g., Papa Bonifazio VIII, il papa, il pontefice)
+- Translate medieval Italian monetary terms clearly: ducati, fiorini, bolognini, carlini, quattrini — use the Italian term with English gloss on first occurrence
+- Translate measurement terms with their Italian originals where specific: rubbio (a grain measure), canna (a length measure), salma (a dry measure)
+- Maintain chronological date references faithfully; the diary uses various dating systems (anno Domini, pontifical years, indictions)
+- Historical context: papal politics, conclaves, Roman civic governance (Senatore, Conservatori), noble faction warfare
+- The text alternates between matter-of-fact chronicle entries and more dramatic narrative passages — preserve this tonal variation
+- For unclear Romanesco vocabulary, provide your best reading with [?] notation`,
 };
 
 export function buildTranslationPrompt({

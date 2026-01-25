@@ -1,5 +1,82 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-24: Rizhilu (日知錄) — Complete Pipeline
+
+### Text Information
+- **Title**: 日知錄 (Rizhilu) — "Record of Daily Knowledge"
+- **Author**: Gu Yanwu (顧炎武, 1613-1682), early Qing dynasty scholar
+- **Genre**: Scholarly miscellany (筆記) — philology, history, geography, government, ethics
+- **Source**: Project Gutenberg eBook #25262 (~1.5 MB, 16,880 lines, simplified Chinese)
+
+### Processing Results
+- **Volumes**: 32 (all present, ●卷一 through ●卷三十二)
+- **Sections**: 1,010 (marked with ○ symbol)
+- **Total characters**: 498,926
+- **Chapter structure**: One chapter per volume (32 chapters)
+- **Preface**: Included as first paragraph of Chapter 1
+
+### Key Issues Resolved
+1. Line 15223 had volume marker inline with previous text — handled by splitting at ●卷
+2. Project Gutenberg header/footer stripped cleanly
+3. Text uses simplified Chinese (preserved as-is)
+
+### Files Created
+- `scripts/process-rizhilu.ts` — Processing script
+- `data/processed/rizhilu/chapter-001.json` through `chapter-032.json`
+- `docs/rizhilu-processing.md` — Full documentation
+
+### Database Seeding
+- Author: `gu-yanwu` (slug) added to seed-db.ts
+- Text: `rizhilu` (slug) added to seed-db.ts
+- Seeded successfully: 32 chapters confirmed in database
+
+### Translation Workers (Started 2026-01-24)
+4 parallel workers with 5000ms delay between chapters:
+- Worker 1: chapters 1-8
+- Worker 2: chapters 9-16
+- Worker 3: chapters 17-24
+- Worker 4: chapters 25-32
+
+Logs at: /tmp/rizhilu-worker{1,2,3,4}.log
+
+---
+
+## 2026-01-24: Diarium Urbis Romae — Paragraph Segmentation Fix
+
+### Problem
+The Diarium chapters had poor paragraph breaks caused by:
+1. OCR from a critical edition with two-column layout (main text + apparatus)
+2. Footnote apparatus (manuscript sigla, variant readings, bibliography) interleaved INTO main text
+3. Hyphenation artifacts from line breaks in the original OCR
+
+### Solution Implemented
+Rewrote `scripts/process-diarium.ts` with:
+1. **Apparatus stripping**: Patterns to detect and remove scholarly apparatus lines
+2. **Inline apparatus cleaning**: Remove embedded sigla and references
+3. **Hyphenation rejoining**: Fix words split across lines
+4. **Content-aware paragraph detection**: Use diary entry patterns (dates, year markers) for breaks
+
+### Results
+- Raw lines: 7,252
+- After cleaning: 5,934 lines (1,318 apparatus lines removed)
+- Chapters: 66 (65 main + 1 appendix)
+- Total paragraphs: 208
+
+### Limitation
+Some apparatus remains embedded mid-sentence due to two-column OCR interleaving.
+This is impossible to fix programmatically without the original clean text.
+The translation model should handle the noise acceptably.
+
+### Files Modified
+- `scripts/process-diarium.ts` - Major rewrite with apparatus detection
+- `data/processed/diarium-urbis-romae/chapter-*.json` - All 66 chapters regenerated
+- Database reseeded (Neon project bitter-tooth-04461121)
+
+### Documentation
+Full analysis in `docs/diarium/paragraph-fix.md`
+
+---
+
 ## 2026-01-24: Shisan Jing Zhushu (十三經註疏) — Processing Plan (Session 16)
 
 ### Corpus Overview
@@ -55,10 +132,11 @@ Index: `data/raw/Shisan_Jing_Zhushu/13_books_index.txt` (752 lines)
 
 **All 13 texts processed and seeded to DB. Translation in progress.**
 
-- Agent 1 (a9f1c24 — Four Books + Small Classics): SEEDED, translating
+- Agent 1 (a9f1c24 — Four Books + Small Classics): AGENT DONE, translation workers running
   - Script: `scripts/process-shisan-jing-1.ts`
   - Texts: lunyu-zhushu (21), mengzi-zhushu (15), xiaojing-zhushu (10), erya-zhushu (11) = 57 chapters
-  - DB status: 0/57 translated (translation starting)
+  - Translation workers: lunyu (1-11, 12-21), mengzi (1-15), xiaojing (2-10), erya (1-11)
+  - Last known progress: xiaojing 9/10, erya 3/11, lunyu ~9/21, mengzi 2/15
 
 - Agent 2 (ace30af — Changes + Documents): AGENT DONE, translation workers running
   - Script: `scripts/process-shisan-jing-2.ts`
@@ -1669,3 +1747,198 @@ Main orchestrator: `scripts/process-eustathius.ts`
 - Raw TXT: `data/raw/eustathius-odyssey/chapter-00-preface-prooemium.txt` through `chapter-11-odyssey-book-11.txt`
 - Quality report: `data/processed/eustathius-odyssey/quality-report.json`
 - Documentation: `docs/plan-eustathius-processing.md`
+
+## 2026-01-24: Session 18 — UI Fixes, Data Cleanup, Translation Progress
+
+### Completed This Session
+1. **Search language filter** (agent a259297): Added toggleable Badge filters to search page, URL-persisted (?lang=grc,la)
+2. **Homepage button**: Changed "Register to Contribute" → "Search Texts" (links to /search)
+3. **Zhouyi-zhengyi cleanup**: Deleted 4 scraping artifact chapters (TOC/copyright) from DB + disk
+4. **Erya-zhushu cleanup**: Deleted chapter 1 (Siku TOC + ctext.org nav artifacts), stripped copyright from ch2
+5. **Chapter title parsing** (agent a1da75c): Extracted parseChapterTitle() to src/lib/utils.ts, applied across all pages (sidebar, headers, search results, edit/history/discussion). Handles nested parens.
+6. **Language filter fix**: Search only shows languages with actual texts (removes English/Tamil from filter)
+7. **Tamil prompts**: Added Tamil (ta) language instructions to prompts.ts
+
+### Translation Progress Snapshot (128 background workers active)
+| Text | Workers | Done/Total | % |
+|------|---------|-----------|---|
+| eustathius-odyssey | 16 | 31/37 | 84% |
+| lunyu-zhushu | 12 | 21/27 | 78% |
+| zhouyi-zhengyi | 8 | 52/100 | 52% |
+| gongyang-zhushu | 8 | 11/30 | 37% |
+| mengzi-zhushu | 8 | 6/18 | 33% |
+| guliang-zhushu | 4 | 7/21 | 33% |
+| zuozhuan-zhengyi | 12 | 13/43 | 30% |
+| erya-zhushu | 4 | 3/10 | 30% |
+| shangshu-zhengyi | 8 | 7/24 | 29% |
+| liji-zhengyi | 12 | 12/59 | 20% |
+| zhouli-zhushu | 12 | 8/44 | 18% |
+| yili-zhushu | 4 | 6/51 | 12% |
+| liji-zhushu | 8 | 1/29 | 3% |
+
+### Diarium Urbis Romae — 6-Agent Quality Pipeline (CONCURRENT MODEL)
+Source: Stefano Infessura's Diary of the City of Rome (1890 Tommasini ed.)
+Language: Italian (15th-century Romanesco) + Latin passages, ~23K lines per OCR scan
+All 5 agents running concurrently, communicating via shared markdown docs:
+  - Primary Text Agent A (a967fa5) — processing scan 1 → clean_copy_a/
+  - Primary Text Agent B (a93ee58) — processing scan 2 → clean_copy_b/
+  - Reviewer A (abe38cf) — critiques Agent A, writes to joint-a.md
+  - Reviewer B (a69ff47) — critiques Agent B, writes to joint-b.md
+  - Bridge Reviewer (a2ffcb5) — cross-references both teams, writes bridge-annotations.md
+Master Reviewer & Translator: PENDING (launches after all 5 sign off)
+Documentation: docs/diarium/orchestration.md (master tracking)
+Output: data/difficult_extra_processing/diarium_urbis_romae/clean_copy_{a,b}/ → data/raw/diarium-urbis-romae/
+
+### Data Issues Found (Chapter Titles Audit)
+Many Shisan Jing texts have Chinese-only chapter titles with no English. Need a script to add English translations:
+- Priority: kongzi-jiayu (44ch), liji-zhushu (29ch), lunyu-zhushu (21ch), mengzi-zhushu (15ch)
+- Simple volume labels: liji-zhengyi, zhouyi-zhengyi, zhouli-zhushu, yili-zhushu, zuozhuan-zhengyi
+- Format goal: "中文標題 (English Translation)" — same as carmina-graeca, tongjian, zhuziyulei
+
+---
+
+## 2026-01-24: Session 19 (Continuation)
+
+### Status Check
+- All 5 Diarium agents still running (a967fa5, a93ee58, abe38cf, a69ff47, a2ffcb5)
+- Translation workers still active: shangshu-zhengyi, zuozhuan-zhengyi, mengzi-zhushu, liji-zhushu, zhouli-zhushu, liji-zhengyi
+
+### Translation Progress Update
+| Text | Translated/Total | Status |
+|------|-----------------|--------|
+| carmina-graeca | 21/21 | COMPLETE |
+| tongjian | 45/45 | COMPLETE |
+| zuozhuan-zhengyi | 42/43 | Nearly done |
+| mengzi-zhushu | 29/29 | COMPLETE |
+| shangshu-zhengyi | 28/34 | In progress |
+| liji-zhengyi | 47/71 | In progress |
+| zhouli-zhushu | 40/55 | In progress |
+| liji-zhushu | 8/33 | In progress |
+
+Note: Several texts have more chapters in DB than total_chapters field (duplicate chapters from Shisan Jing seeding). Workers are making progress regardless.
+
+### Diarium Pipeline — FINAL STATUS (updated late session)
+
+**All 5 reviewers/agents COMPLETE, Master Reviewer RUNNING:**
+
+| Agent | Final Grade | Lines | Notes |
+|-------|-------------|-------|-------|
+| Agent A | B+ | 7,360 | 5 iterations, 12-pass TypeScript pipeline |
+| Reviewer A | SIGNED OFF | — | Conditional approval at B+ |
+| Agent B | B- | 9,493 | 4 iterations, 365 broken-line defect discovered |
+| Reviewer B | COMPLETE | — | Graded B- after iteration 3, didn't see line-break issue |
+| Bridge Reviewer | SIGNED OFF | — | Pass 2 complete, recommends Agent A as base |
+| Master Reviewer | RUNNING | — | Reconciling both outputs |
+
+**Key finding**: Bridge Reviewer discovered Agent B has 365 lines starting with punctuation (mid-sentence breaks never rejoined). This makes Agent A the clear winner for base text despite having more inline markers.
+
+**Italian language preparation COMPLETE:**
+- Italian language `it` inserted into database
+- Translation prompt added for 15th-century Romanesco dialect
+- Stefano Infessura author entry in seed-db.ts
+- Diarium Urbis Romae text entry in seed-db.ts
+
+### Translation Progress Update (final)
+| Text | Translated/Total | Status |
+|------|-----------------|--------|
+| liji-zhengyi | 57/56 | ✓ COMPLETE |
+| zhouli-zhushu | 49/42 | ✓ COMPLETE |
+| shangshu-zhengyi | 33/22 | ✓ COMPLETE |
+| carmina-graeca | 21/21 | ✓ COMPLETE |
+| tongjian | 45/45 | ✓ COMPLETE |
+| zuozhuan-zhengyi | 43/43 | ✓ COMPLETE |
+| mengzi-zhushu | 29/29 | ✓ COMPLETE |
+| yili-zhushu | 23/51 | 🔄 45% (workers running) |
+| liji-zhushu | 11/29 | 🔄 38% (workers running) |
+
+### Diarium Master Reviewer Code Location
+- Reconciliation programs: `scripts/lib/diarium-master/`
+- Final output: `data/raw/diarium-urbis-romae/`
+- Master scratchpad: `docs/diarium/master-scratchpad.md`
+- Master documentation: `docs/diarium/master-documentation.md`
+- Communication channels (joint-a/b.md) not yet utilized
+- All agents still running — expected to iterate based on reviewer feedback
+
+## 2026-01-25: Session 20 (Continuation from Session 19)
+
+### Diarium Urbis Romae — PIPELINE COMPLETE
+
+**Master Reviewer (a2ab05f): COMPLETE**
+
+Final reconciliation successful:
+- Output: `data/raw/diarium-urbis-romae/diary-full.txt` (7,252 lines)
+- Artifacts removed: 0 carets, 0 pipes, 0 headers, 0 apparatus vocabulary
+- Year markers preserved: 53 (for navigation)
+- Scripts created: `scripts/lib/diarium-master/` (4 TypeScript modules)
+
+**Processing & Seeding COMPLETE:**
+- Processing script: `scripts/process-diarium.ts` 
+- Output: `data/processed/diarium-urbis-romae/` (64 chapters)
+- Seeded to database: 64 chapters (January 25, 2026)
+
+**Translation Workers Started:**
+- Worker 1: chapters 1-10
+- Worker 2: chapters 11-32
+- Worker 3: chapters 33-64
+
+**Translation Quality Review Agent (addddd2): RUNNING**
+- Will sample translated paragraphs and compare to source
+- Will grade translation quality (A/B/C/D/F)
+- Will recommend if Gemini-based Italian/Latin module is needed
+
+### Translation Prompt Updates
+- Italian translation prompt updated to emphasize BILINGUAL nature (Romanesco + Latin)
+- Text description in seed-db.ts updated to note Latin/Romanesco mixture
+
+### Background Translation Workers Still Running
+- yili-zhushu: ~45% complete
+- liji-zhushu: ~38% complete
+- diarium-urbis-romae: just started (0-3% depending on worker)
+
+---
+
+## 2026-01-24: Session 19 — Diarium Complete + Mobile Toggle + Rizhilu
+
+### Diarium Urbis Romae — TRANSLATION COMPLETE
+- All 66 chapters translated with 0 errors
+- 3 workers completed: bceafc8 (ch1-22), ba0b219 (ch23-44), b699139 (ch45-66)
+- Paragraph segmentation fix (v2) applied before translation
+- Section headers like "III. HISTORIE DOPO IL RITORNO..." properly stripped
+
+### Mobile Toggle Feature — IMPLEMENTED
+Agent a517451 added mobile-only toggle to hide original source text:
+
+**Files Created:**
+- `src/hooks/useIsMobile.ts` — Mobile viewport detection hook (768px breakpoint)
+- `src/hooks/useLocalStorage.ts` — Persisted state hook (SSR-safe)
+- `src/hooks/index.ts` — Barrel export
+- `src/components/interlinear/MobileSourceToggle.tsx` — Floating action button
+
+**Files Modified:**
+- `src/components/interlinear/InterlinearViewer.tsx` — Toggle state integration
+- `src/components/interlinear/ParagraphPair.tsx` — Conditional source hiding
+
+**Design:**
+- Fixed bottom-right FAB (floating action button)
+- Eye/EyeOff icons from lucide-react
+- Text labels: "Hide Original" / "Show Original"
+- State persisted in localStorage (key: `hideSourceText`)
+- Only visible on mobile (<768px viewport)
+
+### Rizhilu (日知錄) — IN PROGRESS
+Agent a400ec2 completed full pipeline:
+- 32 chapters (one per volume)
+- 498,926 characters
+- 4 translation workers running (logs at /tmp/rizhilu-worker{1,2,3,4}.log)
+- Author: Gu Yanwu (顧炎武, 1613-1682)
+- Text slug: `rizhilu`
+
+### Active Translation Workers
+| Text | Workers | Status |
+|------|---------|--------|
+| Diarium Urbis Romae | 3 | ✅ COMPLETE (66/66) |
+| Rizhilu | 4 | 🔄 In Progress |
+| Shisan Jing Zhushu | ~128 | 🔄 In Progress |
+| Eustathius Odyssey | ~16 | 🔄 In Progress |
+
+---

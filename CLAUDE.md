@@ -28,7 +28,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - You always have permission to run monitoring/checking bash commands (e.g., `sleep N && ...`, progress checks, `tail` on logs, `curl` to verify pages) without needing user input or approval.
 - You always have permission to run any script that helps monitor, check, or improve translation subagent quality (e.g., alignment checks, retranslation of defective chapters, killing and restarting translation processes).
 
-## Active Tasks & Background Workers (2026-01-24)
+## Active Tasks & Background Workers (2026-01-24, Session 19)
+
+### Rizhilu (日知錄) — Translation IN PROGRESS
+- **Agent** (a400ec2): COMPLETE — processing + seeding
+- **Author**: Gu Yanwu (顧炎武, 1613-1682)
+- **Chapters**: 32 (one per volume, 498,926 characters)
+- **Translation**: 4 workers running (logs at /tmp/rizhilu-worker{1,2,3,4}.log)
+- **Files**: `scripts/process-rizhilu.ts`, `data/processed/rizhilu/`, `docs/rizhilu-processing.md`
+
+### Diarium Urbis Romae — TRANSLATION COMPLETE ✓
+- **Translation**: 66/66 chapters, 0 errors (Session 19)
+- **Workers**: bceafc8 (ch1-22), ba0b219 (ch23-44), b699139 (ch45-66) — all completed
+- **Paragraph fix v2**: Section headers stripped, apparatus removed (agent ac8f701)
+- **Documentation**: `docs/diarium/paragraph-fix-v2.md`
+
+### Mobile Source Toggle — COMPLETE ✓
+- **Agent** (a517451): Implemented mobile-only FAB to hide original text
+- **Files created**: `src/hooks/useIsMobile.ts`, `src/hooks/useLocalStorage.ts`, `src/components/interlinear/MobileSourceToggle.tsx`
+- **Files modified**: `InterlinearViewer.tsx`, `ParagraphPair.tsx`
+- **Design**: Fixed bottom-right, Eye/EyeOff icons, localStorage persistence, 768px breakpoint
 
 ### Nandikkalambakam Tamil Pipeline — Stage 3 IN PROGRESS
 - **Stage 1** (agent a472c67): COMPLETE — 114/114 poems translated
@@ -43,14 +62,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Raw files: `data/raw/yashodhara-kaviyam/` (5 carukkams, 330 verses)
 - Stage 2 + Stage 3: will be launched when Stage 1 progresses
 
-### Translation Workers (Background) — Session 17 Status
-- **Tongjian**: COMPLETE — 45/45
-- **Diognetum**: COMPLETE — 12/12
-- **Historia Nova**: COMPLETE — 287/287
-- **Sophistici Elenchi**: COMPLETE — 35/35
-- **Kongzi Jiayu**: COMPLETE — 80/80
-- **Eustathius Odyssey**: 10/27 — 3 workers (ab5dae1 ch1-8, a4043fb ch9-16, afff370 ch19-24)
-- **Shisan Jing Zhushu**: 32/455 — ~20 workers across 13 texts (see Shisan Jing section below)
+### Translation Workers (Background) — Session 18 Status
+- **Eustathius Odyssey**: 31/37 — 16 workers (84%)
+- **Shisan Jing Zhushu**: ~200/455 — 128 workers across 13 texts
+- All other texts: COMPLETE (see Texts in the System table below)
+
+### Diarium Urbis Romae — 6-Agent Quality Pipeline (Session 18)
+- **Source**: Two OCR scans of Stefano Infessura's Diary of the City of Rome (1890 Tommasini ed.)
+- **Language**: Italian (15th-century Romanesco) + Latin passages
+- **Pipeline**: Primary Agent A + B (parallel) → Reviewer A + B → Bridge Reviewer → Master Reviewer
+- **Documentation**: `docs/diarium/orchestration.md` (master tracking)
+- **Scratchpads**: `docs/diarium/agent-{a,b}-scratchpad.md`, `reviewer-{a,b}-scratchpad.md`, `bridge-*.md`, `master-*.md`
+- **Output**: `data/difficult_extra_processing/diarium_urbis_romae/clean_copy_{a,b}/` → `data/raw/diarium-urbis-romae/`
+- **Phase 1**: LAUNCHED (Primary Text Agents A and B processing scans independently)
 
 ### Search Fix — COMPLETE (agent a687c60, deployed)
 - **Problem**: Search only queried chapters.title + chapters.sourceContent, never texts.title or authors.name

@@ -1,6 +1,9 @@
 "use client";
 
 import { ParagraphPair } from "./ParagraphPair";
+import { MobileSourceToggle } from "./MobileSourceToggle";
+import { useIsMobile } from "@/hooks/useIsMobile";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 interface Paragraph {
   index: number;
@@ -21,6 +24,9 @@ export function InterlinearViewer({
   textType,
 }: InterlinearViewerProps) {
   const isPoetry = textType === "poetry";
+  const isMobile = useIsMobile(768);
+  const [hideSource, setHideSource] = useLocalStorage("hideSourceText", false);
+
   const translationMap = new Map<number, string>();
   if (translationContent) {
     for (const p of translationContent.paragraphs) {
@@ -28,10 +34,15 @@ export function InterlinearViewer({
     }
   }
 
+  // Only apply hideSource on mobile
+  const effectiveHideSource = isMobile && hideSource;
+
   return (
     <div className="relative">
-      {/* Column headers */}
-      <div className={`sticky top-0 z-10 mb-2 hidden border-b border-border bg-background/95 pb-2 backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-x-6 ${isPoetry ? "pl-10 md:pl-12" : ""}`}>
+      {/* Column headers - hidden when source is hidden on mobile */}
+      <div
+        className={`sticky top-0 z-10 mb-2 hidden border-b border-border bg-background/95 pb-2 backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-x-6 ${isPoetry ? "pl-10 md:pl-12" : ""}`}
+      >
         <div className="text-sm font-medium text-muted-foreground">Source</div>
         <div className="text-sm font-medium text-muted-foreground">
           Translation
@@ -48,6 +59,7 @@ export function InterlinearViewer({
             translationText={translationMap.get(paragraph.index) ?? null}
             sourceLanguage={sourceLanguage}
             isPoetry={isPoetry}
+            hideSource={effectiveHideSource}
           />
         ))}
       </div>
@@ -56,6 +68,14 @@ export function InterlinearViewer({
         <p className="py-8 text-center text-muted-foreground">
           No content available for this chapter.
         </p>
+      )}
+
+      {/* Mobile-only toggle button */}
+      {isMobile && (
+        <MobileSourceToggle
+          hideSource={hideSource}
+          onToggle={() => setHideSource(!hideSource)}
+        />
       )}
     </div>
   );

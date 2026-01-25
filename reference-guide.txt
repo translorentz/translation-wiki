@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-24 (Session 17)
+# Last updated: 2026-01-24 (Session 19)
 
 ================================================================================
 ## PROJECT IDENTITY
@@ -71,7 +71,7 @@ Current data:
   Theodore Prodromos, Wilhelm Wagner, Guliang Chi, Mudathirumaran, Ban Gu,
   Zheng Xuan, Zhou Court Scribes, Ying Shao, Huangfu Mi, Nandikkalambakam Poets,
   Anonymous (Diognetus), Zosimus, Anonymous (Soph. Elenchi), Eustathius of Thessalonica
-- 24 texts seeded (naming convention: "English Name (Transliteration)"):
+- 25 texts seeded (naming convention: "English Name (Transliteration)"):
   - Classified Conversations of Master Zhu (Zhu Zi Yu Lei) — 140 chapters, zh
   - On the Ceremonies of the Byzantine Court — 7 chapters, grc
   - Instructions for Practical Living (Chuan Xi Lu) — 3 chapters, zh
@@ -92,6 +92,8 @@ Current data:
   - Comprehensive Meaning of Customs (Fengsu Tongyi) — 11 chapters, zh
   - The Anthology of Nandi (Nandikkalambakam) — 114 chapters, ta (textType=poetry)
   - Udayanakumara Kaviyam — 6 chapters, ta (textType=poetry) [NEW — seeded by agent a9ce61b]
+  - Record of Daily Knowledge (Rizhilu) — 32 chapters, zh [NEW — agent a400ec2]
+  - Diary of the City of Rome (Diarium Urbis Romae) — 66 chapters, it [NEW — Session 18]
 
 Recently seeded (Session 12 — 2026-01-24):
   - Epistle to Diognetus — 12 chapters, grc, prose (author: Anonymous (Diognetus))
@@ -141,6 +143,8 @@ Translation coverage (Session 13 — updated 2026-01-24):
 - Artemidori Geographia: 3/3 COMPLETE
 - Kongzi Jiayu: 80/80 COMPLETE
 - Eustathius Odyssey Commentary: 10/27 translated (agents ab5dae1, a4043fb, afff370)
+- Diarium Urbis Romae: 66/66 COMPLETE (Session 19, paragraph segmentation v2 applied)
+- Rizhilu: 0/32 IN PROGRESS (4 workers running, agent a400ec2)
 
 Shisan Jing Zhushu (十三經註疏) — 13 texts, 455 chapters total:
   Status: 32/455 translated (~7%), ~20 parallel workers active
@@ -380,6 +384,7 @@ Phase 8 (Deployment):         COMPLETE (live at deltoi.com)
 Additional features:
 - Poetry display mode (line numbers every 5th line, compact spacing)
 - Discussion pages (fully implemented: threads, replies, resolve, pin)
+- Mobile source toggle (hide original text button, mobile-only, agent a517451)
 
 ================================================================================
 ## PROCESSING WORKFLOWS & DOCUMENTATION MAP
@@ -537,54 +542,52 @@ Key rules:
 ## REMAINING WORK (PRIORITY ORDER)
 ================================================================================
 
-1. Wait for Shisan Jing Zhushu translation (13 texts, 455 ch, 32/455 done, ~20 workers)
-2. Wait for Eustathius translation workers (10/27 done, 3 workers)
-3. Wait for Nandikkalambakam Stage 3 (retranslating all 114 poems)
-4. Wait for Tamil Stage 2 reviewers (Yashodhara + Udayanakumara) → launch Stage 3
-5. Commit and push all new processed data + scripts
-6. Update AUTH_URL on Vercel to https://deltoi.com
-7. Sangam Tamil: 15 more canonical works need sourcing from Project Madurai
-8. Responsive design polish (mobile stacking for interlinear viewer)
-9. Error boundaries and loading skeletons
-10. Full-text search improvements (currently basic)
-11. Migrate "middleware" to "proxy" convention (Next.js 16 deprecation)
-12. Upgrade NextAuth from beta to stable when available
-13. Add Ling Shu (靈樞) chapters to HDNJ when user provides raw data
+1. Wait for Shisan Jing Zhushu translation (13 texts, 455 ch, ~200/455 done, 128 workers)
+2. Wait for Eustathius translation workers (31/37 done, 16 workers)
+3. Add English translations to Chinese-only chapter titles (script needed, ~500 chapters)
+4. Update AUTH_URL on Vercel to https://deltoi.com
+5. Sangam Tamil: 15 more canonical works need sourcing from Project Madurai
+6. Responsive design polish (mobile stacking for interlinear viewer)
+7. Error boundaries and loading skeletons
+8. Migrate "middleware" to "proxy" convention (Next.js 16 deprecation)
+9. Upgrade NextAuth from beta to stable when available
+10. Add Ling Shu (靈樞) chapters to HDNJ when user provides raw data
 
-ACTIVE AGENTS (Session 17 — 2026-01-24):
-Shisan Jing original orchestration agents (DONE, background workers running):
-  - Agent 2 (ace30af): 3 workers (babf3aa, b6a0f7d, ba80c30) — zhouyi + shangshu
-  - Agent 3 (a86e80d): 4 workers (bfc83a7, b4c8f59, b332ac1, b0508ee) — zhouli/yili/liji
-  - Agent 4 (ace6429): 6 workers (bc593fa, bc3b540, b9c848d, bce1f8a, b624f79, bdcaaab) — spring/autumn
-Shisan Jing reinforcement agents:
-  - Agent A (a7e1ecc): yili (2 workers) + erya
-  - Agent B (aca4e1f): zhouli (2 workers) + xiaojing
-  - Agent C (a3bb94a): liji-zhengyi (2 workers) + liji-zhushu
-  - Agent D (a541e9f): lunyu + mengzi + shangshu
-Eustathius translation:
-  - ab5dae1 (ch1-8), a4043fb (ch9-16), afff370 (ch19-24)
-Tamil:
-  - Nandikkalambakam Stage 3 (aa88334)
+ACTIVE AGENTS (Session 19 — 2026-01-24):
+Background translation workers:
+  - rizhilu: 4 workers (0/32) — agent a400ec2
+  - eustathius-odyssey: 16 workers (~31/37)
+  - Shisan Jing Zhushu: ~128 workers across 13 texts (ongoing)
+Mobile toggle feature: COMPLETE (agent a517451)
 
-COMPLETED RECENTLY (Sessions 13-17):
+COMPLETED RECENTLY (Sessions 13-19):
 ✓ Kongzi Jiayu: 80/80 COMPLETE
 ✓ Hesiod Exegesis: Regrouped 109→13, 13/13 COMPLETE
 ✓ Tongjian: 45/45 COMPLETE
-✓ Historia Nova: 287/287 COMPLETE
+✓ Historia Nova: 332/332 COMPLETE
 ✓ Sophistici Elenchi: 35/35 COMPLETE
 ✓ Diognetum: 12/12 COMPLETE
 ✓ Greek XML R2: 53/53 COMPLETE (all 4 texts)
 ✓ Carmina Graeca: 21/21 COMPLETE
 ✓ Naming consistency: all titles "English Name (Transliteration)"
-✓ Guliang Zhuan: 12/12 COMPLETE
+✓ Guliang Zhuan: 20/20 COMPLETE
 ✓ Yi Li: 17/17 COMPLETE
-✓ Baihu Tong: 43/43 COMPLETE
+✓ Baihu Tong: 56/56 COMPLETE
 ✓ Chapter ordering verification: all 13 Shisan Jing texts CORRECT
-✓ Fengsu Tongyi: 11/11 COMPLETE (agent a6a5e09)
-✓ Gaoshi Zhuan: 4/4 COMPLETE (agent a451a68)
-✓ Yi Zhou Shu: 62/62 COMPLETE with commentary brackets (agent a127b87)
-✓ Porunararruppadai editorial clarification v3 (agent a123b07)
-✓ Nandikkalambakam Stage 2 Review COMPLETE (agent a28b7f4, B- grade, 64 poems reviewed)
+✓ Fengsu Tongyi: 11/11 COMPLETE
+✓ Gaoshi Zhuan: 4/4 COMPLETE
+✓ Yi Zhou Shu: 62/62 COMPLETE with commentary brackets
+✓ Nandikkalambakam: 114/114 COMPLETE (all 3 stages)
+✓ Xiaojing Zhushu: 17/17 COMPLETE
+✓ Lunyu Zhushu: 21/27 (nearly complete, workers active)
+✓ Zhouyi Zhengyi: 52/100 (halfway, workers active)
+✓ Search language filter: Added toggleable badge filters (Session 18)
+✓ Chapter title parsing: parseChapterTitle() applied across all pages (Session 18)
+✓ Homepage: "Search Texts" button replaces "Register to Contribute" (Session 18)
+✓ Erya Zhushu ch1 + Zhouyi Zhengyi 4ch: Scraping artifacts removed (Session 18)
+✓ Diarium Urbis Romae: 66/66 COMPLETE (Session 19, paragraph fix v2)
+✓ Mobile source toggle: FAB to hide original text on mobile (Session 19, agent a517451)
+✓ Rizhilu pipeline: Processing + seeding COMPLETE, translation in progress (Session 19)
 
 ================================================================================
 ## CONVENTIONS & RULES

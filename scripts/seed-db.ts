@@ -59,6 +59,7 @@ const LANGUAGES = [
   { code: "la", name: "Latin", displayName: "Lingua Latina" },
   { code: "en", name: "English", displayName: "English" },
   { code: "ta", name: "Tamil", displayName: "தமிழ்" },
+  { code: "it", name: "Italian", displayName: "Italian" },
 ] as const;
 
 const AUTHORS = [
@@ -357,6 +358,22 @@ const AUTHORS = [
     era: "Eastern Han dynasty (127-200 CE)",
     description:
       "The greatest classical scholar of the Han dynasty, who wrote definitive commentaries on the Three Rites and many other classics. His annotations on the Book of Rites remain essential for understanding the text.",
+  },
+  {
+    name: "Stefano Infessura",
+    nameOriginalScript: "Stefano Infessura",
+    slug: "stefano-infessura",
+    era: "15th century (c. 1435–1500)",
+    description:
+      "Roman notary and chronicler, scribasenato (scribe of the Senate) of Rome. His Diario della Città di Roma is a chronicle of Roman civic life and papal politics from 1294 to 1494, written in vernacular Romanesco Italian.",
+  },
+  {
+    name: "Gu Yanwu",
+    nameOriginalScript: "顧炎武",
+    slug: "gu-yanwu",
+    era: "Ming-Qing transition (1613–1682)",
+    description:
+      "One of the greatest scholars of the early Qing dynasty, known for his emphasis on practical learning (實學) and evidential research (考據學). His Rizhilu represents decades of meticulous philological, historical, and philosophical investigation.",
   },
 ] as const;
 
@@ -926,6 +943,32 @@ const TEXTS = [
     processedDir: "data/processed/shangshu-zhengyi",
     compositionYear: 642,
     compositionEra: "Tang Dynasty (642 CE)",
+  },
+  {
+    title: "Diary of the City of Rome (Diarium Urbis Romae)",
+    titleOriginalScript: "Diario della Città di Roma",
+    slug: "diarium-urbis-romae",
+    languageCode: "it",
+    authorSlug: "stefano-infessura",
+    description:
+      "A Roman civic diary covering events from 1294 to 1494, written by the notary Stefano Infessura in a mixture of ancient Romanesco Italian and Latin. The text alternates between vernacular 15th-century Roman dialect and Latin passages (especially for ecclesiastical matters and formal statements). The chronicle records papal politics, conclaves, noble faction warfare (Colonna vs. Orsini), civic governance, and daily life in late medieval Rome.",
+    sourceUrl: "https://archive.org/details/diariumurbisroma00infe",
+    processedDir: "data/processed/diarium-urbis-romae",
+    compositionYear: 1494,
+    compositionEra: "15th century, Papal Rome",
+  },
+  {
+    title: "Record of Daily Knowledge (Rizhilu)",
+    titleOriginalScript: "日知錄",
+    slug: "rizhilu",
+    languageCode: "zh",
+    authorSlug: "gu-yanwu",
+    description:
+      "A monumental work of Qing scholarship compiled over 30 years, covering philology, textual criticism, history, geography, government, and ethics. Gu Yanwu's rigorous evidential approach influenced generations of scholars and helped establish the methodology of kaozheng (evidential research) scholarship.",
+    sourceUrl: "https://www.gutenberg.org/ebooks/25262",
+    processedDir: "data/processed/rizhilu",
+    compositionYear: 1670,
+    compositionEra: "Early Qing Dynasty",
   },
 ] as const;
 
