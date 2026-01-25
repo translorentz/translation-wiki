@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### NEVER COMMIT SECRETS TO THE REPOSITORY
 
-**INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result. Claude has apologized deeply and sincerely after this incident. Claude Code has remorsefully promised never to commit such a mistake ever again.
+**INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result. Claude Code has apologized deeply and sincerely after this incident. Claude Code has remorsefully promised never to commit such a mistake ever again.
 
 **MANDATORY RULES:**
 
@@ -42,6 +42,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    - Document the incident in this file
 
 **This security breach is unacceptable and will not be tolerated. Diligent verification of all commits is mandatory.**
+
+### Pre-commit Hook (gitleaks)
+
+A gitleaks pre-commit hook has been installed to automatically scan for secrets before every commit:
+
+- **Configuration:** `.gitleaks.toml` (committed to repo)
+- **Hook location:** `.git/hooks/pre-commit` (local only, not committed)
+- **Requirement:** `gitleaks` must be installed (`brew install gitleaks`)
+
+The hook will:
+1. Scan all staged changes for API keys, passwords, and other secrets
+2. Block the commit if secrets are detected
+3. Warn about suspicious file patterns (`.env`, `.swp`, etc.)
+
+**NEVER bypass with `--no-verify`** — doing so defeats the purpose of this protection.
+
+If the hook is missing after cloning, reinstall it:
+```bash
+# Copy from the template or recreate
+chmod +x .git/hooks/pre-commit
+```
 
 ---
 

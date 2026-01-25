@@ -1,0 +1,50 @@
+# Gitleaks configuration for translation-wiki
+# This file defines rules for detecting secrets before they are committed
+
+title = "translation-wiki gitleaks config"
+
+[extend]
+# Use the default gitleaks rules as a baseline
+useDefault = true
+
+# Additional custom rules for this project
+[[rules]]
+id = "deepseek-api-key"
+description = "DeepSeek API Key"
+regex = '''sk-[a-f0-9]{32,}'''
+keywords = ["sk-"]
+
+[[rules]]
+id = "neon-database-password"
+description = "Neon PostgreSQL Password"
+regex = '''npg_[A-Za-z0-9]{10,}'''
+keywords = ["npg_"]
+
+[[rules]]
+id = "gemini-api-key"
+description = "Google Gemini API Key"
+regex = '''REDACTED_GEMINI_PREFIX[A-Za-z0-9_-]{33}'''
+keywords = ["REDACTED_GEMINI_PREFIX"]
+
+[[rules]]
+id = "database-url-with-password"
+description = "Database URL with embedded password"
+regex = '''postgresql://[^:]+:[^@]+@[^\s'"]+'''
+keywords = ["postgresql://"]
+
+[[rules]]
+id = "auth-secret"
+description = "NextAuth Secret"
+regex = '''AUTH_SECRET\s*=\s*[^\s]{20,}'''
+keywords = ["AUTH_SECRET"]
+
+# Allowlist for files that are expected to contain redacted examples
+[allowlist]
+description = "Allow security documentation with redacted examples"
+paths = [
+    '''\.env\.example$''',
+]
+regexTarget = "match"
+
+# Allow patterns that use ***REMOVED*** placeholder
+regexes = ['''\*\*\*REMOVED\*\*\*''']
