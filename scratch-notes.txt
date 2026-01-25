@@ -43,6 +43,25 @@ Full report: `docs/armenian-delays-fix-report.md`
 - If Armenian displays as "delays", check processing scripts for corruption
 - Unicode reference in `docs/armenian-delays-fix-report.md`
 
+### CRITICAL: Seed Script Workflow
+The seed script (`pnpm db:seed`) is **IDEMPOTENT** — it SKIPS existing records.
+
+This means:
+- If you fix corrupted data in `seed-db.ts`, rerunning the seed will NOT update the database
+- The old corrupted data remains in the database
+
+**To update existing database records, you must:**
+1. Write a fix script using SQL UPDATE statements (see `scripts/fix-armenian-db.ts`)
+2. OR delete the records first, then reseed
+
+**Example fix script usage:**
+```bash
+pnpm tsx scripts/fix-armenian-db.ts  # Fixes Armenian text corruption
+```
+
+This workflow issue caused the "delays" bug to persist on the live website even after
+the seed-db.ts was fixed — the database still had the old corrupted data.
+
 ---
 
 ## 2026-01-25 Session: Featured Texts Reorganization — COMPLETE

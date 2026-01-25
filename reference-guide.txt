@@ -207,8 +207,16 @@ Shisan Jing Zhushu (十三經註疏) — 13 texts, 455 chapters total:
 To sync schema after code changes:
   set -a && source .env.local && set +a && pnpm db:push
 
-To seed/re-seed:
+To seed/re-seed (NEW records only):
   pnpm db:seed
+  NOTE: The seed script is IDEMPOTENT — it skips existing records. To UPDATE
+  existing data (e.g., fix corrupted text), you must either:
+  1. Write a fix script that uses UPDATE (see scripts/fix-armenian-db.ts)
+  2. Delete the old records first, then reseed
+  3. Modify seed-db.ts to use upsert instead of insert (not recommended)
+
+To fix Armenian text in database (after "delays" bug):
+  pnpm tsx scripts/fix-armenian-db.ts
 
 ================================================================================
 ## TRANSLATION API DETAILS
