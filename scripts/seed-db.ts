@@ -1016,7 +1016,7 @@ const TEXTS = [
     titleOriginalScript: "東周列國志",
     slug: "dongzhou-lieguo-zhi",
     textType: "prose",
-    genre: "history",
+    genre: "literature",
     languageCode: "zh",
     authorSlug: "feng-menglong",
     description:

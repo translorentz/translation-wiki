@@ -64,7 +64,7 @@ const GENRE_MAP: Record<string, string> = {
   "hesiod-theogony-exegesis": "commentary",
   "guliang-zhuan": "commentary",
 
-  // Literature (poetry, novels, epics)
+  // Literature (poetry, novels, epics, historical fiction)
   ptochoprodromos: "literature",
   "carmina-graeca": "literature",
   elegia: "literature",
@@ -77,8 +77,9 @@ const GENRE_MAP: Record<string, string> = {
   "anna-saroyan": "literature",
   "khorhrdavor-miandznuhi": "literature",
   "yerkir-nairi": "literature",
+  "dongzhou-lieguo-zhi": "literature", // Historical novel, not history
 
-  // History (historical narratives, chronicles, historical novels)
+  // History (historical narratives, chronicles, biographies - NON-FICTION)
   tongjian: "history",
   "historia-nova": "history",
   lombards: "history",
@@ -87,7 +88,6 @@ const GENRE_MAP: Record<string, string> = {
   "arshagouhi-teotig": "history",
   "yi-zhou-shu": "history",
   gaoshizhuan: "history",
-  "dongzhou-lieguo-zhi": "history",
 
   // Science (medicine, geography, ritual/ceremonial manuals)
   huangdineijing: "science",
