@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
+import { Badge } from "@/components/ui/badge";
 
 interface LanguageGroup {
   code: string;
@@ -15,23 +17,48 @@ interface LanguageGroup {
       titleOriginalScript: string | null;
       slug: string;
       totalChapters: number;
+      genre: string;
     }[];
   }[];
 }
 
+const GENRE_DISPLAY_NAMES: Record<string, string> = {
+  philosophy: "Philosophy",
+  commentary: "Commentary",
+  literature: "Literature",
+  history: "History",
+  science: "Science",
+  uncategorized: "Uncategorized",
+};
+
 interface BrowsePageProps {
-  searchParams: Promise<{ lang?: string }>;
+  searchParams: Promise<{ lang?: string; genre?: string }>;
 }
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
-  const { lang } = await searchParams;
+  const { lang, genre } = await searchParams;
   const trpc = await getServerTRPC();
   const allTexts = await trpc.texts.list();
+
+  // Filter by genre if specified
+  const filteredTexts = genre
+    ? allTexts.filter((t) => t.genre === genre)
+    : allTexts;
+
+  // Calculate genre counts for the filter bar
+  const genreCounts = new Map<string, number>();
+  for (const t of allTexts) {
+    const g = t.genre || "uncategorized";
+    genreCounts.set(g, (genreCounts.get(g) || 0) + 1);
+  }
+  const sortedGenres = Array.from(genreCounts.entries())
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1]);
 
   // Group texts by language, then by author
   const languageMap = new Map<string, LanguageGroup>();
 
-  for (const text of allTexts) {
+  for (const text of filteredTexts) {
     const langCode = text.language.code;
 
     if (!languageMap.has(langCode)) {
@@ -64,6 +91,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       titleOriginalScript: text.titleOriginalScript,
       slug: text.slug,
       totalChapters: text.totalChapters,
+      genre: text.genre || "uncategorized",
     });
   }
 
@@ -74,9 +102,46 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     return countB - countA;
   });
 
+  const genreDisplayName = genre ? GENRE_DISPLAY_NAMES[genre] || genre : null;
+
   return (
     <main className="mx-auto max-w-5xl">
-      <h1 className="mb-6 text-3xl font-bold">Browse Texts</h1>
+      <h1 className="mb-4 text-3xl font-bold">Browse Texts</h1>
+
+      {/* Genre filter bar */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        <Link href="/texts">
+          <Badge
+            variant={!genre ? "default" : "outline"}
+            className="cursor-pointer transition-colors hover:bg-primary/80"
+          >
+            All ({allTexts.length})
+          </Badge>
+        </Link>
+        {sortedGenres.map(([g, count]) => (
+          <Link key={g} href={`/texts?genre=${g}`}>
+            <Badge
+              variant={genre === g ? "default" : "outline"}
+              className="cursor-pointer transition-colors hover:bg-primary/80"
+            >
+              {GENRE_DISPLAY_NAMES[g] || g} ({count})
+            </Badge>
+          </Link>
+        ))}
+      </div>
+
+      {/* Active filter indicator */}
+      {genreDisplayName && (
+        <p className="mb-4 text-sm text-muted-foreground">
+          Showing {filteredTexts.length} texts in{" "}
+          <span className="font-medium text-foreground">{genreDisplayName}</span>
+          {" · "}
+          <Link href="/texts" className="text-primary hover:underline">
+            Clear filter
+          </Link>
+        </p>
+      )}
+
       <CategoryBrowser languages={languages} defaultTab={lang} />
     </main>
   );

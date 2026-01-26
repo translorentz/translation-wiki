@@ -10,6 +10,7 @@ interface TextSummary {
   titleOriginalScript: string | null;
   slug: string;
   totalChapters: number;
+  genre?: string;
 }
 
 interface AuthorSummary {
