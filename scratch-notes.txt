@@ -1,5 +1,57 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-25 Session 23: Two New Ming Novels Processing + 8-Worker Translation
+
+### New Novels Added
+
+**1. The Voyage of the Eunuch Sanbao to the Western Ocean (Sanbao Taijian Xiyang Ji)**
+- Author: Luo Maodeng (羅懋登, fl. 1597)
+- Chapters: 100
+- Characters: 751,194
+- Genre: literature (fantasy-adventure novel based on Zheng He's voyages)
+- Slug: `sanbao-taijian-xiyang-ji`
+
+**2. Marriage Destinies to Awaken the World (Xingshi Yinyuan Zhuan)**
+- Author: Xi Zhousheng (西周生, pseudonym, fl. 17th century)
+- Chapters: 100
+- Characters: 756,198
+- Genre: literature (satirical novel about marriage and karmic retribution)
+- Slug: `xingshi-yinyuan-zhuan`
+
+### Files Created/Modified
+- `scripts/process-sanbao-taijian.ts` — processing script
+- `scripts/process-xingshi-yinyuan.ts` — processing script
+- `scripts/seed-db.ts` — added 2 authors + 2 texts
+- `scripts/categorize-texts.ts` — added 2 texts to "literature" category
+- `data/processed/sanbao-taijian-xiyang-ji/` — 100 JSON chapter files
+- `data/processed/xingshi-yinyuan-zhuan/` — 100 JSON chapter files
+
+### Translation Workers Launched (8 total)
+| Worker | Text | Chapters | Log File |
+|--------|------|----------|----------|
+| 1 | Dongzhou Lieguo Zhi | 1-54 | /tmp/dongzhou-worker1.log |
+| 2 | Dongzhou Lieguo Zhi | 55-108 | /tmp/dongzhou-worker2.log |
+| 3 | Sanbao Taijian | 1-34 | /tmp/sanbao-worker1.log |
+| 4 | Sanbao Taijian | 35-67 | /tmp/sanbao-worker2.log |
+| 5 | Sanbao Taijian | 68-100 | /tmp/sanbao-worker3.log |
+| 6 | Xingshi Yinyuan | 1-34 | /tmp/xingshi-worker1.log |
+| 7 | Xingshi Yinyuan | 35-67 | /tmp/xingshi-worker2.log |
+| 8 | Xingshi Yinyuan | 68-100 | /tmp/xingshi-worker3.log |
+
+**Total chapters being translated: 308 (108 + 100 + 100)**
+
+All workers use:
+- DeepSeek V3 (`deepseek-chat`)
+- 6000ms delay between batches
+- Literary Chinese prompt (`zh-literary`) for genre: literature texts
+
+### Notes
+- Dongzhou workers will skip already-translated chapters from previous session
+- New novels start fresh (0 chapters translated)
+- Both new novels use ctext.org as source URL (same as Dongzhou)
+
+---
+
 ## 2026-01-25 Session 22: Browse Page "All Languages" View + Genre Documentation
 
 ### Changes Made

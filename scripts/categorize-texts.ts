@@ -78,6 +78,8 @@ const GENRE_MAP: Record<string, string> = {
   "khorhrdavor-miandznuhi": "literature",
   "yerkir-nairi": "literature",
   "dongzhou-lieguo-zhi": "literature", // Historical novel, not history
+  "sanbao-taijian-xiyang-ji": "literature", // Fantasy-adventure novel
+  "xingshi-yinyuan-zhuan": "literature", // Satirical novel
 
   // History (historical narratives, chronicles, biographies - NON-FICTION)
   tongjian: "history",

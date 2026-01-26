@@ -231,7 +231,7 @@ async function translateTitle(
   textSlug: string
 ): Promise<string> {
   const languageNames: Record<string, string> = {
-    zh: "Classical Chinese",
+    zh: "Chinese",
     hy: "Armenian",
     ta: "Tamil",
     grc: "Greek",

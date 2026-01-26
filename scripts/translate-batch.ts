@@ -143,7 +143,7 @@ interface Paragraph {
 // Language-specific limits: Chinese is very dense (1 char ≈ 2-4 English words),
 // Greek/Latin are closer to English character density.
 const MAX_CHARS_BY_LANG: Record<string, number> = {
-  zh: 1500,   // Classical Chinese: extremely dense
+  zh: 1500,   // Chinese: extremely dense
   grc: 6000,  // Greek: moderate density
   la: 6000,   // Latin: similar to Greek
 };

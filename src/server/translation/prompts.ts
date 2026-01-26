@@ -58,7 +58,7 @@ Your translation should read as good, fluent English prose — the kind a reader
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
   // Philosophical Chinese - for Neo-Confucian dialogues and commentaries
-  zh: `You are translating Classical Chinese (文言文) to English.
+  zh: `You are translating Chinese (文言文) to English.
 Guidelines:
 - Preserve philosophical terminology accurately (e.g., 理 = "principle", 氣 = "vital force/qi", 心 = "mind-heart")
 - Maintain the conversational tone of recorded dialogues

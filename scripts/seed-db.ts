@@ -54,7 +54,7 @@ interface ProcessedChapter {
 // ============================================================
 
 const LANGUAGES = [
-  { code: "zh", name: "Classical Chinese", displayName: "文言文" },
+  { code: "zh", name: "Chinese", displayName: "文言文" },
   { code: "grc", name: "Greek", displayName: "Ἑλληνική" },
   { code: "la", name: "Latin", displayName: "Lingua Latina" },
   { code: "en", name: "English", displayName: "English" },
@@ -383,6 +383,22 @@ const AUTHORS = [
     era: "Ming Dynasty (1574–1646)",
     description:
       "Ming dynasty writer, historian, and playwright. Best known for his vernacular short story collections (三言) and the historical novel Dongzhou Lieguo Zhi, which dramatizes the Spring and Autumn and Warring States periods.",
+  },
+  {
+    name: "Luo Maodeng",
+    nameOriginalScript: "羅懋登",
+    slug: "luo-maodeng",
+    era: "Ming Dynasty (fl. 1597)",
+    description:
+      "Ming dynasty novelist best known for Sanbao Taijian Xiyang Ji (三寶太監西洋記), a 100-chapter fantasy novel about the voyages of the eunuch admiral Zheng He to the Western Ocean. The novel blends historical events with Buddhist and Daoist supernatural elements.",
+  },
+  {
+    name: "Xi Zhousheng",
+    nameOriginalScript: "西周生",
+    slug: "xi-zhousheng",
+    era: "Late Ming/Early Qing (fl. 17th century)",
+    description:
+      "Pseudonymous author of Xingshi Yinyuan Zhuan (醒世姻緣傳), a 100-chapter satirical novel about marriage and karmic retribution. The author's true identity remains unknown; 'Xi Zhousheng' literally means 'Scholar Born in the Western Zhou.'",
   },
   {
     name: "Raffi",
@@ -1025,6 +1041,36 @@ const TEXTS = [
     processedDir: "data/processed/dongzhou-lieguo-zhi",
     compositionYear: 1632,
     compositionEra: "Late Ming Dynasty",
+  },
+  {
+    title: "The Voyage of the Eunuch Sanbao to the Western Ocean (Sanbao Taijian Xiyang Ji)",
+    titleOriginalScript: "三寶太監西洋記",
+    slug: "sanbao-taijian-xiyang-ji",
+    textType: "prose",
+    genre: "literature",
+    languageCode: "zh",
+    authorSlug: "luo-maodeng",
+    description:
+      "A 100-chapter fantasy-adventure novel based on the historical voyages of the Ming dynasty eunuch admiral Zheng He (1371–1433). The novel blends historical elements with Buddhist and Daoist supernatural battles, featuring Immortal Master Jin Bifeng and Celestial Master Zhang as protectors of the fleet against demonic forces. One of the earliest Chinese novels to depict overseas travel and foreign lands.",
+    sourceUrl: "https://ctext.org/sanbao-taijian-xiyang-ji",
+    processedDir: "data/processed/sanbao-taijian-xiyang-ji",
+    compositionYear: 1597,
+    compositionEra: "Late Ming Dynasty",
+  },
+  {
+    title: "Marriage Destinies to Awaken the World (Xingshi Yinyuan Zhuan)",
+    titleOriginalScript: "醒世姻緣傳",
+    slug: "xingshi-yinyuan-zhuan",
+    textType: "prose",
+    genre: "literature",
+    languageCode: "zh",
+    authorSlug: "xi-zhousheng",
+    description:
+      "A 100-chapter satirical novel exploring karmic retribution through two lifetimes of marriage. In the first life, the dissolute Chao Yuan kills a fox spirit and mistreats his wife, who dies tragically. In the second life, he is reborn as the hapless Di Xichen, tormented by his shrewish wife Xue Sujie—the fox spirit reincarnated for revenge. A mordant social comedy depicting Ming-Qing household life with unparalleled psychological realism.",
+    sourceUrl: "https://ctext.org/xingshi-yinyuan-zhuan",
+    processedDir: "data/processed/xingshi-yinyuan-zhuan",
+    compositionYear: 1661,
+    compositionEra: "Early Qing Dynasty",
   },
   {
     title: "The Spark (Kaytser)",
