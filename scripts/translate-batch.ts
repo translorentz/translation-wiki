@@ -485,7 +485,15 @@ async function main() {
   let totalErrors = 0;
 
   for (const text of textsToProcess) {
-    console.log(`\n--- ${text.title} (${text.language.code}) ---\n`);
+    // Determine prompt variant based on language and genre
+    let promptLang = text.language.code;
+    const isLiteraryChinese = text.language.code === "zh" && (text.genre === "literature" || text.genre === "history");
+    if (isLiteraryChinese) {
+      promptLang = "zh-literary";
+      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre}, using literary prompt) ---\n`);
+    } else {
+      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre || "none"}) ---\n`);
+    }
 
     // Build query conditions
     const conditions = [eq(schema.chapters.textId, text.id)];
@@ -526,7 +534,7 @@ async function main() {
 
       const success = await translateChapter(
         chapter,
-        text.language.code,
+        promptLang,
         systemUserId
       );
 

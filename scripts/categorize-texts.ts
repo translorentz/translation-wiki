@@ -78,7 +78,7 @@ const GENRE_MAP: Record<string, string> = {
   "khorhrdavor-miandznuhi": "literature",
   "yerkir-nairi": "literature",
 
-  // History (historical narratives, chronicles)
+  // History (historical narratives, chronicles, historical novels)
   tongjian: "history",
   "historia-nova": "history",
   lombards: "history",
@@ -87,6 +87,7 @@ const GENRE_MAP: Record<string, string> = {
   "arshagouhi-teotig": "history",
   "yi-zhou-shu": "history",
   gaoshizhuan: "history",
+  "dongzhou-lieguo-zhi": "history",
 
   // Science (medicine, geography, ritual/ceremonial manuals)
   huangdineijing: "science",

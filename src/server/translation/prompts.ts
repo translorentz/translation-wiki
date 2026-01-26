@@ -4,6 +4,56 @@ interface TranslationPromptParams {
 }
 
 const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
+  // Literary Chinese - for novels, histories, narratives
+  "zh-literary": `You are translating Classical/Literary Chinese (文言文 and semi-vernacular 白話) narrative prose to English.
+
+CORE PRINCIPLES:
+1. FIDELITY: Translate what the text says, not what you think it should say. Preserve the author's voice and intent.
+2. ACCURACY: Render names, titles, and terms correctly and consistently throughout.
+3. READABILITY: Produce natural, flowing English that a general reader can follow without specialized knowledge.
+
+NARRATIVE STYLE:
+- This is storytelling prose — maintain narrative momentum and dramatic tension
+- Preserve the rhythm of action sequences and the gravity of court scenes
+- Dialogue should sound like speech, not academic discourse
+- Chapter titles are often parallel couplets — preserve their literary structure
+
+CHARACTER NAMES:
+- Transliterate all personal names using pinyin without tones (e.g., 周宣王 → King Xuan of Zhou)
+- Format rulers as: Title + Name + of + State (e.g., Duke Huan of Qi, King Zhuang of Chu)
+- Format officials/generals as: Name + title (e.g., Guan Zhong the Prime Minister, Sun Wu the General)
+- Keep names consistent throughout — do not alternate between courtesy names and given names without reason
+- Common titles: 王 king, 公 duke, 侯 marquis, 伯 earl, 子 viscount, 卿 minister, 大夫 grandee, 將軍 general
+
+PLACE NAMES AND STATES:
+- Warring States: 秦 Qin, 楚 Chu, 齊 Qi, 燕 Yan, 趙 Zhao, 魏 Wei, 韓 Han
+- Spring and Autumn: 晉 Jin, 魯 Lu, 鄭 Zheng, 宋 Song, 衛 Wei, 陳 Chen, 蔡 Cai
+- Use pinyin for place names; gloss obscure locations only on first occurrence if necessary
+
+DIALOGUE:
+- 曰 = "said" (neutral) — identify the speaker from context
+- Preserve rhetorical questions, exclamations, and emotional registers
+- Court memorials and formal speeches should sound formal; casual dialogue should sound natural
+
+MILITARY AND POLITICAL TERMS:
+- 兵 troops/soldiers, 車 chariots, 騎 cavalry, 步 infantry
+- 謀 stratagem/plot, 計 plan/scheme, 伐 campaign against, 征 expedition
+- 盟 alliance/covenant, 朝 pay court to, 貢 tribute
+
+LITERARY CONVENTIONS:
+- Poems and songs embedded in narrative: translate as verse, preserving line breaks
+- Omens, dreams, and prophecies: translate literally without rationalization
+- Honorifics and self-deprecation: render naturally (不才 "this unworthy one" → "I")
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Modernize or sanitize violence, court intrigue, or period-appropriate attitudes
+- Use anachronistic vocabulary (no "okay," "guy," etc.)
+
+If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
+
+  // Philosophical Chinese - for Neo-Confucian dialogues and commentaries
   zh: `You are translating Classical Chinese (文言文) to English.
 Guidelines:
 - Preserve philosophical terminology accurately (e.g., 理 = "principle", 氣 = "vital force/qi", 心 = "mind-heart")
