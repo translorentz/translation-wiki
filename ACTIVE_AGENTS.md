@@ -2,7 +2,7 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-01-25, Session 21
+**Last updated:** 2026-01-25, Session 22
 
 ---
 
@@ -17,6 +17,16 @@ Track all running agents and background workers here. Update when launching or c
 | ab5dae1 | Eustathius Odyssey ch 1-8 | TRANSLATING | — | DeepSeek grc, 6000 chars/batch |
 | a4043fb | Eustathius Odyssey ch 9-16 | TRANSLATING | — | DeepSeek grc, 6000 chars/batch |
 | afff370 | Eustathius Odyssey ch 19-24 | TRANSLATING | — | DeepSeek grc, 6000 chars/batch |
+
+### Dongzhou Lieguo Zhi Translation Workers (6)
+| Worker | Chapters | Log File | Status |
+|--------|----------|----------|--------|
+| Worker 1 | 1-18 | `/tmp/dongzhou-worker1.log` | TRANSLATING |
+| Worker 2 | 19-36 | `/tmp/dongzhou-worker2.log` | TRANSLATING |
+| Worker 3 | 37-54 | `/tmp/dongzhou-worker3.log` | TRANSLATING |
+| Worker 4 | 55-72 | `/tmp/dongzhou-worker4.log` | TRANSLATING |
+| Worker 5 | 73-90 | `/tmp/dongzhou-worker5.log` | TRANSLATING |
+| Worker 6 | 91-108 | `/tmp/dongzhou-worker6.log` | TRANSLATING |
 
 ### Rizhilu Translation Workers (4)
 | Worker | Chapters | Log File |
@@ -50,6 +60,7 @@ Track all running agents and background workers here. Update when launching or c
 
 | Agent ID | Task | Completion | Notes |
 |----------|------|------------|-------|
+| a7e95bf | "All Languages" browse | COMPLETE | Genre filter shows all languages |
 | a854600 | Genre schema + migration | COMPLETE | Added genre column, categorized 51 texts |
 | ad63b5a | Browse by Category sidebar | COMPLETE | Added to main page sidebar |
 | ad79244 | CLAUDE.md change report | COMPLETE | Critical review at `docs/claude_md_change_report.md` |

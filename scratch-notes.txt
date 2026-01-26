@@ -2675,3 +2675,60 @@ Added missing documentation to CLAUDE.md:
 
 4. **Updated Key Directories** — Added `translate-armenian.ts`
 
+
+---
+
+## 2026-01-25: Session 22 (Continued) — Dongzhou Lieguo Zhi Translation
+
+### Genre Filtering Fix — COMPLETE
+- **Issue**: Clicking category buttons led to Browse page with no actual filtering
+- **Fix**: Added `genre` query param handling to `/texts` page
+- **UI**: Added genre filter bar with active filter indicator
+- **Commit**: Pushed to main
+
+### "All Languages" Browse Option — COMPLETE
+- **Agent**: a7e95bf
+- **Change**: When filtering by genre, show all languages at once (not just first tab)
+- **Files modified**: CategoryBrowser.tsx, texts/page.tsx
+- **Commit**: `26b4322`
+
+### Dongzhou Lieguo Zhi (東周列國志) Processing — COMPLETE
+- **Author**: Feng Menglong (馮夢龍, 1574-1646)
+- **Chapters**: 108 (Ming dynasty historical novel about Eastern Zhou)
+- **Characters**: 671,241
+- **Paragraphs**: 2,089
+- **Genre**: history
+- **Processing script**: `scripts/process-dongzhou-lieguo-zhi.ts`
+- **Output**: `data/processed/dongzhou-lieguo-zhi/`
+- **Seeded**: Yes (db:seed completed)
+- **Commit**: `7fbb0b8`
+
+### Dongzhou Translation — IN PROGRESS (6 Workers)
+Pattern: Split 108 chapters across 6 parallel workers (18 chapters each)
+
+| Worker | Chapters | Log File | Status |
+|--------|----------|----------|--------|
+| 1 | 1-18 | /tmp/dongzhou-worker1.log | Running |
+| 2 | 19-36 | /tmp/dongzhou-worker2.log | Running |
+| 3 | 37-54 | /tmp/dongzhou-worker3.log | Running |
+| 4 | 55-72 | /tmp/dongzhou-worker4.log | Running |
+| 5 | 73-90 | /tmp/dongzhou-worker5.log | Running |
+| 6 | 91-108 | /tmp/dongzhou-worker6.log | Running |
+
+**Translation settings**: DeepSeek V3, 1500 chars/batch, 5000ms delay
+
+### Important Workflow Pattern Reminder
+**For large Chinese texts**, the correct workflow is:
+1. Single processing script → outputs to `data/processed/<slug>/`
+2. Single seeding pass → `pnpm tsx scripts/seed-db.ts`
+3. Multiple PARALLEL translation workers → split chapter ranges
+   - Example: 108 chapters ÷ 6 workers = 18 chapters each
+   - Use `nohup` with log files in `/tmp/`
+   - Each worker runs same translate-batch.ts with different --start/--end
+
+This is NOT 6 sequential agents for different pipeline stages.
+This IS 6 parallel workers doing the same translation task on different chapter ranges.
+
+### Commits This Session
+1. `26b4322` — feat: Add "All Languages" view for genre filtering on Browse page
+2. `7fbb0b8` — feat: Add Dongzhou Lieguo Zhi (東周列國志) processing and seeding

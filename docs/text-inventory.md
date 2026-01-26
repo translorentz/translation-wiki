@@ -6,9 +6,9 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 
 ## Summary
 
-- **Total texts:** 51
+- **Total texts:** 52
 - **Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian)
-- **Total chapters:** ~2,500+
+- **Total chapters:** ~2,600+
 
 ### Genre Distribution
 
@@ -16,7 +16,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 |-------|-------|-------------|
 | commentary | 16 | Commentaries on other texts (zhushu/zhengyi works, Eustathius, etc.) |
 | literature | 12 | Poetry, novels, epics (Tamil kaviyams, Armenian novels, etc.) |
-| history | 8 | Historical narratives, chronicles, biographies |
+| history | 9 | Historical narratives, chronicles, biographies |
 | philosophy | 8 | Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.) |
 | science | 7 | Medicine, geography, ritual/ceremonial manuals |
 
@@ -38,6 +38,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Comprehensive Meaning of Customs (Fengsu Tongyi) | ying-shao | fengsutongyi | 11 | prose | science |
 | The School Sayings of Confucius (Kongzi Jiayu) | confucius | kongzi-jiayu | 80 | prose | philosophy |
 | Daily Learning Record (Rizhilu) | gu-yanwu | rizhilu | 32 | prose | philosophy |
+| Romance of the Eastern Zhou (Dongzhou Lieguo Zhi) | feng-menglong | dongzhou-lieguo-zhi | 108 | prose | history |
 
 ### Shisan Jing Zhushu (十三經註疏) — 13 Texts
 
