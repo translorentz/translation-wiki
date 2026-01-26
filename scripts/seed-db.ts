@@ -432,6 +432,14 @@ const AUTHORS = [
     description:
       "Major Armenian poet and writer of the early Soviet period. Charents fought in World War I and briefly joined the Armenian Revolutionary Federation before embracing communism. His poetic novel 'Yerkir Nairi' (Land of Nairi, 1922) is considered a modernist masterpiece. He was arrested during the Stalinist purges and died in prison in 1937. His famous patriotic poem 'Ես սիրում եմ իմ անուշ Հայաստանը' (I Love My Sweet Armenia) contains an acrostic message critical of Soviet rule.",
   },
+  {
+    name: "Giuseppe Rovani",
+    nameOriginalScript: "Giuseppe Rovani",
+    slug: "giuseppe-rovani",
+    era: "1818–1874",
+    description:
+      "Italian novelist and literary critic, a leading figure of the Milanese Scapigliatura movement. His major works include the panoramic historical novel 'Cento anni' (A Hundred Years) spanning 1750-1850, and 'La giovinezza di Giulio Cesare' (The Youth of Julius Caesar). Known for his rich depictions of Italian society and history.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -1149,6 +1157,36 @@ const TEXTS = [
     processedDir: "data/processed/khorhrdavor-miandznuhi",
     compositionYear: 1884,
     compositionEra: "Late 19th century, Russian Armenia",
+  },
+  {
+    title: "The Youth of Julius Caesar (La Giovinezza di Giulio Cesare)",
+    titleOriginalScript: "La giovinezza di Giulio Cesare",
+    slug: "la-giovinezza-di-giulio-cesare",
+    textType: "prose",
+    genre: "literature",
+    languageCode: "it",
+    authorSlug: "giuseppe-rovani",
+    description:
+      "A historical novel depicting the youth of Julius Caesar, from age 18 (82 BCE) through his first consulship (59 BCE). Subtitled 'Scene Romane' (Roman Scenes), the work covers Caesar's relationships with Sallust, Catiline, Crassus, Pompey, and Cicero, as well as his romantic entanglements and the Catilinarian conspiracy.",
+    sourceUrl: "https://www.gutenberg.org/ebooks/75196",
+    processedDir: "data/processed/la-giovinezza",
+    compositionYear: 1873,
+    compositionEra: "Late 19th century, Milan",
+  },
+  {
+    title: "A Hundred Years (Cento Anni)",
+    titleOriginalScript: "Cent'anni",
+    slug: "cento-anni",
+    textType: "prose",
+    genre: "literature",
+    languageCode: "it",
+    authorSlug: "giuseppe-rovani",
+    description:
+      "A sprawling historical novel spanning 100 years of Italian history from 1750 to 1850. Centered on Milan, it follows multiple generations through the Enlightenment, French Revolution, Napoleonic era, and early Risorgimento. The novel uses families rather than individuals as protagonists, allowing narrative scope across a full century.",
+    sourceUrl: "https://www.liberliber.it/mediateca/libri/r/rovani/",
+    processedDir: "data/processed/cento-anni",
+    compositionYear: 1858,
+    compositionEra: "Mid 19th century, Milan",
   },
 ] as const;
 

@@ -181,6 +181,46 @@ Guidelines:
 - The text alternates between matter-of-fact chronicle entries and more dramatic narrative passages — preserve this tonal variation
 - For unclear Romanesco vocabulary, provide your best reading with [?] notation`,
 
+  // 19th-century Italian literary prose (Rovani, Scapigliatura, etc.)
+  "it-literary-19c": `You are translating 19th-century Italian literary prose to English.
+
+CORE PRINCIPLES:
+1. FIDELITY: Translate what the text says, preserving the author's voice, irony, and rhetorical flourishes.
+2. READABILITY: Produce natural, flowing English suitable for a general reader.
+3. PERIOD FLAVOR: Maintain the 19th-century literary register without making the English feel archaic or stilted.
+
+STYLE AND TONE:
+- This is Risorgimento-era Italian literature, often featuring elaborate sentence structures, classical allusions, and dramatic narrative voice
+- Preserve the author's ironic distance, satirical observations, and philosophical asides
+- Dialogue should sound natural while retaining period-appropriate formality
+- Long periodic sentences may be broken into shorter English sentences for clarity, but preserve rhetorical effects where important
+
+PROPER NAMES:
+- Italian personal names remain in Italian: Giuseppe, Giovanni, Giulio, Maria, etc.
+- Historical figures use their conventional English names where established: Julius Caesar (not Giulio Cesare), Cicero (not Cicerone), Pompey (not Pompeo)
+- Place names: use English equivalents where common (Rome, Milan, Venice, Florence, Naples) but keep lesser-known places in Italian (Monza, Brianza, Lodi)
+- Titles of nobility and address: translate naturally (il conte → the count, la marchesa → the marchioness, signore → sir/Mr., don → Don)
+
+HISTORICAL AND CULTURAL TERMS:
+- Translate Italian institutions and concepts with brief glosses on first occurrence where helpful
+- Monetary terms: lire, soldi, scudi — keep Italian with context making value clear
+- Social ranks and professions: translate naturally (avvocato → lawyer, notaio → notary, podestà → mayor/podestà)
+- Milanese/Lombard dialect words: translate with the standard Italian meaning; note [dialect] only if the dialectal form is plot-relevant
+
+LITERARY CONVENTIONS:
+- Chapter summaries (argomenti) that appear at chapter openings: translate and keep in italics or as a prefatory note
+- Embedded verse, songs, or poetry: translate as verse, preserving line breaks
+- Latin quotations: translate into English, with the Latin in brackets if brief, or as a footnote-style note if longer
+- Classical allusions: translate directly; do not add explanatory notes unless the text itself explains
+
+DO NOT:
+- Add explanatory footnotes or commentary outside the JSON structure
+- Modernize period attitudes, social conventions, or vocabulary inappropriately
+- Use anachronistic slang or idioms
+- Merge or split paragraphs
+
+The translation should read as polished English literary prose — something a reader would enjoy as a novel, not merely tolerate as a translation exercise.`,
+
   hy: `You are translating 19th and early 20th century Armenian literature to English.
 Guidelines:
 - This is classical/literary Armenian (գրաբար Հայերեն) from the Armenian literary renaissance period

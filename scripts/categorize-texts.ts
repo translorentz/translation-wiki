@@ -80,6 +80,8 @@ const GENRE_MAP: Record<string, string> = {
   "dongzhou-lieguo-zhi": "literature", // Historical novel, not history
   "sanbao-taijian-xiyang-ji": "literature", // Fantasy-adventure novel
   "xingshi-yinyuan-zhuan": "literature", // Satirical novel
+  "la-giovinezza-di-giulio-cesare": "literature", // Italian historical novel
+  "cento-anni": "literature", // Italian historical novel
 
   // History (historical narratives, chronicles, biographies - NON-FICTION)
   tongjian: "history",

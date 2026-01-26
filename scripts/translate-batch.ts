@@ -513,10 +513,24 @@ async function main() {
   for (const text of textsToProcess) {
     // Determine prompt variant based on language and genre
     let promptLang = text.language.code;
+    let usingSpecialPrompt = false;
+
+    // Chinese literary/historical texts use zh-literary prompt
     const isLiteraryChinese = text.language.code === "zh" && (text.genre === "literature" || text.genre === "history");
     if (isLiteraryChinese) {
       promptLang = "zh-literary";
-      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre}, using literary prompt) ---\n`);
+      usingSpecialPrompt = true;
+    }
+
+    // 19th-century Italian literature uses it-literary-19c prompt
+    const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
+    if (isLiteraryItalian) {
+      promptLang = "it-literary-19c";
+      usingSpecialPrompt = true;
+    }
+
+    if (usingSpecialPrompt) {
+      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre}, using ${promptLang} prompt) ---\n`);
     } else {
       console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre || "none"}) ---\n`);
     }

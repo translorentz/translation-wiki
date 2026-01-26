@@ -11,6 +11,8 @@
  * 3. Translates only the missing paragraphs (using batching)
  * 4. Creates a new TranslationVersion with gaps filled, keeping existing translations
  */
+import fs from "fs";
+import path from "path";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { eq, desc } from "drizzle-orm";
@@ -21,6 +23,22 @@ import { buildTranslationPrompt } from "../src/server/translation/prompts";
 // ============================================================
 // Configuration
 // ============================================================
+
+// Load .env.local manually (last DATABASE_URL wins, matching dotenv behavior)
+const envPath = path.resolve(__dirname, "../.env.local");
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const dbMatch = line.match(/^DATABASE_URL=(.+)$/);
+    if (dbMatch) {
+      process.env.DATABASE_URL = dbMatch[1].replace(/^['"]|['"]$/g, "");
+    }
+    const dsMatch = line.match(/^DEEPSEEK_API_KEY=(.+)$/);
+    if (dsMatch) {
+      process.env.DEEPSEEK_API_KEY = dsMatch[1].replace(/^['"]|['"]$/g, "");
+    }
+  }
+}
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -278,7 +296,9 @@ async function fillGap(gap: GapInfo, systemUserId: number, delay: number): Promi
   // Merge: take existing content and fill in the gaps
   const merged: Para[] = gap.currentContent.map((p) => {
     const fill = translated.find((t) => t.index === p.index);
-    if (fill && p.text.trim() === "") {
+    const isEmpty = p.text.trim() === "";
+    const isPlaceholder = p.text.includes("[Translation pending");
+    if (fill && (isEmpty || isPlaceholder)) {
       return fill;
     }
     return p;

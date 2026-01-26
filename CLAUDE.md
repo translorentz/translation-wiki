@@ -32,27 +32,26 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-25)
+## Active Tasks (2026-01-26)
 
 ### IN PROGRESS
 
 | Task | Status | Notes |
 |------|--------|-------|
+| Chinese Novels (Session 23) | 8 workers | Dongzhou (108ch), Sanbao (100ch), Xingshi (100ch) |
+| Italian Novels (Session 24) | 2 workers | La Giovinezza (41ch), Cento Anni (21ch), using `it-literary-19c` prompt |
 | Rizhilu translation | 4 workers | 32 chapters, logs at `/tmp/rizhilu-worker{1-4}.log` |
 | Translation Gap Fixer | Running | `scripts/fill-translation-gaps.ts` — 21 chapters with gaps across 7 texts |
-| Armenian "Delays" Fix | Agent a9fb74b | Finding/fixing "Delays" substitution for Armenian chars |
 | Nandikkalambakam Stage 3 | Agent aa88334 | Retranslating 114 poems, editorial pass |
-| Yashodhara Kaviyam Stage 1 | Agent a1cae1c | Processing + translating 330 verses |
 | Eustathius Odyssey | 3 workers | 10/27 chapters done (ab5dae1, a4043fb, afff370) |
 | Shisan Jing Zhushu | ~20 workers | 13 texts, 455 chapters total |
-| Tamil Stage 2 Reviews | Agents reviewing | Udayanakumara (ae734cc) still reviewing |
 
 ### RECENTLY COMPLETED
+- Italian novels setup: La Giovinezza (41ch) + Cento Anni (21ch) processed, seeded, translating ✓
+- Chinese novels setup: Dongzhou (108ch), Sanbao (100ch), Xingshi (100ch) seeded, translating ✓
 - Armenian Initiative: 6 texts, 195 chapters ✓
 - Security remediation: gitleaks, history purge, creds rotated ✓
 - Diarium Urbis Romae: 66/66 chapters ✓
-- Greek XML R2: 53/53 chapters ✓
-- Kongzi Jiayu: 80/80 chapters ✓
 
 ---
 
@@ -86,7 +85,8 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
    - **MANDATORY: Set `genre` field** — one of: `philosophy`, `commentary`, `literature`, `history`, `science`
    - Genre enables filtering on `/texts?genre=<name>` browse page
 4. `pnpm tsx scripts/seed-db.ts`
-5. `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil workflow below)
+5. **CHECK TRANSLATION PROMPT** (see below) — ensure `src/server/translation/prompts.ts` has a suitable prompt for this text's language, period, and genre
+6. `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil workflow below)
 
 **Title convention:** "English Name (Transliteration)" — e.g., "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
 
@@ -99,6 +99,25 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 - **Batching:** zh=1500 chars, grc/la/hy=6000 chars per API call
 - **Parallelization:** Split ranges across background workers
 - **Skip logic:** Already-translated chapters skipped automatically
+
+### CRITICAL: Check Translation Prompt Before Translating
+
+**BEFORE launching any translation**, verify that `src/server/translation/prompts.ts` has a suitable prompt for the text's language, period, and genre:
+
+| Language Code | Suitable For |
+|---------------|--------------|
+| `zh` | Neo-Confucian philosophical texts (Zhu Xi, Wang Yangming) |
+| `zh-literary` | Chinese literary prose, novels, historical fiction |
+| `grc` | Medieval/Byzantine Greek |
+| `la` | Latin (chronicle, philosophy, poetry) |
+| `ta` | Classical Tamil (Sangam + Medieval) |
+| `it` | 15th-century Romanesco/Latin (Diarium Urbis Romae only) |
+| `it-literary-19c` | 19th-century Italian literary prose (Rovani, etc.) |
+| `hy` | 19th-20th century Armenian literature |
+
+**If no suitable prompt exists:** Create one before translating. The prompt should specify the text's period, genre, terminology, and stylistic conventions. See existing prompts for examples.
+
+**Auto-selection:** `translate-batch.ts` auto-selects `zh-literary` for Chinese literature/history and `it-literary-19c` for Italian literature based on the `genre` field.
 
 ### Armenian Translation (Special Case)
 

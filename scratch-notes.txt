@@ -1,5 +1,57 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-26 Session 24: Italian Novels + Translation Prompt Policy
+
+### Translation Prompt Policy (NEW RULE)
+
+**MANDATORY: Before launching any translation, check `src/server/translation/prompts.ts` to ensure a suitable prompt exists for the text's language, period, and genre.**
+
+This session caught an issue: the `it` prompt was specific to the 15th-century Romanesco/Latin Diarium Urbis Romae, NOT suitable for 19th-century Italian literary prose. A new `it-literary-19c` prompt was created for Giuseppe Rovani's novels.
+
+### Italian Novels Added
+
+**Author:** Giuseppe Rovani (1818-1874) — Milanese Scapigliatura movement
+
+| Text | Chapters | Characters | Genre |
+|------|----------|------------|-------|
+| The Youth of Julius Caesar (La Giovinezza di Giulio Cesare) | 41 | 443,632 | literature |
+| A Hundred Years (Cento Anni) | 21 | 2,510,902 | literature |
+
+### Files Created/Modified
+- `scripts/process-la-giovinezza.ts` — processing script
+- `scripts/process-cento-anni.ts` — processing script
+- `data/processed/la-giovinezza/` — 41 JSON files
+- `data/processed/cento-anni/` — 21 JSON files
+- `docs/la-giovinezza-processing-notes.md` — processing documentation
+- `docs/cento-anni-processing-notes.md` — processing documentation
+- `src/server/translation/prompts.ts` — added `it-literary-19c` prompt
+- `scripts/translate-batch.ts` — added Italian literary prompt auto-selection
+- `scripts/seed-db.ts` — added Giuseppe Rovani + 2 texts
+- `scripts/categorize-texts.ts` — added 2 texts to literature
+- `CLAUDE.md` — added translation prompt checking requirement
+
+### Translation Workers Status (from Session 23)
+
+| Worker | Text | Chapters | Status |
+|--------|------|----------|--------|
+| 1-2 | Dongzhou Lieguo Zhi | 1-54, 55-108 | Running |
+| 3-5 | Sanbao Taijian Xiyang Ji | 1-34, 35-67, 68-100 | Running |
+| 6-8 | Xingshi Yinyuan Zhuan | 1-34, 35-67, 68-100 | Running |
+
+**Total: 308 chapters across 3 Chinese novels**
+
+### Italian Translation Workers (RUNNING)
+
+Both workers launched with `it-literary-19c` prompt (genre: literature detected):
+| Worker | Text | Chapters | Log File | Status |
+|--------|------|----------|----------|--------|
+| 9 | La Giovinezza di Giulio Cesare | 41 | /tmp/italian-giovinezza.log | Running |
+| 10 | Cento Anni | 21 | /tmp/italian-cento-anni.log | Running |
+
+**Note:** Initial launch used wrong prompt (genre was "uncategorized"). Killed and restarted after running `categorize-texts.ts` to correctly set genre to "literature".
+
+---
+
 ## 2026-01-25 Session 23: Two New Ming Novels Processing + 8-Worker Translation
 
 ### New Novels Added
