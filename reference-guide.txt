@@ -473,6 +473,8 @@ Additional features:
    - Format: `{ chapterNumber, title, sourceContent: { paragraphs: [{ index, text }] } }`
 3. Add author + text entries to `scripts/seed-db.ts`
    - Title format: "English Name (Transliteration)" — MANDATORY
+   - Genre field: MANDATORY — one of: philosophy, commentary, literature, history, science
+   - Genre enables filtering on /texts?genre=<name> page
 4. Run `pnpm tsx scripts/seed-db.ts`
 5. Translate: `pnpm tsx scripts/translate-batch.ts --text <slug>` (DeepSeek, for zh/grc/la)
    OR: `pnpm tsx scripts/translate-tamil.ts --text <slug>` (Gemini, for ta)

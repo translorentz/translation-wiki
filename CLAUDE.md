@@ -83,6 +83,8 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 1. Raw files → `data/raw/<dirname>/`
 2. Processing script → `scripts/process-<name>.ts` outputs `data/processed/<slug>/chapter-NNN.json`
 3. Add author/text to `scripts/seed-db.ts`
+   - **MANDATORY: Set `genre` field** — one of: `philosophy`, `commentary`, `literature`, `history`, `science`
+   - Genre enables filtering on `/texts?genre=<name>` browse page
 4. `pnpm tsx scripts/seed-db.ts`
 5. `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil workflow below)
 

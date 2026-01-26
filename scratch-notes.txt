@@ -1,5 +1,38 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-25 Session 22: Browse Page "All Languages" View + Genre Documentation
+
+### Changes Made
+
+**1. Browse page genre filtering improved:**
+- Added "All Languages" view when genre filter is active
+- Before: `/texts?genre=philosophy` showed only first language tab
+- Now: Shows ALL languages at once, grouped by language with section headers
+- Users can still filter by specific language if desired
+- Modified files:
+  - `src/app/(wiki)/texts/page.tsx` — added `showAllLanguages` prop
+  - `src/components/navigation/CategoryBrowser.tsx` — added all-languages rendering mode
+
+**2. Documentation updated for genre requirement:**
+- Added MANDATORY genre field requirement to "Adding New Texts" workflow
+- Updated `reference-guide.txt` Workflow A
+- Updated `CLAUDE.md` Adding New Texts section
+- Genre must be one of: `philosophy`, `commentary`, `literature`, `history`, `science`
+- Enables filtering on `/texts?genre=<name>` browse page
+
+**3. Verified Dongzhou Lieguo Zhi:**
+- Confirmed `genre: "history"` is already set in `seed-db.ts`
+- No changes needed
+
+### Files Modified
+- `src/app/(wiki)/texts/page.tsx`
+- `src/components/navigation/CategoryBrowser.tsx`
+- `reference-guide.txt`
+- `CLAUDE.md`
+- `scratch-notes.txt`
+
+---
+
 ## 2026-01-25 Session 21: Security Remediation Complete + Armenian Translations Done
 
 ### Security Incident — FULLY REMEDIATED

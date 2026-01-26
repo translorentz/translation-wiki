@@ -104,6 +104,10 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
   const genreDisplayName = genre ? GENRE_DISPLAY_NAMES[genre] || genre : null;
 
+  // When genre is active, show "All Languages" view by default (show all languages at once)
+  // User can still filter by specific language if desired
+  const showAllLanguages = !!genre;
+
   return (
     <main className="mx-auto max-w-5xl">
       <h1 className="mb-4 text-3xl font-bold">Browse Texts</h1>
@@ -142,7 +146,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         </p>
       )}
 
-      <CategoryBrowser languages={languages} defaultTab={lang} />
+      <CategoryBrowser
+        languages={languages}
+        defaultTab={lang}
+        showAllLanguages={showAllLanguages}
+      />
     </main>
   );
 }
