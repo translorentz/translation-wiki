@@ -377,6 +377,14 @@ const AUTHORS = [
       "One of the greatest scholars of the early Qing dynasty, known for his emphasis on practical learning (實學) and evidential research (考據學). His Rizhilu represents decades of meticulous philological, historical, and philosophical investigation.",
   },
   {
+    name: "Feng Menglong",
+    nameOriginalScript: "馮夢龍",
+    slug: "feng-menglong",
+    era: "Ming Dynasty (1574–1646)",
+    description:
+      "Ming dynasty writer, historian, and playwright. Best known for his vernacular short story collections (三言) and the historical novel Dongzhou Lieguo Zhi, which dramatizes the Spring and Autumn and Warring States periods.",
+  },
+  {
     name: "Raffi",
     nameOriginalScript: "Ռաֆֆի (Հակոբ Մելիք-Հակոբյան)",
     slug: "raffi",
@@ -1002,6 +1010,21 @@ const TEXTS = [
     processedDir: "data/processed/rizhilu",
     compositionYear: 1670,
     compositionEra: "Early Qing Dynasty",
+  },
+  {
+    title: "Romance of the Eastern Zhou (Dongzhou Lieguo Zhi)",
+    titleOriginalScript: "東周列國志",
+    slug: "dongzhou-lieguo-zhi",
+    textType: "prose",
+    genre: "history",
+    languageCode: "zh",
+    authorSlug: "feng-menglong",
+    description:
+      "A historical novel dramatizing events from the Spring and Autumn period (770–476 BCE) through the Warring States period (475–221 BCE). Based on the Zuozhuan, Guoyu, and Shiji, this 108-chapter work brings to life the political intrigues, military campaigns, and heroic figures of ancient China's most turbulent era.",
+    sourceUrl: "https://ctext.org/dongzhou-lieguo-zhi",
+    processedDir: "data/processed/dongzhou-lieguo-zhi",
+    compositionYear: 1632,
+    compositionEra: "Late Ming Dynasty",
   },
   {
     title: "The Spark (Kaytser)",
