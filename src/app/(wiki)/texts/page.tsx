@@ -31,6 +31,15 @@ const GENRE_DISPLAY_NAMES: Record<string, string> = {
   uncategorized: "Uncategorized",
 };
 
+const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
+  zh: "Chinese",
+  grc: "Greek",
+  la: "Latin",
+  ta: "Tamil",
+  hy: "Armenian",
+  it: "Italian",
+};
+
 interface BrowsePageProps {
   searchParams: Promise<{ lang?: string; genre?: string }>;
 }
@@ -40,14 +49,21 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const trpc = await getServerTRPC();
   const allTexts = await trpc.texts.list();
 
-  // Filter by genre if specified
-  const filteredTexts = genre
-    ? allTexts.filter((t) => t.genre === genre)
-    : allTexts;
+  // Apply both filters independently
+  let filteredTexts = allTexts;
+  if (genre) {
+    filteredTexts = filteredTexts.filter((t) => t.genre === genre);
+  }
+  if (lang) {
+    filteredTexts = filteredTexts.filter((t) => t.language.code === lang);
+  }
 
-  // Calculate genre counts for the filter bar
+  // Calculate genre counts - based on language filter if active
+  const textsForGenreCounts = lang
+    ? allTexts.filter((t) => t.language.code === lang)
+    : allTexts;
   const genreCounts = new Map<string, number>();
-  for (const t of allTexts) {
+  for (const t of textsForGenreCounts) {
     const g = t.genre || "uncategorized";
     genreCounts.set(g, (genreCounts.get(g) || 0) + 1);
   }
@@ -55,7 +71,23 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     .filter(([, count]) => count > 0)
     .sort((a, b) => b[1] - a[1]);
 
-  // Group texts by language, then by author
+  // Calculate language counts - based on genre filter if active
+  const textsForLangCounts = genre
+    ? allTexts.filter((t) => t.genre === genre)
+    : allTexts;
+  const langCounts = new Map<string, { count: number; name: string }>();
+  for (const t of textsForLangCounts) {
+    const code = t.language.code;
+    if (!langCounts.has(code)) {
+      langCounts.set(code, { count: 0, name: t.language.name });
+    }
+    langCounts.get(code)!.count++;
+  }
+  const sortedLanguages = Array.from(langCounts.entries())
+    .filter(([, data]) => data.count > 0)
+    .sort((a, b) => b[1].count - a[1].count);
+
+  // Group texts by language, then by author (for CategoryBrowser)
   const languageMap = new Map<string, LanguageGroup>();
 
   for (const text of filteredTexts) {
@@ -102,28 +134,40 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     return countB - countA;
   });
 
-  const genreDisplayName = genre ? GENRE_DISPLAY_NAMES[genre] || genre : null;
+  // Build filter link helpers
+  const buildFilterUrl = (newLang?: string, newGenre?: string) => {
+    const params = new URLSearchParams();
+    if (newLang) params.set("lang", newLang);
+    if (newGenre) params.set("genre", newGenre);
+    const qs = params.toString();
+    return qs ? `/texts?${qs}` : "/texts";
+  };
 
-  // When genre is active, show "All Languages" view by default (show all languages at once)
-  // User can still filter by specific language if desired
-  const showAllLanguages = !!genre;
+  // Display names for active filters
+  const genreDisplayName = genre ? GENRE_DISPLAY_NAMES[genre] || genre : null;
+  const langDisplayName = lang ? LANGUAGE_DISPLAY_NAMES[lang] || langCounts.get(lang)?.name || lang : null;
+
+  // Count totals for "All" badges
+  const totalTextsForGenreAll = textsForGenreCounts.length;
+  const totalTextsForLangAll = textsForLangCounts.length;
 
   return (
     <main className="mx-auto max-w-5xl">
       <h1 className="mb-4 text-3xl font-bold">Browse Texts</h1>
 
       {/* Genre filter bar */}
-      <div className="mb-6 flex flex-wrap gap-2">
-        <Link href="/texts">
+      <div className="mb-3 flex flex-wrap gap-2">
+        <span className="flex items-center text-sm text-muted-foreground mr-2">Genre:</span>
+        <Link href={buildFilterUrl(lang, undefined)}>
           <Badge
             variant={!genre ? "default" : "outline"}
             className="cursor-pointer transition-colors hover:bg-primary/80"
           >
-            All ({allTexts.length})
+            All ({totalTextsForGenreAll})
           </Badge>
         </Link>
         {sortedGenres.map(([g, count]) => (
-          <Link key={g} href={`/texts?genre=${g}`}>
+          <Link key={g} href={buildFilterUrl(lang, g)}>
             <Badge
               variant={genre === g ? "default" : "outline"}
               className="cursor-pointer transition-colors hover:bg-primary/80"
@@ -134,23 +178,52 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         ))}
       </div>
 
+      {/* Language filter bar */}
+      <div className="mb-6 flex flex-wrap gap-2">
+        <span className="flex items-center text-sm text-muted-foreground mr-2">Language:</span>
+        <Link href={buildFilterUrl(undefined, genre)}>
+          <Badge
+            variant={!lang ? "default" : "outline"}
+            className="cursor-pointer transition-colors hover:bg-primary/80"
+          >
+            All ({totalTextsForLangAll})
+          </Badge>
+        </Link>
+        {sortedLanguages.map(([code, data]) => (
+          <Link key={code} href={buildFilterUrl(code, genre)}>
+            <Badge
+              variant={lang === code ? "default" : "outline"}
+              className="cursor-pointer transition-colors hover:bg-primary/80"
+            >
+              {data.name} ({data.count})
+            </Badge>
+          </Link>
+        ))}
+      </div>
+
       {/* Active filter indicator */}
-      {genreDisplayName && (
+      {(genreDisplayName || langDisplayName) && (
         <p className="mb-4 text-sm text-muted-foreground">
-          Showing {filteredTexts.length} texts in{" "}
-          <span className="font-medium text-foreground">{genreDisplayName}</span>
+          Showing {filteredTexts.length} text{filteredTexts.length !== 1 ? "s" : ""}
+          {genreDisplayName && (
+            <>
+              {" "}in <span className="font-medium text-foreground">{genreDisplayName}</span>
+            </>
+          )}
+          {langDisplayName && (
+            <>
+              {genreDisplayName ? " · " : " in "}
+              <span className="font-medium text-foreground">{langDisplayName}</span>
+            </>
+          )}
           {" · "}
           <Link href="/texts" className="text-primary hover:underline">
-            Clear filter
+            Clear all filters
           </Link>
         </p>
       )}
 
-      <CategoryBrowser
-        languages={languages}
-        defaultTab={lang}
-        showAllLanguages={showAllLanguages}
-      />
+      <CategoryBrowser languages={languages} />
     </main>
   );
 }
