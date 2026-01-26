@@ -46,6 +46,14 @@ Track all running agents and background workers here. Update when launching or c
 
 ---
 
+## Recently Completed (Session 22)
+
+| Agent ID | Task | Completion | Notes |
+|----------|------|------------|-------|
+| a854600 | Genre schema + migration | COMPLETE | Added genre column, categorized 51 texts |
+| ad63b5a | Browse by Category sidebar | COMPLETE | Added to main page sidebar |
+| ad79244 | CLAUDE.md change report | COMPLETE | Critical review at `docs/claude_md_change_report.md` |
+
 ## Recently Completed (Session 21)
 
 | Agent ID | Task | Completion | Notes |

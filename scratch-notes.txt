@@ -40,6 +40,12 @@
 - Gap filler running for Chinese texts (21 chapters with placeholders)
 - Rizhilu translation in progress (4 workers)
 
+### Session 21 Closed
+- Documentation committed and pushed
+- All Armenian translations complete
+- Security remediation complete
+- Bash execution issue at end of session (user ran final commit manually)
+
 ---
 
 ################################################################################
@@ -2555,3 +2561,65 @@ Three new Armenian texts discovered in `data/raw/`:
 4. Process kaitser, anna_saroyan, arshagouhi_teotig texts
 
 ---
+
+## 2026-01-25: Session 22 — CLAUDE.md Reorganization + Genre Categorization
+
+### CLAUDE.md Reorganization — COMPLETE
+
+Condensed CLAUDE.md from 1071 lines to 243 lines (77% reduction) with supplementary files:
+
+| File | Lines | Purpose |
+|------|-------|---------|
+| `CLAUDE.md` | 243 | Condensed operational guide |
+| `ARCHIVED_CLAUDE.md` | 1070 | Full historical archive |
+| `ACTIVE_AGENTS.md` | 119 | Agent ID tracking |
+| `docs/text-inventory.md` | 139 | Complete text list |
+| `docs/claude_md_change_report.md` | 559 | Critical review of changes |
+
+**Key content restored after critical review:**
+- Tamil workflow details (SDK spec, --retranslate flag, editorial pass)
+- Technical conventions (Unicode, immutability, slugified URLs)
+- External resource URLs
+- Yashodhara commentary contamination bug warning
+- All agent IDs moved to ACTIVE_AGENTS.md
+
+### Genre Categorization Feature — COMPLETE
+
+Added genre/category system to texts for browsing:
+
+**Agent a854600 (Schema + Migration):**
+- Added `genre` column to `texts` table in `src/server/db/schema.ts`
+- Values: `philosophy`, `commentary`, `literature`, `history`, `science`
+- Created `scripts/categorize-texts.ts` migration script
+- Categorized all 51 texts
+- Updated `docs/text-inventory.md` with genre column
+
+**Genre Distribution:**
+| Genre | Count |
+|-------|-------|
+| Commentary | 16 |
+| Literature | 12 |
+| History | 8 |
+| Philosophy | 8 |
+| Science | 7 |
+
+**Agent ad63b5a (Sidebar UI):**
+- Added "Explore By Category" section to `src/app/page.tsx`
+- Links to `/texts?genre=<genre>` for filtering
+- Sorted by count descending (most works first)
+- Matches styling of "Explore By Language" section
+
+### Files Modified This Session
+- `src/server/db/schema.ts` — Added genre field
+- `src/app/page.tsx` — Added category sidebar section
+- `scripts/categorize-texts.ts` — New migration script
+- `docs/text-inventory.md` — Added genre column to all tables
+- `CLAUDE.md` — Reorganized
+- `ACTIVE_AGENTS.md` — New file for agent tracking
+
+### Commits Made
+1. `010141e` — docs: Reorganize CLAUDE.md with supplementary files
+
+### Pending Commits
+- Genre categorization changes (schema + migration + UI)
+

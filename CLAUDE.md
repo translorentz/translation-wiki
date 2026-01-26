@@ -6,7 +6,7 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ## ⚠️ CRITICAL SECURITY RULES ⚠️
 
-**INCIDENT RECORD (2026-01-25):** Swap file containing API keys was committed. Gemini key revoked. Gitleaks hook now installed.
+**INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result. Claude Code has apologized deeply and sincerely after this incident. Claude Code has remorsefully promised never to commit such a mistake ever again.
 
 **MANDATORY:**
 1. **NEVER stage/commit:** `.env*`, `*.swp`, `*.bak`, `*credentials*`, `*secret*`, `*token*`, `*apikey*`

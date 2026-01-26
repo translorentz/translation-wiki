@@ -6,46 +6,56 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 
 ## Summary
 
-- **Total texts:** ~45
+- **Total texts:** 51
 - **Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian)
 - **Total chapters:** ~2,500+
+
+### Genre Distribution
+
+| Genre | Count | Description |
+|-------|-------|-------------|
+| commentary | 16 | Commentaries on other texts (zhushu/zhengyi works, Eustathius, etc.) |
+| literature | 12 | Poetry, novels, epics (Tamil kaviyams, Armenian novels, etc.) |
+| history | 8 | Historical narratives, chronicles, biographies |
+| philosophy | 8 | Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.) |
+| science | 7 | Medicine, geography, ritual/ceremonial manuals |
 
 ---
 
 ## Chinese (zh)
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| Classified Conversations of Master Zhu (Zhu Zi Yu Lei) | zhu-xi | zhuziyulei | 140 | prose |
-| Instructions for Practical Living (Chuan Xi Lu) | wang-yangming | chuanxilu | 3 | prose |
-| Narratives from the Comprehensive Mirror (Tongjian Jishi Benmo) | yuan-shu | tongjian | 45 | prose |
-| The Yellow Emperor's Classic of Medicine (Huang Di Nei Jing) | huangdi | huangdineijing | 55 (Su Wen only) | prose |
-| Commentary of Guliang (Guliang Zhuan) | guliang-chi | guliang-zhuan | 12 | prose |
-| Comprehensive Discussions in the White Tiger Hall (Baihu Tong) | ban-gu | baihu-tong | 43 | prose |
-| Biographies of Lofty Scholars (Gaoshi Zhuan) | huangfu-mi | gaoshizhuan | 4 | prose |
-| Ceremonies and Rites (Yi Li) | zheng-xuan | yi-li | 17 | prose |
-| Lost Book of Zhou (Yi Zhou Shu) | zhou-scribes | yi-zhou-shu | 62 | prose |
-| Comprehensive Meaning of Customs (Fengsu Tongyi) | ying-shao | fengsutongyi | 11 | prose |
-| The School Sayings of Confucius (Kongzi Jiayu) | confucius | kongzi-jiayu | 80 | prose |
-| Daily Learning Record (Rizhilu) | gu-yanwu | rizhilu | 32 | prose |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| Classified Conversations of Master Zhu (Zhu Zi Yu Lei) | zhu-xi | zhuziyulei | 140 | prose | philosophy |
+| Instructions for Practical Living (Chuan Xi Lu) | wang-yangming | chuanxilu | 3 | prose | philosophy |
+| Narratives from the Comprehensive Mirror (Tongjian Jishi Benmo) | yuan-shu | tongjian | 45 | prose | history |
+| The Yellow Emperor's Classic of Medicine (Huang Di Nei Jing) | huangdi | huangdineijing | 55 (Su Wen only) | prose | science |
+| Commentary of Guliang (Guliang Zhuan) | guliang-chi | guliang-zhuan | 12 | prose | commentary |
+| Comprehensive Discussions in the White Tiger Hall (Baihu Tong) | ban-gu | baihu-tong | 43 | prose | philosophy |
+| Biographies of Lofty Scholars (Gaoshi Zhuan) | huangfu-mi | gaoshizhuan | 4 | prose | history |
+| Ceremonies and Rites (Yi Li) | zheng-xuan | yi-li | 17 | prose | science |
+| Lost Book of Zhou (Yi Zhou Shu) | zhou-scribes | yi-zhou-shu | 62 | prose | history |
+| Comprehensive Meaning of Customs (Fengsu Tongyi) | ying-shao | fengsutongyi | 11 | prose | science |
+| The School Sayings of Confucius (Kongzi Jiayu) | confucius | kongzi-jiayu | 80 | prose | philosophy |
+| Daily Learning Record (Rizhilu) | gu-yanwu | rizhilu | 32 | prose | philosophy |
 
 ### Shisan Jing Zhushu (十三經註疏) — 13 Texts
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| Analects with Commentary (Lunyu Zhushu) | he-yan | lunyu-zhushu | 21 | prose |
-| Mencius with Commentary (Mengzi Zhushu) | zhao-qi | mengzi-zhushu | 15 | prose |
-| Classic of Filial Piety with Commentary (Xiaojing Zhushu) | xing-bing | xiaojing-zhushu | 10 | prose |
-| Erya Dictionary with Commentary (Erya Zhushu) | guo-pu | erya-zhushu | 11 | prose |
-| Book of Changes with Commentary (Zhouyi Zhengyi) | kong-yingda | zhouyi-zhengyi | 104 | prose |
-| Book of Documents with Commentary (Shangshu Zhengyi) | kong-yingda | shangshu-zhengyi | 22 | prose |
-| Rites of Zhou with Commentary (Zhouli Zhushu) | jia-gongyan | zhouli-zhushu | 42 | prose |
-| Ceremonial Rites with Commentary (Yili Zhushu) | jia-gongyan | yili-zhushu | 51 | prose |
-| Book of Rites with Commentary (Liji Zhengyi) | kong-yingda | liji-zhengyi | 56 | prose |
-| Book of Rites — Selected Chapters (Liji Zhushu) | zheng-xuan-liji | liji-zhushu | 29 | prose |
-| Zuo Commentary on Spring and Autumn (Zuozhuan Zhengyi) | kong-yingda | zuozhuan-zhengyi | 43 | prose |
-| Gongyang Commentary on Spring and Autumn (Gongyang Zhushu) | he-xiu | gongyang-zhushu | 30 | prose |
-| Guliang Commentary on Spring and Autumn (Guliang Zhushu) | fan-ning | guliang-zhushu | 21 | prose |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| Analects with Commentary (Lunyu Zhushu) | he-yan | lunyu-zhushu | 21 | prose | commentary |
+| Mencius with Commentary (Mengzi Zhushu) | zhao-qi | mengzi-zhushu | 15 | prose | commentary |
+| Classic of Filial Piety with Commentary (Xiaojing Zhushu) | xing-bing | xiaojing-zhushu | 10 | prose | commentary |
+| Erya Dictionary with Commentary (Erya Zhushu) | guo-pu | erya-zhushu | 11 | prose | commentary |
+| Book of Changes with Commentary (Zhouyi Zhengyi) | kong-yingda | zhouyi-zhengyi | 104 | prose | commentary |
+| Book of Documents with Commentary (Shangshu Zhengyi) | kong-yingda | shangshu-zhengyi | 22 | prose | commentary |
+| Rites of Zhou with Commentary (Zhouli Zhushu) | jia-gongyan | zhouli-zhushu | 42 | prose | commentary |
+| Ceremonial Rites with Commentary (Yili Zhushu) | jia-gongyan | yili-zhushu | 51 | prose | commentary |
+| Book of Rites with Commentary (Liji Zhengyi) | kong-yingda | liji-zhengyi | 56 | prose | commentary |
+| Book of Rites — Selected Chapters (Liji Zhushu) | zheng-xuan-liji | liji-zhushu | 29 | prose | commentary |
+| Zuo Commentary on Spring and Autumn (Zuozhuan Zhengyi) | kong-yingda | zuozhuan-zhengyi | 43 | prose | commentary |
+| Gongyang Commentary on Spring and Autumn (Gongyang Zhushu) | he-xiu | gongyang-zhushu | 30 | prose | commentary |
+| Guliang Commentary on Spring and Autumn (Guliang Zhushu) | fan-ning | guliang-zhushu | 21 | prose | commentary |
 
 **Shisan Jing Total:** 455 chapters
 
@@ -53,54 +63,54 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 
 ## Greek (grc)
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| On the Ceremonies of the Byzantine Court | constantine-vii | ceremonialis | 7 | prose |
-| Poems of Poor Prodromos (Ptochoprodromika) | theodore-prodromos | ptochoprodromos | 2 | poetry |
-| Medieval Greek Poems (Carmina Graeca Medii Aevi) | wagner | carmina-graeca | 21 | poetry |
-| Epistle to Diognetus | diognetus-author | diognetum | 12 | prose |
-| New History (Historia Nova) | zosimus | historia-nova | 287 | prose |
-| Paraphrase on Sophistical Refutations | soph-elenchi-paraphrast | sophistici-elenchi-paraphrasis | 35 | prose |
-| Commentary on the Odyssey | eustathius | eustathius-odyssey | 27 | prose |
-| Exegesis on Hesiod's Theogony | hesiod-exegete | hesiod-theogony-exegesis | 13 | prose |
-| Periplus of the Outer Sea | pseudo-arrian | periplus-maris-exteri | 31 | prose |
-| Periplus of the Inner Sea | pseudo-scylax | periplus-maris-interni | 6 | prose |
-| Geography of Artemidorus | artemidorus | artemidori-geographia | 3 | prose |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| On the Ceremonies of the Byzantine Court | constantine-vii | ceremonialis | 7 | prose | science |
+| Poems of Poor Prodromos (Ptochoprodromika) | theodore-prodromos | ptochoprodromos | 2 | poetry | literature |
+| Medieval Greek Poems (Carmina Graeca Medii Aevi) | wagner | carmina-graeca | 21 | poetry | literature |
+| Epistle to Diognetus | diognetus-author | diognetum | 12 | prose | philosophy |
+| New History (Historia Nova) | zosimus | historia-nova | 287 | prose | history |
+| Paraphrase on Sophistical Refutations | soph-elenchi-paraphrast | sophistici-elenchi-paraphrasis | 35 | prose | philosophy |
+| Commentary on the Odyssey | eustathius | eustathius-odyssey | 27 | prose | commentary |
+| Exegesis on Hesiod's Theogony | hesiod-exegete | hesiod-theogony-exegesis | 13 | prose | commentary |
+| Periplus of the Outer Sea | pseudo-arrian | periplus-maris-exteri | 31 | prose | science |
+| Periplus of the Inner Sea | pseudo-scylax | periplus-maris-interni | 6 | prose | science |
+| Geography of Artemidorus | artemidorus | artemidori-geographia | 3 | prose | science |
 
 ---
 
 ## Latin (la)
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| On the Soul | cassiodorus | deanima | 18 | prose |
-| Elegy on Misfortune | henry-of-settimello | elegia | 4 | poetry |
-| History of the Lombards of Benevento | erchempert | lombards | 82 | prose |
-| The Book of the Kingdom of Sicily | hugo-falcandus | regno | 56 | prose |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| On the Soul | cassiodorus | deanima | 18 | prose | philosophy |
+| Elegy on Misfortune | henry-of-settimello | elegia | 4 | poetry | literature |
+| History of the Lombards of Benevento | erchempert | lombards | 82 | prose | history |
+| The Book of the Kingdom of Sicily | hugo-falcandus | regno | 56 | prose | history |
 
 ---
 
 ## Tamil (ta)
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| The War-Bard's Guide (Porunararruppadai) | mudathirumaran | porunararruppadai | 1 | poetry |
-| The Anthology of Nandi (Nandikkalambakam) | nandikkalambakam-poets | nandikkalambakam | 114 | poetry |
-| Yashodhara Kaviyam | yashodhara-author | yashodhara-kaviyam | 5 (330 verses) | poetry |
-| Udayanakumara Kaviyam | udayanakumara-author | udayanakumara-kaviyam | 6 (366 verses) | poetry |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| The War-Bard's Guide (Porunararruppadai) | mudathirumaran | porunararruppadai | 1 | poetry | literature |
+| The Anthology of Nandi (Nandikkalambakam) | nandikkalambakam-poets | nandikkalambakam | 114 | poetry | literature |
+| Yashodhara Kaviyam | yashodhara-author | yashodhara-kaviyam | 5 (330 verses) | poetry | literature |
+| Udayanakumara Kaviyam | udayanakumara-author | udayanakumara-kaviyam | 6 (366 verses) | poetry | literature |
 
 ---
 
 ## Armenian (hy)
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| The Will (Kaitser) | raffi | kaitser | 76 | prose |
-| Adana's Wounds (Arshagouhi Teotig) | arshagouhi-teotig | arshagouhi-teotig | 35 | prose |
-| Anna Saroyan | perch-proshyan | anna-saroyan | 23 | prose |
-| Samvel | raffi | samvel | 41 | prose |
-| Mysterious Intermediary (Khorhrdavor Miandznuhi) | tbd-author | khorhrdavor-miandznuhi | 12 | prose |
-| Land of Nairi (Yerkir Nairi) | yeghishe-charents | yerkir-nairi | 8 | poetry |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| The Will (Kaitser) | raffi | kaitser | 76 | prose | literature |
+| Adana's Wounds (Arshagouhi Teotig) | arshagouhi-teotig | arshagouhi-teotig | 35 | prose | history |
+| Anna Saroyan | perch-proshyan | anna-saroyan | 23 | prose | literature |
+| Samvel | raffi | samvel | 41 | prose | literature |
+| Mysterious Intermediary (Khorhrdavor Miandznuhi) | tbd-author | khorhrdavor-miandznuhi | 12 | prose | literature |
+| Land of Nairi (Yerkir Nairi) | yeghishe-charents | yerkir-nairi | 8 | poetry | literature |
 
 **Armenian Total:** 195 chapters
 
@@ -108,9 +118,9 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 
 ## Italian (it)
 
-| Title | Author Slug | Text Slug | Chapters | Type |
-|-------|-------------|-----------|----------|------|
-| Diary of the City of Rome (Diarium Urbis Romae) | stefano-infessura | diarium-urbis-romae | 66 | prose |
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| Diary of the City of Rome (Diarium Urbis Romae) | stefano-infessura | diarium-urbis-romae | 66 | prose | history |
 
 ---
 
@@ -137,3 +147,9 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 - **Prose vs Poetry:** Poetry texts show line numbers every 5th line in left gutter
 - **compositionYear:** Integer field, negative for BCE (e.g., -200 for 200 BCE)
 - **Title convention:** "English Name (Transliteration)" for all non-English texts
+- **Genre:** Valid values are `philosophy`, `commentary`, `literature`, `history`, `science`
+  - **philosophy**: Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.)
+  - **commentary**: Commentaries on other texts (zhushu/zhengyi editions, Eustathius)
+  - **literature**: Poetry, novels, epics (Tamil kaviyams, Armenian novels, etc.)
+  - **history**: Historical narratives, chronicles, biographies
+  - **science**: Medicine, geography, ritual/ceremonial manuals
