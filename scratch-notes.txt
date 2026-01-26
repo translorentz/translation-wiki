@@ -2623,3 +2623,22 @@ Added genre/category system to texts for browsing:
 ### Pending Commits
 - Genre categorization changes (schema + migration + UI)
 
+
+### CLAUDE.md Documentation Gaps Fixed
+
+Added missing documentation to CLAUDE.md:
+
+1. **Armenian Translation Workflow** — Added section explaining:
+   - Must use DeepSeek (Gemini blocks historical content)
+   - Script: `scripts/translate-armenian.ts`
+   - Prompt location
+
+2. **Armenian "Delays" Bug** — Added to Critical Bugs section:
+   - Unicode corruption symptoms
+   - Prevention guidelines
+   - Fix report reference
+
+3. **Updated Workflow Index** — Added Armenian translation row
+
+4. **Updated Key Directories** — Added `translate-armenian.ts`
+

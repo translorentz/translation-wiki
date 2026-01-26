@@ -94,9 +94,17 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 - **Engine:** DeepSeek V3 (`deepseek-chat`)
 - **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
-- **Batching:** zh=1500 chars, grc/la=6000 chars per API call
+- **Batching:** zh=1500 chars, grc/la/hy=6000 chars per API call
 - **Parallelization:** Split ranges across background workers
 - **Skip logic:** Already-translated chapters skipped automatically
+
+### Armenian Translation (Special Case)
+
+**CRITICAL:** Armenian texts MUST use DeepSeek, NOT Gemini. Gemini blocks Armenian historical content with `PROHIBITED_CONTENT` errors due to 19th-century themes (violence, oppression, genocide accounts).
+
+- **Script:** `scripts/translate-armenian.ts --text <slug> [--start N] [--end N]`
+- **Engine:** DeepSeek V3 only
+- **Prompt:** `src/server/translation/prompts.ts` → `hy:` entry
 
 ---
 
@@ -148,8 +156,9 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 | Standard Text | Clean source | `scripts/process-<name>.ts` |
 | OCR Processing | Noisy scans | `scripts/lib/<name>/` multi-module |
 | TEI-XML | Greek XML | `scripts/lib/greek-xml/` |
-| Tamil Pipeline | All Tamil | `scripts/translate-tamil.ts` |
-| Batch Translation | Large zh/grc/la | `scripts/translate-batch.ts` |
+| Tamil Pipeline | All Tamil (Gemini) | `scripts/translate-tamil.ts` |
+| Armenian Translation | All Armenian (DeepSeek) | `scripts/translate-armenian.ts` |
+| Batch Translation | zh/grc/la/it | `scripts/translate-batch.ts` |
 
 ---
 
@@ -212,7 +221,8 @@ src/
 ├── server/translation/     # prompts.ts
 scripts/
 ├── seed-db.ts              # Seeding
-├── translate-batch.ts      # DeepSeek translation
+├── translate-batch.ts      # DeepSeek translation (zh/grc/la)
+├── translate-armenian.ts   # DeepSeek Armenian translation
 ├── translate-tamil.ts      # Gemini Tamil translation
 ├── process-*.ts            # Text processing scripts
 data/
@@ -239,5 +249,19 @@ docs/
 
 ## Critical Bugs to Watch
 
+### Armenian "Delays" Unicode Corruption (FIXED but watch for recurrence)
+
+Armenian Unicode characters (U+0530-U+058F) were corrupted during development, with the word "delays" incorrectly substituted in code files, docs, and processed JSON. **Raw source files in `data/raw/` are correct UTF-8.**
+
+**Symptoms:** Armenian text displays as "delays" instead of Հայdelays (Armenian script)
+
+**Prevention:**
+- Use Unicode escape sequences when adding Armenian programmatically (e.g., `\u0540` for Հ)
+- Never copy-paste Armenian from potentially corrupted sources
+- If "delays" appears in Armenian context, check processing scripts
+
+**Fix report:** `docs/armenian-delays-fix-report.md`
+
 ### Yashodhara Commentary Contamination
+
 `process-yashodhara-kaviyam.ts` strips commentary from file 1 but NOT file 2. Chapters 3-5 are contaminated. **Stage 3 must fix script and re-seed BEFORE retranslating.** See `ACTIVE_AGENTS.md` for details.
