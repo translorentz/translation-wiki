@@ -62,6 +62,28 @@ const DEFAULT_DELAY_MS = 3000;
 const MODEL = "deepseek-chat";
 
 // ============================================================
+// Text-specific post-processing fixes
+// ============================================================
+
+/**
+ * Apply text-specific fixes to translated content.
+ * This handles known issues where the model leaves characters untranslated.
+ */
+function applyTextSpecificFixes(textSlug: string, paragraphs: { index: number; text: string }[]): { index: number; text: string }[] {
+  if (textSlug === "dongzhou-lieguo-zhi") {
+    return paragraphs.map((p) => ({
+      ...p,
+      text: p.text
+        // Fix incomplete transliterations for 左儒 (Zuo Ru)
+        .replace(/Zuo儒/g, "Zuo Ru")
+        .replace(/左儒/g, "Zuo Ru")
+        // Add other known fixes for this text as discovered
+    }));
+  }
+  return paragraphs;
+}
+
+// ============================================================
 // Argument parsing
 // ============================================================
 
@@ -362,7 +384,8 @@ async function translateChapter(
     textId: number;
   },
   sourceLanguage: string,
-  systemUserId: number
+  systemUserId: number,
+  textSlug: string
 ): Promise<boolean> {
   const sourceContent = chapter.sourceContent as {
     paragraphs: Paragraph[];
@@ -418,13 +441,16 @@ async function translateChapter(
       translation = newT;
     }
 
+    // Apply text-specific post-processing fixes
+    const fixedTranslation = applyTextSpecificFixes(textSlug, translated);
+
     // Create version
     const [version] = await db
       .insert(schema.translationVersions)
       .values({
         translationId: translation.id,
         versionNumber: 1,
-        content: { paragraphs: translated },
+        content: { paragraphs: fixedTranslation },
         authorId: systemUserId,
         editSummary: "AI-generated initial translation (DeepSeek V3)",
       })
@@ -535,7 +561,8 @@ async function main() {
       const success = await translateChapter(
         chapter,
         promptLang,
-        systemUserId
+        systemUserId,
+        text.slug
       );
 
       if (success) {

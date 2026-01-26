@@ -51,6 +51,10 @@ DO NOT:
 - Modernize or sanitize violence, court intrigue, or period-appropriate attitudes
 - Use anachronistic vocabulary (no "okay," "guy," etc.)
 
+CRITICAL: Ensure ALL Chinese characters are fully translated into English. Names must be fully transliterated (e.g., 左儒 = "Zuo Ru", not "Zuo儒"). The only exception is when quoting prophecies or poems where showing the original Chinese adds scholarly value.
+
+Your translation should read as good, fluent English prose — the kind a reader would enjoy as literature, not merely tolerate as a translation.
+
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
   // Philosophical Chinese - for Neo-Confucian dialogues and commentaries
