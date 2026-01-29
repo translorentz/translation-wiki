@@ -41,6 +41,10 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Romance of the Eastern Zhou (Dongzhou Lieguo Zhi) | feng-menglong | dongzhou-lieguo-zhi | 108 | prose | literature |
 | Biographies of One Hundred Generals (Shiqi Shi Baijiang Zhuan) | anonymous-baijiang | shiqi-shi-baijiang-zhuan | 100 | prose | history |
 | Records of Resting from the Plough (Nancun Chuogeng Lu) | tao-zongyi | nancun-chuogeng-lu | 30 | prose | history |
+| Voyages of the Treasure Ships (Sanbao Taijian Xiyang Ji) | luo-maodeng | sanbao-taijian-xiyang-ji | 100 | prose | literature |
+| Stories to Awaken the World (Xingshi Hengyan) | feng-menglong-xingshi | xingshi-hengyan | 100 | prose | literature |
+| Suguna Sundari | vedanayakam-pillai | suguna-sundari | 22 | prose | literature |
+| A Precious Mirror of Ranked Flowers (Pinhua Baojian) | chen-sen | pinhua-baojian | 60 | prose | literature |
 
 ### Shisan Jing Zhushu (十三經註疏) — 13 Texts
 
@@ -80,6 +84,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Periplus of the Inner Sea | pseudo-scylax | periplus-maris-interni | 6 | prose | science |
 | Geography of Artemidorus | artemidorus | artemidori-geographia | 3 | prose | science |
 | Epitome of Histories (Epitome Historiarum) | john-zonaras | epitome-of-histories | 18 | prose | history |
+| Noteworthy Opinions (Semeioseis Gnomikai) | theodore-metochites | semeioseis-gnomikai | 38 | prose | philosophy |
 
 ---
 
@@ -125,6 +130,9 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Title | Author Slug | Text Slug | Chapters | Type | Genre |
 |-------|-------------|-----------|----------|------|-------|
 | Diary of the City of Rome (Diarium Urbis Romae) | stefano-infessura | diarium-urbis-romae | 66 | prose | history |
+| La Giovinezza di Giulio Cesare | giuseppe-rovani | la-giovinezza-di-giulio-cesare | 41 | prose | literature |
+| Cento Anni | giuseppe-rovani | cento-anni | 21 | prose | literature |
+| La Scapigliatura e il 6 Febbraio | cletto-arrighi | scapigliatura-e-il-6-febbraio | 18 | prose | literature |
 
 ---
 

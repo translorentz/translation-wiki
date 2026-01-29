@@ -2,7 +2,7 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-01-29, Session 30
+**Last updated:** 2026-01-29, Session 31
 
 ---
 
@@ -10,69 +10,52 @@ Track all running agents and background workers here. Update when launching or c
 
 | Agent ID | Task | Status | Notes |
 |----------|------|--------|-------|
-| a92a1a4 | Semeioseis Gnomikai V2 Cleaning (Agent A) | IN PROGRESS | Fixing word breaks, apparatus markers |
-| aec444b | Semeioseis Gnomikai V2 Evaluation (Agent B) | POLLING | Waiting for V2 cleaner to finish |
-
-### Previously Running (from earlier sessions — status unknown, likely completed or killed)
-
-| Agent ID | Task | Notes |
-|----------|------|-------|
-| aa88334 | Nandikkalambakam Stage 3 | Was retranslating 114 poems |
-| a1cae1c | Yashodhara Kaviyam Stage 1 | Was processing + translating |
-| ab5dae1 | Eustathius Odyssey ch 1-8 | DeepSeek grc |
-| a4043fb | Eustathius Odyssey ch 9-16 | DeepSeek grc |
-| afff370 | Eustathius Odyssey ch 19-24 | DeepSeek grc |
+| — | Scapigliatura Translation Worker 1 | IN PROGRESS | Ch 0-8, log: `/tmp/scapigliatura-w1.log` |
+| — | Scapigliatura Translation Worker 2 | IN PROGRESS | Ch 9-17, log: `/tmp/scapigliatura-w2.log` |
+| — | Semeioseis Translation Worker 1 | COMPLETE | 19/19 chapters, 0 errors |
+| — | Semeioseis Translation Worker 2 | COMPLETE | 19/19 chapters, 0 errors |
 
 ---
+
+## Recently Completed (Session 31)
+
+| Agent ID | Task | Completion | Notes |
+|----------|------|------------|-------|
+| a5742c8 | Semeioseis Trial Translations | COMPLETE | 5 samples translated, all passed |
+| aa07bf7 | Semeioseis Paragraph Format Fix | COMPLETE | Converted 38 files to {index, text} format |
+| — | Semeioseis DB Seeding | COMPLETE | 38 chapters seeded, Theodore Metochites added |
 
 ## Recently Completed (Session 30)
 
 | Agent ID | Task | Completion | Notes |
 |----------|------|------------|-------|
-| af4cdb3 | Semeioseis Gnomikai V1 Cleaning (Agent A) | COMPLETE | 38 chapters, self-grade A-, but evaluator gave C+ |
-| afd1f1a | Semeioseis Gnomikai V1 Evaluation (Agent B) | COMPLETE | Grade C+ — NOT SATISFIED. Broken words 65%, apparatus 8% |
-| a8e3d45 | Suguna Sundari Translation | COMPLETE | 22/22 chapters, ta-prose prompt created |
-| a39fd10 | Nancun Chuogeng Lu Translation | COMPLETE | 30/30 chapters, 0 errors |
-| — | Footer text update | COMPLETE | "Trial project by Bryan Cheong." |
-| — | User cap increase to 100 | COMPLETE | 3 files updated |
-| — | Security hardening | COMPLETE | 16 findings fixed (4H/7M/5L) |
-
-## Recently Completed (Session 29)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| a9cfa3d | Suguna Sundari search (round 1) | COMPLETE | Text not found in raw data |
-| — | Auth system implementation | COMPLETE | Invite-only + Google OAuth + profile + deletion |
-| — | Nancun Chuogeng Lu processing | COMPLETE | 30 volumes → 30 chapters seeded |
-
-## Recently Completed (Session 22)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| a7e95bf | "All Languages" browse | COMPLETE | Genre filter shows all languages |
-| a854600 | Genre schema + migration | COMPLETE | Added genre column, categorized 51 texts |
+| a43ea83 | Semeioseis V4 Cleaning | COMPLETE | Surgical fixes, 0% apparatus contamination |
+| a191d06 | Semeioseis V3 Evaluation | COMPLETE | Grade B (NOT SATISFIED) — 3 specific issues |
+| a76cb9d | Semeioseis V3 Cleaning | COMPLETE | Fixed broken words, garbled sections |
+| aec444b | Semeioseis V2 Evaluation | COMPLETE | Grade B- (NOT SATISFIED) |
+| a92a1a4 | Semeioseis V2 Cleaning | COMPLETE | Fixed word breaks, apparatus markers |
+| af4cdb3 | Semeioseis V1 Cleaning | COMPLETE | 38 chapters, C+ from evaluator |
+| afd1f1a | Semeioseis V1 Evaluation | COMPLETE | Grade C+ — NOT SATISFIED |
+| a8e3d45 | Suguna Sundari Translation | COMPLETE | 22/22 chapters |
+| a39fd10 | Nancun Chuogeng Lu Translation | COMPLETE | 30/30 chapters |
 
 ---
 
-## Semeioseis Gnomikai Cleaning Pipeline
+## Semeioseis Gnomikai Pipeline — COMPLETE (translating)
 
-**Text:** Semeioseis Gnomikai (Theodorus Metochites), Byzantine Greek OCR
-**Chapters:** 82-120 (38 chapters, missing 118)
-**Source:** `data/raw/semeioseis_gnomikai/`
-**Output:** `data/processed/semeioseis-gnomikai/`
-**Cleaning scripts:** `scripts/lib/semeioseis-cleaning-v1/`, `scripts/lib/semeioseis-cleaning-v2/`
+**Cleaning iterations:** V1 (C+) → V2 (B-) → V3 (B) → V4 (B+ SATISFIED)
+**Seeded:** 38 chapters (82-120, missing 118), chapter 110 = OCR placeholder
+**Translation:** 2 workers running, `grc` prompt
 
-### Iteration History
+---
 
-| Version | Cleaner Grade | Evaluator Grade | Status |
-|---------|---------------|-----------------|--------|
-| V1 | A- | C+ (NOT SATISFIED) | Broken words 65%, apparatus 8% |
-| V2 | TBD | TBD | IN PROGRESS — fixing word breaks + markers |
+## Scapigliatura Pipeline — IN PROGRESS
 
-### Key Documents
-- `docs/semeioseis-cleaning-collaboration.md` — Joint collaboration doc
-- `docs/semeioseis-v1-cleaning-scratch.md` — V1 cleaner notes
-- `docs/semeioseis-v1-evaluation-scratch.md` — V1 evaluator notes
+**Text:** La Scapigliatura e il 6 Febbraio, Cletto Arrighi (1862)
+**Language:** Italian (19th-century literary prose)
+**Source:** `data/difficult_extra_processing/scapigliatura/arrighiscapigliatura_djvu.txt`
+**Stage:** Evaluation (assessing OCR quality)
+**Translation prompt:** `it-literary-19c` (already exists)
 
 ---
 
@@ -80,14 +63,8 @@ Track all running agents and background workers here. Update when launching or c
 
 ### Yashodhara Kaviyam Commentary Contamination (CRITICAL)
 
-**Agent:** afa7e45 (Yashodhara Stage 2 Reviewer)
-**Grade:** C+
 **Problem:** Commentary contamination in chapters 3-5
-
-The processing script `process-yashodhara-kaviyam.ts` strips commentary from file 1 but NOT file 2. This causes:
-- 59% of verses (194/330) need retranslation
-- Stage 3 MUST FIRST fix the processing script, re-seed chapters 3-5, THEN retranslate
-
+The processing script strips commentary from file 1 but NOT file 2.
 **Status:** Not yet fixed.
 
 ---

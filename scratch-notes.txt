@@ -1,5 +1,12 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-29 Semeioseis Gnomikai V4 FINAL Cleaning — COMPLETE
+
+V4 surgical fixes applied. All apparatus contamination eliminated (0%).
+Contamination rate: 2.1% (3 paragraphs with genuine unhyphenated breaks only).
+Self-grade: A-. Pipeline: `scripts/lib/semeioseis-cleaning-v4/cleaner.py`
+Awaiting evaluator review.
+
 ## 2026-01-29 Semeioseis Gnomikai OCR Cleaning (Cleaning Agent)
 
 ### Semeioseis Gnomikai V1 Cleaning — COMPLETE
@@ -3227,3 +3234,32 @@ This IS 6 parallel workers doing the same translation task on different chapter 
 ### Commits This Session
 1. `26b4322` — feat: Add "All Languages" view for genre filtering on Browse page
 2. `7fbb0b8` — feat: Add Dongzhou Lieguo Zhi (東周列國志) processing and seeding
+
+## 2026-01-29 Scapigliatura OCR Text — NEW TASK
+
+### Source Info
+- **Title:** La Scapigliatura e il 6 Febbraio (Un dramma in famiglia)
+- **Author:** Cletto Arrighi (pseudonym of Carlo Righetti)
+- **Year:** 1862
+- **Language:** Italian (19th-century literary prose)
+- **Genre:** Novel (romanzo contemporaneo)
+- **Source:** `data/difficult_extra_processing/scapigliatura/arrighiscapigliatura_djvu.txt`
+- **Size:** 14,135 lines (DjVu OCR output from Internet Archive)
+- **Publisher:** Tipografia di Giuseppe Redaelli, Milano
+
+### OCR Issues Observed (Initial Scan)
+1. **Soft hyphens (¬):** Words broken across lines with ¬ character (e.g., "d'in¬\ngegno", "irre¬\nquieti")
+2. **Page numbers:** Scattered throughout (e.g., "— G —", "- 8 —", "- 161 -", "- 313 -")
+3. **Stray characters:** Random "j", "t", "i", "il" lines from OCR noise
+4. **OCR misreads:** "classificali" for "classificati", "clic" for "che", "molle" for "molte"
+5. **Blank line clusters:** Many consecutive empty lines between pages
+6. **Footnote markers:** "(f)" style footnotes with text
+7. **Garbled lines:** Some lines are pure OCR noise (e.g., "dir. s-iJfo .srahdn'c 's#!.T '>»»•*.'• f>sv -r>,")
+
+### Pipeline Plan
+1. Evaluator agent: Read and assess full text, write report
+2. Dual-agent cleaning: Cleaner + independent evaluator with trial translations
+3. When B+ quality: move to `data/raw/`, process, seed, translate
+
+### Translation Prompt
+Will use `it-literary-19c` (19th-century Italian literary prose) — already exists in prompts.ts

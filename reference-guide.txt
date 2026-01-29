@@ -39,7 +39,7 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-29 (security fixes + footer + Suguna Sundari + Semeioseis cleaning)
+Latest deploy: 2026-01-29 (Semeioseis + Scapigliatura + Pinhua Baojian + Epitome consolidation)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
@@ -117,7 +117,9 @@ Current data:
   - The Syair of Siti Zubaidah (Syair Siti Zubaidah) — 19 chapters, ms [Session 28]
   - Records of Resting from the Plough (Nancun Chuogeng Lu) — 30 chapters, zh [Session 29]
   - Suguna Sundari — 22 chapters, ta [Session 30]
-  - Semeioseis Gnomikai (Noteworthy Remarks) — 38 chapters, grc [Session 30, cleaning in progress]
+  - Semeioseis Gnomikai (Noteworthy Opinions) — 38 chapters, grc [Session 31, translated]
+  - La Scapigliatura e il 6 Febbraio — 18 chapters, it [Session 31, translating]
+  - A Precious Mirror of Ranked Flowers (Pinhua Baojian) — 60 chapters, zh [Session 31, translating]
 
 Recently seeded (Session 12 — 2026-01-24):
   - Epistle to Diognetus — 12 chapters, grc, prose (author: Anonymous (Diognetus))
@@ -747,7 +749,9 @@ gh api repos/translorentz/translation-wiki/deployments --jq '.[0]'  # Check depl
 - HDNJ currently only has Su Wen (55 ch); Ling Shu (81 ch) to be added later
 - Nancun Chuogeng Lu: 30/30 COMPLETE
 - Suguna Sundari: 22/22 COMPLETE (ta-prose prompt)
-- Semeioseis Gnomikai: V2 cleaning in progress (V1 got C+ from evaluator)
+- Semeioseis Gnomikai: 38/38 COMPLETE (V4 cleaning B+ SATISFIED, translated)
+- La Scapigliatura e il 6 Febbraio: 18 chapters, V2 cleaning B+ SATISFIED, translating
+- Pinhua Baojian: 60 chapters, clean source, processing + translating
 
 ================================================================================
 ## SANGAM TAMIL CORPUS NOTES

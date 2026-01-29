@@ -1,0 +1,966 @@
+{
+  "summary": {
+    "XWP": 77,
+    "PAGE_MARKER": 10,
+    "PAGE_NUM_START": 24,
+    "SIGLA_COMMA": 28,
+    "LATIN_APPARATUS": 5,
+    "BRACKET_NUM": 0,
+    "BRACE_NUM": 0,
+    "OCR_SINGLE_LETTER": 0
+  },
+  "unique_patterns": {
+    "PAGE_NUM_START": [
+      "6100 ",
+      "16 ",
+      "95 ",
+      "10 ",
+      "234 ",
+      "138 ",
+      "100 ",
+      "15 ",
+      "21 ",
+      "38 ",
+      "11 ",
+      "35 ",
+      "71 ",
+      "90 ",
+      "14 ",
+      "17 ",
+      "924 ",
+      "12 ",
+      "22 ",
+      "82 ",
+      "130 "
+    ],
+    "PAGE_MARKER": [
+      "D HI",
+      "W HI",
+      "W HII"
+    ],
+    "XWP": [
+      "Rwp",
+      "Cwp",
+      "wwp",
+      "swp",
+      "Kwp",
+      "Pwp",
+      "BwpDi",
+      "Swp",
+      "EwpDi",
+      "OwpDt",
+      "Ewp",
+      "OwpDi",
+      "Hwp",
+      "lwpDi",
+      "wwpJX",
+      "twp",
+      "swpJX",
+      "CwpDi",
+      "RwpJD",
+      "RwpIi",
+      "iwp",
+      "Dwp"
+    ],
+    "SIGLA_COMMA": [
+      "KD, ",
+      "AT, ",
+      "AV, ",
+      "XI, ",
+      "AR, ",
+      "AO, ",
+      "ABC, ",
+      "ACE, ",
+      "DB, ",
+      "AE, ",
+      "AH, ",
+      "AD, "
+    ],
+    "LATIN_APPARATUS": [
+      "arg. ad",
+      "ex. vers",
+      "litt. pujoay",
+      "grec. xal",
+      "perg. fol."
+    ]
+  },
+  "all_findings": {
+    "XWP": [
+      {
+        "chapter": 13,
+        "index": 17,
+        "match": "OwpDt",
+        "context": "πατρι- αὐτομάτοις φάρμακόν τε OwpDt παρὰ ϑετο ἱερῷ, ἐν ἰδιαζούσῃ "
+      },
+      {
+        "chapter": 13,
+        "index": 22,
+        "match": "wwp",
+        "context": "ὖν ἀδαρνάρσην O, ἀδανάρσην AEDwwp2Di Τούτου τοίνυν οὕτω τῆς βασ"
+      },
+      {
+        "chapter": 13,
+        "index": 27,
+        "match": "Cwp",
+        "context": "τα σύνδεισινον προουπηντήκει BCwp, τῷ κωνσταντίῳ προυπηντήκει ἀ"
+      },
+      {
+        "chapter": 13,
+        "index": 33,
+        "match": "Rwp",
+        "context": "κωνστάντιος εἵλετο ἐπιβουλῆς ARwp, £i βου- Οαὐτῷ πρόφασιν τὸ σχ"
+      },
+      {
+        "chapter": 13,
+        "index": 33,
+        "match": "Dwp",
+        "context": "ϑετο ἘΠ ó'Iov- 3. κοαίστορι B5Dwp παραλύσαι τὸν πραιτω- αὐτὸς δ"
+      },
+      {
+        "chapter": 13,
+        "index": 46,
+        "match": "RwpJD",
+        "context": "σοῦ RwpJDé 8.4. σου τὸ πρόςωπον τὸ ἀναι"
+      },
+      {
+        "chapter": 13,
+        "index": 54,
+        "match": "Dwp",
+        "context": "ἐν τοῖς χαριώτη (8ic) ὁ /of. CDwp ἐπὶ τριακοστῷ ἑσπερίοις διέτρ"
+      },
+      {
+        "chapter": 13,
+        "index": 59,
+        "match": "Cwp",
+        "context": "ἣν π. tobr. κρίσιν ὦ βασιλεῦ BCwp, π. τούετ. τὴν κρίσιν ὦ βασι-"
+      },
+      {
+        "chapter": 13,
+        "index": 75,
+        "match": "Kwp",
+        "context": "ιλεὺς ῥώμην xai τὰ πεοὶ αὐτὴν Kwp ᾿νωρίῳ δὲ τὴν ποεσβυτέοαν Ῥώμ"
+      },
+      {
+        "chapter": 13,
+        "index": 80,
+        "match": "Pwp",
+        "context": " προσειληφότα αὐτὴν ἀπο- tres Pwp λέγεται — doyovra διεπέμψατο "
+      },
+      {
+        "chapter": 14,
+        "index": 4,
+        "match": "OwpDi",
+        "context": "ν δύο κράτυναν σύμβολον ἢ καὶ OwpDi ζόμενον, σωζομένων τῶν ἰδιωμά"
+      },
+      {
+        "chapter": 14,
+        "index": 14,
+        "match": "OwpDi",
+        "context": "τασϑαι τῶν γεηρῶν), μετήλλαξε OwpDi εὐφή;- μετὰ τὴν ταφὴν Ζήνωνος"
+      },
+      {
+        "chapter": 14,
+        "index": 33,
+        "match": "Ewp",
+        "context": "ς πλείονας μόνου 22, αὐτοῖς CDEwp τεχνῶν xai ἐπιστημῶν καὶ κλόν"
+      },
+      {
+        "chapter": 14,
+        "index": 43,
+        "match": "Rwp",
+        "context": "ταύτης , κἀκείνης Ὁ ϑευδάτος ARwp, Θευδᾶτος μενοι , ἡ ἔρις ἂν ἀ"
+      },
+      {
+        "chapter": 14,
+        "index": 64,
+        "match": "wwp",
+        "context": "ην τῆς Ἑκάβης ῬΡΥορο τ ᾿δαα. Dwwp2Di ᾿Ιοκάστης probante ἔϑυσαν "
+      },
+      {
+        "chapter": 14,
+        "index": 66,
+        "match": "Dwp",
+        "context": "ὐτὴν ἡ μέ- αὐτοῦ δὲ ἄλλοι o£ BDwp ὀκειωμένων ὥραν xai βασιλεῖς "
+      },
+      {
+        "chapter": 14,
+        "index": 70,
+        "match": "Ewp",
+        "context": "χώ- σατράπας xai χιλιάρχους DCEwp τοῦ ?, ἃ Óunisge\" παῖδας γὰρ "
+      },
+      {
+        "chapter": 14,
+        "index": 72,
+        "match": "Rwp",
+        "context": "li ad- vov τὸν μοναχὸν οὗτος ARwp , οὕτως mu- ἐντεῦϑεν ἡ γυνὴ ἀ"
+      },
+      {
+        "chapter": 14,
+        "index": 74,
+        "match": "Hwp",
+        "context": "ὃς καὶ λΙονοθελήτης ἣν δὲ τοῦ Hwp παρὰ τῆς συγκλήτου καϑίζεται "
+      },
+      {
+        "chapter": 14,
+        "index": 80,
+        "match": "iwp",
+        "context": "ὸ στρατιωτικὸν τὸ μετ᾽ αὐτοῦ liwp σταντὸς υἱέων πρεοβύτεους ὁ Π"
+      },
+      {
+        "chapter": 14,
+        "index": 91,
+        "match": "Ewp",
+        "context": "ῖς τοῦ στόλου σκάφεσιν κύρον CEwp προυβάλλετο , προυβάλετο ODi,"
+      },
+      {
+        "chapter": 15,
+        "index": 5,
+        "match": "Rwp",
+        "context": "προσβαλὼν περαιωϑεὶς ex versu Rwp2i, αὐτοῖς μὲν αὐτὸς Bswp ταύτ"
+      },
+      {
+        "chapter": 15,
+        "index": 5,
+        "match": "swp",
+        "context": "ersu Rwp2i, αὐτοῖς μὲν αὐτὸς Bswp ταύτην πολιοο- s. στόλῳ μεγάλ"
+      },
+      {
+        "chapter": 15,
+        "index": 24,
+        "match": "wwp",
+        "context": "D κατ᾽ αὐτοῦ βουλευομένους AEDwwp, ἐπιβού- ὅ πατριάρχης ἐγένετο"
+      },
+      {
+        "chapter": 15,
+        "index": 60,
+        "match": "wwp",
+        "context": " Δ, μέντοι οὗτος Ὁ σπερμία AEDwwp, πολυσπερμία Ὁ αἱρέσεως CEwp2"
+      },
+      {
+        "chapter": 15,
+        "index": 60,
+        "match": "Ewp",
+        "context": "Dwwp, πολυσπερμία Ὁ αἱρέσεως CEwp2Di, sectarum: ᾿Απορίᾳ δὲ συζῶ"
+      },
+      {
+        "chapter": 15,
+        "index": 61,
+        "match": "Ewp",
+        "context": "ῷ μαντεύματι ϑέμενος, τὸν τῷ lEwp ἱστόρηται XV 21, ss. ἑερότατο"
+      },
+      {
+        "chapter": 15,
+        "index": 63,
+        "match": "wwp",
+        "context": "αρεσκεύασε (παρεσκεύαζε À) AEDwwp, αὐτοῖς ὠκειώσατο Ὁ ἔχοντος\" "
+      },
+      {
+        "chapter": 15,
+        "index": 77,
+        "match": "wwp",
+        "context": "τὰ χειρός \" ρους ἐκπλήττοι AEDwwp, ἐκπλήττοι τὸ βάρβαρον Ὁ λογι"
+      },
+      {
+        "chapter": 16,
+        "index": 3,
+        "match": "Rwp",
+        "context": "οίησεν\" Ἐ (v. Q. M. ) γρύπας ARwp, τρία μόνα κεντηνάρια εὑρηκὼς"
+      },
+      {
+        "chapter": 16,
+        "index": 16,
+        "match": "wwp",
+        "context": "εστρά- 1, 4) ναὸν ἐξώλισϑεν EDwwp ἰδοῦ- τευσε, xal πυκνὰς xat α"
+      },
+      {
+        "chapter": 16,
+        "index": 27,
+        "match": "wwp",
+        "context": "αὶ € oaovoíor Alt, ῥαγουσίου Dwwp προοζέβαλλον κούρησε τοῖς αἰτ"
+      },
+      {
+        "chapter": 16,
+        "index": 29,
+        "match": "Ewp",
+        "context": "σε πόννησον KD, πελοπόνησον ADEwp προςεγγίσας D T xty- γαυτικὸν"
+      },
+      {
+        "chapter": 16,
+        "index": 33,
+        "match": "Ewp",
+        "context": "οναχὸς ἀγαρηνῶν Ὁ προείρηται CEwp, προιστύρηται ἢ, v. XVI 6, 18"
+      },
+      {
+        "chapter": 16,
+        "index": 35,
+        "match": "BwpDi",
+        "context": "ἢ πέπεικε γεν, χριστ. Ὁ óoc AEBwpDi ὄμματα᾽ “᾿δόξασόν oov\" εἶπε “"
+      },
+      {
+        "chapter": 16,
+        "index": 47,
+        "match": "wwp",
+        "context": "τία v. πραχϑ. ἐπουτανεύετο AEDwwp, £Zxov- τανεύετο\" καὶ τ. ngay"
+      },
+      {
+        "chapter": 16,
+        "index": 49,
+        "match": "wwp",
+        "context": "οὺς δόσις ἐπήγγελτο ἀγαϑῶν AEDwwp, ἀγαϑῶν ἐπηγγέλλετο (ἐπετρέπε"
+      },
+      {
+        "chapter": 16,
+        "index": 52,
+        "match": "lwpDi",
+        "context": "ρον, κατ- ponit τὴν αὐταρχίαν lwpDi, τῇ καταλέλοι- πεν Ὁ αὐτῷ αὐτ"
+      },
+      {
+        "chapter": 16,
+        "index": 59,
+        "match": "wwp",
+        "context": "ιώξεως ἔστησαν. ó δέγε iócv EDwwp στρατεύματα... «ον νον πεσεῖν"
+      },
+      {
+        "chapter": 16,
+        "index": 63,
+        "match": "Cwp",
+        "context": "ικοῦ. κἀκεῖνο ains Ὁ ἴ αὐτοῦ BCwp —— oor. γενέσϑαι ἐλένην ASsH*"
+      },
+      {
+        "chapter": 16,
+        "index": 69,
+        "match": "wwp",
+        "context": "xai συν- dwíóo; AD, ἁψίδος CEDwwp, ἁψῖδος B5Di ἐστοιχιῶσϑαι ἔϑν"
+      },
+      {
+        "chapter": 16,
+        "index": 73,
+        "match": "wwp",
+        "context": "ὸν ϑεὸν διὰ τὴν 23, ῥανίδα AEDwwp, μερίδα Ὁ τις τὶ εἰ βοῦν ἀπελ"
+      },
+      {
+        "chapter": 16,
+        "index": 77,
+        "match": "wwpJX",
+        "context": "ς καὶ ἄλλους συνίστο- βωντο EDwwpJX) τὴν ῥητορικήν, ἀλλά γε σχήμα"
+      },
+      {
+        "chapter": 16,
+        "index": 97,
+        "match": "Swp",
+        "context": "τούτου υἱὸς ó OWo ἀποδρᾶναι EBSwp.Di, ἀποδράναι AK τὸ πλῆϑος ἀκ"
+      },
+      {
+        "chapter": 16,
+        "index": 98,
+        "match": "wwp",
+        "context": "Πέτριον p* ὁ δὲ , καὶ O δὲ AEDwwp, μέντοι Ὁ μετὰ ταῦτα 15. οὐδὲ"
+      },
+      {
+        "chapter": 16,
+        "index": 99,
+        "match": "Rwp",
+        "context": " πρὸς αἱρουμένους 11. ἐπίσης ARwp, ἐπ᾽ ἴσης 14 »εν- τοῖς ἄλλοις"
+      },
+      {
+        "chapter": 16,
+        "index": 100,
+        "match": "Rwp",
+        "context": " πρὸς αἱρουμένους 11. ἐπίσης ARwp, ἐπ᾽ ἴσης 14 »εν- τοῖς ἄλλοις"
+      },
+      {
+        "chapter": 16,
+        "index": 104,
+        "match": "Rwp",
+        "context": "ύναιτο πολῖται CDDi, πολίταε ARwp σϑαι | τὴν φυλακὴν ἀσφαλῆ τού"
+      },
+      {
+        "chapter": 17,
+        "index": 6,
+        "match": "wwp",
+        "context": "αν ἀπήει ó ἰωάννης O πράως ARDwwp, τροπῇ τῆς Θεοφανοῦς τὸν Νικη"
+      },
+      {
+        "chapter": 17,
+        "index": 10,
+        "match": "Cwp",
+        "context": "ους αὐτῷ καὶ ἥλω τὸ φρούριον BCwp, ἔστησεν ὃ βασιλεὺς ἀξιόμαχον"
+      },
+      {
+        "chapter": 17,
+        "index": 13,
+        "match": "swpJX",
+        "context": " συμπλέκονται περιεγίνοντο CEBswpJX ἐφράσατο Βάρδαν τὸν Σκληρὸν μ"
+      },
+      {
+        "chapter": 17,
+        "index": 26,
+        "match": "Ewp",
+        "context": "ἱὸν αὐτοῦ TI ), κατὰ τῆς γῆς CEwp καιρίαν παρὰ Ὁ τ."
+      },
+      {
+        "chapter": 17,
+        "index": 29,
+        "match": "Cwp",
+        "context": "ιν τοῦ Φωκχᾶ ἐκείνῳ ἀφείλετο BCwp μόνων ex μόνον mutat ὅϑεν ἐκε"
+      },
+      {
+        "chapter": 17,
+        "index": 47,
+        "match": "Ewp",
+        "context": "ἐκεῖσε ὡς τυραννίδα μελετῶν ÁLEwp, ἐπὶ τυραννίδος μελέτη Ὁ — δε"
+      },
+      {
+        "chapter": 17,
+        "index": 58,
+        "match": "Cwp",
+        "context": "μένην Ῥωμαίοις ἡγεμονεύοντες BCwp 4.5 ἀπελάσαι 0m. E D xara- εἰ"
+      },
+      {
+        "chapter": 17,
+        "index": 60,
+        "match": "Cwp",
+        "context": " ἀγαρηνοὺς καὶ αὖϑις ἐγένετο BCwp ἀπορία ἀδελφῆς αὐτοῦ Μαρίας, "
+      },
+      {
+        "chapter": 17,
+        "index": 63,
+        "match": "CwpDi",
+        "context": "ν νικόπολιν xai rà ὑπ' αὐτὴν BCwpDi, τὸ ϑέμα τῶν Νικοπολι- χωρεῖ,"
+      },
+      {
+        "chapter": 17,
+        "index": 64,
+        "match": "Ewp",
+        "context": "ύουσιν ἦ μὴν τοῦ ὀνό- οὗτος BCEwp ὃ τῶν ῥωμαίων BCwp ἀννύοντος "
+      },
+      {
+        "chapter": 17,
+        "index": 64,
+        "match": "Cwp",
+        "context": "ό- οὗτος BCEwp ὃ τῶν ῥωμαίων BCwp ἀννύοντος ἢ προ- ματος μόνου "
+      },
+      {
+        "chapter": 17,
+        "index": 64,
+        "match": "Ewp",
+        "context": "ν ράγησαν προσχηματισϑεῖσαν BsEwp λόγος) XVII βασιλὶς ἀνηγόρευτ"
+      },
+      {
+        "chapter": 17,
+        "index": 79,
+        "match": "Cwp",
+        "context": "ς οὑτοσὶ δεδιήγηται, εἰρή- A BCwp τροπαιοφόρος DC ut Psell. βαρ"
+      },
+      {
+        "chapter": 17,
+        "index": 90,
+        "match": "EwpDi",
+        "context": "μηϑεῖσαν μονὴν τῶν μαγγάνων BCEwpDi;"
+      },
+      {
+        "chapter": 17,
+        "index": 96,
+        "match": "Hwp",
+        "context": "μοσάμενοι Ὁ εἴχοντο ΒΟ αὐτοῖς Hwp ἦν μὲν yàp τῷ στρατιωτικῷ παν"
+      },
+      {
+        "chapter": 18,
+        "index": 10,
+        "match": "Cwp",
+        "context": "ῦ σωτῆρος ἡμῶν ἰησοῦ χριστοῦ BCwp, v. praef. ἀτέϑετο τὸ doÜua μ"
+      },
+      {
+        "chapter": 18,
+        "index": 10,
+        "match": "Cwp",
+        "context": " δέ τι δαιμόνιον ὑπειλήφασιν BCwp τρεῖς δραστήριος ὧν xai τὸ ἦϑ"
+      },
+      {
+        "chapter": 18,
+        "index": 26,
+        "match": "Ewp",
+        "context": " εὐθϑυνούμενον p* ἐπέλευσιν BDEwp οἱ πολέμιοι εἷς τὴν τῆς Ταρσο"
+      },
+      {
+        "chapter": 18,
+        "index": 28,
+        "match": "Ewp",
+        "context": "λίνουσα, 15. τὴν δὲ καὶ τὴν BCEwp 17. τῇ a'roxpatopixij τριήρει"
+      },
+      {
+        "chapter": 18,
+        "index": 32,
+        "match": "twp",
+        "context": "έδωκε. πολ- σὲ ὃ παρατάξεις Altwp (φάλαγγας Sceylitz. ), τάξεις"
+      },
+      {
+        "chapter": 18,
+        "index": 37,
+        "match": "RwpIi",
+        "context": "εἶχον κακῶς, τὰ δὲ κατὰ γέμον RwpIi, γέμων Δ 8. καίσαρ ARwp, καῖσ"
+      },
+      {
+        "chapter": 18,
+        "index": 37,
+        "match": "Rwp",
+        "context": "μον RwpIi, γέμων Δ 8. καίσαρ ARwp, καῖσαρ B3Di — στε- τὴν ἕω χε"
+      },
+      {
+        "chapter": 18,
+        "index": 42,
+        "match": "Rwp",
+        "context": "αιρεϑεὶς τὴν 5. ἀρχόντων πρ. ARwp, πραγμάτων προ. * ord zpo.D 8"
+      },
+      {
+        "chapter": 18,
+        "index": 46,
+        "match": "Ewp",
+        "context": "ῥάκος ἀμφιεννύουσι ὃ ἐχώρει BDEwp παμπληϑεῖ ADwp, παμ- λελαυκότ"
+      },
+      {
+        "chapter": 18,
+        "index": 46,
+        "match": "Dwp",
+        "context": "υσι ὃ ἐχώρει BDEwp παμπληϑεῖ ADwp, παμ- λελαυκότα τῆς βασιλείας"
+      },
+      {
+        "chapter": 18,
+        "index": 51,
+        "match": "Ewp",
+        "context": " μεταπέμπεται p* πατζινάκους BEwp, παιζινάκους ex ετροπώσατο κἀ"
+      },
+      {
+        "chapter": 18,
+        "index": 76,
+        "match": "EwpDi",
+        "context": "ς τὰ αὐτοῦ 12. ἐπανῆλθεν εἰς CEwpDi 13. 14. ἄλγος Ὥς δὲ τῇ νόσῳ κ"
+      },
+      {
+        "chapter": 18,
+        "index": 79,
+        "match": "EwpDi",
+        "context": "2. διᾶραι OsEwpDi εἴϑ' , ἃ μὴ πραχϑὲν ταχὺ κηρυ"
+      },
+      {
+        "chapter": 18,
+        "index": 79,
+        "match": "Rwp",
+        "context": " καὶ ὅπως αὐτῷ τούτω b ἢ μὴν ARwp, ἠμὲν b, xai ακεῖγοι b 9óóov "
+      }
+    ],
+    "PAGE_MARKER": [
+      {
+        "chapter": 13,
+        "index": 12,
+        "match": "W HII",
+        "context": " ἐπέτρεπε ζητῆσαι τὰ παρὰ τοῦ W HII 974oeíov λεγόμενα καὶ διαγνῶν"
+      },
+      {
+        "chapter": 13,
+        "index": 68,
+        "match": "D HI",
+        "context": "αίους ἐν μέσῳ πόλεως εὐσεβοῦς D HI καὶ βλασφήμους εὐχὰς ἀναπέμπε"
+      },
+      {
+        "chapter": 14,
+        "index": 62,
+        "match": "D HI",
+        "context": "ἀτασϑαλίῃ xai μανίῃ στοατιῆς. D HI3 τῆς \"Exáfe ἔτλην πολὺ χείρον"
+      },
+      {
+        "chapter": 14,
+        "index": 65,
+        "match": "D HI",
+        "context": "τὴν Συρίαν καὶ αλαιστίνην xai D HI Φοινίκην ὕφ᾽ ἑαυτοὺς ἐποιήσαν"
+      },
+      {
+        "chapter": 14,
+        "index": 66,
+        "match": "D HI",
+        "context": " ἐπὶ Μαυρικίου τὸν Φωκᾶν àva- D HI γορευσάντων εἰς πολλὰς χιλιάδ"
+      },
+      {
+        "chapter": 14,
+        "index": 86,
+        "match": "D HI",
+        "context": "τος φοβεροὶ τοῖς Ἄραψιν ἦσαν᾽ D HI διὸ xal σπονδὰς ἐκεῖνοι πρὸς "
+      },
+      {
+        "chapter": 15,
+        "index": 39,
+        "match": "D HI",
+        "context": "ὶ τὰ τῶν ἀπόρων τέλῃ τοὺς εὖ- D HI ποροῦντας εἰσπράττεσϑαι, ὃ ἀλ"
+      },
+      {
+        "chapter": 15,
+        "index": 45,
+        "match": "D HI",
+        "context": "στιανῶν. μετὰ δέ τινας ἡμέρας D HI καὶ τὴν τοῦ βίου κοινωνὸν Ilo"
+      },
+      {
+        "chapter": 15,
+        "index": 77,
+        "match": "D HI",
+        "context": "λεξιν πεοιδέξιος) καὶ ἐτιμᾶτο D HI £ καὶ ἐϑαυμάξετο. πλέον δ᾽ ἐξ"
+      },
+      {
+        "chapter": 16,
+        "index": 53,
+        "match": "W HI",
+        "context": "καὶ ὑπερόγκως ἠπείλησεν. ὅϑεν W HI147 “Συμποσίοις δὲ καὶ μέϑαις "
+      }
+    ],
+    "PAGE_NUM_START": [
+      {
+        "chapter": 13,
+        "index": 11,
+        "match": "14 ",
+        "context": "14 “7είχη δὲ τὸ βυζάντιον καρτερώτατα εἶχεν᾽ ὅ τε γὰρ ϑώ- οα"
+      },
+      {
+        "chapter": 13,
+        "index": 17,
+        "match": "924 ",
+        "context": "924 Ἢ δὲ τοῦ βασιλέως μήτηο ἡ μακαρία ᾿Βλένη εἰς γῆρας βαϑὺ "
+      },
+      {
+        "chapter": 13,
+        "index": 55,
+        "match": "14 ",
+        "context": "14 \"Poóavóc δὲ τις πραιπόσιτος παρὰ (ἡ αλεντινιανῷ μέγα ἠδύν"
+      },
+      {
+        "chapter": 13,
+        "index": 81,
+        "match": "11 ",
+        "context": "11 \"Yóéoc δὲ περιπεπτωκὼς ὁ Ὀνώριος ϑνήσκει, ζήσας μὲν ἐνιαυ"
+      },
+      {
+        "chapter": 14,
+        "index": 34,
+        "match": "38 ",
+        "context": "38 “Ιστορεῖται δέ τις τότε τῷ Βυζαντίῳ ἐπιδημῆσαι ἕλκων 839 "
+      },
+      {
+        "chapter": 14,
+        "index": 70,
+        "match": "15 ",
+        "context": "15 \"Eni τούτοις xai ἕτερόν τι συμβέβηκεν, ὃ τὸν Χοσρόην ὅπως"
+      },
+      {
+        "chapter": 14,
+        "index": 72,
+        "match": "12 ",
+        "context": "12 “Ὑποστρέφοντι δὲ τῷ βασιλεῖ τούτῳ ἐκ τῆς Περοίδος τρο- πα"
+      },
+      {
+        "chapter": 14,
+        "index": 73,
+        "match": "138 ",
+        "context": "138 Kai μεταβαίνει ἡ αὐταρχία πρὸς τὸν υἱὸν αὐτοῦ Κων- 9. στ"
+      },
+      {
+        "chapter": 15,
+        "index": 12,
+        "match": "6100 ",
+        "context": "6100 δὲ πρὸς τὴν οἰκείαν ἀφορῶντος τύχην, ἀφεστηκυῖαν πάνυ z"
+      },
+      {
+        "chapter": 15,
+        "index": 24,
+        "match": "90 ",
+        "context": "90 \"Exuawóuevog μέντοι κατὰ τῶν μοναχῶν, ἱππηλασίας ἄγο- ὃ μ"
+      },
+      {
+        "chapter": 15,
+        "index": 61,
+        "match": "10 ",
+        "context": "10 \"Aon δὲ τῇ αὐταρχίᾳ ἐπιπηδήσαντος τοῦ Μιχαήλ, ὡς ἵστό- θή"
+      },
+      {
+        "chapter": 16,
+        "index": 9,
+        "match": "100 ",
+        "context": "100 δὲ διὰ τοῦτο τῆς ἐκκλησίας μεϑίστησι τὸν ἀρχιερέα καὶ πο"
+      },
+      {
+        "chapter": 16,
+        "index": 28,
+        "match": "95 ",
+        "context": "95 “οὕτω ὃ εἰκάσας xai τὰ ἀνϑρώπινα πράγματα κινεῖσίδαι xai "
+      },
+      {
+        "chapter": 16,
+        "index": 83,
+        "match": "17 ",
+        "context": "17 \"O ye μὴν τοῦ βασιλέως υἱὸς Ῥωμανὸς eig ἄνδρας ἤδη τελεῖν"
+      },
+      {
+        "chapter": 16,
+        "index": 87,
+        "match": "16 ",
+        "context": "16 “Λέγεται γοῦν ἐν ἀρχῇ τῆς αὐταρχίας τοῦ Ῥωμανοῦ τῶν \"Aya-"
+      },
+      {
+        "chapter": 16,
+        "index": 104,
+        "match": "10 ",
+        "context": "10 xai Πέτρον δ᾽ ἕνα τῶν ἑαυτοῦ ϑεραπόντων, ἐκτομίαν μέν, δο"
+      },
+      {
+        "chapter": 17,
+        "index": 78,
+        "match": "71 ",
+        "context": "71 109 κατὰ τῶν ἐναντίων ἐπέλευσις καὶ ἄλλαις τῶν ὁλκάδων σύ"
+      },
+      {
+        "chapter": 17,
+        "index": 84,
+        "match": "130 ",
+        "context": "130 δέ γε βασιλεὺς τοῦτο μαϑὼν στρατιὰν αὐτίκα τῷ τῆς χώρας "
+      },
+      {
+        "chapter": 18,
+        "index": 20,
+        "match": "234 ",
+        "context": "234 ἐπὶ τούτοις ὁ μὲν ἐξέλιπε, βασιλεύσας ἑπτὰ πρὸς τῷ ἡ μίσ"
+      },
+      {
+        "chapter": 18,
+        "index": 24,
+        "match": "12 ",
+        "context": "12 \"Aon δ᾽ ἀναλάμπειν ἠργμένου τοῦ ἔαρος αὖϑις ó βασιλεὺς ἑτ"
+      },
+      {
+        "chapter": 18,
+        "index": 39,
+        "match": "35 ",
+        "context": "35 rov δὲ γενομένης ἐνδείας ἐν ταῖς ἡ μέραις τοῦ βασιλέως vo"
+      },
+      {
+        "chapter": 18,
+        "index": 56,
+        "match": "21 ",
+        "context": "21 \"Hóy δ᾽ ἐν ἀσφαλεῖ γεγονότες ol Κομνηνοὶ καὶ τὴν μητέρα σ"
+      },
+      {
+        "chapter": 18,
+        "index": 59,
+        "match": "22 ",
+        "context": "22 \"Aou δὲ τῆς βασιλείας ἐπιβεβηκότι τῷ Κομνηνῷ ἠγγέλη ó Φρά"
+      },
+      {
+        "chapter": 18,
+        "index": 63,
+        "match": "82 ",
+        "context": "82 έγονε δ᾽ ἐπὶ τῆς βασιλείας τούτου κλόνος τῆς γῆς φρι- κωδ"
+      }
+    ],
+    "SIGLA_COMMA": [
+      {
+        "chapter": 13,
+        "index": 19,
+        "match": "ACE, ",
+        "context": "ῖδας τοῦ μεγάλου Κωνσταντίνου ACE, Κωνστάντιεν, Κωνσταντῖνον xai "
+      },
+      {
+        "chapter": 13,
+        "index": 77,
+        "match": "ACE, ",
+        "context": "τόμου, ὅπως γέγονε πατριάρχης ACE, καὶ ὅπως ἐξ- σκαλίας προσαρμότ"
+      },
+      {
+        "chapter": 14,
+        "index": 35,
+        "match": "AO, ",
+        "context": "ῇ τῶν Μαυρουσίων ἐπιλεῖ- πεὶς AO, ἡττηϑεὶς ἐνενήκοντα AO, Procop"
+      },
+      {
+        "chapter": 14,
+        "index": 35,
+        "match": "AO, ",
+        "context": " πεὶς AO, ἡττηϑεὶς ἐνενήκοντα AO, Procop. I. , vac τὰ ζωαρκῆ, τὸ"
+      },
+      {
+        "chapter": 14,
+        "index": 40,
+        "match": "XI, ",
+        "context": " γμάτισαν Ὁ δελισάριος v. ad. XI, εἰς"
+      },
+      {
+        "chapter": 14,
+        "index": 50,
+        "match": "XI, ",
+        "context": "ὐτοῦ δυνάμεσιν et Κωνσταντίνῃ XI, w, κωνσταντίναν AO, Di, v. ad "
+      },
+      {
+        "chapter": 14,
+        "index": 50,
+        "match": "AO, ",
+        "context": "νσταντίνῃ XI, w, κωνσταντίναν AO, Di, v. ad Ῥωμαίων στρατεύματα\""
+      },
+      {
+        "chapter": 14,
+        "index": 55,
+        "match": "AO, ",
+        "context": "νων, ποτὲ ἰωάννης ó νηστευτὴς AO, ἰωάννης ó νηστευτὴς xai πατριά"
+      },
+      {
+        "chapter": 14,
+        "index": 72,
+        "match": "AR, ",
+        "context": "τὸ οὖρον πέμπειν, καὶ & μὴ 5r AR, v. ad XIIT 1, 5 11. τοὺς ὁμοφύ"
+      },
+      {
+        "chapter": 14,
+        "index": 80,
+        "match": "AH, ",
+        "context": "ὐτούς\" ὃ ad XIII 3, πωγωνάτος AH, πωγνάτος w*, ΠΩΓΟΝΑ͂ΤΟΣ p* , ἐ"
+      },
+      {
+        "chapter": 14,
+        "index": 80,
+        "match": "AO, ",
+        "context": "ὲ xai ó βασιλεὺς κωνσταντῖνος AO, τῆς ὥρας χειμέριον . τῇ κωνστα"
+      },
+      {
+        "chapter": 14,
+        "index": 86,
+        "match": "AH, ",
+        "context": "ισεν οὗτος ὁ βασιλεύς, δαΐται AH, μαρδάϊται w* prt uer μαρὸ. καλ"
+      },
+      {
+        "chapter": 14,
+        "index": 90,
+        "match": "AE, ",
+        "context": "ναῖκα τὴν ἀδελφὴν τοῦ Χαγάνου AE, Χαγάνου ΟἿ καὶ ὅτι ἐπεβούλευεν"
+      },
+      {
+        "chapter": 15,
+        "index": 5,
+        "match": "AE, ",
+        "context": "ῳ scribendum est o, non ὦ xai AE, βασιλεύσας δὲ οὕτως (οὕτῶς σαλ"
+      },
+      {
+        "chapter": 15,
+        "index": 16,
+        "match": "ABC, ",
+        "context": "τοῦ ᾿Αρταβάσδου, καϑυπέβαλλον ABC, v. XV 4, 1. 6, 12 11. τὸν μὲν "
+      },
+      {
+        "chapter": 15,
+        "index": 48,
+        "match": "AH, ",
+        "context": "ίνοντες εἶναι παϑεῖν μετρίους AH, εἶναι παϑεῖν κρίνοντες μετοίου"
+      },
+      {
+        "chapter": 15,
+        "index": 64,
+        "match": "AO, ",
+        "context": "\"Popaíov ϑέμενος ἐμα- ἔπρησαν AO, παραδεδώκασιν κατενέπρησαν vel"
+      },
+      {
+        "chapter": 15,
+        "index": 67,
+        "match": "AT, ",
+        "context": " πέμπετο ἀξιοῦσϑαι παρ᾽ αὐτῶν AT, διαπεμπόμενος ἀξιοῦσϑαι παρ᾽ α"
+      },
+      {
+        "chapter": 15,
+        "index": 76,
+        "match": "AE, ",
+        "context": "τρῳ lli dyroía τοῦ ξυνευνέτου AE, τὸν ξυνευνέτην λανϑάνουσα O po"
+      },
+      {
+        "chapter": 15,
+        "index": 90,
+        "match": "AE, ",
+        "context": "ὐτῶ ἐπόρϑησε Ὁ αὐτῆς τῆς ooc. AE, οπτεύειν πληροφορῶν. καὶ ἐπανε"
+      },
+      {
+        "chapter": 15,
+        "index": 95,
+        "match": "DB, ",
+        "context": "αὶ ἡ τοῦ ἔρωτος obx ἔληγε των DB, xai ταῖς χερσὶν ἐπ᾽ ὄψει πάντω"
+      },
+      {
+        "chapter": 15,
+        "index": 95,
+        "match": "AO, ",
+        "context": " κεκίνηο Ὁ ἂν ἐκβιασϑείη &xx. AO, ἐκβιαοϑείη ἂν ἐκκ. ἐκβιασϑείη "
+      },
+      {
+        "chapter": 16,
+        "index": 29,
+        "match": "KD, ",
+        "context": "ῖς λοιποῖς ἐνεποίησε πόννησον KD, πελοπόνησον ADEwp προςεγγίσας "
+      },
+      {
+        "chapter": 16,
+        "index": 67,
+        "match": "AO, ",
+        "context": " 'Po- προςέβαλε πάλιν OWo yàp AO, δὲ τὴν τῷ στόλῳ ἀφίκετο, ὅ δέ "
+      },
+      {
+        "chapter": 16,
+        "index": 69,
+        "match": "AD, ",
+        "context": "ἱὸς ἐσπείσατο xai συν- dwíóo; AD, ἁψίδος CEDwwp, ἁψῖδος B5Di ἐστ"
+      },
+      {
+        "chapter": 16,
+        "index": 99,
+        "match": "XI, ",
+        "context": "λιπον ---στελλόμενοιϊΪ v. ad. XI, τε καὶ στρατευτειὶ xai οἱ κεκλ"
+      },
+      {
+        "chapter": 17,
+        "index": 77,
+        "match": "AV, ",
+        "context": "oí ἡ 12. τὸν ϑῶκον μετήνεγκεν AV, (τὴν καϑέδραν δι- σφενδονουμέν"
+      },
+      {
+        "chapter": 18,
+        "index": 69,
+        "match": "AO, ",
+        "context": "ιλεὺς ἀντέπραττε πρὸς εἶχε τὸ AO, εἴχετο οὐ ὥς φασιν CWo , οὖκ ἀ"
+      }
+    ],
+    "LATIN_APPARATUS": [
+      {
+        "chapter": 14,
+        "index": 67,
+        "match": "grec. xal",
+        "context": "λας τοίνυν πρὸς αὐτὸν εἰρήνην grec. xal ὃ βάρ- 11 , τὴν μέντοι βασι- "
+      },
+      {
+        "chapter": 15,
+        "index": 5,
+        "match": "perg. fol.",
+        "context": "ας (unum αὐτοὺς ὅ δινότμητος, perg. fol. 166\": ϑέλων αὐτοὺς cet. ἀλ- ἐ"
+      },
+      {
+        "chapter": 15,
+        "index": 37,
+        "match": "litt. pujoay",
+        "context": "φάνειαν Ὁ νικηφόρον octo fere litt. pujoay, καὶ otro zaü0a500190értez. ε"
+      },
+      {
+        "chapter": 15,
+        "index": 44,
+        "match": "ex. vers",
+        "context": "πώλεια ἐφη- λυϑεν) διασώζεται ex. versu ῥαγκαβὲ (v. argum. ad κοπίᾳ "
+      },
+      {
+        "chapter": 18,
+        "index": 69,
+        "match": "arg. ad",
+        "context": " μηδὲν ἀνύσας (ἐσπ)είσατο (v. arg. ad ) γᾶται; ἑαυτοῦ καταψεύδεται "
+      }
+    ],
+    "BRACKET_NUM": [],
+    "BRACE_NUM": [],
+    "OCR_SINGLE_LETTER": []
+  }
+}

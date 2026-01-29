@@ -1,0 +1,1220 @@
+{
+  "timestamp": "2026-01-28T04:13:27.259487",
+  "dry_run": false,
+  "stats": {
+    "total_paragraphs": 571,
+    "paragraphs_modified": 275,
+    "patterns_removed": {
+      "RESIDUAL": 127,
+      "ISOLATED_NUM": 84,
+      "PAGE_MARKER": 10,
+      "PAGE_NUM_START": 11,
+      "WP_SIGLA": 82,
+      "SIGLA_COMMA": 25,
+      "STANDALONE_SIGLA": 9,
+      "LATIN_APPARATUS": 21
+    }
+  },
+  "chapter_details": {
+    "13": {
+      "total": 90,
+      "modified": 32,
+      "sample_removals": [
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 838 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 180 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "PAGE_MARKER",
+          "W HII"
+        ],
+        [
+          "PAGE_NUM_START",
+          "924 "
+        ],
+        [
+          "WP_SIGLA",
+          "OwpDt"
+        ],
+        [
+          "SIGLA_COMMA",
+          "ACE, "
+        ],
+        [
+          "WP_SIGLA",
+          "AEDwwp2Di"
+        ],
+        [
+          "STANDALONE_SIGLA",
+          "O, "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 108 "
+        ],
+        [
+          "WP_SIGLA",
+          "ARwp"
+        ],
+        [
+          "WP_SIGLA",
+          "B5Dwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "£i "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "RwpJD"
+        ],
+        [
+          "WP_SIGLA",
+          "CDwp"
+        ],
+        [
+          "RESIDUAL",
+          "(8ic)"
+        ],
+        [
+          "RESIDUAL",
+          "/of."
+        ],
+        [
+          "PAGE_NUM_START",
+          "14 "
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 123 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 223 "
+        ],
+        [
+          "PAGE_MARKER",
+          "D HI"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 106 "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "WP_SIGLA",
+          "Kwp"
+        ],
+        [
+          "SIGLA_COMMA",
+          "ACE, "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 233 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "Pwp"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "tres  "
+        ],
+        [
+          "RESIDUAL",
+          "— doyovra"
+        ],
+        [
+          "PAGE_NUM_START",
+          "11 "
+        ]
+      ]
+    },
+    "14": {
+      "total": 94,
+      "modified": 45,
+      "sample_removals": [
+        [
+          "WP_SIGLA",
+          "OwpDi"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "tres "
+        ],
+        [
+          "STANDALONE_SIGLA",
+          "P, "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "wp"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "mss.\": Duc)"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 332 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 351 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "OwpDi"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 231 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 234 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "CDEwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 914 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 839 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "SIGLA_COMMA",
+          "AO, "
+        ],
+        [
+          "SIGLA_COMMA",
+          "AO, "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "Procop. I. ,"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 432 "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "v. ad. XI,"
+        ],
+        [
+          "STANDALONE_SIGLA",
+          "O, "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "WP_SIGLA",
+          "ARwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 108 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 984 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "SIGLA_COMMA",
+          "AO, "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "v. argum. ad"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 100 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "SIGLA_COMMA",
+          "AO, "
+        ],
+        [
+          "PAGE_MARKER",
+          "D HI3"
+        ],
+        [
+          "WP_SIGLA",
+          "Dwwp2Di"
+        ],
+        [
+          "PAGE_MARKER",
+          "D HI"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 100 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "BDwp"
+        ],
+        [
+          "PAGE_MARKER",
+          "D HI"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "grec. xal"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 168 "
+        ]
+      ]
+    },
+    "15": {
+      "total": 98,
+      "modified": 51,
+      "sample_removals": [
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "Rwp2i"
+        ],
+        [
+          "WP_SIGLA",
+          "Bswp"
+        ],
+        [
+          "SIGLA_COMMA",
+          "AE, "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "perg. fol. 166"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "ex versu"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "(unum αὐτοὺς ὅ δινότμητος, \": ϑέλων αὐτοὺς cet. ἀλ- ἐνιαυτούς, ὀψὲ xal μόλις ἐπανελήλυϑε, μήτε τὸν Ἰἰουστινιανὸν εὑρηκώς (ἀνήοητο γάρ)"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 355 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 339 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 206 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 344 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "SIGLA_COMMA",
+          "ABC, "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 129 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "PAGE_NUM_START",
+          "90 "
+        ],
+        [
+          "WP_SIGLA",
+          "AEDwwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 925 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 356 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 859 "
+        ],
+        [
+          "STANDALONE_SIGLA",
+          "A , "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 365 "
+        ],
+        [
+          "STANDALONE_SIGLA",
+          "X, "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 129 "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "litt. pujoay"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "octo fere"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 309 "
+        ],
+        [
+          "PAGE_MARKER",
+          "D HI"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 101 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 878 "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "ex. versu"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "v. argum. ad"
+        ],
+        [
+          "PAGE_MARKER",
+          "D HI"
+        ],
+        [
+          "SIGLA_COMMA",
+          "AH, "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "STANDALONE_SIGLA",
+          "W, "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 382 "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 380 "
+        ],
+        [
+          "RESIDUAL",
+          "p*"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 510 "
+        ],
+        [
+          "WP_SIGLA",
+          "AEDwwp"
+        ]
+      ]
+    },
+    "16": {
+      "total": 108,
+      "modified": 53,
+      "sample_removals": [
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "ARwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 113 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 625 "
+        ],
+        [
+          "WP_SIGLA",
+          "EDwwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 132 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 124 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "WP_SIGLA",
+          "Dwwp"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "cet. "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "Zeilf."
+        ],
+        [
+          "ISOLATED_NUM",
+          " 137 "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "RESIDUAL",
+          "Alt,"
+        ],
+        [
+          "WP_SIGLA",
+          "ADEwp"
+        ],
+        [
+          "SIGLA_COMMA",
+          "KD, "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "CEwp"
+        ],
+        [
+          "WP_SIGLA",
+          "AEBwpDi"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 391 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 142 "
+        ],
+        [
+          "WP_SIGLA",
+          "AEDwwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 145 "
+        ],
+        [
+          "WP_SIGLA",
+          "AEDwwp"
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "WP_SIGLA",
+          "lwpDi"
+        ],
+        [
+          "WP_SIGLA",
+          "wp"
+        ],
+        [
+          "PAGE_MARKER",
+          "W HI147"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 581 "
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "EDwwp"
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "RESIDUAL",
+          "—— oor."
+        ],
+        [
+          "SIGLA_COMMA",
+          "AO, "
+        ],
+        [
+          "WP_SIGLA",
+          "CEDwwp"
+        ],
+        [
+          "SIGLA_COMMA",
+          "AD, "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 159 "
+        ],
+        [
+          "WP_SIGLA",
+          "AEDwwp"
+        ]
+      ]
+    },
+    "17": {
+      "total": 97,
+      "modified": 51,
+      "sample_removals": [
+        [
+          "WP_SIGLA",
+          "ARDwwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "WP_SIGLA",
+          "CEBswpJX"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 410 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 117 "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 329 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 618 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "CEwp"
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 116 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 900 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 618 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 238 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 696 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 188 "
+        ],
+        [
+          "WP_SIGLA",
+          "LEwp"
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 810 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 592 "
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "WP_SIGLA",
+          "BCwpDi"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "WP_SIGLA",
+          "BCEwp"
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "WP_SIGLA",
+          "BsEwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 158 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 925 "
+        ],
+        [
+          "SIGLA_COMMA",
+          "AV, "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 860 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 109 "
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 179 "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "WP_SIGLA",
+          "BCEwpDi"
+        ],
+        [
+          "WP_SIGLA",
+          "wp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 188 "
+        ]
+      ]
+    },
+    "18": {
+      "total": 84,
+      "modified": 43,
+      "sample_removals": [
+        [
+          "RESIDUAL",
+          "p*"
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "WP_SIGLA",
+          "BCwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 118 "
+        ],
+        [
+          "WP_SIGLA",
+          "wp"
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 202 "
+        ],
+        [
+          "PAGE_NUM_START",
+          "234 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 203 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 901 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "PAGE_NUM_START",
+          "12 "
+        ],
+        [
+          "WP_SIGLA",
+          "BDEwp"
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "Sceylitz"
+        ],
+        [
+          "WP_SIGLA",
+          "BCEwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 910 "
+        ],
+        [
+          "WP_SIGLA",
+          "Altwp"
+        ],
+        [
+          "LATIN_APPARATUS",
+          "Sceylitz"
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 990 "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "WP_SIGLA",
+          "RwpIi"
+        ],
+        [
+          "WP_SIGLA",
+          "ARwp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 221 "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 160 "
+        ],
+        [
+          "RESIDUAL",
+          "» "
+        ],
+        [
+          "WP_SIGLA",
+          "ARwp"
+        ],
+        [
+          "RESIDUAL",
+          "»"
+        ],
+        [
+          "WP_SIGLA",
+          "BDEwp"
+        ],
+        [
+          "WP_SIGLA",
+          "ADwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 229 "
+        ],
+        [
+          "RESIDUAL",
+          "μ-"
+        ],
+        [
+          "WP_SIGLA",
+          "BEwp"
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "RESIDUAL",
+          "p* "
+        ],
+        [
+          "PAGE_NUM_START",
+          "21 "
+        ],
+        [
+          "PAGE_NUM_START",
+          "22 "
+        ],
+        [
+          "WP_SIGLA",
+          "wp"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 156 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "SIGLA_COMMA",
+          "AO, "
+        ],
+        [
+          "LATIN_APPARATUS",
+          "arg. ad"
+        ],
+        [
+          "ISOLATED_NUM",
+          " 248 "
+        ],
+        [
+          "RESIDUAL",
+          "μ- "
+        ],
+        [
+          "ISOLATED_NUM",
+          " 943 "
+        ],
+        [
+          "WP_SIGLA",
+          "CEwpDi"
+        ]
+      ]
+    }
+  }
+}

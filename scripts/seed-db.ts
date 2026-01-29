@@ -481,6 +481,30 @@ const AUTHORS = [
     description:
       "Pioneer of the Tamil novel. His Prathapa Mudaliar Charithram (1876) is widely considered the first Tamil novel. Suguna Sundari (1887) is his second novel, a morality tale incorporating social commentary against child marriage, extensive moral philosophy, and Tamil proverbs.",
   },
+  {
+    name: "Theodore Metochites",
+    nameOriginalScript: "Θεόδωρος Μετοχίτης",
+    slug: "theodore-metochites",
+    era: "Byzantine Empire (1270–1332)",
+    description:
+      "Byzantine statesman, philosopher, and patron of the arts. As Grand Logothete under Emperor Andronikos II Palaiologos, he was the most powerful figure in the empire after the emperor. His Semeioseis Gnomikai is a vast collection of essays on history, philosophy, literature, and politics.",
+  },
+  {
+    name: "Cletto Arrighi",
+    nameOriginalScript: null,
+    slug: "cletto-arrighi",
+    era: "19th century (1830–1906)",
+    description:
+      "Pseudonym of Carlo Righetti. Milanese journalist, novelist, and playwright. A key figure of the Scapigliatura literary movement, he coined the term in his 1862 novel La Scapigliatura e il 6 Febbraio. He also founded the satirical newspaper L'Unione.",
+  },
+  {
+    name: "Chen Sen",
+    nameOriginalScript: "陳森",
+    slug: "chen-sen",
+    era: "Qing Dynasty (c. 1796–1870)",
+    description:
+      "Qing dynasty novelist. Little is known of his life beyond his authorship of Pinhua Baojian (A Precious Mirror of Ranked Flowers), a novel depicting the world of Beijing opera dan performers and the literati who patronize them, completed around 1849.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -1302,6 +1326,51 @@ const TEXTS = [
     processedDir: "data/processed/suguna-sundari",
     compositionYear: 1887,
     compositionEra: "19th century (1887)",
+  },
+  {
+    title: "Noteworthy Opinions (Semeioseis Gnomikai)",
+    titleOriginalScript: "Σημειώσεις Γνωμικαί",
+    slug: "semeioseis-gnomikai",
+    textType: "prose" as const,
+    genre: "philosophy",
+    languageCode: "grc",
+    authorSlug: "theodore-metochites",
+    description:
+      "A vast collection of 120 essays by the Byzantine polymath Theodore Metochites, covering history, philosophy, literature, rhetoric, astronomy, and political thought. Written in an elaborate Atticizing Greek style, the work reflects on the rise and fall of civilizations, the nature of government, and the value of learning. Essays 1–81 have been translated in critical editions, and the remaining untranslated essays are available here on Deltoi.",
+    sourceUrl: "https://archive.org/details/miscellaneasemes00metouoft",
+    processedDir: "data/processed/semeioseis-gnomikai",
+    compositionYear: 1320,
+    compositionEra: "Late Byzantine Empire (c. 1305–1325)",
+  },
+  {
+    title: "La Scapigliatura e il 6 Febbraio",
+    titleOriginalScript: null,
+    slug: "scapigliatura-e-il-6-febbraio",
+    textType: "prose" as const,
+    genre: "literature",
+    languageCode: "it",
+    authorSlug: "cletto-arrighi",
+    description:
+      "A novel set in Milan during the turbulent years following the failed Italian independence uprisings of 1848–49. The story follows a group of young bohemians — the 'Scapigliatura' — through love, betrayal, and political upheaval, culminating in the insurrection of 6 February 1853. The novel coined the term 'Scapigliatura' for the Italian literary movement of anti-bourgeois artists and writers.",
+    sourceUrl: "https://archive.org/details/arrighiscapigliatura",
+    processedDir: "data/processed/scapigliatura-e-il-6-febbraio",
+    compositionYear: 1862,
+    compositionEra: "19th century (1862)",
+  },
+  {
+    title: "A Precious Mirror of Ranked Flowers (Pinhua Baojian)",
+    titleOriginalScript: "品花寶鑑",
+    slug: "pinhua-baojian",
+    textType: "prose" as const,
+    genre: "literature",
+    languageCode: "zh",
+    authorSlug: "chen-sen",
+    description:
+      "A novel of manners set in the theatre world of early 19th-century Beijing. The story follows a group of literati and the dan (female-role) performers of the Peking opera stage, exploring themes of love, aesthetics, loyalty, and morality. The novel provides a vivid portrait of elite social life, theatrical culture, and the complex relationships between patrons and performers in the late Qing dynasty.",
+    sourceUrl: "https://ctext.org/pinhua-baojian",
+    processedDir: "data/processed/pinhua-baojian",
+    compositionYear: 1849,
+    compositionEra: "Late Qing Dynasty (c. 1849)",
   },
 ] as const;
 
