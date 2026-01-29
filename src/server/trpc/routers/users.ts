@@ -7,7 +7,7 @@ import { hash, compare } from "bcryptjs";
 import { eq, asc, and, isNull, gt, sql, desc } from "drizzle-orm";
 import { randomBytes } from "crypto";
 
-const MAX_USERS = 20;
+const MAX_USERS = 100;
 
 export const usersRouter = createTRPCRouter({
   register: publicProcedure

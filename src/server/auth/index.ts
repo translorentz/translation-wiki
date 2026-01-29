@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
 
 type Role = "reader" | "editor" | "admin";
 
-const MAX_USERS = 20;
+const MAX_USERS = 100;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },

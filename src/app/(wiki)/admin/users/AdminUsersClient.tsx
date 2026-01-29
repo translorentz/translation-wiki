@@ -65,7 +65,7 @@ export function AdminUsersClient() {
     <div className="space-y-8">
       {/* User count */}
       <p className="text-sm text-muted-foreground">
-        {userCount} / 20 users registered
+        {userCount} / 100 users registered
       </p>
 
       {/* User list */}
