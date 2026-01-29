@@ -234,30 +234,15 @@ function repairAndParseJson(jsonStr: string): unknown[] {
   throw new Error(`Failed to parse or repair JSON response (length: ${jsonStr.length})`);
 }
 
-async function translateBatch(
-  paragraphs: Paragraph[],
-  sourceLanguage: string
-): Promise<Paragraph[]> {
-  const { system, user } = buildTranslationPrompt({
-    sourceLanguage,
-    paragraphs,
-  });
-
-  const response = await openai.chat.completions.create({
-    model: MODEL,
-    max_tokens: 8192,
-    messages: [
-      { role: "system", content: system },
-      { role: "user", content: user },
-    ],
-  });
-
-  // Extract text content from response
-  const content = response.choices[0]?.message?.content;
-  if (!content) {
-    throw new Error("No text response from DeepSeek");
-  }
-
+/**
+ * Parse and validate the LLM response for a batch of paragraphs.
+ * Returns the parsed paragraphs, or throws if the response is unusable.
+ * Does NOT attempt realignment — caller decides what to do on mismatch.
+ */
+function parseTranslationResponse(
+  content: string,
+  expectedIndices: number[]
+): { parsed: Paragraph[]; exactMatch: boolean } {
   // Parse JSON from response (may be wrapped in markdown code block)
   let jsonStr = content.trim();
   if (jsonStr.startsWith("```")) {
@@ -268,39 +253,38 @@ async function translateBatch(
   try {
     raw = JSON.parse(jsonStr);
   } catch {
-    // Attempt JSON repair for common LLM issues
     raw = repairAndParseJson(jsonStr);
   }
 
-  // Validate structure
   if (!Array.isArray(raw)) {
     throw new Error("Response is not an array");
   }
 
-  // Normalize: coerce string indices to numbers, handle minor format variations
   const parsed: Paragraph[] = raw.map((item: any) => {
     const index = typeof item.index === "string" ? parseInt(item.index, 10) : Math.floor(Number(item.index));
     const text = String(item.text ?? "");
     return { index: isNaN(index) ? -1 : index, text };
   });
 
-  // Validate: ensure output matches input indices
-  const expectedIndices = paragraphs.map((p) => p.index);
+  const exactMatch =
+    parsed.length === expectedIndices.length &&
+    parsed.every((p, i) => p.index === expectedIndices[i]);
 
-  // If the AI returned the correct number of paragraphs with matching indices, use as-is
-  if (
-    parsed.length === paragraphs.length &&
-    parsed.every((p, i) => p.index === expectedIndices[i])
-  ) {
-    return parsed;
-  }
+  return { parsed, exactMatch };
+}
 
-  // Otherwise, realign: group by closest expected index and concatenate
+/**
+ * Best-effort realignment when the LLM returns a different number of paragraphs.
+ * Maps each returned paragraph to the closest expected index.
+ */
+function realignParagraphs(
+  parsed: Paragraph[],
+  expectedIndices: number[]
+): Paragraph[] {
   const result: Paragraph[] = expectedIndices.map((idx) => ({ index: idx, text: "" }));
 
   for (const p of parsed) {
     if (p.index < 0 || !p.text.trim()) continue;
-    // Find the closest expected index
     let bestIdx = 0;
     let bestDist = Infinity;
     for (let i = 0; i < expectedIndices.length; i++) {
@@ -318,6 +302,60 @@ async function translateBatch(
   }
 
   return result;
+}
+
+const MISMATCH_MAX_RETRIES = 2;
+
+async function translateBatch(
+  paragraphs: Paragraph[],
+  sourceLanguage: string
+): Promise<Paragraph[]> {
+  const expectedIndices = paragraphs.map((p) => p.index);
+
+  for (let attempt = 0; attempt <= MISMATCH_MAX_RETRIES; attempt++) {
+    const { system, user } = buildTranslationPrompt({
+      sourceLanguage,
+      paragraphs,
+    });
+
+    const response = await openai.chat.completions.create({
+      model: MODEL,
+      max_tokens: 8192,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error("No text response from DeepSeek");
+    }
+
+    const { parsed, exactMatch } = parseTranslationResponse(content, expectedIndices);
+
+    if (exactMatch) {
+      return parsed;
+    }
+
+    // Count mismatch — retry if we have attempts left
+    if (attempt < MISMATCH_MAX_RETRIES) {
+      process.stdout.write(
+        `      [mismatch] expected ${expectedIndices.length} paragraphs, got ${parsed.length} — retrying (${attempt + 1}/${MISMATCH_MAX_RETRIES})\n`
+      );
+      await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+      continue;
+    }
+
+    // Final attempt failed — fall back to best-effort realignment
+    process.stdout.write(
+      `      [mismatch] expected ${expectedIndices.length} paragraphs, got ${parsed.length} — using best-effort realignment\n`
+    );
+    return realignParagraphs(parsed, expectedIndices);
+  }
+
+  // Unreachable, but TypeScript needs it
+  throw new Error("translateBatch: unreachable");
 }
 
 /**
@@ -431,6 +469,26 @@ async function translateChapter(
       process.stdout.write(`    ⚠ ${failedParagraphs} paragraphs could not be translated\n`);
     }
 
+    // Post-chapter verification: ensure translated paragraph count matches source
+    const expectedCount = sourceContent.paragraphs.length;
+    if (translated.length !== expectedCount) {
+      console.error(
+        `  [ALIGN ERROR] Chapter ${chapter.chapterNumber}: source has ${expectedCount} paragraphs but translation has ${translated.length}. Skipping save to prevent misalignment.`
+      );
+      return false;
+    }
+
+    // Verify index alignment
+    const indexMismatches = sourceContent.paragraphs.filter(
+      (sp, i) => translated[i]?.index !== sp.index
+    );
+    if (indexMismatches.length > 0) {
+      console.error(
+        `  [ALIGN ERROR] Chapter ${chapter.chapterNumber}: ${indexMismatches.length} paragraph indices don't match source. Skipping save.`
+      );
+      return false;
+    }
+
     // Create or get translation record
     let translation = existingTranslation;
     if (!translation) {
@@ -526,6 +584,13 @@ async function main() {
     const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
     if (isLiteraryItalian) {
       promptLang = "it-literary-19c";
+      usingSpecialPrompt = true;
+    }
+
+    // Byzantine Greek history/chronicles use grc-history prompt
+    const isGreekHistory = text.language.code === "grc" && text.genre === "history";
+    if (isGreekHistory) {
+      promptLang = "grc-history";
       usingSpecialPrompt = true;
     }
 

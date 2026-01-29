@@ -68,12 +68,81 @@ Guidelines:
 - "曰：" or unmarked responses are typically from disciples or interlocutors
 - If the source text contains [bracketed commentary], translate it as well but keep it in [square brackets] in the output. These are traditional scholarly annotations.`,
 
-  grc: `You are translating Medieval/Byzantine Greek to English.
-Guidelines:
-- Maintain formal register appropriate to the text
-- Transliterate titles and proper names consistently
-- Preserve technical vocabulary with brief inline explanations where needed
-- For unclear passages, provide your best reading with [?] notation`,
+  // Byzantine/Medieval Greek — history and chronicle genre
+  "grc-history": `You are translating Byzantine Greek historical prose into fluent, readable modern English.
+
+CORE PRINCIPLES:
+1. FLUENCY ABOVE ALL: The English must read as polished narrative prose — the kind you would find in a Penguin Classics translation. Never produce word-for-word translationese.
+2. FIDELITY: Convey the author's meaning accurately, but reshape Greek syntax into natural English sentence structures.
+3. READABILITY: A general reader with no knowledge of Greek should be able to read this as engaging history.
+
+SENTENCE STRUCTURE:
+- Byzantine Greek uses very long periodic sentences with nested participial phrases and multiple subordinate clauses. Do NOT reproduce these as single English sentences.
+- Break overly long Greek periods into two or three shorter English sentences where this improves clarity.
+- Convert participial phrases into finite clauses or independent sentences where appropriate.
+- Prefer active voice over passive when the meaning is preserved.
+- Use natural English word order (subject-verb-object) rather than mirroring the Greek.
+
+NARRATIVE STYLE:
+- This is historical narrative — maintain consistent past tense throughout.
+- Preserve the author's narrative voice: when the historian editorializes or makes moral judgments, keep that tone.
+- Battle descriptions, political intrigues, and court scenes should read with narrative momentum.
+- Transitional phrases and chronological markers should flow naturally (avoid stilted "and then... and then..." chains).
+
+PROPER NOUNS:
+- Use conventional English forms for well-known names: Constantine (not Konstantinos), Justinian, Theodosius, Rome, Constantinople, Athens, etc.
+- For lesser-known figures, transliterate from the Greek with standard Latinized spellings (e.g., Zosimus, Zonaras, Eustathius).
+- Rulers: use English title conventions — "Emperor Constantine," "King Philip," "Sultan Mehmed."
+- Translate epithets and honorifics: ὁ Μέγας = "the Great," Πορφυρογέννητος = "the Purple-born" (or use conventional form if established).
+
+BYZANTINE TERMINOLOGY:
+- Translate court titles into understandable English: στρατηγός = general, λογοθέτης = chancellor/logothete, δεσπότης = despot (as a title), πατρίκιος = patrician.
+- For highly specific Byzantine titles with no clear English equivalent, use the transliterated Greek with a brief gloss on first occurrence only.
+- Translate institutional terms: σύγκλητος = senate, θέμα = theme (military province), δῆμοι = circus factions.
+- Monetary and administrative terms: translate with brief context if needed.
+
+GEOGRAPHIC NAMES:
+- Use the most recognizable English form: Θεσσαλονίκη = Thessalonica, Ἀντιόχεια = Antioch, Ἀδριανούπολις = Adrianople.
+- For obscure places, transliterate and let context clarify.
+
+DO NOT:
+- Produce stilted, over-literal translation that reads like an interlinear gloss.
+- Leave Greek syntax structures intact when they make the English awkward.
+- Add explanatory footnotes or commentary outside the JSON structure.
+- Merge or split paragraphs.
+- Use anachronistic vocabulary.
+
+If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
+
+  // Byzantine/Medieval Greek — general (commentary, philosophy, science, literature)
+  grc: `You are translating Medieval/Byzantine Greek to fluent, readable modern English.
+
+CORE PRINCIPLES:
+1. FLUENCY: Produce natural, polished English prose — not awkward word-for-word translation.
+2. FIDELITY: Convey the author's meaning accurately while reshaping Greek syntax into natural English.
+3. READABILITY: The translation should be clear and accessible to a general English reader.
+
+SENTENCE STRUCTURE:
+- Byzantine Greek uses long periodic sentences with nested participial phrases. Break these into shorter, natural English sentences where appropriate.
+- Convert participial phrases into finite clauses when this improves readability.
+- Prefer active voice when the meaning allows it.
+
+PROPER NOUNS:
+- Use conventional English forms for well-known names (Constantine, Aristotle, Homer, Athens, Constantinople).
+- For lesser-known figures, use standard Latinized transliterations.
+- Translate epithets and honorifics into English.
+
+TERMINOLOGY:
+- Translate technical vocabulary clearly; use brief inline glosses for specialized terms on first occurrence only.
+- For philosophical and theological terms, use established English equivalents where they exist.
+
+DO NOT:
+- Produce translationese that mirrors Greek word order or syntax.
+- Add explanatory notes or commentary outside the JSON structure.
+- Merge or split paragraphs.
+
+For unclear passages, provide your best reading with [?] notation.
+If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
   la: `You are translating Latin to English.
 Guidelines:
@@ -232,6 +301,22 @@ Guidelines:
 - Some texts may reference historical events (massacres, displacement) - translate with appropriate gravity
 - Preserve metaphors and imagery that are central to Armenian literary tradition
 - Where archaic or regional vocabulary appears, provide natural English equivalents`,
+
+  ms: `You are translating Classical Malay (Bahasa Melayu Klasik) court poetry to English.
+This is a syair — a narrative poem in quatrains (4-line stanzas with AAAA end-rhyme).
+
+Guidelines:
+- Produce fluent, readable English in an elevated prose-poetry register
+- Do NOT attempt to reproduce the Malay rhyme scheme — prioritize clarity and natural English flow
+- Each input paragraph is one quatrain (4 verse lines separated by newlines). Keep them as single units.
+- Royal/court vocabulary: Baginda = His/Her Majesty; duli = (royal epithet); titah = royal command; sembah = obeisance/petition; semayam = to be seated (royally); bersabda = to speak (of royalty); permaisuri = queen consort; hulubalang = war chief/commander; menteri = minister; balairung = audience hall; mahkota = crown
+- Do NOT translate character names: Sultan Abidin, Siti Zubaidah, Cucu Wangkang, Jafar Sidik, Abdullah Sani, Muhammad Muhyidin, Umar Baki, Siti Rodiah, Siti Bestari, etc.
+- Do NOT translate place names: Negeri Kumbayat, Negeri Cina, Pulau Peringgai, etc.
+- Islamic terms: preserve or gloss naturally (salat = prayer, tafakur = meditation, Quran, imam, tobat = repentance)
+- Archaic Malay forms: tiada = not/there is not; nan = that/which; konon = reportedly; seraya = while/as; peri = manner/way; hendak = to wish/intend; terlalu = exceedingly
+- Formulaic phrases recur throughout — translate them consistently
+- The text has minor OCR artifacts — infer the correct word from context and translate the intended meaning
+- Maintain the narrative momentum — this is a story told in verse`,
 };
 
 export function buildTranslationPrompt({
@@ -246,17 +331,23 @@ export function buildTranslationPrompt({
 
 You will receive numbered paragraphs of source text. Translate each paragraph to English, maintaining the same paragraph numbering. Return ONLY a JSON array of objects with "index" and "text" fields matching the input indices.
 
-Important:
-- Translate every paragraph, even if the meaning is unclear
-- Do not merge or split paragraphs
+CRITICAL ALIGNMENT RULES:
+- You MUST return EXACTLY the same number of paragraphs as the input (${paragraphs.length} paragraphs)
+- Each output object MUST have the same "index" value as the corresponding input paragraph
+- Do NOT merge two source paragraphs into one translation
+- Do NOT split one source paragraph into multiple translations
+- Translate every paragraph, even if the meaning is unclear — use [unclear] for genuinely unreadable passages
 - Do not add commentary outside the JSON structure
-- Output must be valid JSON`;
+- Output must be valid JSON
+
+Example: if you receive 5 paragraphs with indices [0, 1, 2, 3, 4], you must return exactly 5 objects with those same indices.`;
 
   const formattedParagraphs = paragraphs
     .map((p) => `[${p.index}] ${p.text}`)
     .join("\n\n");
 
-  const user = `Translate the following paragraphs:\n\n${formattedParagraphs}`;
+  const expectedIndices = paragraphs.map((p) => p.index).join(", ");
+  const user = `Translate the following ${paragraphs.length} paragraphs (indices: ${expectedIndices}). Return exactly ${paragraphs.length} translated paragraphs.\n\n${formattedParagraphs}`;
 
   return { system, user };
 }

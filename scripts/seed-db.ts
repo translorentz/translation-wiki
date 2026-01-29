@@ -61,6 +61,7 @@ const LANGUAGES = [
   { code: "ta", name: "Tamil", displayName: "தமிழ்" },
   { code: "it", name: "Italian", displayName: "Italian" },
   { code: "hy", name: "Armenian", displayName: "Հայերեն" },
+  { code: "ms", name: "Malay", displayName: "Bahasa Melayu" },
 ] as const;
 
 const AUTHORS = [
@@ -440,6 +441,30 @@ const AUTHORS = [
     description:
       "Italian novelist and literary critic, a leading figure of the Milanese Scapigliatura movement. His major works include the panoramic historical novel 'Cento anni' (A Hundred Years) spanning 1750-1850, and 'La giovinezza di Giulio Cesare' (The Youth of Julius Caesar). Known for his rich depictions of Italian society and history.",
   },
+  {
+    name: "Zhang Yu",
+    nameOriginalScript: "張預",
+    slug: "zhang-yu",
+    era: "Northern Song Dynasty (fl. c. 1072)",
+    description:
+      "Song dynasty military theorist and historian who compiled the Shiqi Shi Baijiang Zhuan (十七史百將傳), a collection of biographies of one hundred eminent generals drawn from the seventeen standard histories. Each biography is followed by commentary citing Sun Tzu's Art of War.",
+  },
+  {
+    name: "John Zonaras",
+    nameOriginalScript: "Ἰωάννης Ζωναρᾶς",
+    slug: "john-zonaras",
+    era: "Byzantine Empire (fl. c. 1100–1150)",
+    description:
+      "Byzantine chronicler and canonist who served under Emperor Alexios I Komnenos. After retiring to a monastery, he composed the Epitome Historiarum, a world chronicle from creation to 1118 CE.",
+  },
+  {
+    name: "Anonymous (Malay)",
+    nameOriginalScript: null,
+    slug: "anonymous-malay",
+    era: "Traditional Malay period (date uncertain)",
+    description:
+      "Anonymous author of the Syair Siti Zubaidah, a classical Malay narrative poem preserved in manuscript tradition from the Sambas region of West Kalimantan. The syair recounts the adventures of Sultan Abidin and Siti Zubaidah in the court of Negeri Kumbayat.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -542,7 +567,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "yuan-shu",
     description:
-      "Event-by-Event Narrative of the Comprehensive Mirror — the first Chinese historical work organized by topical events rather than chronology, reorganizing Sima Guang's Zizhi Tongjian into 42 self-contained narratives spanning from the Partition of Jin to the Later Zhou dynasty.",
+      "Event-by-Event Narrative of the Comprehensive Mirror — the first Chinese historical work organized by topical events rather than chronology. Reorganizes Sima Guang's Zizhi Tongjian into 42 major narratives (presented here in 45 chapters), spanning from the Partition of Jin to the Later Zhou dynasty.",
     sourceUrl: "https://ctext.org/tongjian-jishi-benmo",
     processedDir: "data/processed/tongjian",
     compositionYear: 1174,
@@ -555,7 +580,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "huangdi",
     description:
-      "The foundational text of Chinese medicine, comprising two parts: the Su Wen (素問, Basic Questions) and the Ling Shu (靈樞, Spiritual Pivot). A dialogue between the Yellow Emperor and his physician Qi Bo covering physiology, pathology, diagnosis, and treatment according to the principles of yin-yang and the five phases.",
+      "The foundational text of Chinese medicine, presented here in its Su Wen (素問, Basic Questions) portion. A dialogue between the Yellow Emperor and his physician Qi Bo covering physiology, pathology, diagnosis, and treatment according to the principles of yin-yang and the five phases. The complete Huang Di Nei Jing also includes the Ling Shu (靈樞, Spiritual Pivot), not yet included here.",
     sourceUrl: "https://ctext.org/huangdi-neijing",
     processedDir: "data/processed/huangdineijing",
     compositionYear: -200,
@@ -688,7 +713,7 @@ const TEXTS = [
     languageCode: "ta",
     authorSlug: "nandikkalambakam-poets",
     description:
-      "A kalambakam (multi-genre anthology) praising King Nandivarman III Pallava (c. 850 CE). The work comprises 88 poems plus supplements in diverse Tamil poetic genres, unified in praise of the Pallava king and his military achievements.",
+      "A kalambakam (multi-genre anthology) of 114 poems praising King Nandivarman III Pallava (c. 850 CE). The work showcases diverse Tamil poetic genres including venba, kalithurai, and viruttam, unified in praise of the Pallava king and his military achievements.",
     sourceUrl: "",
     processedDir: "data/processed/nandikkalambakam",
     compositionYear: 850,
@@ -1187,6 +1212,50 @@ const TEXTS = [
     processedDir: "data/processed/cento-anni",
     compositionYear: 1858,
     compositionEra: "Mid 19th century, Milan",
+  },
+  {
+    title: "Biographies of One Hundred Generals (Shiqi Shi Baijiang Zhuan)",
+    titleOriginalScript: "十七史百將傳",
+    slug: "shiqi-shi-baijiang-zhuan",
+    textType: "prose",
+    genre: "history",
+    languageCode: "zh",
+    authorSlug: "zhang-yu",
+    description:
+      "Biographies of one hundred eminent generals from Chinese history, drawn from the seventeen standard histories. Each biography is followed by commentary citing Sun Tzu's Art of War, connecting the general's tactics to classical military theory. The work spans from the Zhou dynasty to the Five Dynasties period.",
+    sourceUrl: "https://zh.wikisource.org/wiki/十七史百將傳",
+    processedDir: "data/processed/shiqi-shi-baijiang-zhuan",
+    compositionYear: 1072,
+    compositionEra: "熙寧五年, Northern Song",
+  },
+  {
+    title: "Epitome of Histories (Epitome Historiarum)",
+    titleOriginalScript: "Ἐπιτομὴ ἱστοριῶν",
+    slug: "epitome-historiarum",
+    textType: "prose" as const,
+    genre: "history",
+    languageCode: "grc",
+    authorSlug: "john-zonaras",
+    description:
+      "A Byzantine world chronicle by John Zonaras covering biblical and ancient history through the Byzantine period (18 books). Particularly valuable for preserving passages from lost portions of Cassius Dio's Roman History.",
+    sourceUrl: "https://archive.org/details/bub_gb_OFpFAAAAYAAJ",
+    processedDir: "data/processed/epitome-of-histories-final",
+    compositionYear: 1150,
+    compositionEra: "Mid-12th century, Byzantine Empire",
+  },
+  {
+    title: "The Syair of Siti Zubaidah (Syair Siti Zubaidah)",
+    titleOriginalScript: null,
+    slug: "syair-siti-zubaidah",
+    textType: "poetry" as const,
+    languageCode: "ms",
+    authorSlug: "anonymous-malay",
+    description:
+      "A classical Malay narrative poem in syair form (quatrains with AAAA rhyme scheme) recounting the adventures of Sultan Abidin and Siti Zubaidah. Preserved in manuscript tradition from the Sambas region of West Kalimantan, the poem reflects Malay court culture with its blend of Islamic and Southeast Asian literary conventions.",
+    sourceUrl: "",
+    processedDir: "data/processed/syair-siti-zubaidah",
+    compositionYear: 1800,
+    compositionEra: "Traditional Malay period (date uncertain, c. 18th–19th century)",
   },
 ] as const;
 

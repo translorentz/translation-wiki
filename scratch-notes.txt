@@ -1,5 +1,334 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-28 Session 28: Syair Siti Zubaidah + Epitome Translation Restart
+
+### Epitome Translation Restart
+All 3 pre-translation tasks COMPLETE:
+1. **Paragraph mismatch fix** (a39297d): Retry loop, post-chapter verification, explicit paragraph numbering in prompts
+2. **Translation prompt audit** (a78a668): New `grc-history` prompt for Byzantine chronicles, expanded base `grc` prompt, genre selection in translate-batch.ts
+3. **Paragraph healing** (a2f688d): 437 merges across 18 chapters (2285→1848 paragraphs), DB re-seeded
+
+Old translations deleted (ch 1, 7, 13 had partial translations from pre-healing paragraph counts).
+3 translation workers relaunched with `grc-history` prompt and 8s delay:
+- Worker 1 (PID 26207): ch 1-6, log `/tmp/epitome-final-w1.log`
+- Worker 2 (PID 26241): ch 7-12, log `/tmp/epitome-final-w2.log`
+- Worker 3 (PID 26266): ch 13-18, log `/tmp/epitome-final-w3.log`
+
+### Syair Siti Zubaidah Evaluation
+- **Source file**: `data/raw/syar_siti/syar_siti.txt` (12,454 lines, 333KB)
+- **Language**: Classical/traditional Malay (ms) — romanized transliteration from Jawi manuscript
+- **Genre**: Syair (narrative poetry, quatrains with AAAA rhyme scheme)
+- **Origin**: West Kalimantan (Sambas), manuscript transliterated by scholars
+- **Content structure**:
+  - Lines 1-38: Scholarly introduction in modern Indonesian (NOT part of the poem)
+  - Lines 39-179: Prose story summary (NOT part of the poem)
+  - Lines ~180+: The actual syair text in quatrains
+  - Page numbers scattered throughout (OCR artifacts: "179", "180", "381", etc.)
+  - Bibliography at end (lines 12444-12454)
+- **OCR quality**: Moderate — many misread characters (e.g., "lubaidah" for "Zubaidah", "sarnpai" for "sampai", "merneluk" for "memeluk")
+- **Evaluation agent**: Launched to assess readiness for translation pipeline
+- **Agent doc**: `docs/syair-siti-zubaidah-evaluation.md`
+
+### Syair Siti Zubaidah — Dual-Agent Pipeline (Workflow G + Workflow B)
+- **Pre-evaluation** (agent adc7f1a): Grade B- PASS, text ready for processing pipeline
+  - Doc: `docs/syair-siti-zubaidah-evaluation.md`
+- **Round 1**:
+  - Processor (af8aee0): Built `scripts/process-syair-siti-zubaidah.py`, produced 19 chapters, 2637 quatrains
+  - Reviewer (aad78de): Grade B, NOT SATISFIED (1.9% defect rate, 51 affected quatrains)
+  - Critical: 6 leaked page numbers, 24 tab remnants, 7 /N/ markers, 5 volume page refs
+  - 5 specific fix requests issued
+- **Round 2**:
+  - Processor (ae0bc69): All 5 fixes applied + both nice-to-haves (`tidal<`→`tidak`, remaining `!`)
+  - Reviewer (a5a6c4b): **Grade B+ — SATISFIED** (0.4% defect rate, only 12 word-initial `!` remaining)
+  - 2,634 quatrains across 19 chapters, all 4-line integrity verified
+- **Collaboration doc**: `docs/syair-siti-zubaidah-collaboration.md`
+- **Processor scratchpad**: `docs/syair-siti-zubaidah-processor-scratchpad.md`
+- **Reviewer scratchpad**: `docs/syair-siti-zubaidah-reviewer-scratchpad.md`
+- **Processing script**: `scripts/process-syair-siti-zubaidah.py`
+- **Output**: `data/processed/syair-siti-zubaidah/chapter-001.json` through `chapter-019.json`
+
+### Syair Siti Zubaidah — Seeding & Translation
+- **New language**: Malay (`ms`) added to languages table + seed-db.ts
+- **New author**: Anonymous (Malay), slug `anonymous-malay`
+- **Text entry**: slug `syair-siti-zubaidah`, textType `poetry`, genre `literature`
+- **Translation prompt**: `ms` prompt added to `prompts.ts` — Classical Malay court poetry, royal vocabulary glossary, character/place name preservation, OCR tolerance
+- **Genre categorization**: `categorize-texts.ts` updated and run
+- **DB seeded**: 19 chapters in DB
+- **Translation workers**:
+  - Worker 1 (PID 29765): ch 1-10, log `/tmp/syair-w1.log`
+  - Worker 2 (PID 29784): ch 11-19, log `/tmp/syair-w2.log`
+
+### Files Modified This Session
+- `scripts/seed-db.ts` — Added `ms` language, `anonymous-malay` author, `syair-siti-zubaidah` text entry
+- `scripts/categorize-texts.ts` — Added `syair-siti-zubaidah: "literature"` genre mapping
+- `src/server/translation/prompts.ts` — Added `ms` Classical Malay translation prompt
+- `scripts/process-syair-siti-zubaidah.py` — NEW: Python processing script (created by Processor agent)
+- `docs/syair-siti-zubaidah-evaluation.md` — Pre-evaluation report
+- `docs/syair-siti-zubaidah-collaboration.md` — Joint dual-agent collaboration doc
+- `docs/syair-siti-zubaidah-processor-scratchpad.md` — Processor agent working notes
+- `docs/syair-siti-zubaidah-reviewer-scratchpad.md` — Reviewer agent working notes
+
+---
+
+## 2026-01-28 Session 27: Epitome Consolidation + Translation Completions
+
+### Key Discovery: Vol 1 Contains All 18 Books
+
+DB analysis revealed `epitome-historiarum-v1` has 18 chapters (books 1-18), NOT just 6. The three DB entries overlap:
+- **Vol 1** (18 chapters): Books 1-6 are UNCLEANED (181-366 paras, Grade D). Books 7-18 were seeded from an earlier cleaning pass.
+- **Vol 2** (6 chapters): Books 7-12, independently cleaned (B+ approved). Para counts differ slightly from Vol 1 (1-2 paras difference).
+- **Vol 3** (6 chapters): Books 13-18, Python-cleaned (Grade A). Para counts differ significantly from Vol 1 (11-15 fewer paras = cleaner).
+
+### Consolidation Pipeline Launched
+
+Two agents working in background to produce unified Grade A text:
+- **Consolidation Agent** (a6a8b85): Compares Vol 1 vs Vol 2/3 paragraph-by-paragraph for books 7-18, cleans books 1-6 from scratch using Python tools
+- **Review Agent** (a214030): Independently evaluates consolidated output, trial translations, provides critique
+- **Joint doc**: `docs/epitome-consolidation-joint.md`
+- **Individual scratches**: `docs/epitome-consolidation-agent-scratch.md`, `docs/epitome-review-agent-scratch.md`
+- **Output**: `data/processed/epitome-of-histories-final/chapter-001.json` through `chapter-018.json`
+- **Target**: Grade A (<2% contamination) across all 18 books
+
+### Completed This Session
+- Shiqi Shi Baijiang Zhuan: ALL 100 chapters translated (9 workers, all done)
+- Epitome Vol 1 translation: COMPLETE (18 chapters) — but will need retranslation after consolidation
+- Epitome Vol 2 translation: Partially complete (ch 7 done, stuck on ch 8 API retries) — paused for consolidation
+- Epitome Vol 3: Seeded and translation started briefly — paused for consolidation
+- All Epitome translation workers killed pending consolidation
+
+### Consolidation Results
+- **Consolidation Agent** (a6a8b85): COMPLETE — books 7-18 identical across versions (copied as-is), books 1-6 cleaned from scratch
+- **Review Agent** (a214030): COMPLETE — ALL 18 BOOKS GRADE A, signed off first pass, no iteration needed
+- **Stats**: 2,235 paragraphs, 2.25M characters, 66 total findings (<0.05% max contamination)
+- **Output**: `data/processed/epitome-of-histories-final/`
+- **Evaluation tools**: `scripts/lib/epitome-consolidation-review/evaluate.py`
+- **Cleaning tools**: `scripts/lib/epitome-consolidation/clean_books_1_6.py`
+
+### DB Consolidation + Translation (agent a3d1c65)
+- Delete v1/v2/v3 DB entries (all overlapping duplicates)
+- Create single `epitome-historiarum` entry with 18 chapters
+- Launch 3 translation workers (books 1-6, 7-12, 13-18)
+- Logs: `/tmp/epitome-final-w{1,2,3}.log`
+
+---
+
+## 2026-01-28 Session 26: Epitome of Histories — 6-Agent Iterative Cleaning Pipeline
+
+### Overview
+
+This session implemented a novel **6-agent iterative cleaning pipeline** for processing the Epitome of Histories, a complex bilingual OCR text requiring multiple rounds of quality improvement.
+
+### The Problem
+
+Initial processing of the 3 volumes achieved only **Grade D** (15-25% apparatus contamination):
+- Critical apparatus (manuscript sigla A, B, C, P, W) leaked into text
+- Latin translation portions not fully filtered
+- FONTES citations remained
+- Fragmented paragraphs and structural issues
+
+### The Solution: Parallel Cleaner-Evaluator Agent Pairs
+
+**Architecture:** 3 Cleaning Agents + 3 Evaluation Agents working in parallel
+
+| Volume | Cleaning Agent | Evaluation Agent | Workspace |
+|--------|---------------|------------------|-----------|
+| Vol 1 (Books 1-6) | Creates cleaning modules, iterates | Samples, grades, provides feedback | `scripts/lib/epitome-cleaning-v1/` |
+| Vol 2 (Books 7-12) | Creates cleaning modules, iterates | Samples, grades, provides feedback | `scripts/lib/epitome-cleaning-v2/` |
+| Vol 3 (Books 13-18) | Creates cleaning modules, iterates | Samples, grades, provides feedback | `scripts/lib/epitome-cleaning-v3/` |
+
+**Communication Protocol:**
+- Cleaners write status to `docs/epitome-vN-cleaning-scratch.md`
+- Evaluators write feedback to `docs/epitome-vN-evaluation-scratch.md`
+- Agents read each other's files to coordinate iterations
+- Target: Both agents agree on **B+ grade** (< 5% contamination)
+
+### Results Summary
+
+| Volume | Initial Grade | Final Grade | Iterations | Status |
+|--------|--------------|-------------|------------|--------|
+| Vol 1 | D | **B+** | 3 | ✅ APPROVED — Seeded & translating |
+| Vol 2 | D | C+ | 3 | ⚠️ CONDITIONAL — Needs more iteration |
+| Vol 3 | D | D+ | 3 | ❌ REJECTED — Cleaning not applying |
+
+### Volume 1 Success Story
+
+**Iteration 1:** Grade D → Identified apparatus patterns, editor names, FONTES
+**Iteration 2:** Grade B- → Contamination dropped from 35% to 1.1%
+**Iteration 3:** Grade B+ → Final 1.33% contamination, **APPROVED**
+
+**Cleaning modules created:**
+- `patterns.ts` — 80+ OCR substitution patterns, FONTES regex, apparatus regex
+- `filters.ts` — Detection functions with OCR error handling
+- `validators.ts` — Quality verification with B+ grade criteria
+- `cleaner.ts` — Main paragraph processing pipeline
+
+**Output:** 1,355 clean paragraphs (removed 675 contaminated), 99.2% Greek ratio
+
+### Volume 2 Issues
+
+Evaluator found **7% contamination** (target: <5%):
+- Page references (~3.4%): `P Y mp`, `W II 38`, `J108`
+- Apparatus brackets (~4.5%): `word] variant` patterns
+- Conditionally approved but needs another iteration pass
+
+### Volume 3 Issues
+
+Evaluator found cleaning script **not actually applying filters** to output:
+- Claimed B+ (80.1 score) but actual grade D+ (12-18% contamination)
+- Same contamination patterns as before iterations
+- Root cause: Script may be writing to wrong location or bypassing filters
+
+### Files Created
+
+**Cleaning infrastructure:**
+- `scripts/lib/epitome-cleaning-v1/` — patterns.ts, filters.ts, validators.ts, cleaner.ts, index.ts
+- `scripts/lib/epitome-cleaning-v2/` — same structure
+- `scripts/lib/epitome-cleaning-v3/` — same structure
+- `scripts/reprocess-epitome-vol1.ts`, `reprocess-epitome-vol2.ts`, `reprocess-epitome-vol3.ts`
+
+**Clean output:**
+- `data/processed/epitome-of-histories-clean/chapter-001.json` through `chapter-018.json`
+
+**Documentation:**
+- `docs/epitome-v1-cleaning-scratch.md`, `docs/epitome-v1-evaluation-scratch.md`
+- `docs/epitome-v2-cleaning-scratch.md`, `docs/epitome-v2-evaluation-scratch.md`
+- `docs/epitome-v3-cleaning-scratch.md`, `docs/epitome-v3-evaluation-scratch.md`
+- `docs/epitome-of-histories-quality-evaluation.md`
+
+### Volume 1 Translation Started
+
+- **Slug:** `epitome-historiarum-v1`
+- **Author:** John Zonaras (added to seed-db.ts)
+- **Chapters:** 18 books seeded
+- **Worker:** Running at `/tmp/epitome-v1-translate.log`
+- **Prompt:** Using standard `grc` (Byzantine Greek)
+
+### Lessons Learned
+
+1. **Dual-agent architecture works** — Independent evaluation catches issues cleaners miss
+2. **OCR contamination is complex** — Need extensive pattern libraries for apparatus
+3. **Metric validation critical** — Cleaner's self-reported scores may not match reality
+4. **Iterative improvement effective** — Vol 1 went from D to B+ in 3 iterations
+
+### Next Steps
+
+- Resume Vol 2 and Vol 3 cleaner-evaluator pairs
+- Evaluators empowered to use DeepSeek trial translations to build cases
+- Continue until both agents agree on B+ for each volume
+
+---
+
+### Original Task
+Process `epitome_of_histories` from raw to ready for translation.
+
+### Investigation Results
+
+**What the text is:**
+- **Title:** Epitome Historiarum (Epitome of Histories) / Annales
+- **Author:** John Zonaras (Ioannes Zonaras), Byzantine chronicler
+- **Date:** c. 1118-1143 CE
+- **Genre:** World chronicle
+- **Original language:** Medieval Greek (Byzantine)
+
+**About the raw file:**
+- Source: Bonn CSHB edition (1841), OCR from Internet Archive
+- File: `epitome.txt` (2.37 MB, 34,466 lines)
+- Contains: Books 1-6 only (Volume 1 of 3)
+- Editor: Maurice Pinder
+- Latin translator: Hieronymus Wolf (1557)
+
+**Language analysis:**
+- Greek characters: 631,387 (49.7%)
+- Latin characters: 638,977 (50.3%)
+- This is a BILINGUAL PARALLEL EDITION with:
+  - Original Greek text by Zonaras
+  - Latin translation by Wolf (16th century)
+  - Critical apparatus (textual variants)
+  - Source citations (FONTES)
+
+### Recommendation: Extract Greek Only
+
+**Rationale:**
+1. Greek is the original language - translate the authentic Byzantine text
+2. Latin is already a translation (Wolf 1557) - translating a translation adds interpretive distance
+3. Consistency with other Byzantine texts in the project (all translated from Greek)
+4. Scholarly value: Zonaras preserves lost portions of Cassius Dio
+
+**NOT recommended:** Latin only (it's secondary) or both (doubles work for limited value)
+
+### Files Created
+
+1. `docs/epitome-of-histories-language-analysis.md` — Full analysis of text and recommendation
+2. `scripts/process-epitome-of-histories.ts` — Processing script (extracts Greek, filters apparatus)
+3. `data/processed/epitome-of-histories/chapter-001.json` through `chapter-006.json`
+4. `docs/epitome-seed-entries-draft.md` — Draft seed-db.ts entries (not yet added)
+
+### Processing Results
+
+- Books processed: 6
+- Total paragraphs: 2,030
+- Total characters: 753,678 (Greek)
+
+**Challenges encountered:**
+- Interleaved Greek/Latin structure required careful parsing
+- Critical apparatus mixed with Greek text (patterns like "1 post Θεός PW add δ᾽")
+- OCR errors in Greek diacritics (e.g., `slg` instead of `εἰς`)
+- Some apparatus still leaking through despite multiple filter patterns
+
+### Outstanding Work
+
+1. **Not seeded yet** — draft entries prepared but not added to seed-db.ts
+2. **Translation not started** — waiting for seeding
+3. **Incomplete corpus** — only Books 1-6 of 18 total (Volumes 2-3 not acquired)
+
+### Extraneous File Note
+
+The `cento_anni` subdirectory contains an unrelated Italian novel (Giuseppe Rovani, "Cent'anni") that should be removed from this directory.
+
+---
+
+## 2026-01-28 Session 25: Shiqi Shi Baijiang Zhuan Processing
+
+### Text Processed
+
+**Shiqi Shi Baijiang Zhuan (十七史百將傳)** — Biographies of One Hundred Generals from the Seventeen Histories
+
+- **Author:** Zhang Yu (張預), Northern Song Dynasty (fl. c. 1072)
+- **Structure:** 10 volumes, 100 generals (10 per volume)
+- **Genre:** History (military biographies)
+- **Source:** `data/raw/shiqi_shi_baijiang_zhuan/` (10 volume files)
+
+### Processing Issues Encountered
+
+1. **First run found only 26 entries** — Regex pattern was too simplistic
+2. **Second run found 97 entries** — Missing "宋" (Liu Song) and "陈" (Chen) dynasty prefixes
+3. **Final run found 100 entries** — After adding missing prefixes
+
+### Files Created/Modified
+
+- `scripts/process-shiqi-shi-baijiang-zhuan.ts` — processing script
+- `data/processed/shiqi-shi-baijiang-zhuan/` — 100 JSON files
+- `scripts/seed-db.ts` — added Zhang Yu author + text entry
+- `scripts/categorize-texts.ts` — added `shiqi-shi-baijiang-zhuan: "history"`
+- `docs/shiqi-shi-baijiang-zhuan-processing-notes.md` — processing documentation
+
+### Translation Status
+
+Translation worker launched:
+```bash
+pnpm tsx scripts/translate-batch.ts --text shiqi-shi-baijiang-zhuan --delay 6000
+```
+
+Using `zh-literary` prompt (appropriate for historical narrative prose with military terminology).
+
+### Key Details
+
+- Each chapter has 3 paragraphs: title, biography, Sun Tzu commentary
+- Mixed traditional/simplified characters across volumes
+- Dynasty prefixes include: 周, 秦, 前漢, 後漢, 吳, 魏, 蜀, 晉, 宋, 陳, 隋, 唐, etc.
+
+---
+
 ## 2026-01-26 Session 24: Italian Novels + Translation Prompt Policy
 
 ### Translation Prompt Policy (NEW RULE)

@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-25 (Session 21)
+# Last updated: 2026-01-28 (Session 25)
 
 ################################################################################
 # ⚠️  CRITICAL SECURITY WARNING — READ FIRST  ⚠️
@@ -112,6 +112,7 @@ Current data:
   - Udayanakumara Kaviyam — 6 chapters, ta (textType=poetry) [NEW — seeded by agent a9ce61b]
   - Record of Daily Knowledge (Rizhilu) — 32 chapters, zh [NEW — agent a400ec2]
   - Diary of the City of Rome (Diarium Urbis Romae) — 66 chapters, it [NEW — Session 18]
+  - Biographies of One Hundred Generals (Shiqi Shi Baijiang Zhuan) — 100 chapters, zh [NEW — Session 25]
 
 Recently seeded (Session 12 — 2026-01-24):
   - Epistle to Diognetus — 12 chapters, grc, prose (author: Anonymous (Diognetus))
@@ -320,13 +321,13 @@ Two agents collaborate via a shared document until both agree output is producti
 | Carmina Graeca | 21 medieval Greek poems | A | docs/carmina-graeca-scratchpad.md |
 | Eustathius (R1→R2) | 25 chapters (2 volumes) | B+ | docs/eustathius-r2-collaboration.md |
 | Greek XML R1 | 3 texts (334 chapters) | A | docs/greek-xml-collaboration.md |
-| Greek XML R2 | 4 texts (tlg3156+tlg4003) | IN PROGRESS | docs/greek-xml-r2-collaboration.md |
+| Greek XML R2 | 4 texts (tlg3156+tlg4003) | A | docs/greek-xml-r2-collaboration.md |
+| Epitome Consolidation | 18 chapters (books 1-18) | A | docs/epitome-consolidation-joint.md |
+| Syair Siti Zubaidah | 19 chapters (2,634 quatrains) | B+ | docs/syair-siti-zubaidah-collaboration.md |
 
-### Active Pipelines (Session 13)
-- **Greek XML R2**: Parser (a46da65) + Reviewer (ae6bd83)
-  - Texts: Hesiod Theogony Commentary + 3 Marcianus geographical works
-  - Joint: docs/greek-xml-r2-collaboration.md
-  - When complete: seed + translate
+### Active Pipelines (Session 28)
+- **Syair Siti Zubaidah**: COMPLETE (B+ SATISFIED) — seeded + translating
+- **Epitome Consolidation**: COMPLETE (Grade A) — seeded + translating
 
 ================================================================================
 ## KEY FILE LOCATIONS

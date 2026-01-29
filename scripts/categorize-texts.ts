@@ -36,15 +36,14 @@ const db = drizzle(client, { schema });
 
 // Genre categorization by text slug
 const GENRE_MAP: Record<string, string> = {
-  // Philosophy (philosophical/ethical works)
+  // Philosophy (philosophical/ethical works, religious apologetics)
   zhuziyulei: "philosophy",
   chuanxilu: "philosophy",
   "kongzi-jiayu": "philosophy",
   "baihu-tong": "philosophy",
   deanima: "philosophy",
-  diognetum: "philosophy",
-  "sophistici-elenchi-paraphrasis": "philosophy",
-  rizhilu: "philosophy",
+  diognetum: "philosophy", // Christian apologetics using philosophical argument
+  rizhilu: "philosophy", // Evidential scholarship covering ethics, governance, philology
 
   // Commentary (commentaries on other texts)
   "lunyu-zhushu": "commentary",
@@ -63,6 +62,7 @@ const GENRE_MAP: Record<string, string> = {
   "eustathius-odyssey": "commentary",
   "hesiod-theogony-exegesis": "commentary",
   "guliang-zhuan": "commentary",
+  "sophistici-elenchi-paraphrasis": "commentary", // Paraphrase/commentary on Aristotle
 
   // Literature (poetry, novels, epics, historical fiction)
   ptochoprodromos: "literature",
@@ -92,6 +92,8 @@ const GENRE_MAP: Record<string, string> = {
   "arshagouhi-teotig": "history",
   "yi-zhou-shu": "history",
   gaoshizhuan: "history",
+  "shiqi-shi-baijiang-zhuan": "history",
+  "epitome-historiarum": "history",
 
   // Science (medicine, geography, ritual/ceremonial manuals)
   huangdineijing: "science",
@@ -100,7 +102,10 @@ const GENRE_MAP: Record<string, string> = {
   "artemidori-geographia": "science",
   ceremonialis: "science",
   "yi-li": "science",
-  fengsutongyi: "science",
+  fengsutongyi: "history", // Encyclopedic work on customs and social practices (ethnography/social history)
+
+  // Malay court poetry
+  "syair-siti-zubaidah": "literature",
 };
 
 async function categorizeTexts() {

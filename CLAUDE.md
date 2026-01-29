@@ -32,26 +32,27 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-26)
+## Active Tasks (2026-01-28, Session 28)
 
 ### IN PROGRESS
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Chinese Novels (Session 23) | 8 workers | Dongzhou (108ch), Sanbao (100ch), Xingshi (100ch) |
-| Italian Novels (Session 24) | 2 workers | La Giovinezza (41ch), Cento Anni (21ch), using `it-literary-19c` prompt |
-| Rizhilu translation | 4 workers | 32 chapters, logs at `/tmp/rizhilu-worker{1-4}.log` |
-| Translation Gap Fixer | Running | `scripts/fill-translation-gaps.ts` — 21 chapters with gaps across 7 texts |
-| Nandikkalambakam Stage 3 | Agent aa88334 | Retranslating 114 poems, editorial pass |
-| Eustathius Odyssey | 3 workers | 10/27 chapters done (ab5dae1, a4043fb, afff370) |
-| Shisan Jing Zhushu | ~20 workers | 13 texts, 455 chapters total |
+| Epitome of Histories Translation | 3 workers | 18 chapters, `grc-history` prompt, `/tmp/epitome-final-w{1,2,3}.log` |
+| Syair Siti Zubaidah Translation | 2 workers | 19 chapters, `ms` prompt, `/tmp/syair-w{1,2}.log` |
 
-### RECENTLY COMPLETED
-- Italian novels setup: La Giovinezza (41ch) + Cento Anni (21ch) processed, seeded, translating ✓
-- Chinese novels setup: Dongzhou (108ch), Sanbao (100ch), Xingshi (100ch) seeded, translating ✓
-- Armenian Initiative: 6 texts, 195 chapters ✓
-- Security remediation: gitleaks, history purge, creds rotated ✓
-- Diarium Urbis Romae: 66/66 chapters ✓
+### SESSION 28 COMPLETED
+- Epitome consolidation: 3 volumes → 1 unified text, Grade A (dual-agent pipeline) ✓
+- Epitome pre-translation fixes: paragraph mismatch fix + prompt audit + paragraph healing ✓
+- Syair Siti Zubaidah: Pre-eval → Dual-agent OCR cleaning (Round 1: B → Round 2: B+) ✓
+- Syair seeded: new language `ms` (Malay), 19 chapters, poetry mode ✓
+- Translation prompt: `ms` Classical Malay court poetry prompt created ✓
+
+### EARLIER COMPLETED
+- Shiqi Shi Baijiang Zhuan: 100/100 chapters translated ✓
+- Chinese novels: Dongzhou (108), Sanbao (100), Xingshi (100) — all 308 chapters ✓
+- Italian novels: La Giovinezza (41), Cento Anni (21) — all 62 chapters ✓
+- Armenian texts: all 6 texts, 195 chapters ✓
 
 ---
 
@@ -167,6 +168,48 @@ For texts requiring verification:
 4. Seed to DB, launch translation workers
 
 Joint doc: `docs/<pipeline>-collaboration.md`
+
+---
+
+## Iterative Cleaning Pipeline (for complex OCR texts)
+
+**Use case:** Bilingual parallel editions, heavy apparatus contamination, multiple volumes
+
+**Architecture:** Parallel Cleaner-Evaluator agent pairs per volume
+
+| Role | Responsibility | Writes To |
+|------|---------------|-----------|
+| **Cleaning Agent** | Creates cleaning modules, filters contamination, iterates | `docs/<text>-vN-cleaning-scratch.md` |
+| **Evaluation Agent** | Samples output, grades quality, provides feedback | `docs/<text>-vN-evaluation-scratch.md` |
+
+**Workflow:**
+1. Create workspace: `scripts/lib/<text>-cleaning-vN/` with modules:
+   - `patterns.ts` — Regex for apparatus, Latin, citations
+   - `filters.ts` — Detection functions
+   - `validators.ts` — Quality verification
+   - `cleaner.ts` — Main pipeline
+2. Cleaning Agent processes, writes to clean output directory
+3. Evaluation Agent samples ≥50 paragraphs, calculates contamination rate
+4. Evaluator grades (A-F) and writes specific feedback
+5. Cleaner reads feedback, fixes issues, reprocesses
+6. **Iterate until BOTH agents agree on B+ grade** (< 5% contamination)
+
+**Grading criteria for B+:**
+- Less than 5% apparatus contamination
+- Less than 2% Latin/foreign text leakage
+- No FONTES/citation blocks
+- Clean paragraph boundaries (no fragments)
+- Coherent text flow
+
+**Evaluator powers:**
+- Can use DeepSeek trial translations to test readability
+- Can reject claimed grades with evidence
+- Must provide specific examples of problems
+
+**Example (Epitome of Histories):**
+- Vol 1: D → B+ in 3 iterations ✅
+- Vol 2: D → C+ (needs iteration)
+- Vol 3: D → D+ (cleaning not applying)
 
 ---
 
