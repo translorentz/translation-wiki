@@ -20,7 +20,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   username: varchar("username", { length: 100 }).notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
+  passwordHash: text("password_hash"),
   role: varchar("role", { length: 20 }).notNull().default("reader"), // reader | editor | admin
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -31,7 +31,80 @@ export const usersRelations = relations(users, ({ many }) => ({
   endorsements: many(endorsements),
   discussionThreads: many(discussionThreads),
   discussionPosts: many(discussionPosts),
+  accounts: many(accounts),
 }));
+
+// ============================================================
+// Accounts (OAuth)
+// ============================================================
+
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: serial("id").primaryKey(),
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: varchar("type", { length: 50 }).notNull(),
+    provider: varchar("provider", { length: 50 }).notNull(),
+    providerAccountId: varchar("provider_account_id", { length: 255 }).notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: varchar("token_type", { length: 50 }),
+    scope: text("scope"),
+    id_token: text("id_token"),
+  },
+  (table) => [
+    uniqueIndex("accounts_provider_account_idx").on(
+      table.provider,
+      table.providerAccountId
+    ),
+    index("accounts_user_id_idx").on(table.userId),
+  ]
+);
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+// ============================================================
+// Invitation Tokens
+// ============================================================
+
+export const invitationTokens = pgTable(
+  "invitation_tokens",
+  {
+    id: serial("id").primaryKey(),
+    token: varchar("token", { length: 64 }).notNull().unique(),
+    createdByUserId: integer("created_by_user_id")
+      .notNull()
+      .references(() => users.id),
+    usedByUserId: integer("used_by_user_id").references(() => users.id),
+    expiresAt: timestamp("expires_at").notNull(),
+    usedAt: timestamp("used_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  }
+);
+
+export const invitationTokensRelations = relations(
+  invitationTokens,
+  ({ one }) => ({
+    createdBy: one(users, {
+      fields: [invitationTokens.createdByUserId],
+      references: [users.id],
+      relationName: "createdInvitations",
+    }),
+    usedBy: one(users, {
+      fields: [invitationTokens.usedByUserId],
+      references: [users.id],
+      relationName: "usedInvitation",
+    }),
+  })
+);
 
 // ============================================================
 // Languages

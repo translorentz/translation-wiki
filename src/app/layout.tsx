@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { TRPCReactProvider } from "@/trpc/client";
-import { Button } from "@/components/ui/button";
+import { UserNav } from "@/components/auth/UserNav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -54,11 +54,7 @@ export default function RootLayout({
                   </Link>
                 </nav>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/login">Sign in</Link>
-                </Button>
-              </div>
+              <UserNav />
             </div>
           </header>
 

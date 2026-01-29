@@ -13,6 +13,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+  const errorParam = searchParams.get("error");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +45,12 @@ function LoginForm() {
     <Card className="w-full max-w-sm p-6">
       <h1 className="mb-4 text-2xl font-bold">Sign In</h1>
 
+      {errorParam === "email_exists" && (
+        <p className="mb-4 text-sm text-destructive">
+          This email is already registered. Please sign in with your password.
+        </p>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Label htmlFor="email">Email</Label>
@@ -72,6 +79,23 @@ function LoginForm() {
           {loading ? "Signing in..." : "Sign In"}
         </Button>
       </form>
+
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-border" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">or</span>
+        </div>
+      </div>
+
+      <Button
+        variant="outline"
+        className="w-full"
+        onClick={() => signIn("google", { callbackUrl })}
+      >
+        Sign in with Google
+      </Button>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}

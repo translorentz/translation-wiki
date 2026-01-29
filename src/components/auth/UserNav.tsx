@@ -1,0 +1,47 @@
+"use client";
+
+import { useSession, signOut } from "next-auth/react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+export function UserNav() {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <div className="h-8 w-16" />;
+  }
+
+  if (!session?.user) {
+    return (
+      <Button variant="ghost" size="sm" asChild>
+        <Link href="/login">Sign in</Link>
+      </Button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link
+        href="/profile"
+        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        {session.user.name}
+      </Link>
+      {session.user.role === "admin" && (
+        <Link
+          href="/admin/users"
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Admin
+        </Link>
+      )}
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => signOut({ callbackUrl: "/" })}
+      >
+        Sign out
+      </Button>
+    </div>
+  );
+}
