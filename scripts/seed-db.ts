@@ -465,6 +465,14 @@ const AUTHORS = [
     description:
       "Anonymous author of the Syair Siti Zubaidah, a classical Malay narrative poem preserved in manuscript tradition from the Sambas region of West Kalimantan. The syair recounts the adventures of Sultan Abidin and Siti Zubaidah in the court of Negeri Kumbayat.",
   },
+  {
+    name: "Tao Zongyi",
+    nameOriginalScript: "\u9676\u5B97\u5100",
+    slug: "tao-zongyi",
+    era: "Yuan Dynasty (c. 1329\u20131412)",
+    description:
+      "Yuan-dynasty scholar and writer. His Nancun Chuogeng Lu (Records of Resting from the Plough) is one of the most important biji miscellanies of the period, covering Yuan court affairs, customs, arts, literature, and institutional practices.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -1255,7 +1263,22 @@ const TEXTS = [
     sourceUrl: "",
     processedDir: "data/processed/syair-siti-zubaidah",
     compositionYear: 1800,
-    compositionEra: "Traditional Malay period (date uncertain, c. 18th–19th century)",
+    compositionEra: "Traditional Malay period (date uncertain, c. 18th\u201319th century)",
+  },
+  {
+    title: "Records of Resting from the Plough (Nancun Chuogeng Lu)",
+    titleOriginalScript: "\u5357\u6751\u8F1C\u8015\u9304",
+    slug: "nancun-chuogeng-lu",
+    textType: "prose" as const,
+    genre: "history",
+    languageCode: "zh",
+    authorSlug: "tao-zongyi",
+    description:
+      "A Yuan-dynasty biji miscellany in 30 volumes covering court affairs, ethnic classifications, arts, calligraphy, literature, customs, and institutional practices of the Mongol Yuan empire. One of the most important primary sources for Yuan-dynasty social and cultural history.",
+    sourceUrl: "https://ctext.org/nancun-chuogeng-lu",
+    processedDir: "data/processed/nancun-chuogeng-lu",
+    compositionYear: 1366,
+    compositionEra: "Late Yuan Dynasty",
   },
 ] as const;
 
@@ -1355,6 +1378,7 @@ async function seedTexts(
           compositionYear: text.compositionYear,
           compositionEra: text.compositionEra,
           ...("textType" in text && { textType: text.textType }),
+          ...("genre" in text && { genre: text.genre }),
         })
         .returning({ id: schema.texts.id });
       slugToId.set(text.slug, inserted.id);
