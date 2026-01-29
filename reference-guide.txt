@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-28 (Session 25)
+# Last updated: 2026-01-28 (Session 29)
 
 ################################################################################
 # ⚠️  CRITICAL SECURITY WARNING — READ FIRST  ⚠️
@@ -39,20 +39,19 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-24, commit 7fbe9c1 (fix search to match text titles and author names)
+Latest deploy: 2026-01-28, commit 48863da (auth system + Nancun Chuogeng Lu)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
 - AUTH_SECRET — random base64 secret
-- AUTH_URL — should be https://deltoi.com (NOTE: was translation-wiki.vercel.app, needs update)
+- AUTH_URL — should be https://deltoi.com
 - DEEPSEEK_API_KEY — for server-side translation features
+- GOOGLE_CLIENT_ID — Google OAuth (NOT YET SET — needed for Google sign-in)
+- GOOGLE_CLIENT_SECRET — Google OAuth (NOT YET SET)
 
 Known issues:
-- AUTH_URL env var on Vercel may still be set to
-  translation-wiki.vercel.app instead of https://deltoi.com. User should
-  update this in Vercel dashboard → Settings → Environment Variables.
-- Search: FIXED (agent a687c60, pushed). Now searches texts.title + authors.name
-  with ILIKE substring matching. UI shows "Texts" and "Chapters" sections.
+- GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET not yet configured in Vercel/Google Cloud Console
+- AUTH_URL on Vercel may still be set to translation-wiki.vercel.app instead of https://deltoi.com
 
 ================================================================================
 ## TECH STACK (ACTUAL, NOT PLANNED)
@@ -65,7 +64,7 @@ Known issues:
 - Shadcn UI components
 - tRPC v11 (fetchRequestHandler, createCaller for RSC)
 - Drizzle ORM (postgres.js driver)
-- NextAuth.js v5 beta (JWT strategy, credentials provider)
+- NextAuth.js v5 beta (JWT strategy, credentials + Google OAuth providers)
 - PostgreSQL (Neon, cloud)
 - DeepSeek V3.2 API (deepseek-chat) for AI translations (zh, grc, la)
 - Google Gemini 2.5 Flash (@google/genai SDK) for Tamil translations
@@ -78,8 +77,9 @@ Known issues:
 Schema synced via: `pnpm db:push` (drizzle-kit push, NOT migrations)
 
 Tables:
-- users, languages, authors, texts, chapters
+- users, accounts, invitation_tokens, languages, authors, texts, chapters
 - translations, translation_versions, endorsements
+- discussion_threads, discussion_posts
 
 Current data:
 - 7 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil), it (Italian), hy (Armenian)
@@ -112,7 +112,10 @@ Current data:
   - Udayanakumara Kaviyam — 6 chapters, ta (textType=poetry) [NEW — seeded by agent a9ce61b]
   - Record of Daily Knowledge (Rizhilu) — 32 chapters, zh [NEW — agent a400ec2]
   - Diary of the City of Rome (Diarium Urbis Romae) — 66 chapters, it [NEW — Session 18]
-  - Biographies of One Hundred Generals (Shiqi Shi Baijiang Zhuan) — 100 chapters, zh [NEW — Session 25]
+  - Biographies of One Hundred Generals (Shiqi Shi Baijiang Zhuan) — 100 chapters, zh [Session 25]
+  - Epitome of Histories (Epitome Historiarum) — 18 chapters, grc [Session 28]
+  - The Syair of Siti Zubaidah (Syair Siti Zubaidah) — 19 chapters, ms [Session 28]
+  - Records of Resting from the Plough (Nancun Chuogeng Lu) — 30 chapters, zh [Session 29]
 
 Recently seeded (Session 12 — 2026-01-24):
   - Epistle to Diognetus — 12 chapters, grc, prose (author: Anonymous (Diognetus))
@@ -341,9 +344,12 @@ src/app/(wiki)/[lang]/[author]/[text]/[chapter]/page.tsx — Chapter view
 src/app/(wiki)/[lang]/[author]/[text]/[chapter]/edit/page.tsx — Edit page
 src/app/(wiki)/[lang]/[author]/[text]/[chapter]/discussion/page.tsx — Discussion (planned)
 src/app/(wiki)/admin/users/page.tsx                 — Admin user mgmt
+src/app/(wiki)/profile/page.tsx                     — User profile (password change, delete account)
+src/app/(wiki)/profile/ProfileClient.tsx            — Profile client component
 src/app/(wiki)/search/page.tsx                      — Search page
-src/app/(auth)/login/page.tsx                       — Login
-src/app/(auth)/register/page.tsx                    — Register
+src/app/(auth)/login/page.tsx                       — Login (credentials + Google)
+src/app/(auth)/register/page.tsx                    — Register (invite token + Google)
+src/app/(auth)/register/actions.ts                  — Server action: invite token cookie
 
 ### Components
 src/components/interlinear/InterlinearViewer.tsx     — Two-column text display
@@ -354,6 +360,7 @@ src/components/navigation/TableOfContents.tsx        — Chapter list sidebar
 src/components/endorsement/EndorseButton.tsx         — Endorsement toggle
 src/components/history/                             — Version history/diff
 src/components/home/FeaturedTexts.tsx               — Home page featured texts
+src/components/auth/UserNav.tsx                     — Session-aware header (sign in/out, profile, admin)
 
 ### Server
 src/server/db/schema.ts                             — Drizzle schema (all tables + textType)
@@ -361,9 +368,9 @@ src/server/db/index.ts                              — DB client
 src/server/trpc/init.ts                             — tRPC setup + context
 src/server/trpc/routers/texts.ts                    — Text listing queries
 src/server/trpc/routers/translations.ts             — Translation CRUD
-src/server/trpc/routers/users.ts                    — User management
-src/server/trpc/routers/discussions.ts              — Discussion threads (planned)
-src/server/auth/index.ts                            — NextAuth config
+src/server/trpc/routers/users.ts                    — User management (register, profile, admin CRUD, deletion)
+src/server/trpc/routers/discussions.ts              — Discussion threads + posts
+src/server/auth/index.ts                            — NextAuth config (credentials + Google OAuth)
 src/server/translation/client.ts                    — DeepSeek API client
 src/server/translation/gemini-client.ts             — Gemini API client (Tamil)
 src/server/translation/prompts.ts                   — Language-specific translation prompts
@@ -443,7 +450,7 @@ vitest.config.mts                                   — Test config
 CLAUDE.md                                           — Project architecture & conventions
 scratch-notes.txt                                   — Session-by-session working notes
 reference-guide.txt                                 — THIS FILE: structured quick reference
-communications-to-the-User.txt                      — Implementation plan & deployment guide
+communications-to-the-User.txt                      — Auth system status report (registration, deletion, profiles, etc.)
 
 ================================================================================
 ## IMPLEMENTATION STATUS BY PHASE
@@ -733,10 +740,10 @@ gh api repos/translorentz/translation-wiki/deployments --jq '.[0]'  # Check depl
 
 - Next.js 16 "middleware" deprecation warning (non-blocking, still works)
 - NextAuth v5 beta (5.0.0-beta.30) — no stable release yet
+- GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET not yet set in Vercel (Google OAuth won't work in prod)
 - AUTH_URL on Vercel may still reference translation-wiki.vercel.app
-- Translation workers in progress — ~100+ chapters still being translated
-- Discussion pages implemented but not yet tested end-to-end in production
 - HDNJ currently only has Su Wen (55 ch); Ling Shu (81 ch) to be added later
+- Nancun Chuogeng Lu translation: in progress (3 workers running)
 
 ================================================================================
 ## SANGAM TAMIL CORPUS NOTES

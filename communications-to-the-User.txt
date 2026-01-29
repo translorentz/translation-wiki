@@ -2,9 +2,9 @@ User Registration & Usage System — Status Report
 ==================================================
 Date: 2026-01-28
 
-OVERALL STATUS: Substantially complete. Core auth, registration, editing, discussions,
-and version history are all implemented, tested, and working. Two features are NOT
-implemented: admin user deletion and user self-deletion. Details below.
+OVERALL STATUS: COMPLETE. All user registration and management features are
+implemented, tested, and working. The only remaining step is configuring Google
+OAuth credentials in production (Vercel environment variables). Details below.
 
 
 1. ADDING USERS (Invite-Only Registration)
@@ -37,13 +37,21 @@ IMPLEMENTED & TESTED.
 
 3. REMOVING USERS
 ------------------
-NOT IMPLEMENTED.
+IMPLEMENTED & TESTED. (Updated 2026-01-28, Session 29)
 
-- There is no admin UI or API endpoint to delete a user account.
-- There is no user self-deletion flow.
-- To remove a user today, you would need to run a manual SQL DELETE against the
-  database (with cascading deletes on accounts, invitation_tokens references, etc.).
-- Recommendation: Implement an admin "deactivate user" endpoint and UI button.
+Admin deletion:
+- Admin panel at /admin/users shows a "Delete" button next to each user.
+- Clicking "Delete" shows a "Confirm" / "Cancel" prompt (two-step to prevent accidents).
+- Admins cannot delete their own account from the admin panel.
+- On deletion, all user content (translations, threads, posts) is reassigned to the
+  system user (id=1) to preserve content integrity. The user's accounts and
+  endorsements are cascade-deleted.
+
+User self-deletion:
+- Users can delete their own account from /profile.
+- Requires typing their username to confirm (prevents accidental deletion).
+- Content is preserved (reassigned to system user), personal data is deleted.
+- User is signed out immediately after deletion.
 
 
 4. WHAT USERS CAN DO (Role-Based Capabilities)
@@ -95,10 +103,15 @@ Edge cases handled:
 
 6. HOW USERS REMOVE THEMSELVES
 -------------------------------
-NOT IMPLEMENTED.
+IMPLEMENTED & TESTED. (Updated 2026-01-28, Session 29)
 
-There is no self-service account deletion. Users cannot delete their own accounts
-through the UI. This would need to be added as a future feature.
+- Go to /profile (accessible from the header username link).
+- Click "Delete my account" in the red Danger Zone section.
+- Type your username to confirm.
+- Click "Permanently delete my account."
+- Your content (translations, discussion posts) is preserved but attributed to
+  "[deleted user]". Your account, email, and password are permanently removed.
+- You are signed out immediately.
 
 
 7. PARAMETERS LINKED TO USERS
@@ -185,9 +198,8 @@ a) Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in production environment varia
    and create OAuth credentials in Google Cloud Console with redirect URI:
    https://deltoi.com/api/auth/callback/google
 
-b) Admin user deletion (not implemented — add if needed)
-
-c) User self-deletion (not implemented — add if needed)
-
-d) User profile page (the getProfile tRPC query exists but there is no /profile page
-   for viewing or editing profile details, changing password, etc.)
+All previously missing features have been implemented:
+- Admin user deletion: DONE (Session 29)
+- User self-deletion: DONE (Session 29)
+- User profile page (/profile): DONE (Session 29) — shows account info,
+  password change (for credentials users), and delete account option

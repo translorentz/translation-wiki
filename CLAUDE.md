@@ -32,14 +32,27 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-28, Session 28)
+## Active Tasks (2026-01-28, Sessions 28-29)
 
 ### IN PROGRESS
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Epitome of Histories Translation | 3 workers | 18 chapters, `grc-history` prompt, `/tmp/epitome-final-w{1,2,3}.log` |
-| Syair Siti Zubaidah Translation | 2 workers | 19 chapters, `ms` prompt, `/tmp/syair-w{1,2}.log` |
+| Nancun Chuogeng Lu Translation | 3 workers | 30 chapters, `zh-literary` prompt, `/tmp/nancun-w{1,2,3}.log` |
+| Suguna Sundari Processing | 1 agent | Examining raw text in `data/raw/suguna_sundari/` |
+
+### SESSION 29 COMPLETED
+- Auth system: Invite-only registration + Google OAuth (13 files, full implementation) ✓
+- Admin user deletion with content reassignment to system user ✓
+- User self-deletion with username confirmation ✓
+- User profile page (`/profile`): account info, password change, delete account ✓
+- Session-aware header (UserNav): sign in/out, profile link, admin link ✓
+- SessionProvider integration for client-side auth state ✓
+- Nancun Chuogeng Lu: processed 30 volumes (1499 paragraphs, 203k chars), seeded ✓
+- DB smoke tests: 4 tests passed (user CRUD, cascade, profile query) ✓
+- Security review: 4 High, 4 Medium, 3 Low issues found and fixed ✓
+- Communications document (`communications-to-the-User.txt`) written ✓
+- Committed and pushed: 679bf02 (auth) + 48863da (Nancun + docs) ✓
 
 ### SESSION 28 COMPLETED
 - Epitome consolidation: 3 volumes → 1 unified text, Grade A (dual-agent pipeline) ✓
@@ -62,7 +75,9 @@ Public wiki for open-source translations of pre-contemporary classical texts. Si
 
 **Live:** https://deltoi.com | **GitHub:** https://github.com/translorentz/translation-wiki.git
 
-**Stack:** Next.js 15, TypeScript, tRPC, Drizzle ORM, NextAuth.js, Neon PostgreSQL, Vercel
+**Stack:** Next.js 16, TypeScript, tRPC, Drizzle ORM, NextAuth.js v5, Neon PostgreSQL, Vercel
+
+**Auth:** Invite-only registration (max 20 users), credentials + Google OAuth, JWT sessions
 
 ---
 

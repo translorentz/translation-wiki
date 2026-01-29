@@ -2,7 +2,7 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-01-25, Session 22
+**Last updated:** 2026-01-28, Session 29
 
 ---
 
@@ -10,51 +10,30 @@ Track all running agents and background workers here. Update when launching or c
 
 | Agent ID | Task | Status | Log/Output | Notes |
 |----------|------|--------|------------|-------|
-| a9fb74b | Armenian "Delays" fix | IN PROGRESS | `docs/armenian-delays-fix-report.md` | Finding/fixing "Delays" substitution |
-| aa88334 | Nandikkalambakam Stage 3 | IN PROGRESS | `docs/tamil-translation-notes/` | Retranslating 114 poems |
-| a1cae1c | Yashodhara Kaviyam Stage 1 | IN PROGRESS | `docs/tamil-translation-notes/` | Processing + translating 330 verses |
-| ae734cc | Udayanakumara Stage 2 Review | IN PROGRESS | `docs/tamil-translation-notes/` | Still reviewing |
-| ab5dae1 | Eustathius Odyssey ch 1-8 | TRANSLATING | — | DeepSeek grc, 6000 chars/batch |
-| a4043fb | Eustathius Odyssey ch 9-16 | TRANSLATING | — | DeepSeek grc, 6000 chars/batch |
-| afff370 | Eustathius Odyssey ch 19-24 | TRANSLATING | — | DeepSeek grc, 6000 chars/batch |
+| a39fd10 | Nancun Chuogeng Lu Translation | TRANSLATING | `/tmp/nancun-w{1,2,3}.log` | 3 workers, 30 chapters, zh-literary |
+| aa501fb | Suguna Sundari Processing | IN PROGRESS | — | Examining raw text for suitability |
 
-### Dongzhou Lieguo Zhi Translation Workers (6)
-| Worker | Chapters | Log File | Status |
-|--------|----------|----------|--------|
-| Worker 1 | 1-18 | `/tmp/dongzhou-worker1.log` | TRANSLATING |
-| Worker 2 | 19-36 | `/tmp/dongzhou-worker2.log` | TRANSLATING |
-| Worker 3 | 37-54 | `/tmp/dongzhou-worker3.log` | TRANSLATING |
-| Worker 4 | 55-72 | `/tmp/dongzhou-worker4.log` | TRANSLATING |
-| Worker 5 | 73-90 | `/tmp/dongzhou-worker5.log` | TRANSLATING |
-| Worker 6 | 91-108 | `/tmp/dongzhou-worker6.log` | TRANSLATING |
+### Previously Running (from earlier sessions — status unknown, likely completed or killed)
 
-### Rizhilu Translation Workers (4)
-| Worker | Chapters | Log File |
-|--------|----------|----------|
-| Worker 1 | 1-8 | `/tmp/rizhilu-worker1.log` |
-| Worker 2 | 9-16 | `/tmp/rizhilu-worker2.log` |
-| Worker 3 | 17-24 | `/tmp/rizhilu-worker3.log` |
-| Worker 4 | 25-32 | `/tmp/rizhilu-worker4.log` |
-
-### Shisan Jing Zhushu Workers (~20 active)
-
-**Original Orchestration Agents (completed — launched workers):**
-| Agent ID | Texts | Chapters | Workers Launched |
-|----------|-------|----------|------------------|
-| a9f1c24 | 論語/孟子/孝經/爾雅 | 57 | — |
-| ace30af | 周易正義/尚書正義 | 126 | babf3aa, b6a0f7d, ba80c30 |
-| a86e80d | 周禮/儀禮/禮記 | 178 | bfc83a7, b4c8f59, b332ac1, b0508ee |
-| ace6429 | 春秋三傳 | 94 | bc593fa, bc3b540, b9c848d, bce1f8a, b624f79, bdcaaab |
-
-**Reinforcement Agents:**
-| Agent ID | Texts |
-|----------|-------|
-| a7e1ecc | yili-zhushu (2 workers) + erya-zhushu |
-| aca4e1f | zhouli-zhushu (2 workers) + xiaojing-zhushu |
-| a3bb94a | liji-zhengyi (2 workers) + liji-zhushu |
-| a541e9f | lunyu-zhushu + mengzi-zhushu + shangshu-zhengyi |
+| Agent ID | Task | Notes |
+|----------|------|-------|
+| a9fb74b | Armenian "Delays" fix | Was in progress Session 22 |
+| aa88334 | Nandikkalambakam Stage 3 | Was retranslating 114 poems |
+| a1cae1c | Yashodhara Kaviyam Stage 1 | Was processing + translating |
+| ab5dae1 | Eustathius Odyssey ch 1-8 | DeepSeek grc |
+| a4043fb | Eustathius Odyssey ch 9-16 | DeepSeek grc |
+| afff370 | Eustathius Odyssey ch 19-24 | DeepSeek grc |
 
 ---
+
+## Recently Completed (Session 29)
+
+| Agent ID | Task | Completion | Notes |
+|----------|------|------------|-------|
+| a9cfa3d | Suguna Sundari search (round 1) | COMPLETE | Text not found in raw data |
+| — | Auth system implementation | COMPLETE | Invite-only + Google OAuth + profile + deletion |
+| — | Nancun Chuogeng Lu processing | COMPLETE | 30 volumes → 30 chapters seeded |
+| — | Security review | COMPLETE | 4H/4M/3L issues fixed |
 
 ## Recently Completed (Session 22)
 

@@ -6,17 +6,17 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 
 ## Summary
 
-- **Total texts:** 52
-- **Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian)
-- **Total chapters:** ~2,600+
+- **Total texts:** 55
+- **Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian), ms (Malay)
+- **Total chapters:** ~2,700+
 
 ### Genre Distribution
 
 | Genre | Count | Description |
 |-------|-------|-------------|
 | commentary | 16 | Commentaries on other texts (zhushu/zhengyi works, Eustathius, etc.) |
-| literature | 12 | Poetry, novels, epics (Tamil kaviyams, Armenian novels, etc.) |
-| history | 9 | Historical narratives, chronicles, biographies |
+| literature | 13 | Poetry, novels, epics (Tamil kaviyams, Armenian novels, Syair, etc.) |
+| history | 12 | Historical narratives, chronicles, biographies |
 | philosophy | 8 | Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.) |
 | science | 7 | Medicine, geography, ritual/ceremonial manuals |
 
@@ -38,7 +38,9 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Comprehensive Meaning of Customs (Fengsu Tongyi) | ying-shao | fengsutongyi | 11 | prose | science |
 | The School Sayings of Confucius (Kongzi Jiayu) | confucius | kongzi-jiayu | 80 | prose | philosophy |
 | Daily Learning Record (Rizhilu) | gu-yanwu | rizhilu | 32 | prose | philosophy |
-| Romance of the Eastern Zhou (Dongzhou Lieguo Zhi) | feng-menglong | dongzhou-lieguo-zhi | 108 | prose | history |
+| Romance of the Eastern Zhou (Dongzhou Lieguo Zhi) | feng-menglong | dongzhou-lieguo-zhi | 108 | prose | literature |
+| Biographies of One Hundred Generals (Shiqi Shi Baijiang Zhuan) | anonymous-baijiang | shiqi-shi-baijiang-zhuan | 100 | prose | history |
+| Records of Resting from the Plough (Nancun Chuogeng Lu) | tao-zongyi | nancun-chuogeng-lu | 30 | prose | history |
 
 ### Shisan Jing Zhushu (十三經註疏) — 13 Texts
 
@@ -77,6 +79,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Periplus of the Outer Sea | pseudo-arrian | periplus-maris-exteri | 31 | prose | science |
 | Periplus of the Inner Sea | pseudo-scylax | periplus-maris-interni | 6 | prose | science |
 | Geography of Artemidorus | artemidorus | artemidori-geographia | 3 | prose | science |
+| Epitome of Histories (Epitome Historiarum) | john-zonaras | epitome-of-histories | 18 | prose | history |
 
 ---
 
@@ -125,6 +128,14 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 
 ---
 
+## Malay (ms)
+
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| The Syair of Siti Zubaidah (Syair Siti Zubaidah) | anonymous-syair | syair-siti-zubaidah | 19 | poetry | literature |
+
+---
+
 ## Raw Text Locations
 
 | Text | Raw Location | Processed Location |
@@ -140,6 +151,9 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Carmina Graeca | `data/difficult_extra_processing/carmina_graeca_medii_aevi_multiple_titles.txt` | `data/processed/carmina-graeca/` |
 | Diarium Urbis Romae | `data/difficult_extra_processing/diarium_urbis_romae/` | `data/processed/diarium-urbis-romae/` |
 | Armenian texts | `data/raw/<text-name>/` | `data/processed/<text-slug>/` |
+| Nancun Chuogeng Lu | `data/raw/nancun_chuogeng_lu/` | `data/processed/nancun-chuogeng-lu/` |
+| Epitome of Histories | `data/processed/epitome-of-histories-clean/` | `data/processed/epitome-of-histories-clean/` |
+| Syair Siti Zubaidah | `data/raw/syar_siti/` | `data/processed/syair-siti-zubaidah/` |
 
 ---
 

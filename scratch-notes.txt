@@ -1,5 +1,44 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-28 Session 29: Auth System + Nancun Chuogeng Lu + User Management
+
+### Auth System Implementation (COMPLETE)
+Full invite-only registration + Google OAuth implemented across 13 files:
+- Schema: `accounts` + `invitation_tokens` tables, nullable `passwordHash`
+- Auth: Google provider, transactional signIn callback, JWT role refresh
+- Registration: invite token required, 20-user cap, atomic consumption
+- Admin: token CRUD, user deletion with content reassignment to user id=1
+- Profile: `/profile` page — account info, password change, self-deletion
+- Header: session-aware `UserNav` component (sign in/out, profile, admin links)
+- Security review: 4H/4M/3L issues found and fixed (transactions, no auto-linking, token truncation)
+- 4 DB smoke tests passed, `pnpm build` clean
+- Committed: 679bf02, pushed to main
+
+### Nancun Chuogeng Lu (COMPLETE processing, translation in progress)
+- Source: `data/raw/nancun_chuogeng_lu/` — 30 .txt files (Yuan Dynasty biji by Tao Zongyi, 1366)
+- Processing: `scripts/process-nancun-chuogeng-lu.ts` — blank-line paragraph splitting
+- Output: 30 chapters, 1499 paragraphs, 203,257 characters
+- Seeded: author tao-zongyi, text nancun-chuogeng-lu, genre history
+- Translation: 3 workers running (agent a39fd10), zh-literary prompt
+- Committed: 48863da, pushed to main
+
+### User Management Features (COMPLETE)
+- Admin user deletion: `deleteUser` admin procedure, cascades content to system user
+- User self-deletion: `deleteMyAccount` with username confirmation
+- Profile page: `getMyProfile` (email, role, joined date, hasPassword, hasGoogle), `changePassword`
+- All tested via DB smoke tests
+
+### Communications Document
+- `communications-to-the-User.txt` updated with full 12-point auth system status report
+- Documents: registration, user listing, deletion, capabilities, sign-up, self-deletion, user parameters, discussions, editing, version history, testing status, remaining work
+- Key gaps: admin user deletion (now implemented), self-deletion (now implemented), profile page (now implemented)
+
+### Suguna Sundari
+- First search agent (a9cfa3d): text NOT found in `data/raw/tamil_corpus/`
+- Second agent (aa501fb): examining `data/raw/suguna_sundari/` directly (running)
+
+---
+
 ## 2026-01-28 Session 28: Syair Siti Zubaidah + Epitome Translation Restart
 
 ### Epitome Translation Restart
