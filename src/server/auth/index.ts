@@ -11,6 +11,45 @@ type Role = "reader" | "editor" | "admin";
 
 const MAX_USERS = 100;
 
+// --- In-memory login rate limiter ---
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_FAILED_ATTEMPTS = 5;
+const FAIL_DELAY_MS = 500;
+
+interface LoginAttemptRecord {
+  count: number;
+  firstAttempt: number;
+}
+
+const loginAttempts = new Map<string, LoginAttemptRecord>();
+
+function checkLoginRateLimit(email: string): boolean {
+  const now = Date.now();
+  const record = loginAttempts.get(email);
+  if (!record) return true;
+  if (now - record.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+    loginAttempts.delete(email);
+    return true;
+  }
+  return record.count < MAX_FAILED_ATTEMPTS;
+}
+
+function recordFailedLogin(email: string): void {
+  const now = Date.now();
+  const record = loginAttempts.get(email);
+  if (!record || now - record.firstAttempt > RATE_LIMIT_WINDOW_MS) {
+    loginAttempts.set(email, { count: 1, firstAttempt: now });
+  } else {
+    record.count++;
+  }
+}
+
+function resetLoginAttempts(email: string): void {
+  loginAttempts.delete(email);
+}
+
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   pages: {
@@ -32,8 +71,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const email = credentials.email as string;
+        const email = (credentials.email as string).toLowerCase();
         const password = credentials.password as string;
+
+        // Rate limit check
+        if (!checkLoginRateLimit(email)) {
+          console.log(`[RATE_LIMIT] Login blocked for email=${email} — too many failed attempts`);
+          await delay(FAIL_DELAY_MS);
+          return null;
+        }
 
         const [dbUser] = await db
           .select()
@@ -42,14 +88,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           .limit(1);
 
         if (!dbUser || !dbUser.passwordHash) {
+          recordFailedLogin(email);
+          await delay(FAIL_DELAY_MS);
           return null;
         }
 
         const isPasswordValid = await compare(password, dbUser.passwordHash);
 
         if (!isPasswordValid) {
+          recordFailedLogin(email);
+          await delay(FAIL_DELAY_MS);
           return null;
         }
+
+        // Successful login — reset rate limit counter
+        resetLoginAttempts(email);
 
         return {
           id: String(dbUser.id),
@@ -100,7 +153,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       });
 
       if (existingUserByEmail) {
-        return "/login?error=email_exists";
+        return "/register?error=registration_failed";
       }
 
       // Use transaction to atomically: validate token, check cap, create user, link account, consume token
@@ -244,6 +297,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (dbUser) {
           token.role = dbUser.role as Role;
+        } else {
+          // User was deleted — invalidate the session
+          delete token.id;
+          delete token.role;
         }
       }
       return token;

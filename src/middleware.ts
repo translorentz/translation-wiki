@@ -15,6 +15,13 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Protect admin routes — require authentication
+  if (pathname.startsWith("/admin") && !isLoggedIn) {
+    const loginUrl = new URL("/login", req.nextUrl.origin);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
   return NextResponse.next();
 });
 

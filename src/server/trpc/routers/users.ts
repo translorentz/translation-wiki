@@ -9,17 +9,58 @@ import { randomBytes } from "crypto";
 
 const MAX_USERS = 100;
 
+// --- Global registration rate limiter ---
+const REGISTRATION_WINDOW_MS = 60 * 1000; // 1 minute
+const MAX_REGISTRATIONS_PER_MINUTE = 10;
+
+interface RegistrationWindow {
+  count: number;
+  windowStart: number;
+}
+
+let registrationWindow: RegistrationWindow = { count: 0, windowStart: Date.now() };
+
+function checkRegistrationRateLimit(): boolean {
+  const now = Date.now();
+  if (now - registrationWindow.windowStart > REGISTRATION_WINDOW_MS) {
+    registrationWindow = { count: 0, windowStart: now };
+  }
+  return registrationWindow.count < MAX_REGISTRATIONS_PER_MINUTE;
+}
+
+function recordRegistration(): void {
+  const now = Date.now();
+  if (now - registrationWindow.windowStart > REGISTRATION_WINDOW_MS) {
+    registrationWindow = { count: 1, windowStart: now };
+  } else {
+    registrationWindow.count++;
+  }
+}
+
 export const usersRouter = createTRPCRouter({
   register: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
         username: z.string().min(3).max(50),
-        password: z.string().min(8),
+        password: z.string().min(8).refine(
+          (val) => /[a-zA-Z]/.test(val) && /[0-9]/.test(val),
+          { message: "Password must be at least 8 characters with at least one letter and one number" }
+        ),
         inviteToken: z.string().min(1, "Invitation token is required"),
       })
     )
     .mutation(async ({ input }) => {
+      // Global registration rate limit
+      if (!checkRegistrationRateLimit()) {
+        console.log(`[RATE_LIMIT] Registration blocked — too many registrations per minute`);
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message: "Too many registration attempts. Please try again later.",
+        });
+      }
+
+      recordRegistration();
       const passwordHash = await hash(input.password, 12);
 
       // Use a transaction to atomically consume token, check cap, and create user
@@ -64,7 +105,7 @@ export const usersRouter = createTRPCRouter({
         if (existingEmail) {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "Email already in use",
+            message: "Registration failed. Please check your details and try again.",
           });
         }
 
@@ -75,7 +116,7 @@ export const usersRouter = createTRPCRouter({
         if (existingUsername) {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "Username already taken",
+            message: "Registration failed. Please check your details and try again.",
           });
         }
 
@@ -113,7 +154,6 @@ export const usersRouter = createTRPCRouter({
         columns: {
           id: true,
           username: true,
-          role: true,
           createdAt: true,
         },
       });
@@ -163,6 +203,8 @@ export const usersRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
       }
 
+      console.log(`[AUDIT] action=setRole actor=${ctx.user.id} target=${input.userId} role=${input.role} timestamp=${new Date().toISOString()}`);
+
       return updated;
     }),
 
@@ -185,6 +227,8 @@ export const usersRouter = createTRPCRouter({
         expiresAt: invitationTokens.expiresAt,
         createdAt: invitationTokens.createdAt,
       });
+
+    console.log(`[AUDIT] action=createInviteToken actor=${ctx.user.id} tokenId=${row!.id} timestamp=${new Date().toISOString()}`);
 
     return row!;
   }),
@@ -211,7 +255,7 @@ export const usersRouter = createTRPCRouter({
 
   revokeInviteToken: adminProcedure
     .input(z.object({ tokenId: z.number() }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const [deleted] = await db
         .delete(invitationTokens)
         .where(
@@ -229,6 +273,8 @@ export const usersRouter = createTRPCRouter({
         });
       }
 
+      console.log(`[AUDIT] action=revokeInviteToken actor=${ctx.user.id} tokenId=${input.tokenId} timestamp=${new Date().toISOString()}`);
+
       return { success: true };
     }),
 
@@ -244,14 +290,28 @@ export const usersRouter = createTRPCRouter({
         });
       }
 
+      if (input.userId === 1) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot delete the system user",
+        });
+      }
+
       const [target] = await db
-        .select({ id: users.id })
+        .select({ id: users.id, role: users.role })
         .from(users)
         .where(eq(users.id, input.userId))
         .limit(1);
 
       if (!target) {
         throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+      }
+
+      if (target.role === "admin") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot delete an admin user. Demote them first.",
+        });
       }
 
       await db.transaction(async (tx) => {
@@ -264,6 +324,8 @@ export const usersRouter = createTRPCRouter({
         // accounts and endorsements cascade on delete
         await tx.delete(users).where(eq(users.id, input.userId));
       });
+
+      console.log(`[AUDIT] action=deleteUser actor=${ctx.user.id} target=${input.userId} timestamp=${new Date().toISOString()}`);
 
       return { success: true };
     }),
@@ -303,7 +365,10 @@ export const usersRouter = createTRPCRouter({
     .input(
       z.object({
         currentPassword: z.string().min(1),
-        newPassword: z.string().min(8),
+        newPassword: z.string().min(8).refine(
+          (val) => /[a-zA-Z]/.test(val) && /[0-9]/.test(val),
+          { message: "Password must be at least 8 characters with at least one letter and one number" }
+        ),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -342,6 +407,14 @@ export const usersRouter = createTRPCRouter({
     .input(z.object({ confirmUsername: z.string() }))
     .mutation(async ({ input, ctx }) => {
       const userId = Number(ctx.user.id);
+
+      if (userId === 1) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Cannot delete the system user",
+        });
+      }
+
       const [user] = await db
         .select({ username: users.username })
         .from(users)
