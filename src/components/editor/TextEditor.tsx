@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
@@ -75,6 +75,13 @@ export function TextEditor({
 
   const hasContent = paragraphs.some((p) => p.trim().length > 0);
 
+  // Auto-resize textarea to fit content
+  const autoResize = useCallback((el: HTMLTextAreaElement | null) => {
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  }, []);
+
   return (
     <div>
       {/* Editor grid */}
@@ -99,11 +106,15 @@ export function TextEditor({
             </div>
 
             {/* Editable translation */}
-            <div>
+            <div className="flex">
               <textarea
+                ref={(el) => autoResize(el)}
                 value={paragraphs[i]}
-                onChange={(e) => handleParagraphChange(i, e.target.value)}
-                className="min-h-[4rem] w-full resize-y rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                onChange={(e) => {
+                  handleParagraphChange(i, e.target.value);
+                  autoResize(e.target);
+                }}
+                className="min-h-[4rem] w-full resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 placeholder="Enter translation..."
               />
             </div>
