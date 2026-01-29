@@ -587,6 +587,13 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Tamil prose literature uses ta-prose prompt
+    const isTamilProse = text.language.code === "ta" && text.genre === "literature" && text.textType === "prose";
+    if (isTamilProse) {
+      promptLang = "ta-prose";
+      usingSpecialPrompt = true;
+    }
+
     // Byzantine Greek history/chronicles use grc-history prompt
     const isGreekHistory = text.language.code === "grc" && text.genre === "history";
     if (isGreekHistory) {

@@ -49,7 +49,11 @@ const MAIN_CHAPTER_TITLES: [number, string][] = [
 const FRONT_MATTER_END_LINE = 195; // "---" separator before novel body
 
 interface ChapterData {
-  paragraphs: { index: number; text: string }[];
+  chapterNumber: number;
+  title: string;
+  sourceContent: {
+    paragraphs: { index: number; text: string }[];
+  };
 }
 
 function main() {
@@ -81,12 +85,17 @@ function main() {
 
   // Process front matter as chapter 0
   const frontMatterLines = lines.slice(0, FRONT_MATTER_END_LINE);
-  const frontMatter = processFrontMatter(frontMatterLines);
+  const frontMatterParas = processParagraphs(frontMatterLines);
+  const frontMatter: ChapterData = {
+    chapterNumber: 0,
+    title: "Front Matter",
+    sourceContent: { paragraphs: frontMatterParas },
+  };
   writeChapter(0, frontMatter);
 
   // Process each main chapter
-  let totalParagraphs = frontMatter.paragraphs.length;
-  let totalChars = frontMatter.paragraphs.reduce((s, p) => s + p.text.length, 0);
+  let totalParagraphs = frontMatter.sourceContent.paragraphs.length;
+  let totalChars = frontMatter.sourceContent.paragraphs.reduce((s, p) => s + p.text.length, 0);
 
   for (let i = 0; i < chapterStarts.length; i++) {
     const start = chapterStarts[i];
@@ -96,15 +105,20 @@ function main() {
 
     // Extract chapter content (skip the chapter heading line and its synopsis line)
     const chapterLines = lines.slice(start.lineIndex, endLine);
-    const chapter = processChapter(chapterLines);
+    const paras = processParagraphs(chapterLines);
+    const chapter: ChapterData = {
+      chapterNumber: start.num,
+      title: start.title,
+      sourceContent: { paragraphs: paras },
+    };
 
     writeChapter(start.num, chapter);
-    totalParagraphs += chapter.paragraphs.length;
-    totalChars += chapter.paragraphs.reduce((s, p) => s + p.text.length, 0);
+    totalParagraphs += paras.length;
+    totalChars += paras.reduce((s, p) => s + p.text.length, 0);
 
     console.log(
-      `Chapter ${String(start.num).padStart(2)}: ${chapter.paragraphs.length} paragraphs, ` +
-      `${chapter.paragraphs.reduce((s, p) => s + p.text.length, 0)} chars — ${start.title}`
+      `Chapter ${String(start.num).padStart(2)}: ${paras.length} paragraphs, ` +
+      `${paras.reduce((s, p) => s + p.text.length, 0)} chars — ${start.title}`
     );
   }
 
@@ -113,7 +127,7 @@ function main() {
   console.log(`Total characters: ${totalChars}`);
 }
 
-function processFrontMatter(lines: string[]): ChapterData {
+function processParagraphs(lines: string[]): { index: number; text: string }[] {
   const text = lines.join("\n");
   const blocks = text.split(/\n\s*\n/);
   const paragraphs: { index: number; text: string }[] = [];
@@ -127,25 +141,7 @@ function processFrontMatter(lines: string[]): ChapterData {
     }
   }
 
-  return { paragraphs };
-}
-
-function processChapter(lines: string[]): ChapterData {
-  // Join all lines, split on blank lines to get paragraphs
-  const text = lines.join("\n");
-  const blocks = text.split(/\n\s*\n/);
-  const paragraphs: { index: number; text: string }[] = [];
-  let idx = 0;
-
-  for (const block of blocks) {
-    const trimmed = block.trim();
-    if (trimmed && !trimmed.match(/^-+$/)) {
-      paragraphs.push({ index: idx, text: trimmed });
-      idx++;
-    }
-  }
-
-  return { paragraphs };
+  return paragraphs;
 }
 
 function writeChapter(num: number, data: ChapterData) {

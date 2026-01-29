@@ -302,6 +302,24 @@ Guidelines:
 - Preserve metaphors and imagery that are central to Armenian literary tradition
 - Where archaic or regional vocabulary appears, provide natural English equivalents`,
 
+  "ta-prose": `You are translating 19th-century Tamil literary prose to English.
+This is an early Tamil novel from the social realism tradition.
+
+Guidelines:
+- Produce fluent, readable English prose that captures the narrative voice of a 19th-century novel
+- The Tamil is 19th-century literary prose — NOT classical Sangam poetry. The vocabulary, syntax, and register are much closer to modern literary Tamil than to ancient Tamil
+- Preserve the moralistic and didactic tone characteristic of early Tamil novels
+- Maintain paragraph structure faithfully — do not merge or split paragraphs
+- Character names: transliterate consistently (e.g., Suguna Sundari, Puvanendiran, Maduresan). Once a name is established, use it consistently throughout
+- Place names: transliterate and keep consistent
+- Thirukkural and proverb quotations: translate the proverb naturally into English. If recognizable as a Thirukkural couplet, note [Thirukkural] in brackets after the translation
+- Embedded speeches and dialogues: preserve the rhetorical style of formal speeches; these are a key feature of early Tamil novels
+- Social commentary passages (on child marriage, hygiene, education, women's rights): translate with care for the reformist intent — these reflect the author's progressive 19th-century views
+- Sanskritized vocabulary: many 19th-century Tamil texts use Sanskrit-derived words freely. Translate by meaning, not etymology
+- Honorifics and forms of address: render naturally (e.g., "sir", "my lord", "Your Majesty" as appropriate to context)
+- Chapter synopses in brackets: translate these as-is, preserving the bracketed format
+- Sub-section headings within chapters: translate and preserve as structural markers`,
+
   ms: `You are translating Classical Malay (Bahasa Melayu Klasik) court poetry to English.
 This is a syair — a narrative poem in quatrains (4-line stanzas with AAAA end-rhyme).
 

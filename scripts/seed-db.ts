@@ -473,6 +473,14 @@ const AUTHORS = [
     description:
       "Yuan-dynasty scholar and writer. His Nancun Chuogeng Lu (Records of Resting from the Plough) is one of the most important biji miscellanies of the period, covering Yuan court affairs, customs, arts, literature, and institutional practices.",
   },
+  {
+    name: "Mayuram Vedanayakam Pillai",
+    nameOriginalScript: "\u0BB5\u0BC7\u0BA4\u0BA8\u0BBE\u0BAF\u0B95\u0BAE\u0BCD \u0BAA\u0BBF\u0BB3\u0BCD\u0BB3\u0BC8",
+    slug: "vedanayakam-pillai",
+    era: "19th century (1826-1889)",
+    description:
+      "Pioneer of the Tamil novel. His Prathapa Mudaliar Charithram (1876) is widely considered the first Tamil novel. Suguna Sundari (1887) is his second novel, a morality tale incorporating social commentary against child marriage, extensive moral philosophy, and Tamil proverbs.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -1279,6 +1287,21 @@ const TEXTS = [
     processedDir: "data/processed/nancun-chuogeng-lu",
     compositionYear: 1366,
     compositionEra: "Late Yuan Dynasty",
+  },
+  {
+    title: "Suguna Sundari (\u0B9A\u0BC1\u0B95\u0BC1\u0BA3 \u0B9A\u0BC1\u0BA8\u0BCD\u0BA4\u0BB0\u0BBF)",
+    titleOriginalScript: "\u0B9A\u0BC1\u0B95\u0BC1\u0BA3\u0B9A\u0BC1\u0BA8\u0BCD\u0BA4\u0BB0\u0BBF \u0B9A\u0BB0\u0BBF\u0BA4\u0BCD\u0BA4\u0BBF\u0BB0\u0BAE\u0BCD",
+    slug: "suguna-sundari",
+    textType: "prose" as const,
+    genre: "literature",
+    languageCode: "ta",
+    authorSlug: "vedanayakam-pillai",
+    description:
+      "One of the earliest Tamil novels (1887), by Mayuram Vedanayakam Pillai. A morality tale about a virtuous princess, incorporating social commentary against child marriage, moral philosophy, hygiene advice, and Tamil proverbs including Thirukkural quotes.",
+    sourceUrl: "",
+    processedDir: "data/processed/suguna-sundari",
+    compositionYear: 1887,
+    compositionEra: "19th century (1887)",
   },
 ] as const;
 
