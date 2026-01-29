@@ -68,6 +68,9 @@ export default function RootLayout({
                 Deltoi — A collaborative wiki of interlinear translations
                 of pre-contemporary texts.
               </p>
+              <p className="mt-2 text-center text-xs text-gray-400">
+                Trial project by Bryan Cheong.
+              </p>
             </div>
           </footer>
         </TRPCReactProvider>

@@ -1,5 +1,28 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-29 Semeioseis Gnomikai OCR Cleaning (Cleaning Agent)
+
+### Semeioseis Gnomikai V1 Cleaning — COMPLETE
+- Created Python cleaning pipeline at `scripts/lib/semeioseis-cleaning-v1/`
+- Processed 9198 raw lines into 38 chapters (82-117, 119-120), 126 paragraphs
+- Chapter 118 not found in source (merged with 117)
+- Removed: 898 footnotes, 181 page headers, 515 OCR noise lines, 55 Latin editorial, 51 foreign scripts
+- Post-processing pass catches remaining apparatus fragments in assembled text
+- Self-evaluation: 0% contamination, 0% Latin leakage, 0% page headers, 0% foreign scripts
+- Self-grade: A-
+- Output: `data/processed/semeioseis-gnomikai/chapter-NNN.json`
+- Collaboration doc: `docs/semeioseis-cleaning-collaboration.md`
+- Evaluator graded C+ (NOT SATISFIED) — broken words 65%, apparatus markers 8%, variant notes 3%
+
+### Semeioseis Gnomikai V2 Cleaning — COMPLETE
+- Created V2 pipeline at `scripts/lib/semeioseis-cleaning-v2/`
+- Fixed ALL evaluator issues: broken words, apparatus markers, variant notes, OCR noise, editorial brackets, garbled text
+- Critical fix: word rejoining regex on assembled paragraphs + order-of-operations (OCR removal before rejoining)
+- 127 paragraphs, 0 contaminated (0.0%)
+- 954 words rejoined at line level, 83 in assembled text
+- Self-grade: A
+- Awaiting Evaluator V2 review
+
 ## 2026-01-28 Session 29: Auth System + Nancun Chuogeng Lu + User Management
 
 ### Auth System Implementation (COMPLETE)

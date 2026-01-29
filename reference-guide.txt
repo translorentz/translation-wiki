@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-28 (Session 29)
+# Last updated: 2026-01-29 (Session 30)
 
 ################################################################################
 # ⚠️  CRITICAL SECURITY WARNING — READ FIRST  ⚠️
@@ -39,7 +39,7 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-28, commit 48863da (auth system + Nancun Chuogeng Lu)
+Latest deploy: 2026-01-29 (security fixes + footer + Suguna Sundari + Semeioseis cleaning)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
@@ -116,6 +116,8 @@ Current data:
   - Epitome of Histories (Epitome Historiarum) — 18 chapters, grc [Session 28]
   - The Syair of Siti Zubaidah (Syair Siti Zubaidah) — 19 chapters, ms [Session 28]
   - Records of Resting from the Plough (Nancun Chuogeng Lu) — 30 chapters, zh [Session 29]
+  - Suguna Sundari — 22 chapters, ta [Session 30]
+  - Semeioseis Gnomikai (Noteworthy Remarks) — 38 chapters, grc [Session 30, cleaning in progress]
 
 Recently seeded (Session 12 — 2026-01-24):
   - Epistle to Diognetus — 12 chapters, grc, prose (author: Anonymous (Diognetus))
@@ -743,7 +745,9 @@ gh api repos/translorentz/translation-wiki/deployments --jq '.[0]'  # Check depl
 - GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET not yet set in Vercel (Google OAuth won't work in prod)
 - AUTH_URL on Vercel may still reference translation-wiki.vercel.app
 - HDNJ currently only has Su Wen (55 ch); Ling Shu (81 ch) to be added later
-- Nancun Chuogeng Lu translation: in progress (3 workers running)
+- Nancun Chuogeng Lu: 30/30 COMPLETE
+- Suguna Sundari: 22/22 COMPLETE (ta-prose prompt)
+- Semeioseis Gnomikai: V2 cleaning in progress (V1 got C+ from evaluator)
 
 ================================================================================
 ## SANGAM TAMIL CORPUS NOTES

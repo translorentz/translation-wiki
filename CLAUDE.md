@@ -32,27 +32,28 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-28, Sessions 28-29)
+## Active Tasks (2026-01-29, Session 30)
 
 ### IN PROGRESS
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Nancun Chuogeng Lu Translation | 3 workers | 30 chapters, `zh-literary` prompt, `/tmp/nancun-w{1,2,3}.log` |
-| Suguna Sundari Processing | 1 agent | Examining raw text in `data/raw/suguna_sundari/` |
+| Semeioseis Gnomikai V2 Cleaning | 2 agents | V1 got C+, V2 fixing word breaks + apparatus markers |
+
+### SESSION 30 COMPLETED
+- Semeioseis Gnomikai V1 cleaning: 38 chapters processed, evaluator graded C+ (NOT SATISFIED) ✓
+- Nancun Chuogeng Lu translation: 30/30 chapters, 0 errors ✓
+- Suguna Sundari: processed, seeded, translated 22/22 chapters, ta-prose prompt created ✓
+- Security hardening: 16 findings fixed (4H/7M/5L) — rate limiting, JWT cleanup, audit logging ✓
+- Auth Edge Runtime fix: split config.ts for middleware compatibility ✓
+- User cap increased from 20 to 100 ✓
+- Footer: "Trial project by Bryan Cheong." added ✓
+- User registration guide doc written ✓
 
 ### SESSION 29 COMPLETED
-- Auth system: Invite-only registration + Google OAuth (13 files, full implementation) ✓
-- Admin user deletion with content reassignment to system user ✓
-- User self-deletion with username confirmation ✓
-- User profile page (`/profile`): account info, password change, delete account ✓
-- Session-aware header (UserNav): sign in/out, profile link, admin link ✓
-- SessionProvider integration for client-side auth state ✓
-- Nancun Chuogeng Lu: processed 30 volumes (1499 paragraphs, 203k chars), seeded ✓
-- DB smoke tests: 4 tests passed (user CRUD, cascade, profile query) ✓
-- Security review: 4 High, 4 Medium, 3 Low issues found and fixed ✓
-- Communications document (`communications-to-the-User.txt`) written ✓
-- Committed and pushed: 679bf02 (auth) + 48863da (Nancun + docs) ✓
+- Auth system: Invite-only registration + Google OAuth (full implementation) ✓
+- Nancun Chuogeng Lu: processed 30 volumes, seeded ✓
+- Communications document written ✓
 
 ### SESSION 28 COMPLETED
 - Epitome consolidation: 3 volumes → 1 unified text, Grade A (dual-agent pipeline) ✓
@@ -77,7 +78,7 @@ Public wiki for open-source translations of pre-contemporary classical texts. Si
 
 **Stack:** Next.js 16, TypeScript, tRPC, Drizzle ORM, NextAuth.js v5, Neon PostgreSQL, Vercel
 
-**Auth:** Invite-only registration (max 20 users), credentials + Google OAuth, JWT sessions
+**Auth:** Invite-only registration (max 100 users), credentials + Google OAuth, JWT sessions
 
 ---
 
