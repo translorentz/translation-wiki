@@ -7,6 +7,8 @@ Standard workflow for scraping, processing, and translating large batches of tex
 ## Overview
 
 ```
+[New Language Setup] ──if needed──→ seed-db.ts, texts/page.tsx, prompts.ts updated
+        │
 [Research Agent] ──finds candidates──→ candidates list
         │
 [Verification Agent] ──confirms untranslated──→ verified-texts.json
@@ -22,6 +24,63 @@ Standard workflow for scraping, processing, and translating large batches of tex
 ```
 
 **Key principle:** No phase proceeds until the previous gate passes. Review and verification are independent agents — never the same agent that did the processing.
+
+---
+
+## Phase 0: New Language Setup (if needed)
+
+**Skip this phase** if the language already exists on Deltoi (check `scripts/seed-db.ts` LANGUAGES array).
+
+**When adding a language not yet on Deltoi**, the following files must be updated before any texts can be seeded or translated:
+
+### 0a. Database + Seeding
+
+Add the language to the `LANGUAGES` array in `scripts/seed-db.ts`:
+```typescript
+{ code: "pl", name: "Polish", displayName: "Polski" },
+```
+- `code`: ISO 639 code (2 or 3 letters)
+- `name`: English name
+- `displayName`: Name in the language's own script (shown on the browse page)
+
+### 0b. Browse Page Display
+
+Add the language to `LANGUAGE_DISPLAY_NAMES` in `src/app/(wiki)/texts/page.tsx`:
+```typescript
+pl: "Polish",
+```
+This maps the language code to the English display name used in filter chips and headings.
+
+### 0c. Translation Prompt
+
+Create a translation prompt in `src/server/translation/prompts.ts` for the language. The prompt must be tailored to the specific period, genre, and register of the texts being translated. See existing prompts for examples.
+
+**IMPORTANT:** Even for languages already on Deltoi, new prompts may be needed if the new texts differ in period/genre from existing texts. Existing prompts are narrowly tailored — always audit before assuming suitability.
+
+### 0d. Script-Specific Styling (if needed)
+
+If the language uses a script that needs special rendering (e.g., CJK ideographs, Indic scripts), check whether CSS adjustments are needed in:
+- `src/components/interlinear/ParagraphPair.tsx` — font sizing for source text display
+- `src/components/editor/TextEditor.tsx` — editor font sizing
+
+Example (Chinese has special handling):
+```typescript
+sourceLanguage === "zh" && "font-serif text-lg leading-loose"
+```
+
+Add similar rules for scripts that need larger fonts or different line spacing (e.g., Gujarati, Telugu).
+
+### 0e. Translation Script
+
+Most languages use `scripts/translate-batch.ts` (DeepSeek). Exceptions:
+- **Tamil:** Uses `scripts/translate-tamil.ts` (Gemini)
+- **Armenian:** Uses `scripts/translate-armenian.ts` (DeepSeek, but separate script due to Gemini blocking)
+
+If the new language needs a special translation script (different engine, special handling), create it before Phase 7.
+
+### 0f. Verification
+
+After setup, run `pnpm tsx scripts/seed-db.ts` to verify the language is inserted correctly. Check the browse page at `/texts?lang=<code>` to confirm the language appears in the filter.
 
 ---
 
@@ -361,6 +420,61 @@ pnpm tsx scripts/translate-batch.ts --text slug-2 && \
 - Verify paragraph alignment (source and translation paragraph counts match)
 - Check that no chapters were silently skipped (compare translated chapter count against expected)
 - Update `docs/<language>-pipeline-status.md` and `docs/text-inventory.md` with final counts
+
+---
+
+## Phase 8: Gap-Check and Gap-Fill (GATE — must pass before pipeline is declared complete)
+
+**Agent type:** `general-purpose` (orchestrator), empowered to launch up to 8 subagents
+
+**Trigger:** ALL translation workers have completed (no active background processes remaining).
+
+**Goal:** Find and fix two classes of translation gaps:
+
+### Gap Type 1: Missing Translations
+Paragraphs that have no translation entry at all. These can occur when:
+- A worker crashed mid-chapter and the skip logic moved past it
+- A paragraph mismatch caused the script to skip a chapter after retries
+- A worker's background process was killed before finishing
+
+**Detection:** Query the database for every chapter in the pipeline. For each chapter, compare the number of source paragraphs against the number of translated paragraphs. Any chapter where `translated_paragraphs < source_paragraphs` has gaps.
+
+### Gap Type 2: Disproportionately Short Translations
+Paragraphs where the English translation exists but is suspiciously short relative to the source text. This indicates the translation engine may have truncated or summarized instead of translating fully.
+
+**Detection method — CRITICAL:** Use **word count**, NOT character count, because Chinese characters map to roughly 1.5-2.5 English words each. A Chinese paragraph of 100 characters should produce approximately 150-250 English words. The ratio to use:
+
+```
+expected_english_words = chinese_character_count * 1.5  (conservative lower bound)
+```
+
+Flag any paragraph where:
+```
+actual_english_word_count < expected_english_words * 0.4
+```
+
+This catches translations that are less than 40% of the expected minimum word count — i.e., egregiously short. Do NOT flag paragraphs where the source itself is very short (< 20 characters), as those naturally produce short translations.
+
+### Execution
+
+1. **Gap-check agent** queries the database for all texts in the pipeline
+2. For each text, checks every chapter for both gap types
+3. Generates a gap report: `docs/<language>-pipeline-gaps.md` listing every gap with text slug, chapter number, paragraph index, gap type, and severity
+4. If gaps are found, the agent **spins up to 8 subagents** to retranslate:
+   - Each subagent receives a list of (text-slug, chapter-number) pairs to retranslate
+   - Subagents use `translate-batch.ts --text <slug> --start <N> --end <N>` to retranslate specific chapter ranges
+   - For Gap Type 2 (short translations), the chapter must be retranslated entirely (the existing short translation will be replaced)
+5. After all subagents complete, run the gap-check again to verify all gaps are filled
+6. Update the gap report with final status
+
+### Output
+- `docs/<language>-pipeline-gaps.md` — gap report with before/after status
+- Updated translations in the database
+
+### Success criteria
+- **Zero Gap Type 1** (no missing translations)
+- **Zero Gap Type 2** (no egregiously short translations)
+- Pipeline is declared COMPLETE only after the gap-check passes with zero gaps
 
 ---
 

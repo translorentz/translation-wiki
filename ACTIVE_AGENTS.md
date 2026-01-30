@@ -18,6 +18,8 @@ Track all running agents and background workers here. Update when launching or c
 | a4acb39 | Chinese Translation W6 (216ch) | RUNNING | feilong-quanzhuan, gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu |
 | a2ff6bf | Chinese Translation W7 (205ch) | RUNNING | yuewei-caotang-biji, yuchu-xinzhi, kunxue-jiwen, mengliang-lu, qidong-yeyu, yehangchuan, helin-yulu, sushui-jiwen, wuzazu, tang-zhiyan, xiaoting-zalu |
 | a249ccd | Chinese Translation W8 (116ch) | RUNNING | sui-tang-yanyi, dongjing-menghua-lu, xijing-zaji (Saric texts re-included) |
+| a6571a7 | Chinese Translation W9 (156ch) | RUNNING | gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu (W6 tail) |
+| ad60212 | Chinese Translation W10 (101ch) | RUNNING | yehangchuan, helin-yulu, sushui-jiwen, wuzazu, tang-zhiyan, xiaoting-zalu (W7 tail) |
 
 ---
 
@@ -146,11 +148,29 @@ Track all running agents and background workers here. Update when launching or c
 - **Translation:** 38/38 complete, 0 errors
 - **English titles:** 38/38 added
 
-### Chinese Mass Pipeline — TRANSLATING (7 WORKERS)
+### Chinese Mass Pipeline — TRANSLATING (10 WORKERS)
 - **Seeded:** 44 texts (1,619 chapters) into DB
-- **Translating:** 44 texts (1,602 chapters) across 8 workers (3 Saric texts re-included after quality review)
-- **Workers:** W1-W7 running in background (see Currently Running table)
+- **Translating:** 44 texts across 10 workers (W1-W10), 331/1,619 chapters done
+- **Post-translation:** Gap-check agent queued (missing + short translations)
 - **Status doc:** `docs/chinese-pipeline-status.md`
+- **Agent registry:** `docs/chinese-pipeline-agents.md`
+
+---
+
+## Queued Pipelines (After Chinese Completes)
+
+See `docs/pipeline-queue.md` for full details.
+
+| Priority | Language | Works | Status |
+|----------|----------|-------|--------|
+| 2 | Polish (pl) | 40 | QUEUED |
+| 3 | Armenian (hy) | 30 | QUEUED — DeepSeek only |
+| 4 | Italian (it) | 20 | QUEUED |
+| 5 | Latin (la) | 10 | QUEUED |
+| 6 | Czech (cs) | 10 | QUEUED — new language |
+| 7 | Gujarati (gu) | 10 | QUEUED — new language |
+| 8 | Telugu (te) | 10 | QUEUED — new language |
+| 9 | Turkish (tr) | 5 | QUEUED — new language |
 
 ---
 
