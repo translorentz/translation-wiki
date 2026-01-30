@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../init";
 import { db } from "@/server/db";
-import { chapters, texts, authors, languages } from "@/server/db/schema";
+import { chapters, texts, authors, languages, translations, translationVersions } from "@/server/db/schema";
 import { sql, eq, ilike, or, and, inArray } from "drizzle-orm";
 
 export const searchRouter = createTRPCRouter({
@@ -68,7 +68,8 @@ export const searchRouter = createTRPCRouter({
 
       const chapterMatchConditions = or(
         ilike(chapters.title, pattern),
-        sql`${chapters.sourceContent}::text ILIKE ${pattern}`
+        sql`${chapters.sourceContent}::text ILIKE ${pattern}`,
+        sql`${translationVersions.content}::text ILIKE ${pattern}`
       );
 
       const chapterResults = await db
@@ -83,25 +84,45 @@ export const searchRouter = createTRPCRouter({
           authorName: authors.name,
           authorSlug: authors.slug,
           langCode: languages.code,
-          snippet: sql<string>`(
-            SELECT substring(para.value->>'text'
-              FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
-              FOR 80)
-            FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-            WHERE lower(para.value->>'text') LIKE ${pattern}
-            LIMIT 1
+          snippet: sql<string>`COALESCE(
+            (
+              SELECT substring(para.value->>'text'
+                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
+                FOR 80)
+              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${pattern}
+              LIMIT 1
+            ),
+            (
+              SELECT substring(para.value->>'text'
+                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
+                FOR 80)
+              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${pattern}
+              LIMIT 1
+            )
           )`.as('snippet'),
-          matchParagraphIndex: sql<number>`(
-            SELECT (para.value->>'index')::int
-            FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-            WHERE lower(para.value->>'text') LIKE ${pattern}
-            LIMIT 1
+          matchParagraphIndex: sql<number>`COALESCE(
+            (
+              SELECT (para.value->>'index')::int
+              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${pattern}
+              LIMIT 1
+            ),
+            (
+              SELECT (para.value->>'index')::int
+              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${pattern}
+              LIMIT 1
+            )
           )`.as('match_paragraph_index'),
         })
         .from(chapters)
         .innerJoin(texts, eq(chapters.textId, texts.id))
         .innerJoin(authors, eq(texts.authorId, authors.id))
         .innerJoin(languages, eq(texts.languageId, languages.id))
+        .leftJoin(translations, eq(translations.chapterId, chapters.id))
+        .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
         .where(
           langFilter
             ? and(chapterMatchConditions, langFilter)

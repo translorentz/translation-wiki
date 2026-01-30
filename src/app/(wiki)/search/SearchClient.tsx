@@ -114,7 +114,7 @@ export default function SearchClient() {
                   variant={isSelected ? "default" : "outline"}
                   className="cursor-pointer select-none"
                 >
-                  {lang.displayName}
+                  {lang.name}
                 </Badge>
               </button>
             );
