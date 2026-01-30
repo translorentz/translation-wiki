@@ -14,7 +14,7 @@ export const searchRouter = createTRPCRouter({
       })
       .from(languages)
       .innerJoin(texts, eq(texts.languageId, languages.id))
-      .orderBy(languages.displayName);
+      .orderBy(languages.name);
     return result;
   }),
 
