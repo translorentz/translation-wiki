@@ -580,6 +580,13 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Chinese scientific/technical texts use zh-science prompt
+    const isScienceChinese = text.language.code === "zh" && text.genre === "science";
+    if (isScienceChinese) {
+      promptLang = "zh-science";
+      usingSpecialPrompt = true;
+    }
+
     // 19th-century Italian literature uses it-literary-19c prompt
     const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
     if (isLiteraryItalian) {

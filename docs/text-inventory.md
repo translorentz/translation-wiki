@@ -1,23 +1,23 @@
 # Text Inventory
 
-Complete list of all texts seeded in the database. Updated 2026-01-25.
+Complete list of all texts seeded in the database. Updated 2026-01-29.
 
 ---
 
 ## Summary
 
-- **Total texts:** 55
+- **Total texts:** 100
 - **Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian), ms (Malay)
-- **Total chapters:** ~2,700+
+- **Total chapters:** ~4,300+
 
 ### Genre Distribution
 
 | Genre | Count | Description |
 |-------|-------|-------------|
+| literature | 39 | Poetry, novels, epics, fiction |
+| history | 26 | Historical narratives, chronicles, biographies, biji |
 | commentary | 16 | Commentaries on other texts (zhushu/zhengyi works, Eustathius, etc.) |
-| literature | 13 | Poetry, novels, epics (Tamil kaviyams, Armenian novels, Syair, etc.) |
-| history | 12 | Historical narratives, chronicles, biographies |
-| philosophy | 8 | Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.) |
+| philosophy | 12 | Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.) |
 | science | 7 | Medicine, geography, ritual/ceremonial manuals |
 
 ---
@@ -45,6 +45,55 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Stories to Awaken the World (Xingshi Hengyan) | feng-menglong-xingshi | xingshi-hengyan | 100 | prose | literature |
 | Suguna Sundari | vedanayakam-pillai | suguna-sundari | 22 | prose | literature |
 | A Precious Mirror of Ranked Flowers (Pinhua Baojian) | chen-sen | pinhua-baojian | 60 | prose | literature |
+
+### Chinese Pipeline (Session 36) — 44 Texts, 1,619 Chapters
+
+| Title | Author Slug | Text Slug | Chapters | Type | Genre |
+|-------|-------------|-----------|----------|------|-------|
+| Traces of Flowers and the Moon (Huayue Hen) | wei-xiuren | huayue-hen | 52 | prose | literature |
+| Romance of the Sui and Tang Dynasties (Sui Tang Yanyi) | chu-renhuo | sui-tang-yanyi | 100 | prose | literature |
+| Dream Memories of Tao'an (Taoan Mengyi) | zhang-dai | taoan-mengyi | 12 | prose | literature |
+| Random Thoughts on Idle Pleasures (Xianqing Ouji) | li-yu | xianqing-ouji | 38 | prose | criticism |
+| Expanded Records of the Forest of Laughter (Xiaolin Guangji) | anonymous-xiaolin | xiaolin-guangji | 12 | prose | literature |
+| Random Notes on Poetry from the Sui Garden (Suiyuan Shihua) | yuan-mei | suiyuan-shihua | 16 | prose | criticism |
+| Grades of Poetry (Shipin) | zhong-rong | shipin | 3 | prose | criticism |
+| Records of Learning Difficulties (Kunxue Jiwen) | wang-yinglin | kunxue-jiwen | 20 | prose | philosophy |
+| Notes from the Old Scholar's Studio (Laoxuean Biji) | lu-yitong | laoxuean-biji | 10 | prose | history |
+| Dreams of Splendor of the Eastern Capital (Dongjing Menghua Lu) | meng-yuanlao | dongjing-menghua-lu | 10 | prose | history |
+| Random Talks North of the Pond (Chibei Outan) | wang-shizhen | chibei-outan | 27 | prose | history |
+| Commentary on the Waterways Classic (Shuijing Zhu) | li-daoyuan | shuijing-zhu | 40 | prose | geography |
+| A Book to Burn (Fenshu) | li-zhi | fenshu | 7 | prose | philosophy |
+| Miscellaneous Morsels from Youyang (Youyang Zazu) | duan-chengshi | youyang-zazu | 31 | prose | history |
+| Records of Ming Scholars (Mingru Xuean) | huang-zongxi | mingru-xuean | 62 | prose | philosophy |
+| Random Jottings at the Cottage of Close Scrutiny (Yuewei Caotang Biji) | ji-yun | yuewei-caotang-biji | 24 | prose | literature |
+| An Old Rustic's Idle Talk (Yesou Puyan) | xia-jingqu | yesou-puyan | 154 | prose | literature |
+| Lamp at the Crossroads (Qilu Deng) | li-luyuan | qilu-deng | 108 | prose | literature |
+| Three Heroes and Five Gallants (Sanxia Wuyi) | shi-yukun | sanxia-wuyi | 120 | prose | literature |
+| A Flower in a Sea of Sin (Niehai Hua) | zeng-pu | niehai-hua | 35 | prose | literature |
+| Complete Tale of the Flying Dragon (Feilong Quanzhuan) | wu-xuan | feilong-quanzhuan | 60 | prose | literature |
+| Unofficial History of the Female Immortals (Nuxian Waishi) | lv-xiong | nuxian-waishi | 99 | prose | literature |
+| New Records of Yu Chu (Yuchu Xinzhi) | zhang-chao | yuchu-xinzhi | 20 | prose | literature |
+| What Canon? (Hedian) | zhang-nanzhuang | hedian | 10 | prose | literature |
+| Record of the Millet Dream (Mengliang Lu) | wu-zimu | mengliang-lu | 20 | prose | history |
+| Past Events of Wulin (Wulin Jiushi) | zhou-mi-wulin | wulin-jiushi | 9 | prose | history |
+| Rustic Words from East of Qi (Qidong Yeyu) | zhou-mi | qidong-yeyu | 20 | prose | history |
+| Jade Dew from the Crane Forest (Helin Yulu) | luo-dajing | helin-yulu | 19 | prose | history |
+| Records Heard by the Si River (Sushui Jiwen) | sima-guang | sushui-jiwen | 16 | prose | history |
+| Gathered Words of the Tang (Tang Zhiyan) | wang-dingbao | tang-zhiyan | 15 | prose | history |
+| Trivial Tales from North of the Dreams (Beimeng Suoyan) | sun-guangxian | beimeng-suoyan | 25 | prose | history |
+| Miscellaneous Records of the Western Capital (Xijing Zaji) | ge-hong | xijing-zaji | 6 | prose | history |
+| Records by the Autumn Lamp on Rainy Nights (Yeyu Qiudeng Lu) | xuan-ding | yeyu-qiudeng-lu | 12 | prose | literature |
+| Five Assorted Offerings (Wuzazu) | xie-zhaozhe | wuzazu | 16 | prose | history |
+| Records of Things Gleaned (Shiyi Ji) | wang-jia | shiyi-ji | 10 | prose | literature |
+| Searching for West Lake in Dreams (Xihu Mengxun) | anonymous-xihu | xihu-mengxun | 7 | prose | literature |
+| The Wisdom Sack (Zhinang) | feng-menglong-zhinang | zhinang | 28 | prose | philosophy |
+| History of Love (Qingshi) | feng-menglong-qingshi | qingshi | 24 | prose | literature |
+| Studies at Leisure by the Staircase (Gaiyu Congkao) | zhao-yi | gaiyu-congkao | 43 | prose | history |
+| Biographies of Talented Men of the Tang (Tang Caizi Zhuan) | xin-wenfang | tang-caizi-zhuan | 10 | prose | criticism |
+| Survey of Jokes Past and Present (Gujin Tangai) | feng-menglong-tangai | gujin-tangai | 36 | prose | literature |
+| The Night Ferry (Yehangchuan) | anonymous-yehang | yehangchuan | 20 | prose | history |
+| Seven Swords and Thirteen Heroes (Qijian Shisan Xia) | tang-yunzhou | qijian-shisan-xia | 181 | prose | literature |
+| Random Records from the Whistling Pavilion (Xiaoting Zalu) | zhao-lian | xiaoting-zalu | 15 | prose | history |
 
 ### Shisan Jing Zhushu (十三經註疏) — 13 Texts
 
@@ -85,6 +134,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Geography of Artemidorus | artemidorus | artemidori-geographia | 3 | prose | science |
 | Epitome of Histories (Epitome Historiarum) | john-zonaras | epitome-of-histories | 18 | prose | history |
 | Noteworthy Opinions (Semeioseis Gnomikai) | theodore-metochites | semeioseis-gnomikai | 38 | prose | philosophy |
+| Battle of the Cats and Mice (Catomyomachia) | theodore-prodromos | catomyomachia | 6 | poetry | literature |
 
 ---
 
@@ -162,6 +212,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-25.
 | Nancun Chuogeng Lu | `data/raw/nancun_chuogeng_lu/` | `data/processed/nancun-chuogeng-lu/` |
 | Epitome of Histories | `data/processed/epitome-of-histories-clean/` | `data/processed/epitome-of-histories-clean/` |
 | Syair Siti Zubaidah | `data/raw/syar_siti/` | `data/processed/syair-siti-zubaidah/` |
+| Chinese Pipeline (44 texts) | `data/raw/<slug>/` (zh.wikisource.org) | `data/processed/<slug>/` |
 
 ---
 

@@ -32,41 +32,33 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-29, Session 30)
+## Active Tasks (2026-01-29, Session 36)
 
 ### IN PROGRESS
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Semeioseis Gnomikai V2 Cleaning | 2 agents | V1 got C+, V2 fixing word breaks + apparatus markers |
+| Chinese Mass Pipeline Translation | 8 workers | 44 texts, 1,619 chapters, see `ACTIVE_AGENTS.md` |
 
-### SESSION 30 COMPLETED
-- Semeioseis Gnomikai V1 cleaning: 38 chapters processed, evaluator graded C+ (NOT SATISFIED) ✓
-- Nancun Chuogeng Lu translation: 30/30 chapters, 0 errors ✓
-- Suguna Sundari: processed, seeded, translated 22/22 chapters, ta-prose prompt created ✓
-- Security hardening: 16 findings fixed (4H/7M/5L) — rate limiting, JWT cleanup, audit logging ✓
-- Auth Edge Runtime fix: split config.ts for middleware compatibility ✓
-- User cap increased from 20 to 100 ✓
-- Footer: "Trial project by Bryan Cheong." added ✓
-- User registration guide doc written ✓
-
-### SESSION 29 COMPLETED
-- Auth system: Invite-only registration + Google OAuth (full implementation) ✓
-- Nancun Chuogeng Lu: processed 30 volumes, seeded ✓
-- Communications document written ✓
-
-### SESSION 28 COMPLETED
-- Epitome consolidation: 3 volumes → 1 unified text, Grade A (dual-agent pipeline) ✓
-- Epitome pre-translation fixes: paragraph mismatch fix + prompt audit + paragraph healing ✓
-- Syair Siti Zubaidah: Pre-eval → Dual-agent OCR cleaning (Round 1: B → Round 2: B+) ✓
-- Syair seeded: new language `ms` (Malay), 19 chapters, poetry mode ✓
-- Translation prompt: `ms` Classical Malay court poetry prompt created ✓
+### SESSION 36 COMPLETED
+- Chinese mass pipeline: 44 texts scraped, processed, reviewed, seeded (1,619 chapters) ✓
+- Independent quality review: 44/44 texts PASS ✓
+- Independent translation verification: 0 texts disqualified ✓
+- Mass text pipeline workflow documented: `docs/mass-text-pipeline-workflow.md` ✓
+- Text inventory updated: 100 texts total ✓
 
 ### EARLIER COMPLETED
-- Shiqi Shi Baijiang Zhuan: 100/100 chapters translated ✓
-- Chinese novels: Dongzhou (108), Sanbao (100), Xingshi (100) — all 308 chapters ✓
-- Italian novels: La Giovinezza (41), Cento Anni (21) — all 62 chapters ✓
-- Armenian texts: all 6 texts, 195 chapters ✓
+- Epitome of Histories: consolidated + translated 18 chapters ✓
+- Syair Siti Zubaidah: OCR cleaned, seeded, translated 19 chapters ✓
+- Semeioseis Gnomikai: V4 cleaning B+ SATISFIED, 38/38 translated ✓
+- La Scapigliatura: V2 cleaning B+ SATISFIED, 18/18 translated ✓
+- Pinhua Baojian: 60/60 translated ✓
+- Shiqi Shi Baijiang Zhuan: 100/100 translated ✓
+- Chinese novels: Dongzhou (108), Sanbao (100), Xingshi (100) — 308 chapters ✓
+- Italian novels: La Giovinezza (41), Cento Anni (21) — 62 chapters ✓
+- Armenian texts: 6 texts, 195 chapters ✓
+- Carmina Graeca: 21/21 translated ✓
+- Catomyomachia: 6/6 translated ✓
 
 ---
 
@@ -231,11 +223,12 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 
 ## Workflow Index
 
-| Workflow | When | Key Script |
-|----------|------|------------|
+| Workflow | When | Key Script / Doc |
+|----------|------|-----------------|
 | Standard Text | Clean source | `scripts/process-<name>.ts` |
 | OCR Processing | Noisy scans | `scripts/lib/<name>/` multi-module |
 | TEI-XML | Greek XML | `scripts/lib/greek-xml/` |
+| Mass Text Pipeline | Batch scrape+translate 10-50+ texts | `docs/mass-text-pipeline-workflow.md` |
 | Tamil Pipeline | All Tamil (Gemini) | `scripts/translate-tamil.ts` |
 | Armenian Translation | All Armenian (DeepSeek) | `scripts/translate-armenian.ts` |
 | Batch Translation | zh/grc/la/it | `scripts/translate-batch.ts` |
@@ -278,16 +271,18 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 
 ## Current Texts Summary
 
-**Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian)
+**Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian), ms (Malay)
 
-**~45 texts, ~2,500+ chapters** — See `docs/text-inventory.md` for complete list with slugs, chapter counts, and types.
+**~100 texts, ~4,300+ chapters** — See `docs/text-inventory.md` for complete list with slugs, chapter counts, and types.
 
 Key collections:
-- **Chinese:** Zhu Zi Yu Lei (140), Shisan Jing Zhushu (455 across 13 texts), Kongzi Jiayu (80), Rizhilu (32)
-- **Greek:** Historia Nova (287), Eustathius Odyssey (27), Carmina Graeca (21)
+- **Chinese:** 44 new texts from mass pipeline (1,619ch), Shisan Jing Zhushu (455 across 13 texts), Zhu Zi Yu Lei (140), plus 10 other texts
+- **Greek:** Historia Nova (287), Eustathius Odyssey (27), Carmina Graeca (21), Epitome (18)
 - **Latin:** Lombards (82), Regno (56), Diarium (66)
 - **Armenian:** 6 texts (195 total)
 - **Tamil:** Nandikkalambakam (114), Yashodhara (330 verses), Udayanakumara (366 verses)
+- **Italian:** 4 texts (146 total)
+- **Malay:** Syair Siti Zubaidah (19)
 
 ---
 

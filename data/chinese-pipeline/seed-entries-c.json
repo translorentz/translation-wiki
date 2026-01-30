@@ -1,0 +1,305 @@
+{
+  "authors": [
+    {
+      "name": "Sima Guang",
+      "nameOriginalScript": "司馬光",
+      "slug": "sima-guang",
+      "era": "Northern Song (1019-1086)",
+      "description": "Great historian and statesman of the Northern Song, author of the Zizhi Tongjian."
+    },
+    {
+      "name": "Wang Dingbao",
+      "nameOriginalScript": "王定保",
+      "slug": "wang-dingbao",
+      "era": "Five Dynasties (c. 870-940)",
+      "description": "Five Dynasties scholar who compiled the most important source on Tang dynasty examination culture."
+    },
+    {
+      "name": "Sun Guangxian",
+      "nameOriginalScript": "孫光憲",
+      "slug": "sun-guangxian",
+      "era": "Five Dynasties (c. 900-968)",
+      "description": "Five Dynasties official and prolific biji writer covering late Tang and Five Dynasties anecdotes."
+    },
+    {
+      "name": "Liu Xin / Ge Hong (attr.)",
+      "nameOriginalScript": "劉歆 / 葛洪",
+      "slug": "liu-xin-ge-hong",
+      "era": "Han-Jin (uncertain)",
+      "description": "Authorship disputed between Han dynasty Liu Xin and Jin dynasty Ge Hong."
+    },
+    {
+      "name": "Xuan Ding",
+      "nameOriginalScript": "宣鼎",
+      "slug": "xuan-ding",
+      "era": "Late Qing (1832-1880)",
+      "description": "Late Qing writer of classical tales in the Liaozhai tradition."
+    },
+    {
+      "name": "Xie Zhaozhe",
+      "nameOriginalScript": "謝肇淛",
+      "slug": "xie-zhaozhe",
+      "era": "Ming (1567-1624)",
+      "description": "Ming encyclopedist and official, author of the monumental Wuzazu."
+    },
+    {
+      "name": "Wang Jia",
+      "nameOriginalScript": "王嘉",
+      "slug": "wang-jia",
+      "era": "Jin (c. 350-390)",
+      "description": "Jin dynasty Daoist scholar and collector of myths and supernatural tales."
+    },
+    {
+      "name": "Zhang Dai",
+      "nameOriginalScript": "張岱",
+      "slug": "zhang-dai",
+      "era": "Ming-Qing transition (1597-1684)",
+      "description": "One of the greatest Chinese essayists, known for lyrical nostalgia for the vanished Ming world."
+    },
+    {
+      "name": "Feng Menglong",
+      "nameOriginalScript": "馮夢龍",
+      "slug": "feng-menglong",
+      "era": "Ming (1574-1646)",
+      "description": "Major late Ming editor, compiler, and author of vernacular fiction and encyclopedic anthologies."
+    },
+    {
+      "name": "Zhao Yi",
+      "nameOriginalScript": "趙翼",
+      "slug": "zhao-yi",
+      "era": "Qing (1727-1814)",
+      "description": "Leading Qing historian and poet, one of the three great historians of the Qian-Jia era."
+    },
+    {
+      "name": "Xin Wenfang",
+      "nameOriginalScript": "辛文房",
+      "slug": "xin-wenfang",
+      "era": "Yuan (fl. 1304)",
+      "description": "Yuan dynasty literary biographer who compiled the standard reference on Tang poets."
+    },
+    {
+      "name": "Tang Yunzhou",
+      "nameOriginalScript": "唐芸洲",
+      "slug": "tang-yunzhou",
+      "era": "Late Qing (fl. 1890s)",
+      "description": "Late Qing martial arts novelist."
+    },
+    {
+      "name": "Zhaolian",
+      "nameOriginalScript": "昭槤",
+      "slug": "zhaolian",
+      "era": "Qing (1776-1833)",
+      "description": "Qing imperial prince (Aisin Gioro clan) who wrote insider accounts of court life and Manchu customs."
+    }
+  ],
+  "texts": [
+    {
+      "title": "Records Heard by the Si River (Sushui Jiwen)",
+      "titleOriginalScript": "涑水紀聞",
+      "slug": "sushui-jiwen",
+      "languageCode": "zh",
+      "authorSlug": "sima-guang",
+      "description": "Private notes by the great historian Sima Guang recording political events and anecdotes from the Northern Song that did not make it into the Zizhi Tongjian.",
+      "totalChapters": 16,
+      "compositionYear": 1075,
+      "compositionEra": "Northern Song (c. 1070s)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Gathered Words of the Tang (Tang Zhiyan)",
+      "titleOriginalScript": "唐摭言",
+      "slug": "tang-zhiyan",
+      "languageCode": "zh",
+      "authorSlug": "wang-dingbao",
+      "description": "The most detailed source on Tang dynasty civil service examinations, poetry culture, and the social world of examination candidates.",
+      "totalChapters": 15,
+      "compositionYear": 940,
+      "compositionEra": "Five Dynasties (c. 940)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Trivial Tales from North of the Dreams (Beimeng Suoyan)",
+      "titleOriginalScript": "北夢瑣言",
+      "slug": "beimeng-suoyan",
+      "languageCode": "zh",
+      "authorSlug": "sun-guangxian",
+      "description": "Important biji covering late Tang through Five Dynasties anecdotes, politics, and literary culture across three decades of compilation.",
+      "totalChapters": 25,
+      "compositionYear": 960,
+      "compositionEra": "Five Dynasties (c. 960)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Miscellaneous Records of the Western Capital (Xijing Zaji)",
+      "titleOriginalScript": "西京雜記",
+      "slug": "xijing-zaji",
+      "languageCode": "zh",
+      "authorSlug": "liu-xin-ge-hong",
+      "description": "One of the earliest Chinese short story collections, recording court life, customs, and legends of the Western Han capital Chang'an. 129 stories.",
+      "totalChapters": 6,
+      "compositionYear": 300,
+      "compositionEra": "Han-Jin (uncertain)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Records by the Autumn Lamp on Rainy Nights (Yeyu Qiudeng Lu)",
+      "titleOriginalScript": "夜雨秋燈錄",
+      "slug": "yeyu-qiudeng-lu",
+      "languageCode": "zh",
+      "authorSlug": "xuan-ding",
+      "description": "Late Qing collection of classical tales in the tradition of Liaozhai, noted for its literary polish and tragic love stories.",
+      "totalChapters": 12,
+      "compositionYear": 1877,
+      "compositionEra": "Late Qing (c. 1877)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Five Assorted Offerings (Wuzazu)",
+      "titleOriginalScript": "五雜俎",
+      "slug": "wuzazu",
+      "languageCode": "zh",
+      "authorSlug": "xie-zhaozhe",
+      "description": "Massive encyclopedic biji covering astronomy, geography, natural history, customs, and curiosities. Contains the earliest known mention of rock-paper-scissors.",
+      "totalChapters": 16,
+      "compositionYear": 1619,
+      "compositionEra": "Ming (c. 1619)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Records of Things Gleaned (Shiyi Ji)",
+      "titleOriginalScript": "拾遺記",
+      "slug": "shiyi-ji",
+      "languageCode": "zh",
+      "authorSlug": "wang-jia",
+      "description": "Important early collection of myths, legends, and supernatural tales spanning from mythological antiquity to the Jin dynasty. Includes descriptions of Penglai and Kunlun.",
+      "totalChapters": 10,
+      "compositionYear": 380,
+      "compositionEra": "Jin (c. 380)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Searching for West Lake in Dreams (Xihu Mengxun)",
+      "titleOriginalScript": "西湖夢尋",
+      "slug": "xihu-mengxun",
+      "languageCode": "zh",
+      "authorSlug": "zhang-dai",
+      "description": "Zhang Dai's lyrical guide to West Lake in Hangzhou, written decades after the Ming collapse. 72 essays organized by geographic route. Only partial translations exist in anthologies.",
+      "totalChapters": 7,
+      "compositionYear": 1671,
+      "compositionEra": "Ming-Qing transition (c. 1671)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "The Wisdom Sack (Zhinang)",
+      "titleOriginalScript": "智囊",
+      "slug": "zhinang",
+      "languageCode": "zh",
+      "authorSlug": "feng-menglong",
+      "description": "Massive anthology of 1,238 stories of stratagems and wit from Chinese history, organized by type of wisdom. Feng Menglong's most scholarly compilation.",
+      "totalChapters": 28,
+      "compositionYear": 1626,
+      "compositionEra": "Ming (1626)",
+      "textType": "prose",
+      "genre": "philosophy"
+    },
+    {
+      "title": "History of Love (Qingshi)",
+      "titleOriginalScript": "情史",
+      "slug": "qingshi",
+      "languageCode": "zh",
+      "authorSlug": "feng-menglong",
+      "description": "The largest anthology of love stories in Chinese literature, with 870+ stories drawn from official histories, biji, and fiction. Organized into 24 categories of love and passion.",
+      "totalChapters": 24,
+      "compositionYear": 1630,
+      "compositionEra": "Ming (c. 1630)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Studies at Leisure by the Staircase (Gaiyu Congkao)",
+      "titleOriginalScript": "陔餘叢考",
+      "slug": "gaiyu-congkao",
+      "languageCode": "zh",
+      "authorSlug": "zhao-yi",
+      "description": "Major work of Qing evidential scholarship investigating origins of customs, institutions, and historical claims. Zhao Yi was one of the three leading historians of the Qian-Jia era.",
+      "totalChapters": 43,
+      "compositionYear": 1790,
+      "compositionEra": "Qing (c. 1790)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Biographies of Talented Men of the Tang (Tang Caizi Zhuan)",
+      "titleOriginalScript": "唐才子傳",
+      "slug": "tang-caizi-zhuan",
+      "languageCode": "zh",
+      "authorSlug": "xin-wenfang",
+      "description": "The most important source for biographies of Tang dynasty poets. Contains entries for 398 poets arranged by quality and era.",
+      "totalChapters": 10,
+      "compositionYear": 1304,
+      "compositionEra": "Yuan (c. 1304)",
+      "textType": "prose",
+      "genre": "commentary"
+    },
+    {
+      "title": "Survey of Jokes Past and Present (Gujin Tangai)",
+      "titleOriginalScript": "古今譚概",
+      "slug": "gujin-tangai",
+      "languageCode": "zh",
+      "authorSlug": "feng-menglong",
+      "description": "Curated anthology of witticisms and satirical anecdotes from Chinese history, organized into 36 categories. Companion volume to Zhinang and Qingshi.",
+      "totalChapters": 36,
+      "compositionYear": 1620,
+      "compositionEra": "Ming (1620)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "The Night Ferry (Yehangchuan)",
+      "titleOriginalScript": "夜航船",
+      "slug": "yehangchuan",
+      "languageCode": "zh",
+      "authorSlug": "zhang-dai",
+      "description": "A witty encyclopedic compendium covering 20 categories from astronomy to botany with 4,000+ entries, meant as conversational reference for educated travelers on night boats.",
+      "totalChapters": 20,
+      "compositionYear": 1655,
+      "compositionEra": "Ming-Qing transition (c. 1650s)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Seven Swords and Thirteen Heroes (Qijian Shisan Xia)",
+      "titleOriginalScript": "七劍十三俠",
+      "slug": "qijian-shisan-xia",
+      "languageCode": "zh",
+      "authorSlug": "tang-yunzhou",
+      "description": "One of the most popular late Qing martial arts novels, set during the Zhengde reign. Features a band of righteous swordsmen suppressing a princely rebellion.",
+      "totalChapters": 181,
+      "compositionYear": 1896,
+      "compositionEra": "Late Qing (c. 1896)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Random Records from the Whistling Pavilion (Xiaoting Zalu)",
+      "titleOriginalScript": "嘯亭雜錄",
+      "slug": "xiaoting-zalu",
+      "languageCode": "zh",
+      "authorSlug": "zhaolian",
+      "description": "Written by a Qing imperial prince (Aisin Gioro clan), this biji offers insider accounts of Qing court politics, Manchu customs, and Bannerman life unavailable from any other source.",
+      "totalChapters": 15,
+      "compositionYear": 1815,
+      "compositionEra": "Qing (c. 1815)",
+      "textType": "prose",
+      "genre": "history"
+    }
+  ]
+}

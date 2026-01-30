@@ -1,0 +1,363 @@
+{
+  "authors": [
+    {
+      "name": "Wei Xiuren",
+      "nameOriginalScript": "魏秀仁",
+      "slug": "wei-xiuren",
+      "era": "Late Qing (c. 1858)",
+      "description": "Late Qing novelist known for Huayue Hen, a scholar-and-beauty romance interweaving love with the Taiping Rebellion."
+    },
+    {
+      "name": "Chu Renhuo",
+      "nameOriginalScript": "褚人獲",
+      "slug": "chu-renhuo",
+      "era": "Early Qing (c. 1695)",
+      "description": "Early Qing novelist who compiled the Romance of the Sui and Tang Dynasties from earlier historical fiction."
+    },
+    {
+      "name": "Zhang Dai",
+      "nameOriginalScript": "張岱",
+      "slug": "zhang-dai",
+      "era": "Ming-Qing transition (1597-1689)",
+      "description": "One of the finest prose stylists of late imperial China, known for his nostalgic essays on the vanished world of the late Ming."
+    },
+    {
+      "name": "Li Yu",
+      "nameOriginalScript": "李漁",
+      "slug": "li-yu",
+      "era": "Early Qing (1611-1680)",
+      "description": "Polymath dramatist, fiction writer, and aesthete who wrote on drama, music, gardening, food, and daily life."
+    },
+    {
+      "name": "Youzhi Daoren",
+      "nameOriginalScript": "游戲道人",
+      "slug": "youzhi-daoren",
+      "era": "Qing (1787)",
+      "description": "Pseudonymous compiler of the Expanded Records of the Forest of Laughter, China's most famous joke collection."
+    },
+    {
+      "name": "Yuan Mei",
+      "nameOriginalScript": "袁枚",
+      "slug": "yuan-mei",
+      "era": "Qing (1716-1798)",
+      "description": "Leading Qing poet and literary critic who championed naturalness and feeling in poetry."
+    },
+    {
+      "name": "Zhong Rong",
+      "nameOriginalScript": "鍾嶸",
+      "slug": "zhong-rong",
+      "era": "Southern Liang (c. 468-518 CE)",
+      "description": "Southern Dynasties literary critic who wrote the earliest systematic ranking of Chinese poets."
+    },
+    {
+      "name": "Wang Fu",
+      "nameOriginalScript": "王符",
+      "slug": "wang-fu",
+      "era": "Eastern Han (c. 90-165 CE)",
+      "description": "Eastern Han social critic who wrote trenchant essays on governance, corruption, and moral decay from outside the establishment."
+    },
+    {
+      "name": "Hong Mai",
+      "nameOriginalScript": "洪邁",
+      "slug": "hong-mai",
+      "era": "Southern Song (1123-1202)",
+      "description": "Prolific Southern Song scholar and official who compiled one of China's most erudite biji collections."
+    },
+    {
+      "name": "Wang Yinglin",
+      "nameOriginalScript": "王應麟",
+      "slug": "wang-yinglin",
+      "era": "Late Song (1223-1296)",
+      "description": "Song dynasty scholar known for meticulous evidential scholarship across the classics, histories, and philosophy."
+    },
+    {
+      "name": "Duan Chengshi",
+      "nameOriginalScript": "段成式",
+      "slug": "duan-chengshi",
+      "era": "Tang (c. 803-863 CE)",
+      "description": "Tang dynasty polymath whose eclectic biji collection covered natural history, folklore, foreign lands, and supernatural tales."
+    },
+    {
+      "name": "Lu You",
+      "nameOriginalScript": "陸游",
+      "slug": "lu-you",
+      "era": "Southern Song (1125-1210)",
+      "description": "One of the greatest Song poets, also known for his prose notes on politics, literature, and the Jurchen wars."
+    },
+    {
+      "name": "Meng Yuanlao",
+      "nameOriginalScript": "孟元老",
+      "slug": "meng-yuanlao",
+      "era": "Southern Song (12th century)",
+      "description": "Southern Song memoirist who recorded the urban life of Northern Song Kaifeng before its fall to the Jurchens."
+    },
+    {
+      "name": "Wang Shizhen",
+      "nameOriginalScript": "王士禛",
+      "slug": "wang-shizhen-qing",
+      "era": "Early Qing (1634-1711)",
+      "description": "Leading poet-critic of the early Qing, known for his theory of 'spiritual resonance' (shengyun) in poetry."
+    },
+    {
+      "name": "Li Daoyuan",
+      "nameOriginalScript": "酈道元",
+      "slug": "li-daoyuan",
+      "era": "Northern Wei (c. 472-527 CE)",
+      "description": "Northern Wei geographer who transformed a terse river catalog into the greatest geographical text of pre-modern China."
+    },
+    {
+      "name": "Jia Sixie",
+      "nameOriginalScript": "賈思勰",
+      "slug": "jia-sixie",
+      "era": "Northern Wei (6th century CE)",
+      "description": "Northern Wei agricultural scholar who compiled the oldest and most comprehensive surviving Chinese agricultural manual."
+    },
+    {
+      "name": "Li Zhi",
+      "nameOriginalScript": "李贄",
+      "slug": "li-zhi",
+      "era": "Late Ming (1527-1602)",
+      "description": "Iconoclastic late Ming thinker who attacked Confucian hypocrisy and championed individual moral autonomy."
+    }
+  ],
+  "texts": [
+    {
+      "title": "Traces of Flowers and the Moon (Huayue Hen)",
+      "titleOriginalScript": "花月痕",
+      "slug": "huayue-hen",
+      "languageCode": "zh",
+      "authorSlug": "wei-xiuren",
+      "description": "A major scholar-and-beauty romance of the late Qing, interweaving love stories with the Taiping Rebellion. Known for its lyrical poetry and depiction of courtesans and failed scholars.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/花月痕",
+      "processedDir": "data/processed/huayue-hen",
+      "compositionYear": 1858,
+      "compositionEra": "Late Qing",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "Romance of the Sui and Tang Dynasties (Sui Tang Yanyi)",
+      "titleOriginalScript": "隋唐演義",
+      "slug": "sui-tang-yanyi",
+      "languageCode": "zh",
+      "authorSlug": "chu-renhuo",
+      "description": "The great historical novel of the Sui-Tang transition, covering the fall of the Sui dynasty through the rise of the Tang. Features famous characters like Li Shimin, Qin Shubao, and Cheng Yaojin.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/隋唐演義",
+      "processedDir": "data/processed/sui-tang-yanyi",
+      "compositionYear": 1695,
+      "compositionEra": "Early Qing",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "Dream Memories of Tao'an (Taoan Mengyi)",
+      "titleOriginalScript": "陶庵夢憶",
+      "slug": "taoan-mengyi",
+      "languageCode": "zh",
+      "authorSlug": "zhang-dai",
+      "description": "The finest collection of nostalgic essays in Chinese literature. Zhang Dai, a ruined Ming aristocrat, recalls the vanished world of late Ming Jiangnan: opera, tea, lantern festivals, lake excursions.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/陶庵夢憶",
+      "processedDir": "data/processed/taoan-mengyi",
+      "compositionYear": 1665,
+      "compositionEra": "Ming-Qing transition",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "Random Thoughts on Idle Pleasures (Xianqing Ouji)",
+      "titleOriginalScript": "閑情偶寄",
+      "slug": "xianqing-ouji",
+      "languageCode": "zh",
+      "authorSlug": "li-yu",
+      "description": "The most comprehensive manual of aesthetics and daily life in Chinese literature. Covers drama, music, costume, gardening, food, architecture, and health with wit and opinion.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/閑情偶寄",
+      "processedDir": "data/processed/xianqing-ouji",
+      "compositionYear": 1671,
+      "compositionEra": "Early Qing",
+      "genre": "commentary",
+      "textType": "prose"
+    },
+    {
+      "title": "Expanded Records of the Forest of Laughter (Xiaolin Guangji)",
+      "titleOriginalScript": "笑林廣記",
+      "slug": "xiaolin-guangji",
+      "languageCode": "zh",
+      "authorSlug": "youzhi-daoren",
+      "description": "The largest and most famous Chinese joke collection. Hundreds of jokes organized by category: stupid people, ridiculous officials, stingy men, marital humor, and more.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/笑林廣記",
+      "processedDir": "data/processed/xiaolin-guangji",
+      "compositionYear": 1787,
+      "compositionEra": "Qing",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "Random Notes on Poetry from the Sui Garden (Suiyuan Shihua)",
+      "titleOriginalScript": "隨園詩話",
+      "slug": "suiyuan-shihua",
+      "languageCode": "zh",
+      "authorSlug": "yuan-mei",
+      "description": "The most entertaining collection of poetry criticism in Chinese. Yuan Mei combines anecdotes, critical judgments, and hundreds of quoted poems, championing spirit and feeling over formalism.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/隨園詩話",
+      "processedDir": "data/processed/suiyuan-shihua",
+      "compositionYear": 1790,
+      "compositionEra": "Qing",
+      "genre": "commentary",
+      "textType": "prose"
+    },
+    {
+      "title": "Grades of Poetry (Shipin)",
+      "titleOriginalScript": "詩品",
+      "slug": "shipin",
+      "languageCode": "zh",
+      "authorSlug": "zhong-rong",
+      "description": "The earliest systematic ranking and critical evaluation of Chinese poets. Zhong Rong grades 122 poets from Han to his own day into three tiers with critical comments on each.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/詩品",
+      "processedDir": "data/processed/shipin",
+      "compositionYear": 515,
+      "compositionEra": "Southern Liang",
+      "genre": "commentary",
+      "textType": "prose"
+    },
+    {
+      "title": "Comments of a Recluse (Qianfu Lun)",
+      "titleOriginalScript": "潛夫論",
+      "slug": "qianfu-lun",
+      "languageCode": "zh",
+      "authorSlug": "wang-fu",
+      "description": "A penetrating social critique of Eastern Han dynasty corruption, nepotism, and moral decay. Wang Fu writes from outside the establishment with sharp observations on governance and human nature.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/潛夫論",
+      "processedDir": "data/processed/qianfu-lun",
+      "compositionYear": 130,
+      "compositionEra": "Eastern Han",
+      "genre": "philosophy",
+      "textType": "prose"
+    },
+    {
+      "title": "Random Notes from the Rongzhai Studio (Rongzhai Suibi)",
+      "titleOriginalScript": "容齋隨筆",
+      "slug": "rongzhai-suibi",
+      "languageCode": "zh",
+      "authorSlug": "hong-mai",
+      "description": "The most scholarly and wide-ranging biji collection of the Song dynasty. Covers history, literature, philology, politics, and daily life with extraordinary erudition across 1,230 entries.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/容齋隨筆",
+      "processedDir": "data/processed/rongzhai-suibi",
+      "compositionYear": 1190,
+      "compositionEra": "Southern Song",
+      "genre": "history",
+      "textType": "prose"
+    },
+    {
+      "title": "Records of Learning Difficulties (Kunxue Jiwen)",
+      "titleOriginalScript": "困學紀聞",
+      "slug": "kunxue-jiwen",
+      "languageCode": "zh",
+      "authorSlug": "wang-yinglin",
+      "description": "One of the greatest works of evidential scholarship in Chinese history. Wang Yinglin meticulously investigates textual problems across the classics, histories, and philosophy.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/困學紀聞",
+      "processedDir": "data/processed/kunxue-jiwen",
+      "compositionYear": 1275,
+      "compositionEra": "Late Song",
+      "genre": "philosophy",
+      "textType": "prose"
+    },
+    {
+      "title": "Miscellaneous Morsels from Youyang (Youyang Zazu)",
+      "titleOriginalScript": "酉陽雜俎",
+      "slug": "youyang-zazu",
+      "languageCode": "zh",
+      "authorSlug": "duan-chengshi",
+      "description": "The most fascinating and eclectic biji collection of the Tang dynasty. Covers natural history, folklore, foreign lands, Buddhist and Daoist lore, food, drugs, ghosts, and oddities. Contains the earliest known Chinese Cinderella story.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/酉陽雜俎",
+      "processedDir": "data/processed/youyang-zazu",
+      "compositionYear": 860,
+      "compositionEra": "Tang",
+      "genre": "history",
+      "textType": "prose"
+    },
+    {
+      "title": "Notes from the Old Scholar's Studio (Laoxuean Biji)",
+      "titleOriginalScript": "老學庵筆記",
+      "slug": "laoxuean-biji",
+      "languageCode": "zh",
+      "authorSlug": "lu-you",
+      "description": "Personal notes by one of the greatest Song poets. Lu You records anecdotes about politics, literature, customs, and daily life in the Southern Song, full of eyewitness accounts of the Jurchen wars.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/老學庵筆記",
+      "processedDir": "data/processed/laoxuean-biji",
+      "compositionYear": 1195,
+      "compositionEra": "Southern Song",
+      "genre": "history",
+      "textType": "prose"
+    },
+    {
+      "title": "Dreams of Splendor of the Eastern Capital (Dongjing Menghua Lu)",
+      "titleOriginalScript": "東京夢華錄",
+      "slug": "dongjing-menghua-lu",
+      "languageCode": "zh",
+      "authorSlug": "meng-yuanlao",
+      "description": "The most detailed account of urban life in the Northern Song capital Kaifeng before its fall to the Jurchen in 1127. Markets, restaurants, festivals, entertainment, and daily customs described with nostalgic precision.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/東京夢華錄",
+      "processedDir": "data/processed/dongjing-menghua-lu",
+      "compositionYear": 1147,
+      "compositionEra": "Southern Song",
+      "genre": "history",
+      "textType": "prose"
+    },
+    {
+      "title": "Random Talks North of the Pond (Chibei Outan)",
+      "titleOriginalScript": "池北偶談",
+      "slug": "chibei-outan",
+      "languageCode": "zh",
+      "authorSlug": "wang-shizhen-qing",
+      "description": "A major biji collection by the leading poet-critic of the early Qing. Covers literature, history, supernatural tales, and contemporary events across four thematic sections.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/池北偶談",
+      "processedDir": "data/processed/chibei-outan",
+      "compositionYear": 1691,
+      "compositionEra": "Early Qing",
+      "genre": "history",
+      "textType": "prose"
+    },
+    {
+      "title": "Commentary on the Waterways Classic (Shuijing Zhu)",
+      "titleOriginalScript": "水經注",
+      "slug": "shuijing-zhu",
+      "languageCode": "zh",
+      "authorSlug": "li-daoyuan",
+      "description": "The greatest geographical text of pre-modern China. Li Daoyuan expanded a terse river catalog into a richly detailed account of landscapes, cities, legends, and inscriptions along China's waterways.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/水經注",
+      "processedDir": "data/processed/shuijing-zhu",
+      "compositionYear": 520,
+      "compositionEra": "Northern Wei",
+      "genre": "history",
+      "textType": "prose"
+    },
+    {
+      "title": "Essential Techniques for the Common People (Qimin Yaoshu)",
+      "titleOriginalScript": "齊民要術",
+      "slug": "qimin-yaoshu",
+      "languageCode": "zh",
+      "authorSlug": "jia-sixie",
+      "description": "The oldest and most comprehensive agricultural manual surviving from China. Covers crop cultivation, animal husbandry, food processing, brewing, and fermentation.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/齊民要術",
+      "processedDir": "data/processed/qimin-yaoshu",
+      "compositionYear": 544,
+      "compositionEra": "Northern Wei",
+      "genre": "science",
+      "textType": "prose"
+    },
+    {
+      "title": "A Book to Burn (Fenshu)",
+      "titleOriginalScript": "焚書",
+      "slug": "fenshu",
+      "languageCode": "zh",
+      "authorSlug": "li-zhi",
+      "description": "The most iconoclastic work of the late Ming. Li Zhi attacked Confucian hypocrisy, championed individual moral autonomy, and defended vernacular fiction and women's intellectual capacity.",
+      "sourceUrl": "https://zh.wikisource.org/wiki/焚書",
+      "processedDir": "data/processed/fenshu",
+      "compositionYear": 1590,
+      "compositionEra": "Late Ming",
+      "genre": "philosophy",
+      "textType": "prose"
+    }
+  ]
+}

@@ -1,0 +1,319 @@
+{
+  "authors": [
+    {
+      "name": "Huang Zongxi",
+      "nameOriginalScript": "\u9ec3\u5b97\u7fb2",
+      "slug": "huang-zongxi",
+      "era": "Early Qing (1610\u20131695)",
+      "description": "Leading philosopher and political thinker of the Ming-Qing transition. Author of the first systematic history of Chinese philosophy."
+    },
+    {
+      "name": "Ji Yun",
+      "nameOriginalScript": "\u7d00\u6600",
+      "slug": "ji-yun",
+      "era": "Qing (1724\u20131805)",
+      "description": "Chief editor of the Siku Quanshu and powerful literary official. Wrote supernatural tales in a deliberately terse classical style."
+    },
+    {
+      "name": "Li Baichuan",
+      "nameOriginalScript": "\u674e\u767e\u5ddd",
+      "slug": "li-baichuan",
+      "era": "Qing (c. 18th century)",
+      "description": "Author of one of the great mid-Qing novels blending Daoist cultivation with political intrigue."
+    },
+    {
+      "name": "Xia Jingqu",
+      "nameOriginalScript": "\u590f\u656c\u6e20",
+      "slug": "xia-jingqu",
+      "era": "Qing (1705\u20131787)",
+      "description": "Author of the longest pre-modern Chinese novel at 154 chapters."
+    },
+    {
+      "name": "Li L\u00fcyuan",
+      "nameOriginalScript": "\u674e\u7da0\u5712",
+      "slug": "li-luyuan",
+      "era": "Qing (1707\u20131790)",
+      "description": "Author of a major Qing educational novel rediscovered only in the 20th century."
+    },
+    {
+      "name": "Yu Wanchun",
+      "nameOriginalScript": "\u4fde\u842c\u6625",
+      "slug": "yu-wanchun",
+      "era": "Qing (1794\u20131849)",
+      "description": "Author of the anti-Water Margin sequel praised by Lu Xun for its literary quality."
+    },
+    {
+      "name": "Shi Yukun",
+      "nameOriginalScript": "\u77f3\u7389\u5d11",
+      "slug": "shi-yukun",
+      "era": "Qing (c. 19th century)",
+      "description": "Storyteller whose oral performances became the foundational Chinese martial-arts and detective novel."
+    },
+    {
+      "name": "Zeng Pu",
+      "nameOriginalScript": "\u66fe\u6a38",
+      "slug": "zeng-pu",
+      "era": "Late Qing (1872\u20131935)",
+      "description": "Author of one of the four great novels of the late Qing, a roman \u00e0 clef of diplomacy and scandal."
+    },
+    {
+      "name": "Wu Xuan",
+      "nameOriginalScript": "\u5433\u749a",
+      "slug": "wu-xuan",
+      "era": "Qing (c. early 18th century)",
+      "description": "Author of a historical novel about the founding of the Song dynasty."
+    },
+    {
+      "name": "L\u00fc Xiong",
+      "nameOriginalScript": "\u5442\u718a",
+      "slug": "lu-xiong",
+      "era": "Qing (c. early 18th century)",
+      "description": "Author of a fantastical novel blending historical events with Daoist supernatural elements."
+    },
+    {
+      "name": "Zhang Chao",
+      "nameOriginalScript": "\u5f35\u6f6e",
+      "slug": "zhang-chao",
+      "era": "Qing (1650\u20131707?)",
+      "description": "Literary arbiter and anthologist of the finest late Ming and early Qing tales."
+    },
+    {
+      "name": "Zhang Nanzhuang",
+      "nameOriginalScript": "\u5f35\u5357\u838a",
+      "slug": "zhang-nanzhuang",
+      "era": "Qing (c. late 18th century)",
+      "description": "Author of the first novel written in Wu dialect, championed by Lu Xun."
+    },
+    {
+      "name": "Wu Zimu",
+      "nameOriginalScript": "\u5433\u81ea\u7267",
+      "slug": "wu-zimu",
+      "era": "Song (c. 13th century)",
+      "description": "Author of a detailed record of life in Southern Song Hangzhou."
+    },
+    {
+      "name": "Zhou Mi",
+      "nameOriginalScript": "\u5468\u5bc6",
+      "slug": "zhou-mi",
+      "era": "Song-Yuan (1232\u20131298)",
+      "description": "Leading literatus of the Song-Yuan transition. Prolific writer of biji recording the vanished world of Southern Song Hangzhou."
+    },
+    {
+      "name": "Luo Dajing",
+      "nameOriginalScript": "\u7f85\u5927\u7d93",
+      "slug": "luo-dajing",
+      "era": "Song (c. 13th century)",
+      "description": "Song dynasty biji writer covering poetry criticism, history, and philosophy."
+    }
+  ],
+  "texts": [
+    {
+      "title": "Records of Ming Scholars (Mingru Xuean)",
+      "titleOriginalScript": "\u660e\u5112\u5b78\u6848",
+      "slug": "mingru-xuean",
+      "authorSlug": "huang-zongxi",
+      "languageCode": "zh",
+      "description": "The first systematic history of philosophy in any language. Huang Zongxi traces the development of Confucian thought through the entire Ming dynasty, school by school.",
+      "totalChapters": 62,
+      "compositionYear": 1676,
+      "compositionEra": "Early Qing (1676)",
+      "textType": "prose",
+      "genre": "philosophy"
+    },
+    {
+      "title": "Random Jottings at the Cottage of Close Scrutiny (Yuewei Caotang Biji)",
+      "titleOriginalScript": "\u95b1\u5fae\u8349\u5802\u7b46\u8a18",
+      "slug": "yuewei-caotang-biji",
+      "authorSlug": "ji-yun",
+      "languageCode": "zh",
+      "description": "The greatest collection of supernatural tales by China's most powerful literary official. Ji Yun deliberately wrote in a classical, sparse style as a counterpoint to Pu Songling's ornate Liaozhai. Contains ~1,200 stories of wit, moral commentary, and ghost stories.",
+      "totalChapters": 24,
+      "compositionYear": 1793,
+      "compositionEra": "Qing (1789\u20131798)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Legendary Tale of the Green Wilds (Luye Xianzong)",
+      "titleOriginalScript": "\u7da0\u91ce\u4ed9\u8e64",
+      "slug": "luye-xianzong",
+      "authorSlug": "li-baichuan",
+      "languageCode": "zh",
+      "description": "Ranked alongside Honglou Meng and Rulin Waishi as a great mid-Qing novel. Blends Daoist cultivation, political intrigue, and romance during the Ming Jiajing era.",
+      "totalChapters": 43,
+      "compositionYear": 1762,
+      "compositionEra": "Qing (c. 1762)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "An Old Rustic's Idle Talk (Yesou Puyan)",
+      "titleOriginalScript": "\u91ce\u53df\u66dd\u8a00",
+      "slug": "yesou-puyan",
+      "authorSlug": "xia-jingqu",
+      "languageCode": "zh",
+      "description": "The longest pre-modern Chinese novel at 154 chapters. Follows scholar Wen Suchen through examinations, romances, and military campaigns in an encyclopedic narrative.",
+      "totalChapters": 154,
+      "compositionYear": 1750,
+      "compositionEra": "Qing (c. 1750)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Lamp at the Crossroads (Qilu Deng)",
+      "titleOriginalScript": "\u6b67\u8def\u71c8",
+      "slug": "qilu-deng",
+      "authorSlug": "li-luyuan",
+      "languageCode": "zh",
+      "description": "A major Qing educational novel about a scholar's son squandering his inheritance. Only rediscovered in the 20th century; no complete English translation exists.",
+      "totalChapters": 108,
+      "compositionYear": 1777,
+      "compositionEra": "Qing (c. 1777)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Pacifying the Bandits (Dangkou Zhi)",
+      "titleOriginalScript": "\u8569\u5bc7\u5fd7",
+      "slug": "dangkou-zhi",
+      "authorSlug": "yu-wanchun",
+      "languageCode": "zh",
+      "description": "Anti-Water Margin sequel where the Liangshan outlaws are portrayed as villains. Lu Xun praised its literary quality despite its reactionary ideology.",
+      "totalChapters": 34,
+      "compositionYear": 1847,
+      "compositionEra": "Qing (c. 1847)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Three Heroes and Five Gallants (Sanxia Wuyi)",
+      "titleOriginalScript": "\u4e09\u4fe0\u4e94\u7fa9",
+      "slug": "sanxia-wuyi",
+      "authorSlug": "shi-yukun",
+      "languageCode": "zh",
+      "description": "The foundational Chinese martial-arts and detective novel combining Judge Bao courtroom drama with wuxia heroics. Source for countless later adaptations.",
+      "totalChapters": 120,
+      "compositionYear": 1879,
+      "compositionEra": "Qing (c. 1879)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "A Flower in a Sea of Sin (Niehai Hua)",
+      "titleOriginalScript": "\u5b7d\u6d77\u82b1",
+      "slug": "niehai-hua",
+      "authorSlug": "zeng-pu",
+      "languageCode": "zh",
+      "description": "A major roman \u00e0 clef of late Qing diplomacy, politics, and scandal. Only 5 chapters translated into English (1982). One of the four great novels of the late Qing.",
+      "totalChapters": 35,
+      "compositionYear": 1905,
+      "compositionEra": "Late Qing (1905)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Complete Tale of the Flying Dragon (Feilong Quanzhuan)",
+      "titleOriginalScript": "\u98db\u9f8d\u5168\u50b3",
+      "slug": "feilong-quanzhuan",
+      "authorSlug": "wu-xuan",
+      "languageCode": "zh",
+      "description": "Historical novel about the founding of the Song dynasty by Zhao Kuangyin (Emperor Taizu). A classic of dynastic-founding fiction.",
+      "totalChapters": 60,
+      "compositionYear": 1715,
+      "compositionEra": "Qing (c. 1710s)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Unofficial History of the Female Immortals (Nuxian Waishi)",
+      "titleOriginalScript": "\u5973\u4ed9\u5916\u53f2",
+      "slug": "nuxian-waishi",
+      "authorSlug": "lu-xiong",
+      "languageCode": "zh",
+      "description": "Fantastical novel set during the Yongle Emperor's usurpation, blending historical events with Daoist supernatural elements and female warrior protagonists.",
+      "totalChapters": 99,
+      "compositionYear": 1711,
+      "compositionEra": "Qing (c. 1711)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "New Records of Yu Chu (Yuchu Xinzhi)",
+      "titleOriginalScript": "\u865e\u521d\u65b0\u5fd7",
+      "slug": "yuchu-xinzhi",
+      "authorSlug": "zhang-chao",
+      "languageCode": "zh",
+      "description": "Anthology of the finest literary Chinese tales from the late Ming and early Qing, curated by one of the period's foremost literary arbiters.",
+      "totalChapters": 20,
+      "compositionYear": 1700,
+      "compositionEra": "Qing (c. 1700)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "What Canon? (Hedian)",
+      "titleOriginalScript": "\u4f55\u5178",
+      "slug": "hedian",
+      "authorSlug": "zhang-nanzhuang",
+      "languageCode": "zh",
+      "description": "The first novel written in Wu dialect (Shanghainese). A satirical ghost-world picaresque championed by Lu Xun and Hu Shi during the New Culture Movement.",
+      "totalChapters": 10,
+      "compositionYear": 1800,
+      "compositionEra": "Qing (c. 1800)",
+      "textType": "prose",
+      "genre": "literature"
+    },
+    {
+      "title": "Record of the Millet Dream (Mengliang Lu)",
+      "titleOriginalScript": "\u5922\u6881\u9304",
+      "slug": "mengliang-lu",
+      "authorSlug": "wu-zimu",
+      "languageCode": "zh",
+      "description": "Detailed record of life in Southern Song Hangzhou modeled on the Dongjing Menghua Lu. Documents markets, crafts, festivals, and urban culture before the Mongol conquest.",
+      "totalChapters": 20,
+      "compositionYear": 1274,
+      "compositionEra": "Song (c. 1274)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Past Events of Wulin (Wulin Jiushi)",
+      "titleOriginalScript": "\u6b66\u6797\u820a\u4e8b",
+      "slug": "wulin-jiushi",
+      "authorSlug": "zhou-mi",
+      "languageCode": "zh",
+      "description": "Zhou Mi's nostalgic record of Southern Song Hangzhou's court ceremonies, festivals, entertainments, and daily life before the Mongol conquest.",
+      "totalChapters": 9,
+      "compositionYear": 1290,
+      "compositionEra": "Song-Yuan (c. 1290)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Rustic Words from East of Qi (Qidong Yeyu)",
+      "titleOriginalScript": "\u9f4a\u6771\u91ce\u8a9e",
+      "slug": "qidong-yeyu",
+      "authorSlug": "zhou-mi",
+      "languageCode": "zh",
+      "description": "Zhou Mi's politically revealing biji covering Southern Song court politics, the Zhu Xi scandal, painting connoisseurship, and other historical anecdotes.",
+      "totalChapters": 20,
+      "compositionYear": 1291,
+      "compositionEra": "Song-Yuan (c. 1291)",
+      "textType": "prose",
+      "genre": "history"
+    },
+    {
+      "title": "Jade Dew from the Crane Forest (Helin Yulu)",
+      "titleOriginalScript": "\u9db4\u6797\u7389\u9732",
+      "slug": "helin-yulu",
+      "authorSlug": "luo-dajing",
+      "languageCode": "zh",
+      "description": "Song dynasty biji covering poetry criticism, historical anecdotes, philosophical discussions, and political commentary.",
+      "totalChapters": 19,
+      "compositionYear": 1248,
+      "compositionEra": "Song (c. 1248)",
+      "textType": "prose",
+      "genre": "history"
+    }
+  ]
+}
