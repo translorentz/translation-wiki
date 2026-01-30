@@ -14,6 +14,20 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 3. **Use specific adds:** `git add <specific-files>` NOT `git add .` or `git add -A`
 4. **Gemini FORBIDDEN** until User lifts prohibition — use DeepSeek only
 5. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
+6. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
+
+---
+
+## ⚠️ SUBAGENT GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-01-29):** A Haiku subagent tasked with recategorizing 2 texts added duplicate `textType`/`genre` fields to ~40 entries in seed-db.ts, wrongly recategorized 3 additional texts, added fields to an author entry, and ran a full re-seed unnecessarily. All damage had to be manually reverted.
+
+**MANDATORY for all subagents that modify code or data:**
+1. **NEVER use `model: "haiku"`** — always use `sonnet` (default) or `opus`
+2. **Scope discipline:** Subagents must ONLY modify what they are explicitly asked to modify. If asked to change 2 entries, change exactly 2 entries — not 40.
+3. **No re-seeding without authorization:** `pnpm tsx scripts/seed-db.ts` is insert-or-skip — it cannot update existing records. Never run it to "apply" a genre/field change. Use direct SQL for DB updates.
+4. **Diff review:** After any subagent that edits files, always run `git diff` to verify the changes are scoped correctly before accepting them. Revert and redo manually if the agent overreached.
+5. **Prefer direct edits for small changes:** For tasks involving ≤5 file edits, do them directly instead of spawning a subagent. Subagents are for large, well-defined tasks (scraping, translation, evaluation).
 
 ---
 
@@ -91,7 +105,7 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 1. Raw files → `data/raw/<dirname>/`
 2. Processing script → `scripts/process-<name>.ts` outputs `data/processed/<slug>/chapter-NNN.json`
 3. Add author/text to `scripts/seed-db.ts`
-   - **MANDATORY: Set `genre` field** — one of: `philosophy`, `commentary`, `literature`, `history`, `science`
+   - **MANDATORY: Set `genre` field** — one of: `philosophy`, `commentary`, `literature`, `history`, `science`, `ritual`
    - Genre enables filtering on `/texts?genre=<name>` browse page
 4. `pnpm tsx scripts/seed-db.ts`
 5. **CHECK TRANSLATION PROMPT** (see below) — ensure `src/server/translation/prompts.ts` has a suitable prompt for this text's language, period, and genre

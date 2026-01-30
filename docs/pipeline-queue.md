@@ -14,7 +14,7 @@ Pipelines execute sequentially (one language at a time) to avoid overwhelming AP
 |----------|----------|------------|-------|----------|-------|
 | 1 | **Chinese (zh)** | zh.wikisource.org | 44 | Yes | IN PROGRESS — Session 36 |
 | 2 | **Polish (pl)** | pl.wikisource.org | 40 | Yes | Largest batch after Chinese |
-| 3 | **Armenian (hy)** | hy.wikisource.org | 30 | Yes | MUST use DeepSeek (Gemini blocks Armenian) |
+| 3 | **Armenian (hy)** | hy.wikisource.org | 45 | Yes | MUST use DeepSeek (Gemini blocks Armenian) |
 | 4 | **Italian (it)** | it.wikisource.org | 20 | Yes | Already have `it-literary-19c` prompt |
 | 5 | **Latin (la)** | la.wikisource.org | 10 | Yes | Already have `la` prompt |
 | 6 | **Czech (cs)** | cs.wikisource.org | 10 | Yes | New language — needs prompt |
@@ -62,7 +62,7 @@ Before launching each pipeline, verify:
   - Expect higher rejection rate in verification phase
 
 ### 3. Armenian (hy) — QUEUED
-- **Target:** ~30 works, pre-1900, from hy.wikisource.org (target is approximate — verification will filter)
+- **Target:** ~45 works, pre-1900, from hy.wikisource.org (target is approximate — verification will filter)
 - **CRITICAL:** Must use DeepSeek only. Gemini blocks Armenian historical content with `PROHIBITED_CONTENT` errors.
 - **Prompt:** Existing `hy` prompt covers 19th-20th century Armenian literature — but new texts may span different periods/genres and will likely need new prompts (e.g., classical Armenian grabar, medieval chronicles, ecclesiastical texts)
 - **Script:** Use `scripts/translate-armenian.ts` (not `translate-batch.ts`)
@@ -174,16 +174,16 @@ Existing prompts that WILL likely need new variants (prompts are narrowly tailor
 | Pipeline | Est. Works | Est. Chapters | Est. Workers | Est. API Calls |
 |----------|-----------|---------------|-------------|---------------|
 | Polish | 40 | ~1,200 | 7-10 | ~1,200 |
-| Armenian | 30 | ~600 | 5-7 | ~600 |
+| Armenian | 45 | ~900 | 7-10 | ~900 |
 | Italian | 20 | ~500 | 5-7 | ~500 |
 | Latin | 10 | ~300 | 3-5 | ~300 |
 | Czech | 10 | ~250 | 3-5 | ~250 |
 | Gujarati | 10 | ~200 | 3-5 | ~200 |
 | Telugu | 10 | ~200 | 3-5 | ~200 |
 | Turkish | 5 | ~100 | 2-3 | ~100 |
-| **Total** | **~135** | **~3,350** | — | **~3,350** |
+| **Total** | **~150** | **~3,650** | — | **~3,650** |
 
-Combined with Chinese (44 texts, 1,619 chapters), the full queue represents ~179 texts and ~4,969 chapters.
+Combined with Chinese (44 texts, 1,619 chapters), the full queue represents ~194 texts and ~5,269 chapters.
 
 ---
 

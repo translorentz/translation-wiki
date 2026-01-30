@@ -918,6 +918,7 @@ const TEXTS = [
     processedDir: "data/processed/ceremonialis",
     compositionYear: 959,
     compositionEra: "Reign of Constantine VII, Byzantine Empire",
+    genre: "ritual",
   },
   {
     title: "Instructions for Practical Living (Chuan Xi Lu)",
@@ -1091,6 +1092,7 @@ const TEXTS = [
     processedDir: "data/processed/yi-li",
     compositionYear: -200,
     compositionEra: "Western Han (base text, c. 200 BCE); Eastern Han (Zheng Xuan commentary, c. 180 CE)",
+    genre: "ritual",
   },
   {
     title: "Lost Book of Zhou (Yi Zhou Shu)",

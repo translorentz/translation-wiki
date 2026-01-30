@@ -28,6 +28,7 @@ const GENRE_DISPLAY_NAMES: Record<string, string> = {
   literature: "Literature",
   history: "History",
   science: "Science",
+  ritual: "Ritual",
   uncategorized: "Uncategorized",
 };
 

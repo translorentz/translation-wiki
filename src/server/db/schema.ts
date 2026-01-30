@@ -161,7 +161,7 @@ export const texts = pgTable(
     compositionYear: integer("composition_year"),
     compositionEra: varchar("composition_era", { length: 255 }),
     textType: varchar("text_type", { length: 20 }).notNull().default("prose"), // prose | poetry
-    genre: varchar("genre", { length: 50 }).notNull().default("uncategorized"), // philosophy | commentary | literature | history | science
+    genre: varchar("genre", { length: 50 }).notNull().default("uncategorized"), // philosophy | commentary | literature | history | science | ritual
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => [

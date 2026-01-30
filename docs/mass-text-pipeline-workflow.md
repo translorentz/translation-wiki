@@ -92,7 +92,7 @@ After setup, run `pnpm tsx scripts/seed-db.ts` to verify the language is inserte
 1. Exist in full on a public source (Wikisource is the primary source; also consider ctext.org, Perseus, other digital libraries)
 2. Are NOT already on Deltoi (check `docs/text-inventory.md` and `scripts/seed-db.ts` for existing slugs)
 3. Have NO complete English translation from a reputable source (see Phase 2 criteria)
-4. Are culturally/historically significant
+4. Are culturally/historically significant (see Quality Checks below)
 5. Have manageable chapter counts (1-300 preferred)
 
 **Method:**
@@ -100,8 +100,31 @@ After setup, run `pnpm tsx scripts/seed-db.ts` to verify the language is inserte
 2. Search Wikisource category pages for the target language (e.g., `zh.wikisource.org`, `el.wikisource.org`)
 3. For each candidate, **visit the actual Wikisource page** and estimate chapter count from the table of contents
 4. Verify the text has substantial content (not a stub with only a few lines)
-5. Classify by genre: `literature`, `history`, `philosophy`, `science`, `commentary`
+5. Classify by genre: `literature`, `history`, `philosophy`, `science`, `commentary`, `ritual`
 6. Record: title (original script + English), author (original + English), era, genre, source URL, estimated chapter count
+7. **Perform quality checks** (see below) for each candidate
+
+### Quality Checks (MANDATORY for every candidate)
+
+Each candidate text must pass three checks before inclusion:
+
+**1. Significance check:** Is this text culturally, historically, or literarily important? Look for:
+- Is the text referenced in scholarly literature, literary histories, or encyclopedias?
+- Is the author a recognised figure in the literary/intellectual tradition?
+- Does the text represent an important genre, movement, or period?
+- Reject texts that are merely obscure with no scholarly interest — the goal is important untranslated works, not just any untranslated work.
+
+**2. Source text quality check:** Sample 2-3 chapters from the Wikisource text and verify:
+- The text is legible and complete (not garbled OCR, truncated, or missing sections)
+- The text is in the expected language/script (not a modern summary or commentary instead of the original)
+- Paragraph structure is clear enough to process programmatically
+- If the source quality is poor (corrupt, heavily incomplete), reject or flag as PARTIAL
+
+**3. Translation quality check:** Run a trial translation of 1-2 sample paragraphs through the translation engine (DeepSeek) with the intended prompt, and verify:
+- The output is coherent, readable English
+- The translation captures the meaning and register of the original
+- Technical/domain vocabulary is handled appropriately
+- If translation quality is poor, the prompt may need adjustment — flag for prompt review before committing to full translation
 
 **Output:** `docs/<language>-wikisource-candidates.md` with full candidate list
 

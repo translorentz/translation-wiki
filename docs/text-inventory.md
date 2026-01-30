@@ -18,7 +18,8 @@ Complete list of all texts seeded in the database. Updated 2026-01-29.
 | history | 26 | Historical narratives, chronicles, biographies, biji |
 | commentary | 16 | Commentaries on other texts (zhushu/zhengyi works, Eustathius, etc.) |
 | philosophy | 12 | Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.) |
-| science | 7 | Medicine, geography, ritual/ceremonial manuals |
+| science | 5 | Medicine, geography |
+| ritual | 2 | Ceremonial and ritual manuals |
 
 ---
 
@@ -33,7 +34,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-29.
 | Commentary of Guliang (Guliang Zhuan) | guliang-chi | guliang-zhuan | 12 | prose | commentary |
 | Comprehensive Discussions in the White Tiger Hall (Baihu Tong) | ban-gu | baihu-tong | 43 | prose | philosophy |
 | Biographies of Lofty Scholars (Gaoshi Zhuan) | huangfu-mi | gaoshizhuan | 4 | prose | history |
-| Ceremonies and Rites (Yi Li) | zheng-xuan | yi-li | 17 | prose | science |
+| Ceremonies and Rites (Yi Li) | zheng-xuan | yi-li | 17 | prose | ritual |
 | Lost Book of Zhou (Yi Zhou Shu) | zhou-scribes | yi-zhou-shu | 62 | prose | history |
 | Comprehensive Meaning of Customs (Fengsu Tongyi) | ying-shao | fengsutongyi | 11 | prose | science |
 | The School Sayings of Confucius (Kongzi Jiayu) | confucius | kongzi-jiayu | 80 | prose | philosophy |
@@ -121,7 +122,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-29.
 
 | Title | Author Slug | Text Slug | Chapters | Type | Genre |
 |-------|-------------|-----------|----------|------|-------|
-| On the Ceremonies of the Byzantine Court | constantine-vii | ceremonialis | 7 | prose | science |
+| On the Ceremonies of the Byzantine Court | constantine-vii | ceremonialis | 7 | prose | ritual |
 | Poems of Poor Prodromos (Ptochoprodromika) | theodore-prodromos | ptochoprodromos | 2 | poetry | literature |
 | Medieval Greek Poems (Carmina Graeca Medii Aevi) | wagner | carmina-graeca | 21 | poetry | literature |
 | Epistle to Diognetus | diognetus-author | diognetum | 12 | prose | philosophy |
@@ -221,7 +222,7 @@ Complete list of all texts seeded in the database. Updated 2026-01-29.
 - **Prose vs Poetry:** Poetry texts show line numbers every 5th line in left gutter
 - **compositionYear:** Integer field, negative for BCE (e.g., -200 for 200 BCE)
 - **Title convention:** "English Name (Transliteration)" for all non-English texts
-- **Genre:** Valid values are `philosophy`, `commentary`, `literature`, `history`, `science`
+- **Genre:** Valid values are `philosophy`, `commentary`, `literature`, `history`, `science`, `ritual`
   - **philosophy**: Philosophical/ethical works (Neo-Confucian, Aristotelian, etc.)
   - **commentary**: Commentaries on other texts (zhushu/zhengyi editions, Eustathius)
   - **literature**: Poetry, novels, epics (Tamil kaviyams, Armenian novels, etc.)
