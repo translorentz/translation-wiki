@@ -126,10 +126,10 @@ function renderProseChapter(
   doc.font(FONT_REGULAR).fontSize(11).fillColor("#000000");
   for (let i = 0; i < chapter.translationParagraphs.length; i++) {
     const p = chapter.translationParagraphs[i]!;
-    const text = i === 0 ? p.text : `\u2003\u2003${p.text}`;
-    doc.text(text, MARGIN_LEFT, doc.y, {
+    doc.text(p.text, MARGIN_LEFT, doc.y, {
       width: CONTENT_WIDTH,
       lineGap: 3,
+      indent: i === 0 ? 0 : 24,
     });
     doc.moveDown(0.15);
   }
