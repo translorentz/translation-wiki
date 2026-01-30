@@ -20,6 +20,9 @@ Track all running agents and background workers here. Update when launching or c
 | a249ccd | Chinese Translation W8 (116ch) | RUNNING | sui-tang-yanyi, dongjing-menghua-lu, xijing-zaji (Saric texts re-included) |
 | a6571a7 | Chinese Translation W9 (156ch) | RUNNING | gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu (W6 tail) |
 | ad60212 | Chinese Translation W10 (101ch) | RUNNING | yehangchuan, helin-yulu, sushui-jiwen, wuzazu, tang-zhiyan, xiaoting-zalu (W7 tail) |
+| aaec508 | Chinese Translation W11 (158ch) | RUNNING | mingru-xuean, gaiyu-congkao, zhinang, beimeng-suoyan |
+| ac204d5 | Huangdi Neijing Reprocess + Translate | RUNNING | 162 chapters, reprocessed by 篇 |
+| ad3004e | Shennong Bencao Jing Process + Translate | RUNNING | 19 chapters, new text |
 
 ---
 
@@ -148,7 +151,7 @@ Track all running agents and background workers here. Update when launching or c
 - **Translation:** 38/38 complete, 0 errors
 - **English titles:** 38/38 added
 
-### Chinese Mass Pipeline — TRANSLATING (10 WORKERS)
+### Chinese Mass Pipeline — TRANSLATING (11 WORKERS)
 - **Seeded:** 44 texts (1,619 chapters) into DB
 - **Translating:** 44 texts across 10 workers (W1-W10), 331/1,619 chapters done
 - **Post-translation:** Gap-check agent queued (missing + short translations)

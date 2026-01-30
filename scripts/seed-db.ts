@@ -138,6 +138,14 @@ const AUTHORS = [
       "The Huang Di Nei Jing is traditionally attributed to the legendary Yellow Emperor (黃帝), but is actually a compilation of medical knowledge assembled by numerous anonymous physicians over several centuries.",
   },
   {
+    name: "Shennong (Traditional Attribution)",
+    nameOriginalScript: "神農",
+    slug: "shennong",
+    era: "Han Dynasty (c. 200 BCE)",
+    description:
+      "The Divine Farmer, a legendary Chinese emperor and cultural hero traditionally credited with teaching agriculture and herbal medicine. The Shennong Bencao Jing is attributed to him but was compiled by anonymous physicians.",
+  },
+  {
     name: "Theodore Prodromos",
     nameOriginalScript: "Θεόδωρος Πρόδρομος",
     slug: "theodore-prodromos",
@@ -1006,11 +1014,26 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "huangdi",
     description:
-      "The foundational text of Chinese medicine, presented here in its Su Wen (素問, Basic Questions) portion. A dialogue between the Yellow Emperor and his physician Qi Bo covering physiology, pathology, diagnosis, and treatment according to the principles of yin-yang and the five phases. The complete Huang Di Nei Jing also includes the Ling Shu (靈樞, Spiritual Pivot), not yet included here.",
+      "The foundational text of Chinese medicine, comprising the Su Wen (素問, Basic Questions, 81 chapters + 2 lost chapters) and Ling Shu (靈樞, Spiritual Pivot, 81 chapters). A dialogue between the Yellow Emperor and his physician Qi Bo covering physiology, pathology, diagnosis, and treatment according to the principles of yin-yang and the five phases.",
     sourceUrl: "https://ctext.org/huangdi-neijing",
     processedDir: "data/processed/huangdineijing",
     compositionYear: -200,
     compositionEra: "Warring States to Western Han Dynasty",
+    genre: "science",
+  },
+  {
+    title: "Divine Farmer's Classic of Materia Medica (Shennong Bencao Jing)",
+    titleOriginalScript: "神農本草經",
+    slug: "shennong-bencao-jing",
+    languageCode: "zh",
+    authorSlug: "shennong",
+    genre: "science",
+    description:
+      "The oldest known Chinese pharmacopoeia, cataloguing 365 medicinal substances classified into upper, middle, and lower grades based on their properties and toxicity.",
+    sourceUrl: "https://zh.wikisource.org/wiki/神農本草經",
+    processedDir: "data/processed/shennong-bencao-jing",
+    compositionYear: -200,
+    compositionEra: "Han Dynasty (c. 200 BCE)",
   },
   {
     title: "Poems of Poor Prodromos (Ptochoprodromika)",

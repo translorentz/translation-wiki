@@ -186,6 +186,8 @@ Existing prompts that WILL likely need new variants (prompts are narrowly tailor
 
 Combined with Chinese (44 texts, 1,619 chapters), the full queue represents ~194 texts and ~5,269 chapters.
 
+**Translation worker policy:** 7-10 workers is the standard range; up to 11 is permitted. Scale workers proportionally to pipeline size — large pipelines (30+ texts) use 10-11 workers, medium (10-20 texts) use 5-7, small (< 10 texts) use 3-5. DeepSeek has not rate-limited at 11 concurrent workers. The auto-skip logic in `translate-batch.ts` makes worker overlap harmless.
+
 ---
 
 ## Workflow Reference
