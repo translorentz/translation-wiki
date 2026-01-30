@@ -91,6 +91,7 @@ Before launching each pipeline, verify:
   - Focus on: medieval chronicles, lesser-known Renaissance texts, scientific works
   - Already have Lombards (82ch), Regno (56ch), Diarium (66ch) on Deltoi — exclude those
   - Classical vs. Medieval vs. Renaissance Latin — may need prompt variants
+  - **User suggestions** (see `docs/latin_text_suggestions.txt`): Kircher (Turris Babel, Oedipus Aegyptiacus, Mundus Subterraneus), Leibniz (Historia Inventionis Phosphori), Albertus Magnus (De quindecim problematibus) — research agents should check availability and translation status alongside Wikisource candidates
 
 ### 6. Czech (cs) — QUEUED
 - **Target:** 10 works, pre-1900, from cs.wikisource.org
