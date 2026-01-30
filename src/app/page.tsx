@@ -29,6 +29,7 @@ export default async function HomePage() {
     literature: "Literature",
     history: "History",
     science: "Science",
+    ritual: "Ritual",
     uncategorized: "Uncategorized",
   };
   const genreCounts = new Map<string, number>();
