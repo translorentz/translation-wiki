@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { ParagraphPair } from "./ParagraphPair";
 import { MobileSourceToggle } from "./MobileSourceToggle";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -36,6 +37,21 @@ export function InterlinearViewer({
 
   // Only apply hideSource on mobile
   const effectiveHideSource = isMobile && hideSource;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const highlight = params.get('highlight');
+    if (highlight) {
+      setTimeout(() => {
+        const el = document.getElementById(`paragraph-${highlight}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('bg-yellow-100/50');
+          setTimeout(() => el.classList.remove('bg-yellow-100/50'), 2000);
+        }
+      }, 300);
+    }
+  }, []);
 
   return (
     <div className="relative">

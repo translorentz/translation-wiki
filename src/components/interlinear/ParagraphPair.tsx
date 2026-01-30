@@ -55,6 +55,7 @@ export function ParagraphPair({
 
   return (
     <div
+      id={`paragraph-${index}`}
       className={cn(
         "group relative grid gap-x-6",
         // When hiding source on mobile, use single column; otherwise maintain responsive grid

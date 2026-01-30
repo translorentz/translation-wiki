@@ -83,6 +83,20 @@ export const searchRouter = createTRPCRouter({
           authorName: authors.name,
           authorSlug: authors.slug,
           langCode: languages.code,
+          snippet: sql<string>`(
+            SELECT substring(para.value->>'text'
+              FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
+              FOR 80)
+            FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+            WHERE lower(para.value->>'text') LIKE ${pattern}
+            LIMIT 1
+          )`.as('snippet'),
+          matchParagraphIndex: sql<number>`(
+            SELECT (para.value->>'index')::int
+            FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+            WHERE lower(para.value->>'text') LIKE ${pattern}
+            LIMIT 1
+          )`.as('match_paragraph_index'),
         })
         .from(chapters)
         .innerJoin(texts, eq(chapters.textId, texts.id))
