@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { Card } from "@/components/ui/card";
 import { parseChapterTitle } from "@/lib/utils";
+import { ExportButtons } from "@/components/ExportButtons";
 
 interface TextPageProps {
   params: Promise<{
@@ -75,6 +76,9 @@ export default async function TextPage({ params }: TextPageProps) {
             {textData.description}
           </p>
         )}
+        <div className="mt-4">
+          <ExportButtons textId={textData.id} textTitle={textData.title} />
+        </div>
       </div>
 
       {/* Chapter list */}
