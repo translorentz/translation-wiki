@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 
 const HIGHLIGHTS = [
   {
-    slug: "zhu-zi-yu-lei",
+    slug: "zhuziyulei",
     authorSlug: "zhu-xi",
     langCode: "zh",
     originalTitle: "朱子語類",
