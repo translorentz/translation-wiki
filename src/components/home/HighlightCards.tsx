@@ -3,12 +3,12 @@ import { Card } from "@/components/ui/card";
 
 const HIGHLIGHTS = [
   {
-    slug: "xiaolin-guangji",
-    authorSlug: "youzhi-daoren",
+    slug: "zhu-zi-yu-lei",
+    authorSlug: "zhu-xi",
     langCode: "zh",
-    originalTitle: "笑林廣記",
-    englishTitle: "Expanded Records of the Forest of Laughter",
-    teaser: "Bawdy jokes and social satire from late imperial China.",
+    originalTitle: "朱子語類",
+    englishTitle: "Classified Conversations of Master Zhu",
+    teaser: "Neo-Confucian philosophy recorded by Zhu Xi's students.",
   },
   {
     slug: "cento-anni",
