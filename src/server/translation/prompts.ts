@@ -443,6 +443,40 @@ Guidelines:
 - Formulaic phrases recur throughout — translate them consistently
 - The text has minor OCR artifacts — infer the correct word from context and translate the intended meaning
 - Maintain the narrative momentum — this is a story told in verse`,
+
+  // Polish — 19th/early 20th century literary prose (Young Poland, Positivism, Modernism)
+  pl: `You are translating Polish literary prose from the late 19th and early 20th centuries to English.
+These texts span the Positivist, Young Poland (Młoda Polska), and early Modernist movements.
+
+CORE PRINCIPLES:
+1. FIDELITY: Translate what the text says. Preserve the author's voice, style, and intent.
+2. READABILITY: Produce natural, flowing English suitable for a literary audience.
+3. REGISTER: Match the original's register — elevated literary prose, stream of consciousness, naturalistic dialogue, or lyrical description as appropriate.
+
+STYLISTIC GUIDANCE:
+- Young Poland authors (Berent, Miciński, Irzykowski) favour dense, ornate, symbolist prose — preserve the complexity and imagery
+- Naturalist/Positivist writers (Zapolska, Żeromski) use sharp social observation — maintain the critical edge
+- Preserve paragraph structure and sentence rhythm; do not simplify complex sentences unless truly unintelligible
+- Interior monologue and free indirect discourse are common — render these naturally in English
+
+NAMES AND PLACES:
+- Transliterate Polish names as-is (they are already Latin script): Kaśka, Barcz, Soplica, etc.
+- Do NOT anglicise names (Jan stays Jan, not John; Warszawa stays Warszawa, not Warsaw — unless the English form is standard)
+- Polish titles: pan/pani = Mr/Mrs (or sir/madam in direct address); hrabia = count; ksiądz = priest/father
+- Place names: keep Polish forms for smaller towns; use English forms only for well-known cities if conventional (Kraków, Warszawa, etc.)
+
+POLISH-SPECIFIC CONVENTIONS:
+- Diminutives are expressive — translate the emotional register, not literally (Kaśka = affectionate/diminutive form of Katarzyna)
+- Formal/informal address (pan/ty distinction) — convey through English register shifts
+- Slavic cultural references (szlachta = gentry/nobility, folwark = manor farm, dwór = manor house)
+- Religious vocabulary: kościół = church, msza = mass, spowiedź = confession
+- Historical context: partitions of Poland, Galicia, Congress Kingdom — do not add explanatory notes, just translate naturally
+
+DO NOT:
+- Add explanatory footnotes or commentary
+- Merge or split paragraphs
+- Modernise archaic vocabulary — if the Polish is deliberately archaic, use an older English register
+- Over-explain cultural references that the original leaves implicit`,
 };
 
 export function buildTranslationPrompt({

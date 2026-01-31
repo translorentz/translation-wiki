@@ -62,6 +62,7 @@ const LANGUAGES = [
   { code: "it", name: "Italian", displayName: "Italian" },
   { code: "hy", name: "Armenian", displayName: "Հայերեն" },
   { code: "ms", name: "Malay", displayName: "Bahasa Melayu" },
+  { code: "pl", name: "Polish", displayName: "Polski" },
 ] as const;
 
 const AUTHORS = [

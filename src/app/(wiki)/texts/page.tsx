@@ -39,6 +39,8 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
   ta: "Tamil",
   hy: "Armenian",
   it: "Italian",
+  ms: "Malay",
+  pl: "Polish",
 };
 
 interface BrowsePageProps {

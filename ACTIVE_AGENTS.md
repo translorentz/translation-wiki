@@ -2,7 +2,7 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-01-30, Session 38
+**Last updated:** 2026-01-30, Session 39
 
 ---
 
@@ -10,26 +10,19 @@ Track all running agents and background workers here. Update when launching or c
 
 | Agent ID | Task | Status | Notes |
 |----------|------|--------|-------|
-| aac39b1 | Chinese Translation W1 (218ch) | RUNNING | qijian-shisan-xia, shipin, fenshu, xihu-mengxun, hedian, shiyi-ji |
-| a3d120e | Chinese Translation W2 (208ch) | RUNNING | yesou-puyan, niehai-hua, tang-caizi-zhuan, wulin-jiushi |
-| a044f62 | Chinese Translation W3 (210ch) | **COMPLETE** | sanxia-wuyi (120), shuijing-zhu (40), xianqing-ouji (38), xiaolin-guangji (12) — 210 translated, 0 errors |
-| a5baf62 | Chinese Translation W4 (213ch) | **COMPLETE** | qilu-deng (108), huayue-hen (52), gaiyu-congkao (43), laoxuean-biji (10) — 213 translated, 0 errors |
-| a5c6cce | Chinese Translation W5 (216ch) | RUNNING | nuxian-waishi, mingru-xuean, chibei-outan, taoan-mengyi, suiyuan-shihua |
-| a4acb39 | Chinese Translation W6 (216ch) | RUNNING | feilong-quanzhuan, gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu |
-| a2ff6bf | Chinese Translation W7 (205ch) | RUNNING | yuewei-caotang-biji, yuchu-xinzhi, kunxue-jiwen, mengliang-lu, qidong-yeyu, yehangchuan, helin-yulu, sushui-jiwen, wuzazu, tang-zhiyan, xiaoting-zalu |
-| a249ccd | Chinese Translation W8 (116ch) | **COMPLETE** | sui-tang-yanyi (77), dongjing-menghua-lu (10), xijing-zaji (6) — 93 translated, 0 errors |
-| a6571a7 | Chinese Translation W9 (156ch) | RUNNING | gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu (W6 tail) |
-| ad60212 | Chinese Translation W10 (101ch) | **COMPLETE** | yehangchuan (20), helin-yulu (19), sushui-jiwen (16), wuzazu (16), tang-zhiyan (15), xiaoting-zalu (15) — 101 translated, 0 errors |
-| aaec508 | Chinese Translation W11 (158ch) | **COMPLETE** | mingru-xuean (52 new, 10 skipped), gaiyu-congkao (43 skipped), zhinang (28 skipped), beimeng-suoyan (25 skipped) — 52 translated, 0 errors |
-| a572324 | Chinese Translation W12 (~120ch) | RUNNING | niehai-hua, chibei-outan, qidong-yeyu, suiyuan-shihua, taoan-mengyi, laoxuean-biji |
-| a1b0fca | Chinese Translation W13 (~118ch) | RUNNING | gaiyu-congkao, qingshi, mingru-xuean, xiaoting-zalu, yeyu-qiudeng-lu, tang-caizi-zhuan, wulin-jiushi, yesou-puyan, mengliang-lu, tang-zhiyan |
-| ac204d5 | Huangdi Neijing Reprocess + Translate | **COMPLETE** | 162 chapters, reprocessed by 篇 |
-| ad3004e | Shennong Bencao Jing Process + Translate | **COMPLETE** | 19 chapters, new text |
-| acd5fc1 | Dongpo Zhilin Scrape + Translate | **COMPLETE** | 203 chapters, zh-biji prompt |
-| ab6dc4e | Chinese Translation W14 (46ch) | RUNNING | chibei-outan (18), suiyuan-shihua (16), taoan-mengyi (12) |
-| a22ca22 | Chinese Translation W15 (24ch) | RUNNING | yeyu-qiudeng-lu (12), qingshi (6), wulin-jiushi (6) |
+| — | Polish Pipeline: Verification + Processing | LAUNCHING | 12 texts from curated list |
 
 ---
+
+## Recently Completed (Session 38)
+
+| Agent ID | Task | Completion | Notes |
+|----------|------|------------|-------|
+| F1-F13 | Chinese Translation Final Push | COMPLETE | All remaining chapters translated |
+| a1c7a7e | Gap-fill mengliang-lu ch 12 | COMPLETE | Retranslated successfully |
+| a4695da | Gap-fill mengliang-lu ch 18 | COMPLETE | Still truncated (DeepSeek fails on giant paragraphs) |
+| a097b81 | Gap-fill mengliang-lu ch 20 | COMPLETE | Still truncated |
+| af9456f | Retry mengliang-lu ch 18+20 | COMPLETE | Still failing — known gap |
 
 ## Recently Completed (Session 36)
 
@@ -41,144 +34,34 @@ Track all running agents and background workers here. Update when launching or c
 
 ---
 
-## Recently Completed (Session 35)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| a6a8f46 | Chinese Pipeline: Processor A (texts 1-17) | COMPLETE | 423 chapters, 14 READY + 3 PARTIAL |
-| a2cec8f | Chinese Pipeline: Processor B (texts 18-34) | COMPLETE | 837 chapters, 13 READY + 2 PARTIAL + 1 FAILED |
-| a0c96be | Chinese Pipeline: Processor C (texts 35-50) | COMPLETE | 459 chapters scraped, 16 texts processed |
-| a20d6f9 | Processor C Discrepancy Audit | COMPLETE | 4/5 genuine, 1 bug (xiaoting-zalu missing 續錄) |
-| aa19e53 | Carmina Graeca Grouped Split + Seed + Translate | COMPLETE | 14 texts, 21/21 chapters translated |
-| a3d9ef8 | Chinese Wikisource 50-Text Research | COMPLETE | 50 texts found |
-| a5d6e8a | Chinese Pipeline: Verifier Agent (v2) | COMPLETE | 19/50 confirmed, 31 rejected |
-| a4eeec2 | Chinese Pipeline: Gap-Filler Research | COMPLETE | Found 31 more, total 50 verified |
-
----
-
-## Recently Completed (Session 34)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| ad4eff2 | Carmina Graeca Master Consolidation | COMPLETE | Used Copy 2 only, claimed Grade A |
-| a4c1897 | Carmina Graeca Master Independent Review | COMPLETE | Grade B+ SATISFIED, 0% contamination |
-| ac776e8 | Carmina Graeca Copy 1 V4 Cleaning (Agent A) | COMPLETE | Self-grade B+, 10,969 lines (100.2%) |
-| a3d912d | Carmina Graeca Copy 1 V4 Evaluation (Agent B) | COMPLETE | Grade B+ SATISFIED (0.39% contamination) |
-| ac9ef14 | Carmina Graeca Copy 3 V2 Cleaning (Agent A) | COMPLETE | Self-grade B+, 0% self-audit |
-| a84765b | Carmina Graeca Copy 3 V2 Evaluation (Agent B) | COMPLETE | Grade B- NOT SATISFIED (1.5% contamination) |
-
-## Recently Completed (Session 33)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| — | Pinhua Baojian Translation W1 | COMPLETE | 20/20 chapters, 0 errors |
-| — | Pinhua Baojian Translation W2 | COMPLETE | 20/20 chapters, 0 errors |
-| — | Pinhua Baojian Translation W3 | COMPLETE | 20/20 chapters, 0 errors |
-| — | Zhicao Pin Translation Worker | COMPLETE | 11/11 chapters, 0 errors |
-| a833834 | Carmina Graeca Copy 2 V3 Cleaning (Agent A) | COMPLETE | Self-grade B+, 0 line nums, 0 apparatus |
-| a9e1348 | Carmina Graeca Copy 2 V3 Evaluation (Agent B) | COMPLETE | Grade B+ SATISFIED |
-| ac1a925 | Carmina Graeca Copy 3 V1 Evaluation (Agent B) | COMPLETE | Grade D+ NOT SATISFIED (13.2% contamination) |
-| ab7b85f | Carmina Graeca Copy 1 V2/V3 Cleaning (Agent A) | COMPLETE | Self-grade B+, 0% contamination, 9165 lines |
-| a17efb3 | Carmina Graeca Copy 1 V2 Evaluation (Agent B) | COMPLETE | Grade C+ NOT SATISFIED (78.1% line retention) |
-| af10d61 | Carmina Graeca Copy 1 V3 Evaluation (Agent B) | COMPLETE | Grade C+ NOT SATISFIED (83.7% line retention) |
-
-## Recently Completed (Session 32)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| ae49855 | Semeioseis Chapter Title Translations | COMPLETE | 38/38 English titles added |
-| a103687 | Zhicao Pin Full Pipeline | COMPLETE | 11 chapters processed, seeded, zh-science prompt |
-| aa6dcfb | Catomyomachia V1 Cleaning (Agent A) | COMPLETE | Self-grade B+, 6 chapters |
-| a9e9a4b | Catomyomachia V1 Evaluation (Agent B) | COMPLETE | Grade C+ NOT SATISFIED |
-| ab8eec2 | Catomyomachia V2 Cleaning (Agent A) | COMPLETE | Self-grade B+, 0% contamination |
-| a5143c3 | Catomyomachia V2 Evaluation (Agent B) | COMPLETE | Grade B- NOT SATISFIED |
-| ac2fe3c | Catomyomachia V3 Cleaning (Agent A) | COMPLETE | Self-grade A-, surgical fixes |
-| a5fbb0f | Catomyomachia V3 Evaluation (Agent B) | COMPLETE | Grade A- SATISFIED |
-| a2ddb00 | Catomyomachia Seed + Translate | COMPLETE | 6/6 chapters, 0 errors |
-
-## Recently Completed (Session 31)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| — | Scapigliatura Translation W1 | COMPLETE | 9/9 chapters, 0 errors |
-| — | Scapigliatura Translation W2 | COMPLETE | 9/9 chapters, 0 errors |
-| — | Semeioseis Translation W1 | COMPLETE | 19/19 chapters, 0 errors |
-| — | Semeioseis Translation W2 | COMPLETE | 19/19 chapters, 0 errors |
-| a100d28 | Scapigliatura OCR Evaluation | COMPLETE | Grade C+ |
-| aba7dec | Scapigliatura V1 Cleaning | COMPLETE | Self-grade B |
-| a70ecfd | Scapigliatura V1 Evaluation | COMPLETE | Grade B- NOT SATISFIED |
-| a794d5e | Scapigliatura V2 Cleaning | COMPLETE | Self-grade B+ |
-| a9a4def | Scapigliatura V2 Evaluation | COMPLETE | Grade B+ SATISFIED |
-| a30c34c | Pinhua Baojian Full Pipeline | COMPLETE | 60 chapters processed, seeded, 3 workers |
-| a5742c8 | Semeioseis Trial Translations | COMPLETE | 5 samples passed |
-| aa07bf7 | Semeioseis Paragraph Format Fix | COMPLETE | 38 files converted |
-
-## Recently Completed (Session 30)
-
-| Agent ID | Task | Completion | Notes |
-|----------|------|------------|-------|
-| a43ea83 | Semeioseis V4 Cleaning | COMPLETE | 0% apparatus, B+ SATISFIED |
-| a191d06 | Semeioseis V3 Evaluation | COMPLETE | Grade B NOT SATISFIED |
-| a76cb9d | Semeioseis V3 Cleaning | COMPLETE | Fixed broken words |
-| aec444b | Semeioseis V2 Evaluation | COMPLETE | Grade B- NOT SATISFIED |
-| a92a1a4 | Semeioseis V2 Cleaning | COMPLETE | Fixed word breaks |
-
----
-
 ## Active Pipelines
 
-### Carmina Graeca — COMPLETE
-- **Cleaning:** Copy 1 B+ (V4), Copy 2 B+ (V3), Copy 3 B- (V2)
-- **Master:** Copy 2 used as master, B+ SATISFIED (independent review)
-- **Split:** 14 texts (11 standalone + 3 grouped), 21 chapters total
-- **Translation:** 21/21 chapters, 0 errors ✓
+### Chinese Mass Pipeline — COMPLETE (99.94%)
+- **Progress:** ~3,356/3,358 chapters translated
+- **Known gaps:** mengliang-lu ch 18, 20 (giant paragraphs, DeepSeek limitation)
+- **Status:** COMPLETE — moving to Polish pipeline
 
-### Catomyomachia — COMPLETE
-- **Cleaning:** V1 (C+) → V2 (B-) → V3 (A- SATISFIED)
-- **Translation:** 6/6 complete, 0 errors
-
-### Pinhua Baojian — COMPLETE
-- **Text:** 品花寶鑑 (A Precious Mirror of Ranked Flowers), 60 chapters
-- **Translation:** 60/60 complete, 0 errors
-
-### Zhicao Pin — COMPLETE
-- **Text:** 太上洞玄靈寶芝草品 (Catalogue of Numinous Mushrooms), 11 chapters
-- **Translation:** 11/11 complete, 0 errors
-
-### Scapigliatura — COMPLETE
-- **Text:** La Scapigliatura e il 6 Febbraio, 18 chapters
-- **Cleaning:** V1 (B-) → V2 (B+ SATISFIED)
-- **Translation:** 18/18 complete, 0 errors
-
-### Semeioseis Gnomikai — COMPLETE
-- **Text:** Σημειώσεις Γνωμικαί, 38 chapters
-- **Cleaning:** V1 (C+) → V2 (B-) → V3 (B) → V4 (B+ SATISFIED)
-- **Translation:** 38/38 complete, 0 errors
-- **English titles:** 38/38 added
-
-### Chinese Mass Pipeline — TRANSLATING (10 WORKERS, W8 DONE)
-- **Progress:** ~3,288/3,358 chapters translated (97.9%)
-- **Workers:** W14-W15 finishing last 70 chapters; W1-W13 + special agents COMPLETE
-- **Post-translation:** Gap-check agent queued (Phase 8)
-- **Status doc:** `docs/chinese-pipeline-status.md`
-- **Agent registry:** `docs/chinese-pipeline-agents.md`
+### Polish Pipeline — IN PROGRESS
+- **Phase 0:** Language setup COMPLETE (seed-db.ts, texts/page.tsx, prompts.ts)
+- **Phase 2+3:** Verification + Processing LAUNCHING
+- **Texts:** 12 from curated list (`docs/polish_text_suggestions.txt`)
+- **Prompt:** `pl` (19th/early 20th century Polish literary prose)
 
 ---
 
-## Queued Pipelines (After Chinese Completes)
+## Queued Pipelines (After Polish)
 
 See `docs/pipeline-queue.md` for full details.
 
 | Priority | Language | Works | Status |
 |----------|----------|-------|--------|
-| 2 | Polish (pl) | 40 | QUEUED |
-| 3 | Armenian (hy) | 30 | QUEUED — DeepSeek only |
-| 4 | Italian (it) | 20 | QUEUED |
+| 3 | Armenian (hy) | 12 | QUEUED — DeepSeek only |
+| 4 | Italian (it) | 12 | QUEUED |
 | 5 | Latin (la) | 10 | QUEUED |
-| 6 | Czech (cs) | 10 | QUEUED — new language |
-| 7 | Gujarati (gu) | 10 | QUEUED — new language |
-| 8 | Telugu (te) | 10 | QUEUED — new language |
-| 9 | Turkish (tr) | 5 | QUEUED — new language |
+| 6 | Czech (cs) | 1 | QUEUED — new language |
+| 7 | Gujarati (gu) | 1 | QUEUED — new language |
+| 8 | Telugu (te) | 1 | QUEUED — new language |
+| 9 | Turkish (tr) | 1 | QUEUED — new language |
 
 ---
 

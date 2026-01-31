@@ -1,0 +1,125 @@
+{
+  "authors": [
+    {
+      "name": "Władysław Reymont",
+      "nameOriginalScript": "Władysław Reymont",
+      "slug": "wladyslaw-reymont",
+      "era": "Young Poland (1867–1925)",
+      "description": "Polish novelist and Nobel laureate (1924), best known for 'The Peasants.' A leading figure of the Young Poland movement, his naturalist prose depicts Polish rural and urban life with vivid psychological detail."
+    },
+    {
+      "name": "Józef Ignacy Kraszewski",
+      "nameOriginalScript": "Józef Ignacy Kraszewski",
+      "slug": "jozef-ignacy-kraszewski",
+      "era": "Positivism (1812–1887)",
+      "description": "The most prolific Polish novelist of the 19th century, author of over 200 novels. His historical fiction spans Polish history from prehistoric times to the contemporary era, combining romantic vision with positivist concern for factual accuracy."
+    },
+    {
+      "name": "Karol Irzykowski",
+      "nameOriginalScript": "Karol Irzykowski",
+      "slug": "karol-irzykowski",
+      "era": "Young Poland (1873–1944)",
+      "description": "Polish novelist, literary critic, and film theorist. A pioneering modernist whose experimental novel 'Pałuba' anticipated techniques of the European avant-garde with its metafictional structure and psychological analysis."
+    },
+    {
+      "name": "Stefan Żeromski",
+      "nameOriginalScript": "Stefan Żeromski",
+      "slug": "stefan-zeromski",
+      "era": "Young Poland (1864–1925)",
+      "description": "One of the most important Polish novelists and dramatists, called 'the conscience of Polish literature.' His works explore social injustice, patriotism, and moral dilemmas with intense psychological realism."
+    },
+    {
+      "name": "Eliza Orzeszkowa",
+      "nameOriginalScript": "Eliza Orzeszkowa",
+      "slug": "eliza-orzeszkowa",
+      "era": "Positivism (1841–1910)",
+      "description": "Leading Polish positivist novelist and social activist, nominated for the Nobel Prize in Literature. Her works champion social reform, depicting the lives of peasants, Jews, and the gentry in the former Polish-Lithuanian Commonwealth."
+    }
+  ],
+  "texts": [
+    {
+      "title": "Ferments (Fermenty)",
+      "titleOriginalScript": "Fermenty",
+      "slug": "fermenty",
+      "languageCode": "pl",
+      "authorSlug": "wladyslaw-reymont",
+      "description": "A naturalist novel depicting the moral and social 'fermentation' of a young woman from the provincial intelligentsia who seeks meaning and independence in late 19th-century Polish society. The second part of Reymont's urban tetralogy.",
+      "sourceUrl": "https://pl.wikisource.org/wiki/Fermenty",
+      "processedDir": "data/processed/fermenty",
+      "compositionYear": 1897,
+      "compositionEra": "19th century",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "An Ancient Tale (Stara baśń)",
+      "titleOriginalScript": "Stara baśń",
+      "slug": "stara-basn",
+      "languageCode": "pl",
+      "authorSlug": "jozef-ignacy-kraszewski",
+      "description": "A historical novel set in pre-Christian Poland during the legendary reign of Piast the Wheelwright. Depicts the struggle between Slavic paganism and emerging Christianity, tribal politics, and the origins of the Polish nation.",
+      "sourceUrl": "https://pl.wikisource.org/wiki/Stara_ba%C5%9B%C5%84",
+      "processedDir": "data/processed/stara-basn",
+      "compositionYear": 1876,
+      "compositionEra": "19th century",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "The Hag (Pałuba)",
+      "titleOriginalScript": "Pałuba",
+      "slug": "paluba",
+      "languageCode": "pl",
+      "authorSlug": "karol-irzykowski",
+      "description": "A pioneering modernist and metafictional novel that deconstructs the conventions of psychological realism. Through its self-aware narrator and fragmented structure, it examines the impossibility of truly knowing another person and the deceptions inherent in literary representation.",
+      "sourceUrl": "https://pl.wikisource.org/wiki/Pa%C5%82uba_(Irzykowski)",
+      "processedDir": "data/processed/paluba",
+      "compositionYear": 1903,
+      "compositionEra": "20th century",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "Sisyphean Labors (Syzyfowe prace)",
+      "titleOriginalScript": "Syzyfowe prace",
+      "slug": "syzyfowe-prace",
+      "languageCode": "pl",
+      "authorSlug": "stefan-zeromski",
+      "description": "A novel about the Russification of Polish youth in a gymnasium in the Russian partition of Poland. Follows the awakening of national consciousness among students subjected to systematic cultural suppression, culminating in an act of collective defiance.",
+      "sourceUrl": "https://pl.wikisource.org/wiki/Syzyfowe_prace",
+      "processedDir": "data/processed/syzyfowe-prace",
+      "compositionYear": 1897,
+      "compositionEra": "19th century",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "The Dziurdzia Family (Dziurdziowie)",
+      "titleOriginalScript": "Dziurdziowie",
+      "slug": "dziurdziowie",
+      "languageCode": "pl",
+      "authorSlug": "eliza-orzeszkowa",
+      "description": "A rural novel depicting the life of a peasant family in the former Polish-Lithuanian borderlands. Explores themes of poverty, superstition, family bonds, and the clash between traditional village life and modernity.",
+      "sourceUrl": "https://pl.wikisource.org/wiki/Dziurdziowie",
+      "processedDir": "data/processed/dziurdziowie",
+      "compositionYear": 1885,
+      "compositionEra": "19th century",
+      "genre": "literature",
+      "textType": "prose"
+    },
+    {
+      "title": "The Wellborn (Bene nati)",
+      "titleOriginalScript": "Bene nati",
+      "slug": "bene-nati",
+      "languageCode": "pl",
+      "authorSlug": "eliza-orzeszkowa",
+      "description": "A rural novel examining the decaying petty nobility (szlachta) and their relationship with the peasantry. The Latin title ('wellborn') ironically underscores the contrast between noble pretensions and actual moral worth.",
+      "sourceUrl": "https://pl.wikisource.org/wiki/Bene_nati",
+      "processedDir": "data/processed/bene-nati",
+      "compositionYear": 1891,
+      "compositionEra": "19th century",
+      "genre": "literature",
+      "textType": "prose"
+    }
+  ]
+}

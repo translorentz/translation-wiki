@@ -63,7 +63,7 @@ export function TextEditor({
 
   function handleSave() {
     const content = {
-      paragraphs: paragraphs.map((text, i) => ({ index: i, text })),
+      paragraphs: sourceContent.paragraphs.map((sp, i) => ({ index: sp.index, text: paragraphs[i] })),
     };
 
     createVersion.mutate({
