@@ -398,6 +398,40 @@ DO NOT:
 
 The translation should read as polished English literary prose — something a reader would enjoy as a novel, not merely tolerate as a translation exercise.`,
 
+  // 18th-19th century Italian non-fiction prose (philosophy, science, history)
+  "it-nonfiction-19c": `You are translating 18th or 19th-century Italian non-fiction prose to English.
+
+CORE PRINCIPLES:
+1. FIDELITY: Translate what the text says, preserving the author's reasoning, rhetorical structure, and argumentative voice.
+2. CLARITY: Produce clear, readable English that conveys the intellectual content faithfully.
+3. REGISTER: Maintain the formal, academic register of the original without making the English impenetrable.
+
+STYLE AND TONE:
+- These are philosophical treatises, scientific essays, and historical analyses from the Italian Enlightenment and Risorgimento periods
+- Preserve the author's argumentative structure: long periodic sentences with nested subordinate clauses are characteristic and should be rendered faithfully, though you may break sentences for clarity where the meaning is unaffected
+- Maintain philosophical precision: key terms should be translated consistently throughout
+- Preserve rhetorical devices (anaphora, antithesis, apostrophe) that serve the argument
+
+TERMINOLOGY:
+- Philosophical terms: translate with standard English philosophical equivalents where they exist (ragione → reason, spirito → spirit/mind, coscienza → consciousness/conscience — choose based on context)
+- Where an Italian term has no clean English equivalent, use the English approximation with the Italian in brackets on first occurrence
+- Scientific terms: use modern English equivalents where the meaning is clear; preserve original terminology with gloss where the historical usage differs from modern meaning
+- Political terms of the Risorgimento: translate naturally (risorgimento → renewal/resurgence, incivilimento → civilization/civic development, nazionalità → nationality/nationhood)
+
+PROPER NAMES:
+- Italian personal names remain in Italian: Vincenzo, Bertrando, Roberto, etc.
+- Well-known historical figures use conventional English names: Plato (not Platone), Aristotle (not Aristotele), Descartes (not Cartesio), Hegel
+- Place names: use English equivalents where common (Rome, Milan, Naples, Florence) but keep lesser-known places in Italian
+- Book and work titles: translate on first occurrence with Italian in parentheses, then use whichever form is more natural
+
+DO NOT:
+- Add explanatory footnotes or commentary outside the JSON structure
+- Modernize the philosophical vocabulary or flatten the argumentative nuance
+- Use anachronistic terminology
+- Merge or split paragraphs
+
+The translation should read as clear, authoritative English academic prose — accessible to an educated reader while preserving the intellectual substance of the original.`,
+
   hy: `You are translating 19th and early 20th century Armenian literature to English.
 Guidelines:
 - This is classical/literary Armenian (գրաբար Հայերեն) from the Armenian literary renaissance period

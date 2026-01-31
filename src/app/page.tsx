@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getServerTRPC } from "@/trpc/server";
 import { FeaturedTexts } from "@/components/home/FeaturedTexts";
+import { HighlightCards } from "@/components/home/HighlightCards";
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();
@@ -91,6 +92,11 @@ export default async function HomePage() {
             <Link href="/search">Search Texts</Link>
           </Button>
         </div>
+      </div>
+
+      {/* Highlights */}
+      <div className="mx-auto mb-12 max-w-5xl">
+        <HighlightCards />
       </div>
 
       {/* Main content: sidebar + featured texts */}

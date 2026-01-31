@@ -600,6 +600,13 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Italian non-fiction (philosophy, science, history) uses it-nonfiction-19c prompt
+    const isNonfictionItalian = text.language.code === "it" && text.genre !== "literature" && text.slug !== "diarium-urbis-romae";
+    if (isNonfictionItalian) {
+      promptLang = "it-nonfiction-19c";
+      usingSpecialPrompt = true;
+    }
+
     // Tamil prose literature uses ta-prose prompt
     const isTamilProse = text.language.code === "ta" && text.genre === "literature" && text.textType === "prose";
     if (isTamilProse) {
