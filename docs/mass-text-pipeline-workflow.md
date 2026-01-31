@@ -89,11 +89,13 @@ After setup, run `pnpm tsx scripts/seed-db.ts` to verify the language is inserte
 **Agent type:** `general-purpose` with web search
 
 **Goal:** Find N texts in a target language that:
-1. Exist in full on a public source (Wikisource is the primary source; also consider ctext.org, Perseus, other digital libraries)
+1. Exist in full on a public source (Wikisource is the sole source. Just search the Wikisource index.)
 2. Are NOT already on Deltoi (check `docs/text-inventory.md` and `scripts/seed-db.ts` for existing slugs)
 3. Have NO complete English translation from a reputable source (see Phase 2 criteria)
 4. Are culturally/historically significant (see Quality Checks below)
 5. Have manageable chapter counts (1-300 preferred)
+6. Are not diagrammatically dependent, such as geometry texts with illustrations
+7. Were published before 1912
 
 **Method:**
 1. **Check what's already on Deltoi** — read `docs/text-inventory.md` for the full list of existing texts, and grep `scripts/seed-db.ts` for existing slugs in the target language. Any text already present must be excluded.
@@ -156,13 +158,11 @@ Each candidate text must pass three checks before inclusion:
 **Disqualification criteria:**
 - FREELY AVAILABLE + COMPLETE (or near-complete) translation from a reputable source = DISQUALIFY
 - Published academic/scholarly press complete translation (e.g., university press, Brill, Penguin Classics) = DISQUALIFY
-- Internet Archive controlled lending of a complete scholarly translation = DISQUALIFY
+- Internet Archive controlled lending of a complete scholarly English translation = DISQUALIFY
 - Partial translations (anthology excerpts, selected chapters) = OK, keep
 - Kindle-only self-published translations (e.g., Valentin Saric) = OK, keep (quality often poor)
 - Blog posts, fan translations, informal web translations = OK, keep
-- Machine/community translations of uncertain quality (e.g., ctext.org wiki) = OK, keep
-
-**Rationale:** A critical or scholarly translation is strictly superior to what we offer. Self-published Kindle translations and informal blog translations are not authoritative and do not obviate the need for a proper translation.
+- Machine/community translations of uncertain quality = OK, keep
 
 **Also verify during this phase:**
 - The text actually exists on Wikisource with substantial content (not just a stub)

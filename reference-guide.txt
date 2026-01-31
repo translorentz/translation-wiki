@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-29 (Session 30)
+# Last updated: 2026-01-30 (Session 38)
 
 ################################################################################
 # ⚠️  CRITICAL SECURITY WARNING — READ FIRST  ⚠️
@@ -17,7 +17,7 @@
 # 1. NEVER commit: .env*, *.swp, *.swo, *credentials*, *secret*, *token*
 # 2. ALWAYS verify staged files before commit: git diff --cached --name-only
 # 3. Use specific file adds: git add <file1> <file2> — NOT git add . or git add -A
-# 4. GEMINI API KEY IS REVOKED AND FORBIDDEN — use DeepSeek only
+# 4. GEMINI API KEY RESTORED (2026-01-30) — use as second opinion for poor DeepSeek translations
 #
 # If you see .swp or .env files in git status, DO NOT ADD THEM.
 # This behaviour will not be tolerated.
@@ -39,7 +39,7 @@ Branch: main (single-branch workflow, auto-deploys to Vercel on push)
 Platform: Vercel (auto-deploys from GitHub main branch)
 Database: Neon PostgreSQL (free tier)
 Domain: deltoi.com (custom domain on Vercel)
-Latest deploy: 2026-01-29 (Semeioseis + Scapigliatura + Pinhua Baojian + Epitome consolidation)
+Latest deploy: 2026-01-30 (PDF/EPUB export buttons + Chinese pipeline translations)
 
 Environment variables (set in Vercel dashboard):
 - DATABASE_URL — Neon connection string
@@ -82,7 +82,7 @@ Tables:
 - discussion_threads, discussion_posts
 
 Current data:
-- 7 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil), it (Italian), hy (Armenian)
+- 8 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil), it (Italian), hy (Armenian), ms (Malay)
 - 26 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
   Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.),
   Theodore Prodromos, Wilhelm Wagner, Guliang Chi, Mudathirumaran, Ban Gu,
@@ -362,6 +362,10 @@ src/components/editor/TextEditor.tsx                 — Translation editor
 src/components/navigation/CategoryBrowser.tsx        — Language→Author→Text nav
 src/components/navigation/TableOfContents.tsx        — Chapter list sidebar
 src/components/endorsement/EndorseButton.tsx         — Endorsement toggle
+src/components/ExportButtons.tsx                     — PDF + EPUB download buttons
+src/components/pdf/PdfDocument.tsx                   — PDF generation (pdfkit)
+src/app/api/export/[textId]/route.ts                 — PDF export API route
+src/app/api/export/[textId]/epub/route.ts            — EPUB export API route
 src/components/history/                             — Version history/diff
 src/components/home/FeaturedTexts.tsx               — Home page featured texts
 src/components/auth/UserNav.tsx                     — Session-aware header (sign in/out, profile, admin)
@@ -750,8 +754,10 @@ gh api repos/translorentz/translation-wiki/deployments --jq '.[0]'  # Check depl
 - Nancun Chuogeng Lu: 30/30 COMPLETE
 - Suguna Sundari: 22/22 COMPLETE (ta-prose prompt)
 - Semeioseis Gnomikai: 38/38 COMPLETE (V4 cleaning B+ SATISFIED, translated)
-- La Scapigliatura e il 6 Febbraio: 18 chapters, V2 cleaning B+ SATISFIED, translating
-- Pinhua Baojian: 60 chapters, clean source, processing + translating
+- La Scapigliatura e il 6 Febbraio: 18/18 COMPLETE
+- Pinhua Baojian: 60/60 COMPLETE
+- Chinese Mass Pipeline: 2,512/3,155 translated (80%), 10 workers active
+- PDF/EPUB export: Live on all text index pages (pdfkit + epub-gen-memory)
 
 ================================================================================
 ## SANGAM TAMIL CORPUS NOTES

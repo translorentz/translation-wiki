@@ -1,5 +1,224 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-30 Session 38 — Export Buttons + Chinese Pipeline Final Push
+
+### Known Gaps: mengliang-lu ch 18 and 20
+- Both chapters have very few but extremely large paragraphs (~7K chars each)
+- DeepSeek consistently fails on these — times out or returns errors
+- Current translations are truncated stubs (210 chars)
+- Options: try Gemini, or split paragraphs in source data, or wait for DeepSeek stability
+- 2 out of 3,356 chapters = 99.94% completion rate
+
+### LESSON LEARNED: Worker Assignment Discipline
+
+**Problem:** When spinning up translation workers, I assigned overlapping texts to multiple workers without exclusive chapter ranges. By the end, 4–5 workers were all targeting the same remaining texts (chibei-outan, suiyuan-shihua, yeyu-qiudeng-lu, qingshi). The skip logic only checks the DB before starting a chapter — it does NOT prevent two workers from simultaneously translating the same chapter. This wastes both money AND time (redundant API calls that slow down the pipeline and block other work).
+
+**Rule for future pipelines:**
+1. Each worker MUST have exclusive, non-overlapping chapter assignments (text + start/end range)
+2. Never assign the same text to multiple workers without splitting by chapter range
+3. When adding late-stage workers to "finish what's left," query remaining chapters first, then partition them strictly
+4. Prefer fewer targeted workers with exclusive ranges over many overlapping workers
+
+### Session Summary
+- Continued from Session 37 (PDF debugging)
+- PDF export: subagent ae46bd9 switched from @react-pdf/renderer to pdfkit (React 19/Turbopack incompatibility)
+- EPUB export: subagent a7b6f03 implemented using epub-gen-memory
+- ExportButtons component: replaced ExportPdfButton, shows PDF + EPUB side by side
+- Fixed PDF white squares bug: em-space chars (U+2003) not in Latin-subset font → used pdfkit `indent` option
+- Removed @react-pdf/renderer dependency (replaced by pdfkit)
+- Committed and pushed: cff2f4d (export feature) + 3c4d049 (indent fix)
+- Gemini API key restored by user
+
+### Chinese Pipeline Progress
+- Start of session: 2,512/3,155 (80%)
+- W8 (a249ccd) completed: 93 chapters, 0 errors
+- W3 (a044f62) completed: 210 chapters, 0 errors
+- Launched W12 (a572324) and W13 (a1b0fca) for remaining gaps
+- Current: 2,983/3,155 (94.5%), 172 remaining
+- 11 workers active (W1-W2, W4-W7, W9-W13), W3+W8 done
+
+### Active Workers
+| Worker | Agent ID | Status |
+|--------|----------|--------|
+| W1 | aac39b1 | RUNNING |
+| W2 | a3d120e | RUNNING |
+| W3 | a044f62 | COMPLETE (210ch) |
+| W4 | a5baf62 | RUNNING |
+| W5 | a5c6cce | RUNNING |
+| W6 | a4acb39 | RUNNING (from prior session) |
+| W7 | a2ff6bf | RUNNING (from prior session) |
+| W8 | a249ccd | COMPLETE (93ch) |
+| W9 | a6571a7 | RUNNING |
+| W10 | ad60212 | RUNNING |
+| W11 | aaec508 | RUNNING |
+| W12 | a572324 | RUNNING (new) |
+| W13 | a1b0fca | RUNNING (new) |
+
+### Remaining Texts (172 chapters)
+- chibei-outan (27), qidong-yeyu (20), niehai-hua (17), suiyuan-shihua (16)
+- yeyu-qiudeng-lu (12), taoan-mengyi (12), qingshi (12), laoxuean-biji (10)
+- tang-caizi-zhuan (10), xiaoting-zalu (10), gaiyu-congkao (9), wulin-jiushi (9)
+- mingru-xuean (7), mengliang-lu (1)
+
+### Next Steps
+- Monitor workers until all complete
+- Run Phase 8 gap-check (missing + disproportionately short translations)
+- Gap-fill with up to 8 subagents if needed
+- After Chinese pipeline complete: update docs, commit, move to Polish pipeline
+
+---
+
+## 2026-01-30 Session 37 — PDF Export + Translation Monitoring
+
+### PDF Export Feature — IN PROGRESS (subagent ae46bd9 debugging)
+
+**Goal:** Add "Download PDF" button to each text's index page that generates a print-ready, book-quality PDF of the English translation.
+
+**Architecture:**
+- Library: `@react-pdf/renderer` v4.3.2 (installed via `pnpm add`)
+- API route: `src/app/api/export/[textId]/route.ts` — Next.js route handler, fetches all chapters + translations via Drizzle, renders PDF via `renderToStream()`
+- Button: `src/components/ExportPdfButton.tsx` — client component with loading state
+- Document: `src/components/pdf/PdfDocument.tsx` — React-PDF component tree (title page, chapter pages, page numbers)
+- Fonts: `src/components/pdf/fonts.ts` — font registration (currently being reworked)
+- Text page: `src/app/(wiki)/[lang]/[author]/[text]/page.tsx` — button added between description and chapter list
+- Font files: `public/fonts/EBGaramond-{Regular,Bold,Italic}.ttf` (Latin subset from fontsource CDN)
+
+**Bug:** `renderToStream()` crashes with `Error: unsupported number: -1.8054132924569344e+21`. This is a known `@react-pdf/renderer` issue. Debugging delegated to subagent ae46bd9 which is investigating:
+- Root cause isolation (hardcoded "Hello World" vs real data)
+- Whether the issue is font-related, Unicode content, or React 19 / Next.js 16 incompatibility
+- May switch to `pdfkit` if `@react-pdf/renderer` is fundamentally broken
+
+**Files created/modified:**
+- `src/app/api/export/[textId]/route.ts` (CREATED)
+- `src/components/pdf/PdfDocument.tsx` (CREATED)
+- `src/components/pdf/fonts.ts` (CREATED, being modified by subagent)
+- `src/components/ExportPdfButton.tsx` (CREATED)
+- `src/app/(wiki)/[lang]/[author]/[text]/page.tsx` (MODIFIED — added ExportPdfButton import + component)
+- `public/fonts/EBGaramond-{Regular,Bold,Italic}.ttf` (ADDED)
+- `package.json` — `@react-pdf/renderer` added as dependency
+
+**NOT committed yet** — waiting for subagent to fix the rendering bug.
+
+### Translation Progress (Chinese Pipeline)
+- **Total untranslated Chinese chapters:** 758 (as of session start)
+- **Huangdi Neijing:** 55/162 translated (107 remaining, background process from prior session)
+- **Shennong Bencao Jing:** 19/19 complete
+- **11 workers running:** W1-W11 (aac39b1, a3d120e, a044f62, a5baf62, a5c6cce, a249ccd, a6571a7, ad60212, aaec508, a4acb39, a2ff6bf)
+- Workers are still actively translating — multiple progress notifications received this session
+
+### Pipeline Queue Status
+- Read and understood `docs/pipeline-queue.md` and `docs/mass-text-pipeline-workflow.md`
+- 8 language pipelines queued after Chinese: Polish → Armenian → Italian → Latin → Czech → Gujarati → Telugu → Turkish
+- Total ~150 texts, ~3,650 chapters remaining
+- Next step after Chinese workers finish: Phase 8 gap-check agent
+
+### Plan file
+- Plan at `/Users/bryancheong/.claude/plans/imperative-jingling-horizon.md` — PDF Export plan (approved by user)
+
+### Active subagents this session
+| Agent ID | Task | Status |
+|----------|------|--------|
+| ae46bd9 | Debug PDF export @react-pdf crash | RUNNING |
+| aac39b1-ad60212 | Chinese Translation W1-W11 | RUNNING (from prior session) |
+
+## 2026-01-29 Carmina Graeca Split into 14 Grouped Texts — IN PROGRESS
+- Processing script: `scripts/process-carmina-grouped.ts`
+- 14 texts (11 standalone + 3 grouped), 21 chapters total
+- 5 new authors: sachlikis, georgillas, pikatorios, sklabos, anonymous-byzantine
+- Seeded to DB successfully
+- 3 translation workers launched:
+  - W1: carmina-alexios-komnenos thru carmina-old-man-and-girl → `/tmp/carmina-w1.log`
+  - W2: carmina-beast-fables thru carmina-penitential-alphabet → `/tmp/carmina-w2.log`
+  - W3: carmina-apollonius-of-tyre thru carmina-belisarius → `/tmp/carmina-w3.log`
+
+## 2026-01-29 Carmina Graeca Copy 1 V4 Cleaning — COMPLETE
+- Cleaner: `scripts/lib/carmina-graeca-cleaning-v2-copy1/cleaner_v4.py`
+- Hybrid approach: line-filter for Ch1,5,6,8,12,16,18,21; anchor for rest
+- 10,969/10,952 lines (100.2% retention), 0% contamination, 2,817 paragraphs
+- Ch18 recovered: 370→956 lines (was 40.8%, now 105.5%)
+- Self-grade: B+ — awaiting evaluator review
+
+## 2026-01-29 Carmina Graeca Copy 2 V2 Cleaning — COMPLETE
+- Postprocessor: `scripts/lib/carmina-graeca-cleaning-v2-copy2/postprocess.py`
+- Fixed all V1/V1.5 issues: apparatus (0%), line numbers (0%), OCR garbage (0%)
+- 769 paragraphs, 11,104 lines, polytonic diacritics preserved
+- Self-grade: A- — awaiting evaluator review
+
+## 2026-01-29 Carmina Graeca Master Consolidation Plan — PENDING
+
+### Overview
+Three OCR copies of Carmina Graeca Medii Aevi are being cleaned in parallel using dual-agent pipelines. Once all reach B+ SATISFIED, a master consolidation agent compiles a Grade A definitive version.
+
+### Copy Status
+| Copy | Diacritics | Staging Dir | V1 Grade |
+|------|------------|-------------|----------|
+| Copy 1 | Monotonic | `carmina-graeca-copy1-staging/` | TBD |
+| Copy 2 | Polytonic (best) | `carmina-graeca-copy2-staging/` | V1.5: B- NOT SATISFIED (line nums 11.4%) |
+| Copy 3 | Monotonic | `carmina-graeca-copy3-staging/` | A- (evaluating) |
+
+### NEXT STEP: Master Consolidation Agent (MANDATORY — DO NOT FORGET)
+**Trigger:** ALL 3 copies reach B+ SATISFIED (iterate V2/V3 as needed first).
+
+**Agent instructions — must be thorough, exacting, uncompromising:**
+1. Read all 3 cleaned staging directories + existing `data/processed/carmina-graeca/`
+2. For each of the 21 poems, compare corresponding paragraphs across all copies
+3. Select the cleanest rendering per paragraph — prefer polytonic (Copy 2) where clean
+4. Cross-reference to catch contamination missed by any single copy
+5. Output definitive `data/processed/carmina-graeca-master/` at Grade A
+6. Write consolidation report documenting choices per chapter
+7. Compare master against existing processed output — if better, replace it
+8. After consolidation → re-seed and re-translate if significantly improved
+
+### Iteration tracking
+- Copy that gets NOT SATISFIED → launch V2 cleaner + evaluator
+- Once ALL 3 B+ SATISFIED → launch master consolidation
+- After master → re-seed + translate if warranted
+
+## 2026-01-29 Carmina Graeca Copy 1 — V1 EVALUATED (NOT SATISFIED)
+
+Agent B evaluation of Copy 1 cleaner's v1 output.
+- Grade: F (NOT SATISFIED, V2 needed)
+- 21 chapters, 4,268 paragraphs (reference has 1,270 — 70% excess is apparatus)
+- CRITICAL: Apparatus criticus was NOT removed despite cleaner claiming 0% contamination
+- Latin-in-Greek OCR, variant readings, symbol garbage all retained
+- Trial translations: poem text translates well, apparatus produces garbage
+- Full eval: `docs/carmina-graeca-copy1-v1-evaluation-scratch.md`
+- Collaboration doc updated: `docs/carmina-graeca-copy1-cleaning-collaboration.md`
+
+## 2026-01-29 Catomyomachia Cleaning — V1 EVALUATED (NOT SATISFIED)
+
+Agent B evaluation of Agent A's v1 cleaning output.
+- Grade: C+ (NOT SATISFIED, V2 needed)
+- 6 chapters, 292 paragraphs, good scene structure
+- Issues: 13 paragraphs (4.5%) apparatus contamination, 20 paragraphs (6.8%) embedded line numbers, hypothesis not joined, 1 embedded speaker label
+- Trial translations: 5/5 fluent via DeepSeek
+- Full eval: `docs/catomyomachia-v1-evaluation-scratch.md`
+- Collab doc updated: `docs/catomyomachia-cleaning-collaboration.md`
+
+## 2026-01-29 Zhicao Pin (太上洞玄靈寶芝草品) — IN PROGRESS
+
+New text: Catalogue of Numinous Mushrooms, anonymous Daozang text (Six Dynasties era).
+- Processing: 127 fungus entries grouped into 11 chapters (preface + 10 thematic groups)
+- Author: Anonymous (Daozang), slug: anonymous-daozang
+- Genre: science; new prompt `zh-science` created for Daoist pharmacopoeia
+- translate-batch.ts updated to auto-select `zh-science` for Chinese science genre
+- Translation: 1 worker, log: /tmp/zhicao-w1.log
+- Total chars: ~5,500 (very short text, should complete quickly)
+
+## 2026-01-29 Pinhua Baojian (品花寶鑑) — IN PROGRESS
+
+New text: A Precious Mirror of Ranked Flowers by Chen Sen (陳森), Qing dynasty novel (c. 1849).
+- 60 chapters, 2372 paragraphs, 523,587 characters
+- Source: ctext.org, clean text (no OCR cleaning needed)
+- Processing script: `scripts/process-pinhua-baojian.ts`
+- Output: `data/processed/pinhua-baojian/`
+- Prompt: `zh-literary` (auto-selected for Chinese literature genre)
+- 3 translation workers launched:
+  - Worker 1: Ch 1-20, log: `/tmp/pinhua-w1.log`
+  - Worker 2: Ch 21-40, log: `/tmp/pinhua-w2.log`
+  - Worker 3: Ch 41-60, log: `/tmp/pinhua-w3.log`
+- Author and text seeded to DB successfully
+
 ## 2026-01-29 Semeioseis Gnomikai V4 FINAL Cleaning — COMPLETE
 
 V4 surgical fixes applied. All apparatus contamination eliminated (0%).
@@ -3263,3 +3482,45 @@ This IS 6 parallel workers doing the same translation task on different chapter 
 
 ### Translation Prompt
 Will use `it-literary-19c` (19th-century Italian literary prose) — already exists in prompts.ts
+
+## 2026-01-29 Session 31 — Multi-Text Pipeline
+
+### Completed This Session
+1. **Semeioseis Gnomikai** — Full pipeline complete
+   - V4 cleaning B+ SATISFIED (4 iterations: C+ → B- → B → B+)
+   - Seeded 38 chapters (82-120, missing 118, ch 110 = OCR placeholder)
+   - Translated 38/38 chapters, 0 errors, `grc` prompt
+   - English chapter title translations being added (agent ae49855)
+
+2. **La Scapigliatura e il 6 Febbraio** — Full pipeline complete
+   - OCR evaluation: C+ (1,431 soft hyphens, l/t confusion, garbled lines)
+   - V2 cleaning B+ SATISFIED (2 iterations: B- → B+)
+   - Seeded 18 chapters, translated 18/18, 0 errors, `it-literary-19c` prompt
+
+3. **Pinhua Baojian** — Processing + translation in progress
+   - 60 chapters from clean ctext.org source, no OCR cleaning needed
+   - Processed, seeded, 3 translation workers running
+   - `zh-literary` prompt (auto-selected)
+
+### In Progress
+4. **Zhicao Pin** (太上洞玄靈寶芝草品) — Agent a103687 handling full pipeline
+   - Daoist pharmacopoeia, 259 lines, single file
+   - New `zh-science` prompt being created
+   - Will be ~5-15 chapters (catalogue of magical fungi)
+
+5. **Catomyomachia** (Κατομυομαχία) — Dual-agent cleaning
+   - Byzantine Greek verse drama, 1,425 lines OCR
+   - Issues: critical apparatus, Latin front matter, page numbers
+   - Agent A (aa6dcfb) cleaning, Agent B (a9e9a4b) evaluating
+   - After B+ → process, seed, translate with `grc` prompt
+   - Text type: poetry (verse drama, iambic trimeter)
+
+### New Authors/Texts Added to seed-db.ts
+- Theodore Metochites → Semeioseis Gnomikai
+- Cletto Arrighi → La Scapigliatura e il 6 Febbraio
+- Chen Sen → Pinhua Baojian
+- Anonymous (Daozang) → Zhicao Pin (pending)
+- TBD → Catomyomachia (pending)
+
+### New Translation Prompts
+- `zh-science` — Chinese scientific/technical texts (Daoist pharmacopoeia, medical texts)

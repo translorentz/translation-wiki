@@ -587,6 +587,12 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Song biji prose (Su Shi's Dongpo Zhilin) uses zh-biji prompt
+    if (text.slug === "dongpo-zhilin") {
+      promptLang = "zh-biji";
+      usingSpecialPrompt = true;
+    }
+
     // 19th-century Italian literature uses it-literary-19c prompt
     const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
     if (isLiteraryItalian) {

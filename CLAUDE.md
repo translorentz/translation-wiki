@@ -12,7 +12,7 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 1. **NEVER stage/commit:** `.env*`, `*.swp`, `*.bak`, `*credentials*`, `*secret*`, `*token*`, `*apikey*`
 2. **Before commits:** `git status` + `git diff --cached --name-only` — verify no sensitive files
 3. **Use specific adds:** `git add <specific-files>` NOT `git add .` or `git add -A`
-4. **Gemini FORBIDDEN** until User lifts prohibition — use DeepSeek only
+4. **Gemini RESTORED** (2026-01-30) Access to Gemini was revoked by the User after a security incident, but after painstaking work, Claude Code has restored trust with the User. Gemini API use as second opinion only when DeepSeek translations are poor
 5. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
 6. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
 
@@ -46,22 +46,24 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-29, Session 36)
+## Active Tasks (2026-01-30, Session 38)
 
 ### IN PROGRESS
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Chinese Mass Pipeline Translation | 8 workers | 44 texts, 1,619 chapters, see `ACTIVE_AGENTS.md` |
+| Chinese Mass Pipeline Translation | 8 workers (W1-W7,W9-W11) | 2,512/3,155 chapters (80%), see `ACTIVE_AGENTS.md` |
+| Huangdi Neijing Reprocess + Translate | 1 worker | 162 chapters, reprocessed by 篇 |
 
-### SESSION 36 COMPLETED
-- Chinese mass pipeline: 44 texts scraped, processed, reviewed, seeded (1,619 chapters) ✓
-- Independent quality review: 44/44 texts PASS ✓
-- Independent translation verification: 0 texts disqualified ✓
-- Mass text pipeline workflow documented: `docs/mass-text-pipeline-workflow.md` ✓
-- Text inventory updated: 100 texts total ✓
+### SESSION 38 COMPLETED
+- PDF export: pdfkit-based, EB Garamond serif, title page, chapter breaks, page numbers ✓
+- EPUB export: epub-gen-memory, styled XHTML chapters, TOC ✓
+- ExportButtons component: PDF + EPUB side by side on text index pages ✓
+- Gemini API key restored ✓
+- W8 (a249ccd) completed: sui-tang-yanyi, dongjing-menghua-lu, xijing-zaji (93 chapters) ✓
 
 ### EARLIER COMPLETED
+- Chinese mass pipeline: 44 texts scraped, processed, reviewed, seeded (1,619 chapters) ✓
 - Epitome of Histories: consolidated + translated 18 chapters ✓
 - Syair Siti Zubaidah: OCR cleaned, seeded, translated 19 chapters ✓
 - Semeioseis Gnomikai: V4 cleaning B+ SATISFIED, 38/38 translated ✓
@@ -121,7 +123,27 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 - **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
 - **Batching:** zh=1500 chars, grc/la/hy=6000 chars per API call
 - **Parallelization:** Split ranges across background workers
-- **Skip logic:** Already-translated chapters skipped automatically
+- **Skip logic:** Already-translated chapters skipped automatically (but does NOT prevent concurrent duplicate work — see rule below)
+
+### CRITICAL: Worker Assignment Discipline
+
+**Each worker MUST have exclusive, non-overlapping chapter assignments.** The skip logic only checks the DB before starting a chapter. If two workers reach the same untranslated chapter simultaneously, both will translate it — wasting API time and blocking the pipeline. This wastes not just money but TIME, which is the more valuable resource.
+
+**Rules (MANDATORY — think carefully before every worker launch):**
+1. **Query first:** Before launching ANY workers, run a DB query to get the exact list of remaining untranslated chapters
+2. **Partition strictly:** Divide remaining chapters into exclusive, non-overlapping ranges — every chapter assigned to exactly one worker
+3. **Use --start and --end flags:** Always specify `--text X --start N --end M` — never launch a worker on a whole text if other workers might touch it
+4. **Size workers appropriately for the phase:** During bulk translation, larger ranges (10-20 chapters) per worker are fine. During the final push (few workers left, <50 chapters remaining), size workers at ~3 chapters each for fast turnaround
+5. **Never add workers to "help" existing workers on the same text** without first killing the existing worker and repartitioning
+6. **Document the assignment table** before launching — write out which worker gets which chapters, verify no overlap, then launch
+
+**Self-direction:** When workers complete, immediately progress to the next workflow phase without waiting for the user to prompt. Check `docs/pipeline-queue.md` and `docs/mass-text-pipeline-workflow.md` for what comes next.
+
+**Anti-patterns (NEVER do these):**
+- Launching multiple workers on the same text without chapter ranges
+- "Throwing more workers at it" without checking what's already running
+- Assigning 7–10 chapters per worker when you could use 3
+- Adding late-stage workers without querying remaining chapters and repartitioning from scratch
 
 ### CRITICAL: Check Translation Prompt Before Translating
 

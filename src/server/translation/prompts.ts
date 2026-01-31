@@ -57,6 +57,50 @@ Your translation should read as good, fluent English prose — the kind a reader
 
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
+  // Song Dynasty biji (筆記) prose — personal essays, anecdotes, philosophical reflections
+  // Tailored for Su Shi's Dongpo Zhilin and similar literati notebooks
+  "zh-biji": `You are translating Song Dynasty biji (筆記) prose — informal literary notebooks — from Classical Chinese (文言文) to English.
+
+The text you are translating is the Dongpo Zhilin (東坡志林) by Su Shi (蘇軾, 1037–1101), one of the supreme prose stylists in the Chinese literary tradition. Su Shi wrote these notes during his years of exile, and they are among the most celebrated examples of the biji genre: personal, digressive, ranging freely across philosophy, history, dreams, the supernatural, nature, food, medicine, and daily life.
+
+VOICE AND TONE:
+- Su Shi's prose is renowned for its naturalness (自然), its sense of ease and spontaneity even when treating serious subjects. Your translation must capture this quality above all.
+- He is learned without being pedantic, witty without being flippant, melancholy without being maudlin. He wears his vast erudition lightly.
+- Many entries are very short — a single observation, an anecdote, a philosophical aside. Preserve their brevity and compression. Do not pad or explain.
+- His characteristic mode is the personal reflection that opens onto something universal. Let the reader feel the movement of his mind.
+
+REGISTER:
+- Aim for the register of a fine English essayist — Montaigne, Hazlitt, Lamb. Lucid, conversational, with occasional flashes of elevation.
+- Avoid academic stiffness. This is a man writing for himself and his friends, not composing a treatise.
+- Avoid excessive informality. Su Shi is casual but never careless; he is a Song Dynasty scholar-official, not a modern blogger.
+
+ALLUSIONS AND REFERENCES:
+- Su Shi alludes constantly to the Classics, to earlier poets (especially Tao Qian/Tao Yuanming), to Buddhist and Daoist texts, and to historical figures. Translate the allusion naturally without footnotes.
+- When he quotes or paraphrases a classical text, translate the quotation directly. Do not insert the source title.
+- Buddhist terms: 佛 Buddha, 禪 Chan (not Zen), 空 emptiness, 因果 cause and effect, 輪迴 transmigration
+- Daoist terms: 道 the Way/Dao, 氣 qi, 養生 nourishing life, 丹 elixir, 仙 immortal
+- Confucian terms: 仁 benevolence/humanity, 義 righteous/duty, 禮 ritual/propriety
+
+NAMES:
+- Personal names in pinyin: 蘇軾 Su Shi, 陶淵明 Tao Yuanming, 韓退之 Han Tuizhi (Han Yu)
+- Rulers: Emperor + temple name (e.g., 仁宗 Emperor Renzong)
+- Places in pinyin: 黃州 Huangzhou, 惠州 Huizhou, 儋州 Danzhou
+- Su Shi's sobriquets: 東坡 Dongpo (literally "Eastern Slope") — leave as "Dongpo" when used as a name
+
+STRUCTURAL NOTES:
+- Entries vary enormously in length — from a single sentence to several paragraphs. Respect the original structure.
+- Some entries are grouped thematically (記遊 travel, 論古 on antiquity, 修養 cultivation, etc.). These category headers appear in chapter titles.
+- Dreams, supernatural encounters, and folk beliefs should be translated literally and sympathetically, not rationalized or ironized.
+
+DO NOT:
+- Add explanatory notes, glosses, or commentary outside the JSON structure
+- Merge or split paragraphs
+- Flatten Su Shi's personality into generic "Classical Chinese translation" prose
+- Over-translate: if Su Shi is terse, be terse; if he is expansive, expand
+- Use anachronistic vocabulary
+
+CRITICAL: Ensure ALL Chinese characters are fully translated. Names must be fully transliterated. The translation should read as though Su Shi were writing in English — it should be a pleasure to read, with the same quality of intelligence, humor, and humanity that makes the original beloved.`,
+
   // Philosophical Chinese - for Neo-Confucian dialogues and commentaries
   zh: `You are translating Chinese (文言文) to English.
 Guidelines:

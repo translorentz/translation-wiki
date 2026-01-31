@@ -12,17 +12,17 @@ Pipelines execute sequentially (one language at a time) to avoid overwhelming AP
 
 | Priority | Language | Wikisource | Works | Pre-1900 | Notes |
 |----------|----------|------------|-------|----------|-------|
-| 1 | **Chinese (zh)** | zh.wikisource.org | 44 | Yes | IN PROGRESS — Session 36 |
-| 2 | **Polish (pl)** | pl.wikisource.org | 40 | Yes | Largest batch after Chinese |
-| 3 | **Armenian (hy)** | hy.wikisource.org | 45 | Yes | MUST use DeepSeek (Gemini blocks Armenian) |
-| 4 | **Italian (it)** | it.wikisource.org | 20 | Yes | Already have `it-literary-19c` prompt |
+| 1 | **Chinese (zh)** | zh.wikisource.org | 44 | Yes | IN PROGRESS — near complete |
+| 2 | **Polish (pl)** | pl.wikisource.org | 12 | Yes | Capped from 40 |
+| 3 | **Armenian (hy)** | hy.wikisource.org | 12 | Yes | MUST use DeepSeek (Gemini blocks Armenian). Capped from 45 |
+| 4 | **Italian (it)** | it.wikisource.org | 12 | Yes | Already have `it-literary-19c` prompt. Capped from 20 |
 | 5 | **Latin (la)** | la.wikisource.org | 10 | Yes | Already have `la` prompt |
-| 6 | **Czech (cs)** | cs.wikisource.org | 10 | Yes | New language — needs prompt |
-| 7 | **Gujarati (gu)** | gu.wikisource.org | 10 | Yes | New language — needs prompt |
-| 8 | **Telugu (te)** | te.wikisource.org | 10 | Yes | New language — needs prompt |
-| 9 | **Turkish (tr)** | tr.wikisource.org | 5 | Yes | New language — needs prompt (Ottoman?) |
+| 6 | **Czech (cs)** | cs.wikisource.org | 1 | Yes | New language — needs prompt |
+| 7 | **Gujarati (gu)** | gu.wikisource.org | 1 | Yes | New language — needs prompt |
+| 8 | **Telugu (te)** | te.wikisource.org | 1 | Yes | New language — needs prompt |
+| 9 | **Turkish (tr)** | tr.wikisource.org | 1 | Yes | New language — needs prompt (Ottoman?) |
 
-**Total:** 9 pipelines, ~145 target works (excluding Chinese already running). Targets are approximate — verification will filter down to confirmed texts, as in the Chinese pipeline (50 target → 44 confirmed).
+**Total:** 9 pipelines, ~50 target works (excluding Chinese already running). Targets are approximate — verification will filter down to confirmed texts. Reduced from original ~145 due to resource constraints (Session 38).
 
 **IMPORTANT — Translation Prompts:** Existing prompts are narrowly tailored to specific texts/periods. Even for languages already on Deltoi (Armenian, Italian, Latin), new prompts will likely be needed for different periods, genres, or registers. Always audit the existing prompt against the actual texts before translating. Create new prompts as needed — do not assume an existing language prompt is suitable.
 
@@ -35,11 +35,13 @@ Before launching each pipeline, verify:
 1. [ ] Previous pipeline fully complete (all translations done, gap-check passed)
 2. [ ] `docs/text-inventory.md` updated with previous pipeline results
 3. [ ] Commit + push previous pipeline's data
-4. [ ] Check Wikisource content availability for target language (some Wikisources are sparse)
-5. [ ] Check if translation prompt exists for this language in `src/server/translation/prompts.ts`
-6. [ ] If new language: create translation prompt BEFORE Phase 7 (test with sample chapter)
-7. [ ] Check `docs/mass-text-pipeline-workflow.md` for any updates from lessons learned
-8. [ ] Check `docs/chinese-pipeline-agents.md` for agent pattern reference
+4. [ ] **Check for User-curated text list** in `docs/<language>_text_suggestions.txt` — if it exists, use it directly (skip research phase). Currently available: `polish_text_suggestions.txt`, `armenian_text_suggestions.txt`, `latin_text_suggestions.txt`
+5. [ ] If no curated list: run research + verification agents to find texts on Wikisource
+6. [ ] **Fallback rule:** If a scraper can't find a curated work on Wikisource, it may spin up the research agent workflow to find a substitute
+7. [ ] Check if translation prompt exists for this language in `src/server/translation/prompts.ts`
+8. [ ] If new language: create translation prompt BEFORE translation phase (test with sample chapter)
+9. [ ] Check `docs/mass-text-pipeline-workflow.md` for any updates from lessons learned
+10. [ ] Check `docs/chinese-pipeline-agents.md` for agent pattern reference
 
 ---
 
@@ -52,22 +54,23 @@ Before launching each pipeline, verify:
 - **Agent registry:** `docs/chinese-pipeline-agents.md`
 
 ### 2. Polish (pl) — QUEUED
-- **Target:** 40 works, pre-1900, from pl.wikisource.org
-- **Wikisource quality:** pl.wikisource.org is one of the larger Wikisources with substantial classical content
+- **Target:** 12 works from User-curated list in `docs/polish_text_suggestions.txt`
+- **Research phase: SKIP** — use the curated list directly instead of running a research agent
+- **Fallback:** If a scraper can't find a specific work on Wikisource, it may spin up the research agent workflow to find a substitute
 - **Prompt needed:** New `pl` prompt for 19th-century Polish literary prose + possibly `pl-romantic` for Romantic-era poetry
 - **Considerations:**
   - Polish Romanticism (Mickiewicz, Slowacki, Krasinski) — verify no existing complete English translations
   - Positivist-era novels (Prus, Orzeszkowa, Sienkiewicz) — Sienkiewicz is extensively translated, likely excluded
   - Many Polish classics may already have English translations (active literary translation tradition)
-  - Expect higher rejection rate in verification phase
 
 ### 3. Armenian (hy) — QUEUED
-- **Target:** ~45 works, pre-1900, from hy.wikisource.org (target is approximate — verification will filter)
+- **Target:** 12 works from User-curated list in `docs/armenian_text_suggestions.txt`
+- **Research phase: SKIP** — use the curated list directly instead of running a research agent
+- **Fallback:** If a scraper can't find a specific work on Wikisource, it may spin up the research agent workflow to find a substitute
 - **CRITICAL:** Must use DeepSeek only. Gemini blocks Armenian historical content with `PROHIBITED_CONTENT` errors.
 - **Prompt:** Existing `hy` prompt covers 19th-20th century Armenian literature — but new texts may span different periods/genres and will likely need new prompts (e.g., classical Armenian grabar, medieval chronicles, ecclesiastical texts)
 - **Script:** Use `scripts/translate-armenian.ts` (not `translate-batch.ts`)
 - **Considerations:**
-  - hy.wikisource.org may be smaller — verify content availability first
   - Already have 6 Armenian texts on Deltoi (195 chapters) — exclude those
   - Classical Armenian (grabar) vs. modern Armenian — may need separate prompts
   - Historical content (genocide accounts, oppression narratives) — DeepSeek handles these; Gemini does not
@@ -83,7 +86,9 @@ Before launching each pipeline, verify:
   - May need additional prompts: `it-medieval` for Trecento prose, `it-renaissance` for Cinquecento
 
 ### 5. Latin (la) — QUEUED
-- **Target:** ~10 works, pre-1900, from la.wikisource.org (target is approximate)
+- **Target:** 10 works from User-curated list in `docs/latin_text_suggestions.txt`
+- **Research phase: SKIP** — use the curated list directly instead of running a research agent
+- **Fallback:** If a scraper can't find a specific work, it may spin up the research agent workflow to find a substitute
 - **Prompt:** Existing `la` prompt covers chronicle/philosophy/poetry — but is tailored to specific existing texts. New texts from different periods (Classical, Medieval, Renaissance) or genres will likely need new prompts
 - **Considerations:**
   - la.wikisource.org has extensive content
@@ -174,19 +179,25 @@ Existing prompts that WILL likely need new variants (prompts are narrowly tailor
 
 | Pipeline | Est. Works | Est. Chapters | Est. Workers | Est. API Calls |
 |----------|-----------|---------------|-------------|---------------|
-| Polish | 40 | ~1,200 | 7-10 | ~1,200 |
-| Armenian | 45 | ~900 | 7-10 | ~900 |
-| Italian | 20 | ~500 | 5-7 | ~500 |
+| Polish | 12 | ~360 | 5-7 | ~360 |
+| Armenian | 12 | ~240 | 5-7 | ~240 |
+| Italian | 12 | ~300 | 5-7 | ~300 |
 | Latin | 10 | ~300 | 3-5 | ~300 |
-| Czech | 10 | ~250 | 3-5 | ~250 |
-| Gujarati | 10 | ~200 | 3-5 | ~200 |
-| Telugu | 10 | ~200 | 3-5 | ~200 |
-| Turkish | 5 | ~100 | 2-3 | ~100 |
-| **Total** | **~150** | **~3,650** | — | **~3,650** |
+| Czech | 1 | ~25 | 1 | ~25 |
+| Gujarati | 1 | ~20 | 1 | ~20 |
+| Telugu | 1 | ~20 | 1 | ~20 |
+| Turkish | 1 | ~20 | 1 | ~20 |
+| **Total** | **~50** | **~1,285** | — | **~1,285** |
 
-Combined with Chinese (44 texts, 1,619 chapters), the full queue represents ~194 texts and ~5,269 chapters.
+Combined with Chinese (~47 texts, ~3,358 chapters), the full queue represents ~97 texts and ~4,643 chapters.
 
-**Translation worker policy:** 7-10 workers is the standard range; up to 11 is permitted. Scale workers proportionally to pipeline size — large pipelines (30+ texts) use 10-11 workers, medium (10-20 texts) use 5-7, small (< 10 texts) use 3-5. DeepSeek has not rate-limited at 11 concurrent workers. The auto-skip logic in `translate-batch.ts` makes worker overlap harmless.
+**Translation worker policy:**
+- **Size workers appropriately for the phase:** bulk translation uses 10-20 chapters per worker; final push (<50 chapters remaining) uses ~3 chapters per worker
+- Scale worker COUNT proportionally: large pipelines (30+ texts) may need 30+ workers, medium (10-20) need 10-15, small (< 10) need 5-10
+- **Every worker MUST have exclusive, non-overlapping chapter assignments** using `--start N --end M` flags
+- **NEVER launch overlapping workers.** The skip logic does NOT prevent concurrent duplicate work — two workers hitting the same chapter simultaneously will both translate it, wasting time and API calls
+- Before launching workers: query DB for remaining chapters → partition into exclusive ranges → document assignment table → then launch
+- When adding workers mid-pipeline: kill existing workers on affected texts, query remaining, repartition from scratch
 
 ---
 

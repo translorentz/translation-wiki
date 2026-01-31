@@ -898,6 +898,14 @@ const AUTHORS = [
     description:
       "Qing imperial prince (Aisin Gioro clan) who wrote insider accounts of court life and Manchu customs.",
   },
+  {
+    name: "Su Shi (Su Dongpo)",
+    nameOriginalScript: "蘇軾",
+    slug: "su-shi",
+    era: "Song Dynasty (1037–1101)",
+    description:
+      "One of the most celebrated poets, essayists, and statesmen of the Song Dynasty. Known for his prose, poetry, calligraphy, and painting.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -2652,6 +2660,21 @@ const TEXTS = [
     processedDir: "data/processed/xiaoting-zalu",
     compositionYear: 1815,
     compositionEra: "Qing (c. 1815)",
+  },
+  {
+    title: "Dongpo's Records from the Bamboo Grove (Dongpo Zhilin)",
+    titleOriginalScript: "東坡志林",
+    slug: "dongpo-zhilin",
+    languageCode: "zh",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "su-shi",
+    description:
+      "A collection of informal prose notes and essays by Su Shi, written during his various exiles. Covers philosophy, history, anecdotes, dreams, supernatural tales, and personal reflections.",
+    sourceUrl: "https://zh.wikisource.org/wiki/東坡志林",
+    processedDir: "data/processed/dongpo-zhilin",
+    compositionYear: 1097,
+    compositionEra: "Song Dynasty (c. 1097)",
   },] as const;
 
 // ============================================================

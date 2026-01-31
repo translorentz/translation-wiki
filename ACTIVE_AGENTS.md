@@ -2,7 +2,7 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-01-29, Session 36
+**Last updated:** 2026-01-30, Session 38
 
 ---
 
@@ -12,17 +12,22 @@ Track all running agents and background workers here. Update when launching or c
 |----------|------|--------|-------|
 | aac39b1 | Chinese Translation W1 (218ch) | RUNNING | qijian-shisan-xia, shipin, fenshu, xihu-mengxun, hedian, shiyi-ji |
 | a3d120e | Chinese Translation W2 (208ch) | RUNNING | yesou-puyan, niehai-hua, tang-caizi-zhuan, wulin-jiushi |
-| a044f62 | Chinese Translation W3 (210ch) | RUNNING | sanxia-wuyi, shuijing-zhu, xianqing-ouji, xiaolin-guangji |
-| a5baf62 | Chinese Translation W4 (213ch) | RUNNING | qilu-deng, huayue-hen, gaiyu-congkao, laoxuean-biji |
+| a044f62 | Chinese Translation W3 (210ch) | **COMPLETE** | sanxia-wuyi (120), shuijing-zhu (40), xianqing-ouji (38), xiaolin-guangji (12) — 210 translated, 0 errors |
+| a5baf62 | Chinese Translation W4 (213ch) | **COMPLETE** | qilu-deng (108), huayue-hen (52), gaiyu-congkao (43), laoxuean-biji (10) — 213 translated, 0 errors |
 | a5c6cce | Chinese Translation W5 (216ch) | RUNNING | nuxian-waishi, mingru-xuean, chibei-outan, taoan-mengyi, suiyuan-shihua |
 | a4acb39 | Chinese Translation W6 (216ch) | RUNNING | feilong-quanzhuan, gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu |
 | a2ff6bf | Chinese Translation W7 (205ch) | RUNNING | yuewei-caotang-biji, yuchu-xinzhi, kunxue-jiwen, mengliang-lu, qidong-yeyu, yehangchuan, helin-yulu, sushui-jiwen, wuzazu, tang-zhiyan, xiaoting-zalu |
-| a249ccd | Chinese Translation W8 (116ch) | RUNNING | sui-tang-yanyi, dongjing-menghua-lu, xijing-zaji (Saric texts re-included) |
+| a249ccd | Chinese Translation W8 (116ch) | **COMPLETE** | sui-tang-yanyi (77), dongjing-menghua-lu (10), xijing-zaji (6) — 93 translated, 0 errors |
 | a6571a7 | Chinese Translation W9 (156ch) | RUNNING | gujin-tangai, youyang-zazu, zhinang, beimeng-suoyan, qingshi, yeyu-qiudeng-lu (W6 tail) |
-| ad60212 | Chinese Translation W10 (101ch) | RUNNING | yehangchuan, helin-yulu, sushui-jiwen, wuzazu, tang-zhiyan, xiaoting-zalu (W7 tail) |
-| aaec508 | Chinese Translation W11 (158ch) | RUNNING | mingru-xuean, gaiyu-congkao, zhinang, beimeng-suoyan |
-| ac204d5 | Huangdi Neijing Reprocess + Translate | RUNNING | 162 chapters, reprocessed by 篇 |
-| ad3004e | Shennong Bencao Jing Process + Translate | RUNNING | 19 chapters, new text |
+| ad60212 | Chinese Translation W10 (101ch) | **COMPLETE** | yehangchuan (20), helin-yulu (19), sushui-jiwen (16), wuzazu (16), tang-zhiyan (15), xiaoting-zalu (15) — 101 translated, 0 errors |
+| aaec508 | Chinese Translation W11 (158ch) | **COMPLETE** | mingru-xuean (52 new, 10 skipped), gaiyu-congkao (43 skipped), zhinang (28 skipped), beimeng-suoyan (25 skipped) — 52 translated, 0 errors |
+| a572324 | Chinese Translation W12 (~120ch) | RUNNING | niehai-hua, chibei-outan, qidong-yeyu, suiyuan-shihua, taoan-mengyi, laoxuean-biji |
+| a1b0fca | Chinese Translation W13 (~118ch) | RUNNING | gaiyu-congkao, qingshi, mingru-xuean, xiaoting-zalu, yeyu-qiudeng-lu, tang-caizi-zhuan, wulin-jiushi, yesou-puyan, mengliang-lu, tang-zhiyan |
+| ac204d5 | Huangdi Neijing Reprocess + Translate | **COMPLETE** | 162 chapters, reprocessed by 篇 |
+| ad3004e | Shennong Bencao Jing Process + Translate | **COMPLETE** | 19 chapters, new text |
+| acd5fc1 | Dongpo Zhilin Scrape + Translate | **COMPLETE** | 203 chapters, zh-biji prompt |
+| ab6dc4e | Chinese Translation W14 (46ch) | RUNNING | chibei-outan (18), suiyuan-shihua (16), taoan-mengyi (12) |
+| a22ca22 | Chinese Translation W15 (24ch) | RUNNING | yeyu-qiudeng-lu (12), qingshi (6), wulin-jiushi (6) |
 
 ---
 
@@ -151,10 +156,10 @@ Track all running agents and background workers here. Update when launching or c
 - **Translation:** 38/38 complete, 0 errors
 - **English titles:** 38/38 added
 
-### Chinese Mass Pipeline — TRANSLATING (11 WORKERS)
-- **Seeded:** 44 texts (1,619 chapters) into DB
-- **Translating:** 44 texts across 10 workers (W1-W10), 331/1,619 chapters done
-- **Post-translation:** Gap-check agent queued (missing + short translations)
+### Chinese Mass Pipeline — TRANSLATING (10 WORKERS, W8 DONE)
+- **Progress:** ~3,288/3,358 chapters translated (97.9%)
+- **Workers:** W14-W15 finishing last 70 chapters; W1-W13 + special agents COMPLETE
+- **Post-translation:** Gap-check agent queued (Phase 8)
 - **Status doc:** `docs/chinese-pipeline-status.md`
 - **Agent registry:** `docs/chinese-pipeline-agents.md`
 
