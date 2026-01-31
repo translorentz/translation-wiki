@@ -42,20 +42,23 @@ const HIGHLIGHTS = [
 
 export function HighlightCards() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      {HIGHLIGHTS.map((h) => (
-        <Link
-          key={h.slug}
-          href={`/${h.langCode}/${h.authorSlug}/${h.slug}`}
-        >
-          <Card className="px-4 py-3 transition-all hover:-translate-y-0.5 hover:shadow-md">
-            <p className="text-lg leading-tight">{h.originalTitle}</p>
-            <p className="mt-1 text-sm font-medium">{h.englishTitle}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{h.teaser}</p>
-            <p className="mt-1 text-xs text-muted-foreground/70">{h.meta}</p>
-          </Card>
-        </Link>
-      ))}
+    <div>
+      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Highlights</h2>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {HIGHLIGHTS.map((h) => (
+          <Link
+            key={h.slug}
+            href={`/${h.langCode}/${h.authorSlug}/${h.slug}`}
+          >
+            <Card className="px-3 py-2 transition-all hover:-translate-y-0.5 hover:shadow-md">
+              <p className="text-base leading-tight">{h.originalTitle}</p>
+              <p className="mt-0.5 text-xs font-medium">{h.englishTitle}</p>
+              <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{h.teaser}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground/70">{h.meta}</p>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

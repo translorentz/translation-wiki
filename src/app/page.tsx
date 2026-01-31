@@ -95,7 +95,7 @@ export default async function HomePage() {
       </div>
 
       {/* Highlights */}
-      <div className="mx-auto mb-12 max-w-5xl">
+      <div className="mx-auto mb-8 max-w-5xl">
         <HighlightCards />
       </div>
 
