@@ -15,6 +15,7 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 4. **Gemini RESTORED** (2026-01-30) Access to Gemini was revoked by the User after a security incident, but after painstaking work, Claude Code has restored trust with the User. Gemini API use as second opinion only when DeepSeek translations are poor
 5. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
 6. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
+7. **NEVER hardcode credentials in scripts** — always use `process.env.DATABASE_URL` or equivalent. A subagent wrote a plain-text Neon password into `seed-kalahasti-chapter.mjs` (2026-01-31); gitleaks blocked the commit but the credential was on disk. All DB connections in scripts MUST read from environment variables.
 
 ---
 

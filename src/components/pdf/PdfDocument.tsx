@@ -235,16 +235,18 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
   // Colophon page
   doc.addPage();
   const colophonY = PAGE_HEIGHT / 2 - 40;
-  doc.font(FONT_ITALIC).fontSize(11).fillColor("#666666");
-  doc.text("Translated at Deltoi", MARGIN_LEFT, colophonY, {
+  doc.font(FONT_REGULAR).fontSize(14).fillColor("#666666");
+  doc.text("DELTOI", MARGIN_LEFT, colophonY, {
     width: CONTENT_WIDTH,
     align: "center",
+    characterSpacing: 4,
   });
-  doc.moveDown(0.5);
+  doc.moveDown(0.8);
   doc.font(FONT_REGULAR).fontSize(10).fillColor("#999999");
-  doc.text("Trial Project by Bryan Cheong", MARGIN_LEFT, doc.y, {
+  doc.text("Downloaded at deltoi.com", MARGIN_LEFT, doc.y, {
     width: CONTENT_WIDTH,
     align: "center",
+    characterSpacing: 0,
   });
   doc.moveDown(1.5);
   const now = new Date();
@@ -254,7 +256,7 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
     year: "numeric",
   });
   doc.font(FONT_REGULAR).fontSize(9).fillColor("#aaaaaa");
-  doc.text(`Downloaded on ${downloadDate}`, MARGIN_LEFT, doc.y, {
+  doc.text(downloadDate, MARGIN_LEFT, doc.y, {
     width: CONTENT_WIDTH,
     align: "center",
   });
