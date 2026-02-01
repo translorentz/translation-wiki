@@ -240,13 +240,18 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
     month: "long",
     year: "numeric",
   });
+  const opts = { width: CONTENT_WIDTH, align: "center" as const };
+  doc.font(FONT_REGULAR).fontSize(14).fillColor("#666666");
+  doc.text("DELTOI", MARGIN_LEFT, colophonY, opts);
+  doc.moveDown(0.6);
   doc.font(FONT_ITALIC).fontSize(10).fillColor("#999999");
-  doc.text(
-    `Deltoi, downloaded at deltoi.com, a trial project by Bryan Cheong, on ${downloadDate}`,
-    MARGIN_LEFT,
-    colophonY,
-    { width: CONTENT_WIDTH, align: "center" },
-  );
+  doc.text("Downloaded at deltoi.com", MARGIN_LEFT, doc.y, opts);
+  doc.moveDown(0.3);
+  doc.fontSize(9).fillColor("#aaaaaa");
+  doc.text("A trial project by Bryan Cheong", MARGIN_LEFT, doc.y, opts);
+  doc.moveDown(0.3);
+  doc.fontSize(8).fillColor("#bbbbbb");
+  doc.text(downloadDate, MARGIN_LEFT, doc.y, opts);
 
   // Add page numbers (skip title page and colophon)
   const totalPages = doc.bufferedPageRange().count;
