@@ -235,31 +235,18 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
   // Colophon page
   doc.addPage();
   const colophonY = PAGE_HEIGHT / 2 - 40;
-  doc.font(FONT_REGULAR).fontSize(14).fillColor("#666666");
-  doc.text("DELTOI", MARGIN_LEFT, colophonY, {
-    width: CONTENT_WIDTH,
-    align: "center",
-    characterSpacing: 4,
-  });
-  doc.moveDown(0.8);
-  doc.font(FONT_REGULAR).fontSize(10).fillColor("#999999");
-  doc.text("Downloaded at deltoi.com", MARGIN_LEFT, doc.y, {
-    width: CONTENT_WIDTH,
-    align: "center",
-    characterSpacing: 0,
-  });
-  doc.moveDown(1.5);
-  const now = new Date();
-  const downloadDate = now.toLocaleDateString("en-GB", {
+  const downloadDate = new Date().toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  doc.font(FONT_REGULAR).fontSize(9).fillColor("#aaaaaa");
-  doc.text(downloadDate, MARGIN_LEFT, doc.y, {
-    width: CONTENT_WIDTH,
-    align: "center",
-  });
+  doc.font(FONT_ITALIC).fontSize(10).fillColor("#999999");
+  doc.text(
+    `Deltoi, downloaded at deltoi.com, a trial project by Bryan Cheong, on ${downloadDate}`,
+    MARGIN_LEFT,
+    colophonY,
+    { width: CONTENT_WIDTH, align: "center" },
+  );
 
   // Add page numbers (skip title page and colophon)
   const totalPages = doc.bufferedPageRange().count;

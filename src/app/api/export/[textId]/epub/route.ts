@@ -128,9 +128,7 @@ export async function GET(
   });
   const colophonHtml = `
 <div style="text-align: center; margin-top: 6em;">
-  <p style="text-indent: 0; color: #666; font-size: 1.1em; letter-spacing: 0.2em;">DELTOI</p>
-  <p style="text-indent: 0; color: #999; font-size: 0.9em; margin-top: 1.5em;">Downloaded at deltoi.com</p>
-  <p style="text-indent: 0; color: #aaa; font-size: 0.85em;">${escapeHtml(downloadDate)}</p>
+  <p style="text-indent: 0; color: #999; font-style: italic;">Deltoi, downloaded at deltoi.com, a trial project by Bryan Cheong, on ${escapeHtml(downloadDate)}</p>
 </div>`;
   epubChapters.push({ title: "Colophon", content: colophonHtml });
 
