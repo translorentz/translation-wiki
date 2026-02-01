@@ -133,7 +133,7 @@ export async function GET(
   <p style="text-indent: 0; color: #aaa; font-style: italic; font-size: 0.85em;">A trial project by Bryan Cheong</p>
   <p style="text-indent: 0; color: #bbb; font-style: italic; font-size: 0.8em;">${escapeHtml(downloadDate)}</p>
 </div>`;
-  epubChapters.push({ title: "Colophon", content: colophonHtml });
+  epubChapters.push({ title: "", content: colophonHtml });
 
   try {
     const buffer = await epub(
