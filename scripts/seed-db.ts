@@ -63,6 +63,9 @@ const LANGUAGES = [
   { code: "hy", name: "Armenian", displayName: "Հայերեն" },
   { code: "ms", name: "Malay", displayName: "Bahasa Melayu" },
   { code: "pl", name: "Polish", displayName: "Polski" },
+  { code: "te", name: "Telugu", displayName: "తెలుగు" },
+  { code: "cs", name: "Czech", displayName: "Čeština" },
+  { code: "tr", name: "Turkish", displayName: "Türkçe" },
 ] as const;
 
 const AUTHORS = [
@@ -441,6 +444,14 @@ const AUTHORS = [
     era: "1897–1937",
     description:
       "Major Armenian poet and writer of the early Soviet period. Charents fought in World War I and briefly joined the Armenian Revolutionary Federation before embracing communism. His poetic novel 'Yerkir Nairi' (Land of Nairi, 1922) is considered a modernist masterpiece. He was arrested during the Stalinist purges and died in prison in 1937. His famous patriotic poem 'Ես սիրում եմ իմ անուշ Հայաստանը' (I Love My Sweet Armenia) contains an acrostic message critical of Soviet rule.",
+  },
+  {
+    name: "Nar-Dos",
+    nameOriginalScript: "\u0546\u0561\u0580-\u0534\u0578\u057d",
+    slug: "nar-dos",
+    era: "1867–1933",
+    description:
+      "Armenian novelist and short story writer, pen name of Mikayel Hovhannisyan. Pioneer of the psychological trend in Armenian critical realism, known for refined language and deep character studies of the bourgeois intelligentsia.",
   },
   {
     name: "Giuseppe Rovani",
@@ -907,6 +918,186 @@ const AUTHORS = [
     description:
       "One of the most celebrated poets, essayists, and statesmen of the Song Dynasty. Known for his prose, poetry, calligraphy, and painting.",
   },
+  // Polish Pipeline Authors (7 new)
+  {
+    name: "Władysław Reymont",
+    nameOriginalScript: "Władysław Reymont",
+    slug: "wladyslaw-reymont",
+    era: "Young Poland (1867–1925)",
+    description:
+      "Polish novelist and Nobel laureate (1924), best known for 'The Peasants.' A leading figure of the Young Poland movement, his naturalist prose depicts Polish rural and urban life with vivid psychological detail.",
+  },
+  {
+    name: "Józef Ignacy Kraszewski",
+    nameOriginalScript: "Józef Ignacy Kraszewski",
+    slug: "jozef-ignacy-kraszewski",
+    era: "Positivism (1812–1887)",
+    description:
+      "The most prolific Polish novelist of the 19th century, author of over 200 novels. His historical fiction spans Polish history from prehistoric times to the contemporary era.",
+  },
+  {
+    name: "Karol Irzykowski",
+    nameOriginalScript: "Karol Irzykowski",
+    slug: "karol-irzykowski",
+    era: "Young Poland (1873–1944)",
+    description:
+      "Polish novelist, literary critic, and film theorist. A pioneering modernist whose experimental novel 'Pałuba' anticipated techniques of the European avant-garde.",
+  },
+  {
+    name: "Stefan Żeromski",
+    nameOriginalScript: "Stefan Żeromski",
+    slug: "stefan-zeromski",
+    era: "Young Poland (1864–1925)",
+    description:
+      "One of the most important Polish novelists and dramatists, called 'the conscience of Polish literature.' His works explore social injustice, patriotism, and moral dilemmas.",
+  },
+  {
+    name: "Eliza Orzeszkowa",
+    nameOriginalScript: "Eliza Orzeszkowa",
+    slug: "eliza-orzeszkowa",
+    era: "Positivism (1841–1910)",
+    description:
+      "Leading Polish positivist novelist and social activist, nominated for the Nobel Prize in Literature. Her works champion social reform.",
+  },
+  {
+    name: "Wacław Berent",
+    nameOriginalScript: "Wacław Berent",
+    slug: "waclaw-berent",
+    era: "Young Poland (1873–1940)",
+    description:
+      "Polish novelist and translator, a leading figure of the Young Poland movement. Known for his modernist prose style and philosophical novels exploring Polish intellectual life.",
+  },
+  {
+    name: "Juliusz Kaden-Bandrowski",
+    nameOriginalScript: "Juliusz Kaden-Bandrowski",
+    slug: "juliusz-kaden-bandrowski",
+    era: "Interwar period (1885–1944)",
+    description:
+      "Polish novelist and journalist of the interwar period. Known for politically engaged novels depicting the mechanisms of power and corruption in newly independent Poland.",
+  },
+  // Czech Pipeline Authors
+  {
+    name: "Svatopluk Čech",
+    nameOriginalScript: "Svatopluk Čech",
+    slug: "svatopluk-cech",
+    era: "Czech National Revival (1846–1908)",
+    description:
+      "Czech poet, novelist, and journalist of the National Revival. Known for satirical prose and verse celebrating Czech identity, including the beloved comic novels featuring the character Mr. Brouček.",
+  },
+  // Latin Pipeline Authors (new)
+  {
+    name: "Gottfried Wilhelm Leibniz",
+    nameOriginalScript: "Gottfried Wilhelm Leibniz",
+    slug: "gottfried-wilhelm-leibniz",
+    era: "Early Modern (1646–1716)",
+    description:
+      "German polymath, philosopher, and mathematician. One of the most important logicians and natural philosophers of the Enlightenment, known for his contributions to calculus, metaphysics, and universal language theory.",
+  },
+  {
+    name: "Albertus Magnus",
+    nameOriginalScript: "Albertus Magnus",
+    slug: "albertus-magnus",
+    era: "High Medieval (c. 1200–1280)",
+    description:
+      "Dominican friar, bishop, and Doctor of the Church. The foremost Aristotelian scholar of the 13th century, teacher of Thomas Aquinas, and a prolific writer on philosophy, theology, and natural science.",
+  },
+  // Greek Pipeline Authors (new)
+  {
+    name: "Anonymous",
+    nameOriginalScript: "Anonymous",
+    slug: "anonymous",
+    era: "Various",
+    description:
+      "Works of unknown or uncertain authorship from various periods and traditions.",
+  },
+  {
+    name: "Christopher of Mytilene",
+    nameOriginalScript: "Χριστόφορος ὁ Μυτιληναῖος",
+    slug: "christopher-of-mytilene",
+    era: "Middle Byzantine (c. 1000–1050)",
+    description:
+      "Byzantine poet active in Constantinople during the 11th century. Known for occasional verse in iambic trimeter addressing social, religious, and philosophical themes with wit and rhetorical skill.",
+  },
+  {
+    name: "Vittorio Imbriani",
+    nameOriginalScript: "Vittorio Imbriani",
+    slug: "vittorio-imbriani",
+    era: "Scapigliatura / Italian Realism (1840–1886)",
+    description:
+      "Italian novelist and literary critic associated with the Scapigliatura movement. Known for his satirical prose and dialectal experimentation.",
+  },
+  {
+    name: "Bertrando Spaventa",
+    nameOriginalScript: "Bertrando Spaventa",
+    slug: "bertrando-spaventa",
+    era: "Italian Hegelianism (1817–1883)",
+    description:
+      "Italian Hegelian philosopher who argued for Italy's centrality in the development of modern European philosophy. Key figure in the Naples school of idealism.",
+  },
+  {
+    name: "Roberto Ardigò",
+    nameOriginalScript: "Roberto Ardigò",
+    slug: "roberto-ardigo",
+    era: "Italian Positivism (1828–1920)",
+    description:
+      "Leading Italian positivist philosopher. Former priest turned secular thinker, he developed a system grounding psychology and ethics in empirical science.",
+  },
+  {
+    name: "Francesco Algarotti",
+    nameOriginalScript: "Francesco Algarotti",
+    slug: "francesco-algarotti",
+    era: "Italian Enlightenment (1712–1764)",
+    description:
+      "Venetian polymath, essayist, and art critic. A central figure of the Italian Enlightenment, known for popularizing Newtonian science and writing on diverse subjects from opera to military architecture.",
+  },
+  {
+    name: "Vincenzo Gioberti",
+    nameOriginalScript: "Vincenzo Gioberti",
+    slug: "vincenzo-gioberti",
+    era: "Risorgimento Philosophy (1801–1852)",
+    description:
+      "Italian philosopher, politician, and key intellectual of the Risorgimento. Advocated a federal Italy under papal presidency in his early work, later shifted toward secular democratic nationalism.",
+  },
+  {
+    name: "Carlo Cattaneo",
+    nameOriginalScript: "Carlo Cattaneo",
+    slug: "carlo-cattaneo",
+    era: "Risorgimento Federalism (1801–1869)",
+    description:
+      "Italian philosopher, political theorist, and federalist republican. A leader of Milan's Five Days revolt against Austria, he developed an original social philosophy centered on collective intelligence and associative thinking.",
+  },
+  {
+    name: "Terenzio Mamiani",
+    nameOriginalScript: "Terenzio Mamiani",
+    slug: "terenzio-mamiani",
+    era: "Italian Idealism (1799–1885)",
+    description:
+      "Italian philosopher, poet, and statesman. Minister of public instruction in unified Italy, he wrote extensively on metaphysics, attempting to reconcile Italian idealist tradition with modern thought.",
+  },
+  {
+    name: "Filippo Baldini",
+    nameOriginalScript: "Filippo Baldini",
+    slug: "filippo-baldini",
+    era: "Neapolitan Enlightenment (18th century)",
+    description:
+      "Neapolitan physician and medical writer known for his treatise on sorbets and cold beverages, examining their effects on human health from a medical-scientific perspective.",
+  },
+  {
+    name: "Dhurjati",
+    nameOriginalScript: "ధూర్జటి",
+    slug: "dhurjati",
+    era: "Vijayanagara Empire (16th century)",
+    description:
+      "Telugu poet and devotee of Lord Shiva, one of the Ashtadiggajas (eight great poets) at the court of Krishnadevaraya. Renowned for his devotional masterpiece Sri Kalahasteeswara Satakam, a century of verses addressed to the deity at Srikalahasti.",
+  },
+  {
+    name: "Halit Ziya Usakligil",
+    nameOriginalScript: null,
+    slug: "halit-ziya-usakligil",
+    era: "Late Ottoman (1866–1945)",
+    description:
+      "Pioneering Turkish novelist of the Servet-i Funun (Wealth of Knowledge) literary movement. Considered the first major Turkish novelist to write in the Western realist style, his works depict the inner lives and social milieu of late Ottoman Istanbul.",
+  },
 ] as const;
 
 const TEXTS = [
@@ -917,7 +1108,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "zhu-xi",
     description:
-      "Classified Conversations of Master Zhu — a massive compendium of 140 chapters recording the philosophical discussions of Zhu Xi with his students.",
+      "A 140-chapter record of Zhu Xi's philosophical conversations with his students, covering metaphysics, ethics, textual interpretation, governance, and self-cultivation. The largest and most systematic compilation of Neo-Confucian oral teachings, organized topically from cosmology to commentary on individual classics.",
     sourceUrl: "https://ctext.org/zhuzi-yulei",
     processedDir: "data/processed/zhuziyulei",
     compositionYear: 1270,
@@ -930,7 +1121,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "constantine-vii",
     description:
-      "On the Ceremonies of the Byzantine Court — a detailed account of the ceremonies and protocol of the Byzantine imperial court, compiled in the 10th century.",
+      "A detailed manual of Byzantine imperial court protocol, describing coronations, receptions of foreign ambassadors, religious processions, hippodrome ceremonies, and palace banquets. Compiled as a practical guide to ensure the orderly conduct of state ritual, it is the most comprehensive surviving source for Byzantine court ceremonial.",
     sourceUrl: "https://archive.org/details/bub_gb_OFpFAAAAYAAJ",
     processedDir: "data/processed/ceremonialis",
     compositionYear: 959,
@@ -944,7 +1135,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "wang-yangming",
     description:
-      "Instructions for Practical Living — a collection of recorded conversations, letters, and essays by Wang Yangming, compiled by his disciples. The foundational text of the Yangming school of Neo-Confucianism.",
+      "Recorded conversations, letters, and essays expounding Wang Yangming's doctrine of innate moral knowing (liangzhi) and the unity of knowledge and action. The foundational text of the Yangming school, it challenged the orthodox Zhu Xi tradition by arguing that moral truth is discovered through action and introspection rather than textual study.",
     sourceUrl: "https://ctext.org/chuan-xi-lu",
     processedDir: "data/processed/chuanxilu",
     compositionYear: 1518,
@@ -957,7 +1148,7 @@ const TEXTS = [
     languageCode: "la",
     authorSlug: "cassiodorus",
     description:
-      "On the Soul — a treatise on the nature, definition, qualities, and powers of the human soul, written after Cassiodorus retired to his monastery at Vivarium.",
+      "A treatise on the nature, definition, and powers of the human soul, written after Cassiodorus retired to his monastery at Vivarium. Drawing on Augustine, Claudianus Mamertus, and the Aristotelian tradition, it examines the soul's incorporeality, its faculties of reason and memory, and its relationship to the body.",
     sourceUrl: "https://www.thelatinlibrary.com/cassiodorus/anima.shtml",
     processedDir: "data/processed/deanima",
     compositionYear: 540,
@@ -970,7 +1161,7 @@ const TEXTS = [
     languageCode: "la",
     authorSlug: "henry-of-settimello",
     description:
-      "A medieval Latin elegiac poem in four books lamenting the author's fall from fortune and seeking consolation through philosophy, modeled on Boethius's Consolation of Philosophy.",
+      "A medieval Latin elegiac poem in four books lamenting the author's fall from fortune and seeking consolation through philosophy, modeled on Boethius's Consolation of Philosophy. Written in elegiac couplets, it stages a dialogue between the poet and Philosophy on the nature of suffering, fortune, and divine justice.",
     sourceUrl: "",
     processedDir: "data/processed/elegia",
     compositionYear: 1190,
@@ -984,7 +1175,7 @@ const TEXTS = [
     languageCode: "la",
     authorSlug: "erchempert",
     description:
-      "History of the Lombards of Benevento — a chronicle covering the Lombard principality of Benevento from the Carolingian conquest to the late 9th century, written by a monk of Monte Cassino.",
+      "A chronicle of the Lombard principality of Benevento from the Carolingian conquest through the late 9th century, covering the fragmentation of Lombard southern Italy, Saracen incursions, and the rivalries between Benevento, Salerno, and Capua. Written by a monk of Monte Cassino, it is the principal narrative source for this turbulent period of southern Italian history.",
     sourceUrl: "",
     processedDir: "data/processed/lombards",
     compositionYear: 889,
@@ -997,7 +1188,7 @@ const TEXTS = [
     languageCode: "la",
     authorSlug: "hugo-falcandus",
     description:
-      "The Book of the Kingdom of Sicily — a vivid Latin chronicle of political intrigue, rebellion, and court conspiracy in Norman Sicily during the reign of William I and the regency for William II.",
+      "A vivid Latin chronicle of political intrigue, rebellion, and court conspiracy in Norman Sicily during the reign of William I and the regency for William II. Notable for its Tacitean style and psychological acuity, it provides an unparalleled insider's account of palace coups, baronial revolts, and the clash between Norman, Greek, and Muslim populations in 12th-century Sicily.",
     sourceUrl: "",
     processedDir: "data/processed/regno",
     compositionYear: 1169,
@@ -1010,7 +1201,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "yuan-shu",
     description:
-      "Event-by-Event Narrative of the Comprehensive Mirror — the first Chinese historical work organized by topical events rather than chronology. Reorganizes Sima Guang's Zizhi Tongjian into 42 major narratives (presented here in 45 chapters), spanning from the Partition of Jin to the Later Zhou dynasty.",
+      "The first Chinese historical work organized by topical events rather than chronology. Yuan Shu reorganized Sima Guang's Zizhi Tongjian into 42 major narrative threads, each tracing a single political or military episode from beginning to end. This format, spanning from the Partition of Jin to the Later Zhou dynasty, became a new genre of Chinese historiography (jishi benmo).",
     sourceUrl: "https://ctext.org/tongjian-jishi-benmo",
     processedDir: "data/processed/tongjian",
     compositionYear: 1174,
@@ -1023,7 +1214,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "huangdi",
     description:
-      "The foundational text of Chinese medicine, comprising the Su Wen (素問, Basic Questions, 81 chapters + 2 lost chapters) and Ling Shu (靈樞, Spiritual Pivot, 81 chapters). A dialogue between the Yellow Emperor and his physician Qi Bo covering physiology, pathology, diagnosis, and treatment according to the principles of yin-yang and the five phases.",
+      "The foundational text of Chinese medicine, structured as dialogues between the Yellow Emperor and his physician Qi Bo. Comprising the Su Wen (Basic Questions) and Ling Shu (Spiritual Pivot), it covers physiology, pathology, diagnosis, acupuncture, and treatment according to yin-yang and five-phase theory. It remains the theoretical basis of traditional Chinese medicine today.",
     sourceUrl: "https://ctext.org/huangdi-neijing",
     processedDir: "data/processed/huangdineijing",
     compositionYear: -200,
@@ -1038,7 +1229,7 @@ const TEXTS = [
     authorSlug: "shennong",
     genre: "science",
     description:
-      "The oldest known Chinese pharmacopoeia, cataloguing 365 medicinal substances classified into upper, middle, and lower grades based on their properties and toxicity.",
+      "The oldest known Chinese pharmacopoeia, cataloguing 365 medicinal substances — plants, minerals, and animal products — classified into three grades based on toxicity and therapeutic use. The upper grade contains life-prolonging tonics, the middle grade treats illness, and the lower grade contains potent but dangerous drugs. It established the classification framework used by Chinese pharmacology for two millennia.",
     sourceUrl: "https://zh.wikisource.org/wiki/神農本草經",
     processedDir: "data/processed/shennong-bencao-jing",
     compositionYear: -200,
@@ -1051,7 +1242,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "theodore-prodromos",
     description:
-      "Satirical vernacular Greek poems offering vivid portraits of everyday life in 12th-century Constantinople — a scholar lamenting his poverty, a henpecked husband, a monk complaining about monastic food, and a craftsman mocking the educated.",
+      "Four satirical poems in vernacular Greek offering vivid portraits of everyday life in 12th-century Constantinople: a scholar lamenting his poverty, a henpecked husband, a monk complaining about monastic food, and a craftsman mocking the educated. Among the earliest substantial texts in demotic Greek, they provide a rare street-level view of Byzantine social life.",
     sourceUrl: "",
     processedDir: "data/processed/ptochoprodromos",
     compositionYear: 1140,
@@ -1065,7 +1256,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "wagner",
     description:
-      "A collection of 21 medieval vernacular Greek poems from the 12th–15th centuries, including romances, beast fables, satirical verse, laments, and historical narratives. Texts include the Tale of Belisarius, Poulologos (Tale of the Birds), and works by Sachlikis, Georgillas, and Pikatorios.",
+      "An anthology of 21 medieval vernacular Greek poems spanning the 12th to 15th centuries, including romances, beast fables, satirical verse, laments, and historical narratives. The collection preserves texts by named poets (Sachlikis, Georgillas, Pikatorios) alongside anonymous works like the Poulologos and the Tale of Belisarius, documenting the emergence of a popular Greek literary tradition outside learned Byzantinism.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-graeca",
     compositionYear: 1874,
@@ -1079,7 +1270,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "guliang-chi",
     description:
-      "One of the three classical commentaries on the Spring and Autumn Annals (Chunqiu). The Guliang Zhuan interprets the terse chronicle entries through a question-and-answer format, emphasizing ritual propriety, the praise-and-blame principles of the Annals, and the moral significance of word choices in the original text.",
+      "One of the three classical commentaries on the Spring and Autumn Annals, interpreting the terse chronicle entries through a question-and-answer format. The Guliang tradition emphasizes ritual propriety and the moral significance of Confucius's word choices, reading the Annals as an encoded system of praise and blame rather than straightforward history.",
     sourceUrl: "https://ctext.org/guliang-zhuan",
     processedDir: "data/processed/guliang-zhuan",
     compositionYear: -200,
@@ -1092,7 +1283,7 @@ const TEXTS = [
     languageCode: "ta",
     authorSlug: "mudathirumaran",
     description:
-      "A Sangam Tamil poem from the Pattuppattu (Ten Idylls), describing the journey of a bard seeking patronage from a Chola king. One of the earliest examples of Tamil bardic poetry.",
+      "A Sangam Tamil poem from the Ten Idylls (Pattuppattu) in which a war-bard who has already received patronage from the Chola king Karikala directs a fellow bard toward the same court. The poem describes the king's palace, his generosity, the sounds and sights of the Chola capital, and the life of itinerant performers in early Tamil society.",
     sourceUrl: "https://www.projectmadurai.org/",
     processedDir: "data/processed/porunararruppadai",
     compositionYear: 200,
@@ -1106,7 +1297,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "ban-gu",
     description:
-      "Comprehensive Discussions in the White Tiger Hall — a record of debates on Confucian classical scholarship held at the White Tiger Hall conference of 79 CE, covering 43 topics including ritual, governance, cosmology, human nature, and social institutions.",
+      "A record of debates on Confucian classical scholarship held at the White Tiger Hall conference of 79 CE, convened by Emperor Zhang of Han. Covering 43 topics from cosmology and human nature to marriage rites and governance, it represents the official synthesis of New Text and Old Text classical traditions and was the closest thing to an imperial orthodoxy in Han Confucianism.",
     sourceUrl: "https://ctext.org/bai-hu-tong",
     processedDir: "data/processed/baihu-tong",
     compositionYear: 79,
@@ -1119,7 +1310,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "zheng-xuan",
     description:
-      "One of the Three Ritual Classics (三禮) of Confucianism, detailing ceremonies for the scholar-official class including capping, marriage, audience, archery, funeral, and sacrificial rites. This edition presents the base text (經) of all 17 traditional chapters.",
+      "One of the Three Ritual Classics of Confucianism, prescribing step-by-step protocols for capping ceremonies, marriage, archery contests, court audiences, funeral rites, and sacrifices. The most procedurally detailed of the ritual texts, it reads as a stage-direction manual for the ceremonial life of the Zhou-era scholar-official class.",
     sourceUrl: "https://ctext.org/yi-li",
     processedDir: "data/processed/yi-li",
     compositionYear: -200,
@@ -1133,7 +1324,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "zhou-scribes",
     description:
-      "A collection of ancient Zhou dynasty documents not included in the canonical Book of Documents (Shang Shu). Contains historical narratives, royal speeches, administrative records, and ritual texts from the Western Zhou period. The received text has 70 traditional chapters, of which 61 are extant plus a preface.",
+      "A collection of Zhou dynasty documents not included in the canonical Book of Documents, containing royal speeches, administrative records, military proclamations, and ritual prescriptions. These texts offer a less idealized view of early Zhou governance than the canonical Shangshu and preserve material on the Zhou conquest of Shang and early administrative practice.",
     sourceUrl: "https://ctext.org/lost-book-of-zhou",
     processedDir: "data/processed/yi-zhou-shu",
     compositionYear: -800,
@@ -1146,7 +1337,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "ying-shao",
     description:
-      "An encyclopedic work on customs, beliefs, etymology, and social practices by Ying Shao (應劭) of the Eastern Han dynasty (c. 195 CE). Covers topics ranging from ancient kings and hegemons to ritual practices, music, spirits, and geography.",
+      "An encyclopedic work on Han dynasty customs, beliefs, etymology, and popular practices, organized into sections on ancient rulers, ritual, music, spirits, and geography. Ying Shao wrote to correct popular misconceptions and preserve accurate accounts of folk customs, making this a key source for Han social and religious history.",
     sourceUrl: "https://ctext.org/fengsu-tongyi",
     processedDir: "data/processed/fengsutongyi",
     compositionYear: 195,
@@ -1159,7 +1350,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "huangfu-mi",
     description:
-      "A collection of biographies of hermits, recluses, and virtuous scholars who refused office, compiled by Huangfu Mi (皇甫謐) of the Western Jin dynasty (c. 270 CE). Covers figures from mythical antiquity through the Han dynasty.",
+      "Biographies of hermits, recluses, and scholars who refused official appointment, covering figures from mythical antiquity through the Han dynasty. The work celebrates the counter-tradition of withdrawal from public life, presenting refusal of office as a form of moral integrity rather than social failure.",
     sourceUrl: "https://ctext.org/gaoshi-zhuan",
     processedDir: "data/processed/gaoshizhuan",
     compositionYear: 270,
@@ -1172,7 +1363,7 @@ const TEXTS = [
     languageCode: "ta",
     authorSlug: "nandikkalambakam-poets",
     description:
-      "A kalambakam (multi-genre anthology) of 114 poems praising King Nandivarman III Pallava (c. 850 CE). The work showcases diverse Tamil poetic genres including venba, kalithurai, and viruttam, unified in praise of the Pallava king and his military achievements.",
+      "A kalambakam (multi-genre anthology) of 114 poems praising the Pallava king Nandivarman III, showcasing diverse Tamil verse forms including venba, kalithurai, and viruttam. The kalambakam genre requires poets to demonstrate mastery across many distinct meters and moods, making it both a royal panegyric and a virtuosic display of Tamil poetic technique.",
     sourceUrl: "",
     processedDir: "data/processed/nandikkalambakam",
     compositionYear: 850,
@@ -1186,7 +1377,7 @@ const TEXTS = [
     languageCode: "ta",
     authorSlug: "yashodhara-kaviyam-poet",
     description:
-      "A Jain Tamil epic poem in 5 carukkams (chapters) and 330 verses, narrating the story of King Yashodhara and Queen Chandramati to illustrate the Jain doctrine of karma and ahimsa. Through their various rebirths as animals — peacock, dog, snake, boar, fish, goat, and rooster — the poem demonstrates the consequences of violence and the path to liberation through non-violence and right conduct.",
+      "A Jain Tamil narrative poem in five cantos tracing the karmic consequences of a single act of violence through multiple animal rebirths — peacock, dog, snake, boar, fish, goat, and rooster. King Yashodhara and Queen Chandramati cycle through these births until they attain human form again, illustrating the Jain doctrines of karma, ahimsa, and the path to liberation.",
     sourceUrl: "",
     processedDir: "data/processed/yashodhara-kaviyam",
     compositionYear: 1050,
@@ -1200,7 +1391,7 @@ const TEXTS = [
     languageCode: "ta",
     authorSlug: "udayanakumara-kaviyam-poet",
     description:
-      "A Jain Tamil narrative poem in 6 kandams (cantos) and 367 verses, telling the story of Prince Udayana (Udayanan) of the Vatsa kingdom. Part of the Perunkathai (Great Narrative) tradition, the poem traces Udayana's adventures, marriages, battles, and eventual renunciation, illustrating Jain philosophical concepts including the seven tattvas and the path from worldly life to spiritual liberation.",
+      "A Jain Tamil narrative poem in six cantos tracing Prince Udayana of the Vatsa kingdom through adventures, marriages, and battles to his eventual renunciation of worldly life. Part of the Perunkathai (Great Narrative) tradition shared across Indian literatures, the poem uses Udayana's journey to illustrate the Jain path from worldly entanglement to spiritual liberation.",
     sourceUrl: "",
     processedDir: "data/processed/udayanakumara-kaviyam",
     compositionYear: 1300,
@@ -1214,7 +1405,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "diognetus-author",
     description:
-      "An anonymous early Christian apologetic letter addressed to a pagan named Diognetus, defending Christianity against paganism and Judaism. One of the earliest examples of Christian apologetics, notable for its elegant Greek rhetoric and its description of Christians as 'resident aliens' in the world.",
+      "An anonymous early Christian apologetic letter defending Christianity to a pagan inquirer. Notable for its polished Greek rhetoric and its striking description of Christians as 'resident aliens' who 'dwell in their own fatherlands, but as sojourners.' One of the most eloquent surviving texts of early Christian self-definition.",
     sourceUrl: "https://github.com/OpenGreekAndLatin/First1KGreek",
     processedDir: "data/processed/diognetum",
     compositionYear: 180,
@@ -1227,7 +1418,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "zosimus",
     description:
-      "A history of the Roman Empire in 6 books, covering from the reign of Augustus to the sack of Rome by Alaric in 410 CE. Written from a pagan perspective, Zosimus attributes Rome's decline to the abandonment of the traditional gods. A major source for late Roman political and military history.",
+      "A pagan history of the Roman Empire in six books, covering from Augustus to the sack of Rome by Alaric in 410 CE. Zosimus attributes Rome's decline to the abandonment of the traditional gods — a direct counter-narrative to Christian triumphalism. A major source for late Roman political and military history, particularly for the 4th and 5th centuries.",
     sourceUrl: "https://github.com/OpenGreekAndLatin/First1KGreek",
     processedDir: "data/processed/historia-nova",
     compositionYear: 500,
@@ -1240,7 +1431,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "soph-elenchi-paraphrast",
     description:
-      "A Byzantine paraphrase of Aristotle's Sophistical Refutations (De Sophisticis Elenchis), restating and explicating Aristotle's treatise on fallacious reasoning. The paraphrase makes Aristotle's dense logical analysis more accessible through expanded explanation in prose Greek.",
+      "A Byzantine paraphrase of Aristotle's Sophistical Refutations, restating his analysis of fallacious arguments and debating tricks in more accessible prose Greek. The text served as a teaching tool in Byzantine higher education, where Aristotelian logic formed the backbone of the philosophical curriculum.",
     sourceUrl: "https://github.com/OpenGreekAndLatin/First1KGreek",
     processedDir: "data/processed/sophistici-elenchi-paraphrasis",
     compositionYear: 900,
@@ -1253,7 +1444,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "eustathius",
     description:
-      "Eustathius of Thessalonica's commentary on Homer's Odyssey, composed in the 12th century. The work is a vast compendium of ancient and medieval scholarship on the Odyssey, preserving fragments of lost commentaries, lexica, and scholia. It covers all 24 books of the Odyssey with extensive philological, mythological, and historical annotation.",
+      "A vast compendium of ancient and medieval scholarship on Homer's Odyssey, covering all 24 books with philological, mythological, and historical annotation. Eustathius preserves fragments of dozens of lost commentaries and lexica, making this not only the most comprehensive medieval Homer commentary but an irreplaceable repository of ancient Greek literary scholarship.",
     sourceUrl: "https://archive.org/details/commentariiadhom01eust",
     processedDir: "data/processed/eustathius-odyssey",
     compositionYear: 1170,
@@ -1266,7 +1457,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "marcianus",
     description:
-      "Marcianus' independent geographical work describing the circumnavigation of the seas beyond the Mediterranean (the 'Outer Sea'), covering the coasts of Africa, Arabia, India, and the Far East. Organized in two books: Book 1 covers the eastern ocean, Book 2 the western.",
+      "A geographical survey of the seas beyond the Mediterranean, covering the coasts of Africa, Arabia, India, and the Far East in two books. Drawing on earlier sources now partly lost, it preserves Greco-Roman knowledge of Indian Ocean trade routes, coastal settlements, and distances between ports in the ancient world.",
     sourceUrl: "",
     processedDir: "data/processed/periplus-maris-exteri",
     compositionYear: 400,
@@ -1279,7 +1470,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "marcianus",
     description:
-      "Marcianus' epitome of the Periplus of the Inner Sea (Mediterranean) by Menippus of Pergamon. A condensed geographical survey of Mediterranean coastlines and distances between ports.",
+      "An epitome of the lost Periplus of the Inner Sea by Menippus of Pergamon, preserving a condensed geographical survey of Mediterranean coastlines and distances between ports. The original work by Menippus is otherwise lost, making Marcianus' summary the primary surviving witness to this Hellenistic coastal geography.",
     sourceUrl: "",
     processedDir: "data/processed/periplus-maris-interni",
     compositionYear: 400,
@@ -1292,7 +1483,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "marcianus",
     description:
-      "Marcianus' epitome of the Geography by Artemidorus of Ephesus. A fragmentary condensation of Artemidorus' eleven-book geographical work, preserving scattered place names, distances, and ethnographic notes from the original.",
+      "A fragmentary epitome of the eleven-book Geography by Artemidorus of Ephesus, preserving scattered place names, distances, and ethnographic notes from this major Hellenistic geographical work. Artemidorus' original, composed around 100 BCE, drew on personal travel and was widely cited in antiquity but is otherwise largely lost.",
     sourceUrl: "",
     processedDir: "data/processed/artemidori-geographia",
     compositionYear: 400,
@@ -1305,7 +1496,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "anonymous-hesiod",
     description:
-      "An anonymous Byzantine commentary on Hesiod's Theogony, providing section-by-section exegesis with mythological, allegorical, and philosophical interpretations. Edited by Hans Flach.",
+      "An anonymous Byzantine commentary on Hesiod's Theogony, providing section-by-section exegesis with mythological, allegorical, and philosophical interpretations. The commentator reads Hesiod's genealogy of the gods through layers of Neoplatonic and Christian allegory, seeking rational meaning behind the myths of cosmic origins.",
     sourceUrl: "",
     processedDir: "data/processed/hesiod-theogony-exegesis",
     compositionYear: 1100,
@@ -1318,7 +1509,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "kong-anguo",
     description:
-      "A collection of 44 chapters recording dialogues, anecdotes, and discourses of Confucius with his disciples and various rulers. Traditionally attributed to Kong Anguo, the text covers topics including governance, ritual propriety, music, virtue, and the conduct of the exemplary person.",
+      "A collection of 44 chapters recording dialogues and anecdotes of Confucius with his disciples and rulers, covering governance, ritual, music, virtue, and the exemplary person. Overlapping with but distinct from the Analects, it preserves traditions about Confucius that circulated independently, offering a broader picture of early Confucian oral teaching than any single canonical text.",
     sourceUrl: "https://ctext.org/kongzi-jiayu",
     processedDir: "data/processed/kongzi-jiayu",
     compositionYear: -100,
@@ -1331,7 +1522,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "he-yan",
     description:
-      "The Analects of Confucius with He Yan's collected commentary and Xing Bing's sub-commentary, from the Thirteen Classics edition.",
+      "The Analects of Confucius presented with He Yan's collected commentary (drawing on earlier Han and Wei interpretations) and Xing Bing's Song dynasty sub-commentary. This annotated edition was the standard form in which the Analects were read, studied, and tested in the imperial examination system for nearly a millennium.",
     sourceUrl: "https://ctext.org/lunyu-zhushu",
     processedDir: "data/processed/lunyu-zhushu",
     compositionYear: 249,
@@ -1344,7 +1535,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "zhao-qi",
     description:
-      "The Mencius with Zhao Qi's commentary and Sun Shi's sub-commentary, from the Thirteen Classics edition.",
+      "The Mencius presented with Zhao Qi's Han dynasty commentary and Sun Shi's Song dynasty sub-commentary. Mencius's arguments for innate human goodness, the right of rebellion against tyrannical rulers, and the priority of the people over the sovereign made this one of the most politically consequential texts in the Confucian canon.",
     sourceUrl: "https://ctext.org/mengzi-zhushu",
     processedDir: "data/processed/mengzi-zhushu",
     compositionYear: 200,
@@ -1357,7 +1548,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "xing-bing",
     description:
-      "The Classic of Filial Piety with Tang Xuanzong's commentary and Xing Bing's sub-commentary.",
+      "The Classic of Filial Piety with Tang Xuanzong's imperial commentary and Xing Bing's sub-commentary. The shortest of the Thirteen Classics, it presents filial devotion as the root of all virtue and the foundation of social order, extending the principle from family to governance through a dialogue between Confucius and his disciple Zengzi.",
     sourceUrl: "https://ctext.org/xiaojing-zhushu",
     processedDir: "data/processed/xiaojing-zhushu",
     compositionYear: 999,
@@ -1370,7 +1561,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "guo-pu",
     description:
-      "China's oldest dictionary with Guo Pu's commentary and Xing Bing's sub-commentary, from the Thirteen Classics edition.",
+      "China's oldest dictionary, organizing words by semantic category — kinship terms, topography, flora, fauna, astronomical bodies, and more. Guo Pu's commentary adds natural-historical observations and identifications, making this an early work of both lexicography and natural history, elevated to canonical status as one of the Thirteen Classics.",
     sourceUrl: "https://ctext.org/erya-zhushu",
     processedDir: "data/processed/erya-zhushu",
     compositionYear: 324,
@@ -1383,7 +1574,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "kong-yingda",
     description:
-      "The Zuo Commentary on the Spring and Autumn Annals with Du Yu's commentary and Kong Yingda's sub-commentary. The most detailed narrative history of the Spring and Autumn period (722-468 BCE), with extensive scholarly annotations on political, military, and ritual events.",
+      "The Zuo Commentary on the Spring and Autumn Annals — the most detailed narrative history of China's Spring and Autumn period (722-468 BCE) — presented with Du Yu's commentary and Kong Yingda's sub-commentary. Vivid accounts of interstate diplomacy, battles, court intrigues, and ritual disputes make the Zuozhuan both a historical source and a literary masterpiece of early Chinese prose.",
     sourceUrl: "https://ctext.org/zuozhuan-zhengyi",
     processedDir: "data/processed/zuozhuan-zhengyi",
     compositionYear: 642,
@@ -1396,7 +1587,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "he-xiu",
     description:
-      "The Gongyang Commentary with He Xiu's explanatory commentary and Xu Yan's sub-commentary. Emphasizes the moral and political lessons encoded in Confucius's Spring and Autumn Annals through a question-and-answer format.",
+      "The Gongyang Commentary on the Spring and Autumn Annals with He Xiu's commentary and Xu Yan's sub-commentary. The Gongyang school reads every word choice in Confucius's chronicle as encoding moral judgment, developing elaborate theories about historical progress, legitimate succession, and the rectification of names that profoundly influenced Chinese political thought.",
     sourceUrl: "https://ctext.org/gongyang-zhushu",
     processedDir: "data/processed/gongyang-zhushu",
     compositionYear: 182,
@@ -1409,7 +1600,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "fan-ning",
     description:
-      "The Guliang Commentary with Fan Ning's commentary and Yang Shixun's sub-commentary. Focuses on ritual propriety and linguistic precision in interpreting the Spring and Autumn Annals.",
+      "The Guliang Commentary on the Spring and Autumn Annals with Fan Ning's commentary and Yang Shixun's sub-commentary. The Guliang school focuses on ritual propriety and the precise moral weight of individual word choices, reading the chronicle as a handbook of ethical judgment expressed through deliberate variations in phrasing.",
     sourceUrl: "https://ctext.org/guliang-zhushu",
     processedDir: "data/processed/guliang-zhushu",
     compositionYear: 401,
@@ -1422,7 +1613,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "jia-gongyan",
     description:
-      "The Rites of Zhou with Zheng Xuan's commentary and Jia Gongyan's sub-commentary. Describes the ideal administrative organization of the Zhou dynasty government with detailed annotations on ritual offices, duties, and protocols.",
+      "The Rites of Zhou with Zheng Xuan's commentary and Jia Gongyan's sub-commentary. An idealized blueprint for government administration, organizing the entire state apparatus into six ministries with detailed specifications for every official role, from the Grand Chancellor to market inspectors. It profoundly influenced Chinese political reform movements, most notably Wang Anshi's New Policies.",
     sourceUrl: "https://ctext.org/zhouli-zhushu",
     processedDir: "data/processed/zhouli-zhushu",
     compositionYear: 650,
@@ -1435,7 +1626,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "jia-gongyan",
     description:
-      "The Ceremonial Rites with Zheng Xuan's commentary and Jia Gongyan's sub-commentary. Detailed protocols for capping, marriage, archery, audience, and funeral rites with extensive textual analysis.",
+      "The Ceremonial Rites with Zheng Xuan's commentary and Jia Gongyan's sub-commentary. Step-by-step protocols for capping ceremonies, marriage, archery, court audiences, and funerals, annotated with meticulous textual analysis. The most procedurally exacting of the Three Ritual Classics, prescribing exact positions, gestures, and speeches for each participant.",
     sourceUrl: "https://ctext.org/yili-zhushu",
     processedDir: "data/processed/yili-zhushu",
     compositionYear: 650,
@@ -1448,7 +1639,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "kong-yingda",
     description:
-      "The Book of Rites with Kong Yingda's Orthodox Commentary. A comprehensive treatise on ritual, ethics, philosophy, and social organization with the most authoritative sub-commentary in the Confucian classical tradition.",
+      "The Book of Rites with Kong Yingda's Orthodox Commentary — the most philosophically rich of the Three Ritual Classics, containing foundational essays on self-cultivation, education, music, mourning, and the moral structure of society. Includes the Great Learning and the Doctrine of the Mean, later extracted by Zhu Xi as two of the Four Books.",
     sourceUrl: "https://ctext.org/liji-zhengyi",
     processedDir: "data/processed/liji-zhengyi",
     compositionYear: 642,
@@ -1461,7 +1652,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "zheng-xuan-liji",
     description:
-      "Selected chapters from the Book of Rites with Zheng Xuan's commentary. Includes the Great Learning (大學), Doctrine of the Mean (中庸), and other key treatises on ritual, ethics, and self-cultivation.",
+      "Selected chapters from the Book of Rites with Zheng Xuan's Han dynasty commentary, including the Great Learning, Doctrine of the Mean, and other key treatises on self-cultivation, education, and ritual theory. Zheng Xuan's annotations connect the ritual prescriptions to their underlying ethical principles.",
     sourceUrl: "https://ctext.org/liji-zhushu",
     processedDir: "data/processed/liji-zhushu",
     compositionYear: 200,
@@ -1474,7 +1665,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "kong-yingda",
     description:
-      "The Book of Changes (Yi Jing) with Wang Bi's commentary and Kong Yingda's Orthodox Commentary (正義). Covers all 64 hexagrams and the Ten Wings appendices, with philosophical interpretations of divination, cosmology, and moral self-cultivation.",
+      "The Book of Changes with Wang Bi's philosophical commentary and Kong Yingda's sub-commentary, covering all 64 hexagrams and the Ten Wings appendices. Wang Bi's approach stripped away Han cosmological numerology in favor of abstract philosophical interpretation, making this edition the standard through which the Yijing was read as a work of philosophy rather than mere divination.",
     sourceUrl: "https://ctext.org/zhouyi-zhengyi",
     processedDir: "data/processed/zhouyi-zhengyi",
     compositionYear: 642,
@@ -1487,7 +1678,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "kong-yingda",
     description:
-      "The Book of Documents (Shang Shu) with Kong Anguo's commentary and Kong Yingda's Orthodox Commentary (正義). Contains speeches, proclamations, and historical records attributed to ancient Chinese rulers from Yao and Shun through the early Zhou dynasty.",
+      "The Book of Documents with Kong Anguo's commentary and Kong Yingda's sub-commentary. A collection of speeches, proclamations, and records attributed to ancient rulers from Yao and Shun through the early Zhou dynasty, these texts articulate the earliest Chinese theories of legitimate governance, the Mandate of Heaven, and the ruler's moral responsibility to the people.",
     sourceUrl: "https://ctext.org/shangshu-zhengyi",
     processedDir: "data/processed/shangshu-zhengyi",
     compositionYear: 642,
@@ -1500,7 +1691,7 @@ const TEXTS = [
     languageCode: "it",
     authorSlug: "stefano-infessura",
     description:
-      "A Roman civic diary covering events from 1294 to 1494, written by the notary Stefano Infessura in a mixture of ancient Romanesco Italian and Latin. The text alternates between vernacular 15th-century Roman dialect and Latin passages (especially for ecclesiastical matters and formal statements). The chronicle records papal politics, conclaves, noble faction warfare (Colonna vs. Orsini), civic governance, and daily life in late medieval Rome.",
+      "A civic diary covering two centuries of Roman life (1294-1494), written in a mixture of Romanesco Italian and Latin. The chronicle records papal conclaves, noble faction warfare between Colonna and Orsini, civic governance, and daily life in the city, becoming especially detailed and vivid for the author's own lifetime under popes Sixtus IV and Innocent VIII.",
     sourceUrl: "https://archive.org/details/diariumurbisroma00infe",
     processedDir: "data/processed/diarium-urbis-romae",
     compositionYear: 1494,
@@ -1513,7 +1704,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "gu-yanwu",
     description:
-      "A monumental work of Qing scholarship compiled over 30 years, covering philology, textual criticism, history, geography, government, and ethics. Gu Yanwu's rigorous evidential approach influenced generations of scholars and helped establish the methodology of kaozheng (evidential research) scholarship.",
+      "A compendium of philological, historical, geographical, and ethical investigations compiled over 30 years. Each entry pursues a question through careful accumulation of evidence — an approach that helped establish the methodology of kaozheng (evidential research) scholarship and influenced generations of Qing-era scholars.",
     sourceUrl: "https://www.gutenberg.org/ebooks/25262",
     processedDir: "data/processed/rizhilu",
     compositionYear: 1670,
@@ -1528,7 +1719,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "feng-menglong",
     description:
-      "A historical novel dramatizing events from the Spring and Autumn period (770–476 BCE) through the Warring States period (475–221 BCE). Based on the Zuozhuan, Guoyu, and Shiji, this 108-chapter work brings to life the political intrigues, military campaigns, and heroic figures of ancient China's most turbulent era.",
+      "A 108-chapter historical novel dramatizing the Spring and Autumn and Warring States periods, drawing on the Zuozhuan, Guoyu, and Shiji. Covers five centuries of interstate warfare, diplomatic cunning, and heroic sacrifice — from the fall of the Western Zhou to the Qin unification — making it the most comprehensive narrative fiction treatment of China's classical age.",
     sourceUrl: "https://ctext.org/dongzhou-lieguo-zhi",
     processedDir: "data/processed/dongzhou-lieguo-zhi",
     compositionYear: 1632,
@@ -1543,7 +1734,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "luo-maodeng",
     description:
-      "A 100-chapter fantasy-adventure novel based on the historical voyages of the Ming dynasty eunuch admiral Zheng He (1371–1433). The novel blends historical elements with Buddhist and Daoist supernatural battles, featuring Immortal Master Jin Bifeng and Celestial Master Zhang as protectors of the fleet against demonic forces. One of the earliest Chinese novels to depict overseas travel and foreign lands.",
+      "A 100-chapter fantasy-adventure novel based on the historical voyages of the eunuch admiral Zheng He to Southeast Asia and the Indian Ocean. The narrative blends geography and diplomacy with Buddhist and Daoist supernatural battles, as Immortal Master Jin Bifeng and Celestial Master Zhang protect the fleet against demonic forces in foreign lands. One of the earliest Chinese novels to imagine the world beyond China's borders.",
     sourceUrl: "https://ctext.org/sanbao-taijian-xiyang-ji",
     processedDir: "data/processed/sanbao-taijian-xiyang-ji",
     compositionYear: 1597,
@@ -1558,7 +1749,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "xi-zhousheng",
     description:
-      "A 100-chapter satirical novel exploring karmic retribution through two lifetimes of marriage. In the first life, the dissolute Chao Yuan kills a fox spirit and mistreats his wife, who dies tragically. In the second life, he is reborn as the hapless Di Xichen, tormented by his shrewish wife Xue Sujie—the fox spirit reincarnated for revenge. A mordant social comedy depicting Ming-Qing household life with unparalleled psychological realism.",
+      "A 100-chapter satirical novel exploring karmic retribution through two lifetimes of marriage. A dissolute man who kills a fox spirit and mistreats his wife is reborn as the hapless Di Xichen, tormented by his new wife Xue Sujie — the fox spirit reincarnated for revenge. Valued for its psychologically acute and mordantly funny depiction of household life, domestic abuse, and social mores in the Ming-Qing transition.",
     sourceUrl: "https://ctext.org/xingshi-yinyuan-zhuan",
     processedDir: "data/processed/xingshi-yinyuan-zhuan",
     compositionYear: 1661,
@@ -1571,7 +1762,7 @@ const TEXTS = [
     languageCode: "hy",
     authorSlug: "raffi",
     description:
-      "An autobiographical novel depicting childhood memories under Persian rule in Eastern Armenia. Kaytser (The Spark) is a foundational work of modern Armenian literature, offering vivid portraits of village life, family, and the oppression of Armenian peasants by tax collectors, feudal lords, and foreign rulers.",
+      "An autobiographical novel of childhood in an Armenian village under Persian rule, depicting family life, folk customs, religious festivals, and the systematic oppression of Armenian peasants by tax collectors and feudal lords. The vivid, ethnographic detail of village life made it a foundational text of Armenian realist fiction.",
     sourceUrl: "",
     processedDir: "data/processed/kaitser",
     compositionYear: 1883,
@@ -1584,7 +1775,7 @@ const TEXTS = [
     languageCode: "hy",
     authorSlug: "raffi",
     description:
-      "A historical novel set in 4th-century Armenia during the struggle against Persian domination. Samvel depicts the conflict between Christianity and Zoroastrianism, the tensions between Armenian princes and the Sasanian Empire, and the heroic resistance of Armenians under figures like Nerses the Great and the Mamikonian family. One of Raffi's masterpieces, it shaped Armenian national consciousness and remains a classic of Armenian literature.",
+      "A historical novel set in 4th-century Armenia during the struggle against Sasanian Persian domination. The conflict between Christianity and Zoroastrianism plays out through the Armenian princely houses, culminating in betrayal, resistance, and sacrifice. The novel shaped Armenian national consciousness by dramatizing the foundational moment when Armenia chose its Christian identity over Persian imperial conformity.",
     sourceUrl: "",
     processedDir: "data/processed/samvel",
     compositionYear: 1886,
@@ -1597,7 +1788,7 @@ const TEXTS = [
     languageCode: "hy",
     authorSlug: "perch-proshyan",
     description:
-      "An epistolary novel in 23 letters written from Tiflis (Tbilisi) between September 1880 and October 1881. Anna Saroyan chronicles a young Armenian woman's descent from comfortable bourgeois life into poverty following her father's gambling debts, paralysis, and madness. The letters reveal her psychological transformation, the death of her beloved brother, and her growing despair culminating in suicide.",
+      "An epistolary novel in 23 letters chronicling a young Armenian woman's descent from comfortable bourgeois life into poverty and despair in Tiflis. Her father's gambling debts trigger a cascade of family catastrophe — paralysis, madness, her brother's death — revealed through increasingly desperate letters that chart her psychological disintegration.",
     sourceUrl: "",
     processedDir: "data/processed/anna-saroyan",
     compositionYear: 1881,
@@ -1610,7 +1801,7 @@ const TEXTS = [
     languageCode: "hy",
     authorSlug: "arshagouhi-teotig",
     description:
-      "An eyewitness memoir documenting the author's journey through Cilicia (October 1909 – January 1910) in the aftermath of the April 1909 Adana massacre. Arshagouhi traveled from Istanbul to Mersin, Adana, Misis, Hamidie, Erzin, Dörtyol, and Tarsus, recording the devastation, meeting survivors, widows, and orphans, and helping to organize relief efforts. A primary historical source for the massacres that killed over 20,000 Armenians.",
+      "An eyewitness memoir of the author's journey through Cilicia in the aftermath of the April 1909 Adana massacre. Traveling from Istanbul through devastated Armenian communities, she recorded the destruction, met survivors and orphans, and helped organize relief. A primary historical source for the massacres that killed over 20,000 Armenians in the region.",
     sourceUrl: "",
     processedDir: "data/processed/arshagouhi-teotig",
     compositionYear: 1910,
@@ -1623,7 +1814,7 @@ const TEXTS = [
     languageCode: "hy",
     authorSlug: "yeghishe-charents",
     description:
-      "A lyrical prose poem and modernist masterpiece of Armenian literature. Written in Moscow in 1921, 'Yerkir Nairi' (Land of Nairi) is structured in three parts with a preface and epilogue. The work meditates on Armenian identity and the mythical 'Land of Nairi' (an ancient name for the Armenian highlands) through vivid portraits of provincial town life, its characters, and their struggles. The narrator seeks to discover whether Nairi is real or merely 'a cerebral ache, a sickness of the heart.'",
+      "A lyrical modernist prose poem meditating on Armenian identity through vivid portraits of provincial town life — its characters, customs, and struggles. The narrator journeys through Armenia seeking to discover whether Nairi (an ancient name for the Armenian highlands) is a real place or merely 'a cerebral ache, a sickness of the heart.' Written in the aftermath of genocide and revolution, it is a foundational text of modern Armenian literary modernism.",
     sourceUrl: "",
     processedDir: "data/processed/yerkir-nairi",
     compositionYear: 1922,
@@ -1636,11 +1827,26 @@ const TEXTS = [
     languageCode: "hy",
     authorSlug: "perch-proshyan",
     description:
-      "A first-person diary/memoir set in 1884-1887 in the mountains of Syunik, Armenia. The narrator, a man recovering from illness, travels to a remote village and encounters 'Sister Anna' — a remarkable woman who has devoted herself to education, social reform, and village improvement. Through her anonymous work running schools, training teachers, and reforming harmful customs, she embodies the ideal of selfless service to the common good.",
+      "A first-person narrative set in the mountains of Syunik, where a recovering traveler encounters 'Sister Anna,' a woman who has anonymously devoted herself to education and village reform. Through her work running schools, training teachers, and challenging harmful customs, the novella presents an idealized portrait of Armenian social activism and the possibility of grassroots transformation in rural communities.",
     sourceUrl: "",
     processedDir: "data/processed/khorhrdavor-miandznuhi",
     compositionYear: 1884,
     compositionEra: "Late 19th century, Russian Armenia",
+  },
+  {
+    title: "The Struggle (Payqar)",
+    titleOriginalScript: "\u054a\u0561\u0575\u0584\u0561\u0580",
+    slug: "payqar",
+    languageCode: "hy",
+    authorSlug: "nar-dos",
+    description:
+      "A psychological novel exploring the inner lives of the Armenian bourgeois intelligentsia, tracing their ideological conflicts, personal compromises, and moral struggles. Nar-Dos brought a new depth of psychological analysis to Armenian fiction, depicting characters caught between traditional values and the pressures of modernization.",
+    sourceUrl: "https://hy.wikisource.org/wiki/\u054a\u0561\u0575\u0584\u0561\u0580",
+    processedDir: "data/processed/payqar",
+    compositionYear: 1911,
+    compositionEra: "Early 20th-century Armenian Psychological Realism",
+    genre: "literature",
+    textType: "prose",
   },
   {
     title: "The Youth of Julius Caesar (La Giovinezza di Giulio Cesare)",
@@ -1651,7 +1857,7 @@ const TEXTS = [
     languageCode: "it",
     authorSlug: "giuseppe-rovani",
     description:
-      "A historical novel depicting the youth of Julius Caesar, from age 18 (82 BCE) through his first consulship (59 BCE). Subtitled 'Scene Romane' (Roman Scenes), the work covers Caesar's relationships with Sallust, Catiline, Crassus, Pompey, and Cicero, as well as his romantic entanglements and the Catilinarian conspiracy.",
+      "A historical novel following Julius Caesar from age 18 through his first consulship (82-59 BCE), depicting his entanglements with Sallust, Catiline, Crassus, Pompey, and Cicero against the backdrop of the Catilinarian conspiracy and the collapse of the Roman Republic. Subtitled 'Roman Scenes,' it uses the episodic format to evoke late Republican Rome with novelistic detail.",
     sourceUrl: "https://www.gutenberg.org/ebooks/75196",
     processedDir: "data/processed/la-giovinezza",
     compositionYear: 1873,
@@ -1666,7 +1872,7 @@ const TEXTS = [
     languageCode: "it",
     authorSlug: "giuseppe-rovani",
     description:
-      "A sprawling historical novel spanning 100 years of Italian history from 1750 to 1850. Centered on Milan, it follows multiple generations through the Enlightenment, French Revolution, Napoleonic era, and early Risorgimento. The novel uses families rather than individuals as protagonists, allowing narrative scope across a full century.",
+      "A panoramic historical novel spanning 100 years of Italian history (1750-1850), following multiple Milanese families through the Enlightenment, French Revolution, Napoleonic era, and early Risorgimento. By using families rather than individuals as protagonists, Rovani achieves a scope comparable to Balzac's Comedie Humaine, charting a full century of social transformation through private lives.",
     sourceUrl: "https://www.liberliber.it/mediateca/libri/r/rovani/",
     processedDir: "data/processed/cento-anni",
     compositionYear: 1858,
@@ -1681,7 +1887,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "zhang-yu",
     description:
-      "Biographies of one hundred eminent generals from Chinese history, drawn from the seventeen standard histories. Each biography is followed by commentary citing Sun Tzu's Art of War, connecting the general's tactics to classical military theory. The work spans from the Zhou dynasty to the Five Dynasties period.",
+      "Biographies of one hundred eminent generals from the Zhou dynasty to the Five Dynasties, drawn from the seventeen standard histories. Each biography is followed by commentary citing Sun Tzu's Art of War, systematically connecting historical military practice to classical strategic theory. A key text in the Chinese tradition of learning warfare through historical example.",
     sourceUrl: "https://zh.wikisource.org/wiki/十七史百將傳",
     processedDir: "data/processed/shiqi-shi-baijiang-zhuan",
     compositionYear: 1072,
@@ -1696,7 +1902,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "john-zonaras",
     description:
-      "A Byzantine world chronicle by John Zonaras covering biblical and ancient history through the Byzantine period (18 books). Particularly valuable for preserving passages from lost portions of Cassius Dio's Roman History.",
+      "A Byzantine world chronicle in 18 books, covering from the biblical creation narrative through ancient Rome to the reign of Alexios I Komnenos (1118 CE). Particularly valuable for preserving substantial passages from lost portions of Cassius Dio's Roman History, Zonaras' chronicle is a major source for periods where other Greek historical texts have been lost.",
     sourceUrl: "https://archive.org/details/bub_gb_OFpFAAAAYAAJ",
     processedDir: "data/processed/epitome-of-histories-final",
     compositionYear: 1150,
@@ -1710,7 +1916,7 @@ const TEXTS = [
     languageCode: "ms",
     authorSlug: "anonymous-malay",
     description:
-      "A classical Malay narrative poem in syair form (quatrains with AAAA rhyme scheme) recounting the adventures of Sultan Abidin and Siti Zubaidah. Preserved in manuscript tradition from the Sambas region of West Kalimantan, the poem reflects Malay court culture with its blend of Islamic and Southeast Asian literary conventions.",
+      "A classical Malay narrative poem in syair quatrains about Siti Zubaidah, who disguises herself as a male warrior and conquers China to rescue her captive husband, Sultan Zainal Abidin. Blending Islamic court culture with Southeast Asian literary conventions, it is one of the most popular Malay syairs, notable for its strong female protagonist who leads armies and navigates between diplomacy and warfare.",
     sourceUrl: "",
     processedDir: "data/processed/syair-siti-zubaidah",
     compositionYear: 1800,
@@ -1725,7 +1931,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "tao-zongyi",
     description:
-      "A Yuan-dynasty biji miscellany in 30 volumes covering court affairs, ethnic classifications, arts, calligraphy, literature, customs, and institutional practices of the Mongol Yuan empire. One of the most important primary sources for Yuan-dynasty social and cultural history.",
+      "A biji miscellany in 30 volumes covering Yuan court affairs, ethnic classifications, arts, calligraphy, literature, and Mongol institutional practices. One of the most important primary sources for Yuan-dynasty social and cultural history, preserving detailed accounts of Mongol administration, the four-class ethnic hierarchy, and the arts and customs of a cosmopolitan empire.",
     sourceUrl: "https://ctext.org/nancun-chuogeng-lu",
     processedDir: "data/processed/nancun-chuogeng-lu",
     compositionYear: 1366,
@@ -1740,7 +1946,7 @@ const TEXTS = [
     languageCode: "ta",
     authorSlug: "vedanayakam-pillai",
     description:
-      "One of the earliest Tamil novels (1887), by Mayuram Vedanayakam Pillai. A morality tale about a virtuous princess, incorporating social commentary against child marriage, moral philosophy, hygiene advice, and Tamil proverbs including Thirukkural quotes.",
+      "One of the earliest Tamil novels, following a virtuous princess through moral trials while incorporating social commentary against child marriage, extensive moral philosophy, hygiene advice, and Tamil proverbs. Part didactic treatise, part romance, it reflects the 19th-century Tamil reformist movement that used fiction as a vehicle for social improvement.",
     sourceUrl: "",
     processedDir: "data/processed/suguna-sundari",
     compositionYear: 1887,
@@ -1755,7 +1961,7 @@ const TEXTS = [
     languageCode: "grc",
     authorSlug: "theodore-metochites",
     description:
-      "A vast collection of 120 essays by the Byzantine polymath Theodore Metochites, covering history, philosophy, literature, rhetoric, astronomy, and political thought. Written in an elaborate Atticizing Greek style, the work reflects on the rise and fall of civilizations, the nature of government, and the value of learning. Essays 1–81 have been translated in critical editions, and the remaining untranslated essays are available here on Deltoi.",
+      "A collection of 120 essays covering history, philosophy, literature, astronomy, and political thought, written in an elaborate Atticizing Greek prose. Metochites reflects on the instability of fortune, the rise and fall of civilizations, and the consolations of learning, drawing on deep reading of classical authors. Essays 1-81 exist in modern critical editions; the remaining untranslated essays are available here.",
     sourceUrl: "https://archive.org/details/miscellaneasemes00metouoft",
     processedDir: "data/processed/semeioseis-gnomikai",
     compositionYear: 1320,
@@ -1770,7 +1976,7 @@ const TEXTS = [
     languageCode: "it",
     authorSlug: "cletto-arrighi",
     description:
-      "A novel set in Milan during the turbulent years following the failed Italian independence uprisings of 1848–49. The story follows a group of young bohemians — the 'Scapigliatura' — through love, betrayal, and political upheaval, culminating in the insurrection of 6 February 1853. The novel coined the term 'Scapigliatura' for the Italian literary movement of anti-bourgeois artists and writers.",
+      "A novel set in Milan following the failed Italian independence uprisings of 1848-49, following a group of young bohemians through love, betrayal, and political upheaval culminating in the insurrection of 6 February 1853. The novel coined the term 'Scapigliatura' for the Italian movement of anti-bourgeois artists and writers, making it the founding manifesto of Italian literary bohemianism.",
     sourceUrl: "https://archive.org/details/arrighiscapigliatura",
     processedDir: "data/processed/scapigliatura-e-il-6-febbraio",
     compositionYear: 1862,
@@ -1785,7 +1991,7 @@ const TEXTS = [
     languageCode: "zh",
     authorSlug: "chen-sen",
     description:
-      "A novel of manners set in the theatre world of early 19th-century Beijing. The story follows a group of literati and the dan (female-role) performers of the Peking opera stage, exploring themes of love, aesthetics, loyalty, and morality. The novel provides a vivid portrait of elite social life, theatrical culture, and the complex relationships between patrons and performers in the late Qing dynasty.",
+      "A novel set in the theatre world of early 19th-century Beijing, depicting the relationships between literati patrons and the young male dan (female-role) performers of the Peking opera stage. The only novel to comprehensively portray this world of aesthetic connoisseurship and homoerotic patronage, it is a key source for understanding Beijing theatrical culture and elite social life under the late Qing.",
     sourceUrl: "https://ctext.org/pinhua-baojian",
     processedDir: "data/processed/pinhua-baojian",
     compositionYear: 1849,
@@ -1800,7 +2006,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A didactic poem of fatherly advice attributed to Alexios Komnenos, offering moral and practical counsel in political-verse couplets.",
+      "A didactic poem of fatherly advice attributed to Emperor Alexios Komnenos, offering moral and practical counsel in vernacular Greek political verse. The poem counsels a young man on piety, prudence in friendship, comportment at court, and the dangers of vice — a Byzantine mirror for princes in miniature.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-alexios-komnenos",
     compositionYear: 1150,
@@ -1815,7 +2021,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A short vernacular Greek lament on the devastation caused by Tamerlane's campaigns.",
+      "A short vernacular Greek lament on the devastation wrought by Tamerlane's campaigns in Anatolia and the Near East, likely composed in the aftermath of the Battle of Ankara (1402). The poem registers the shock of Tamerlane's conquests as experienced from the Greek-speaking world.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-tamerlane-lament",
     compositionYear: 1410,
@@ -1830,7 +2036,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "georgillas",
     description:
-      "Emmanuel Georgillas' verse chronicle of a devastating plague that struck the island of Rhodes.",
+      "A verse chronicle of a devastating plague that struck Rhodes, recording the suffering, mass death, and social breakdown with the immediacy of an eyewitness account. One of the few medieval Greek poems directly documenting a specific epidemic.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-plague-of-rhodes",
     compositionYear: 1500,
@@ -1845,7 +2051,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "sklabos",
     description:
-      "Manolis Sklabos' lament on the sufferings of Crete, a vernacular Greek poem about hardship under foreign rule.",
+      "A vernacular Greek lament on the sufferings of Crete under Venetian rule, cataloguing the grievances of the Greek Cretan population — heavy taxation, legal inequality, and cultural suppression. A rare voice of colonial discontent from the medieval Greek world.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-misfortune-of-crete",
     compositionYear: 1460,
@@ -1860,7 +2066,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "sachlikis",
     description:
-      "Two collections of autobiographical and moralizing verse by Stefanos Sachlikis, offering vivid accounts of Cretan urban life, imprisonment, and social commentary.",
+      "Two collections of autobiographical and moralizing verse offering vivid accounts of the poet's dissolute youth in Cretan cities, his imprisonment, encounters with prostitutes, and eventual turn to moral reflection. Among the most personally revealing medieval Greek poems, they read almost like a picaresque memoir in verse.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-sachlikis",
     compositionYear: 1380,
@@ -1875,7 +2081,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A satirical vernacular Greek poem advising old men against marrying young women.",
+      "A satirical vernacular Greek poem advising old men against marrying young women, cataloguing the humiliations and domestic miseries that await the mismatched husband. Part of a broader European tradition of comic-didactic verse on marriage.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-old-man-and-girl",
     compositionYear: 1350,
@@ -1890,7 +2096,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "Five medieval Greek beast fables: the Synaxarion of the Honored Donkey, Tale of Donkey Wolf and Fox, Childish Tale of Four-legged Animals, Poulologos (Tale of the Birds), and Tale of the Tricologos.",
+      "Five medieval Greek beast fables in verse, including the Poulologos (a parliament of birds debating their relative merits) and tales involving donkeys, wolves, and foxes. These satirical animal poems use the conventions of the beast fable to mock human social hierarchies, monastic life, and courtly pretension.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-beast-fables",
     compositionYear: 1350,
@@ -1905,7 +2111,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A vernacular Greek poem on the sorrows of living in exile far from one's homeland.",
+      "A vernacular Greek poem on the sorrows of living in exile — loneliness, poverty, and the ache of distance from home. The theme of xeniteia (living abroad) resonated deeply in the Byzantine and post-Byzantine Greek world, where economic migration and political exile were common experiences.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-on-living-abroad",
     compositionYear: 1400,
@@ -1920,7 +2126,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A short vernacular Greek poem addressed to the city of Venice.",
+      "A short vernacular Greek poem addressed to Venice, reflecting the complex relationship between Greek-speaking subjects and the Venetian Republic that ruled much of the eastern Mediterranean.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-to-venice",
     compositionYear: 1400,
@@ -1935,7 +2141,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "pikatorios",
     description:
-      "Ioannis Pikatorios' lament on insatiable Hades, a vernacular Greek meditation on death and the underworld.",
+      "A vernacular Greek meditation on death addressed to 'bitter and insatiable Hades,' lamenting the universality of mortality and the vanity of worldly achievements. Part of the rich Byzantine tradition of threnos (lamentation) poetry that processed grief through literary convention.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-pikatorios-lament",
     compositionYear: 1460,
@@ -1950,7 +2156,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "An acrostic penitential poem following the Greek alphabet, meditating on the vanity of the world.",
+      "An acrostic penitential poem following the 24 letters of the Greek alphabet, meditating on the vanity of worldly life, the inevitability of death, and the need for repentance. The alphabetic structure serves as both a mnemonic device and a symbol of completeness — working through sin from alpha to omega.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-penitential-alphabet",
     compositionYear: 1300,
@@ -1965,7 +2171,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A medieval Greek verse romance retelling the ancient tale of Apollonius of Tyre, a story of shipwreck, separation, and reunion.",
+      "A medieval Greek verse retelling of the ancient romance of Apollonius of Tyre — a tale of shipwreck, separation, and reunion that circulated across medieval Europe in Latin, English, and many other languages. This Greek version belongs to one of the most widely adapted stories of the pre-modern world, the same narrative that inspired Shakespeare's Pericles.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-apollonius-of-tyre",
     compositionYear: 1400,
@@ -1980,7 +2186,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "A vernacular Greek verse narrative about the life and wisdom of a revered elder.",
+      "A vernacular Greek verse narrative presenting the life and sayings of a wise elder as a model of practical wisdom and righteous living. The poem blends biographical narrative with gnomic wisdom in the tradition of Byzantine didactic literature.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-life-of-wise-elder",
     compositionYear: 1350,
@@ -1995,7 +2201,7 @@ const TEXTS = [
     textType: "poetry" as const,
     authorSlug: "anonymous-byzantine",
     description:
-      "Three medieval Greek poems about the legendary Byzantine general Belisarius: an anonymous tale, Georgillas' historical account, and an anonymous rhymed narrative.",
+      "Three medieval Greek poems about the legendary general Belisarius, depicting his military glory and subsequent fall into disgrace — a story that became a byword for the ingratitude of rulers. The legend of Belisarius blinded and begging in the streets, though historically dubious, became one of the most popular narratives in Byzantine and post-Byzantine literature.",
     sourceUrl: "https://archive.org/details/carminagraecame00wagngoog",
     processedDir: "data/processed/carmina-belisarius",
     compositionYear: 1450,
@@ -2011,7 +2217,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wei-xiuren",
     description:
-      "A major scholar-and-beauty romance of the late Qing, interweaving love stories with the Taiping Rebellion. Known for its lyrical poetry and depiction of courtesans and failed scholars.",
+      "A scholar-and-beauty romance set against the Taiping Rebellion, interweaving the love affairs of failed scholars and courtesans with the catastrophic civil war that killed tens of millions. Known for its lyrical embedded poetry and its melancholy depiction of literati culture collapsing alongside the Qing social order.",
     sourceUrl: "https://zh.wikisource.org/wiki/花月痕",
     processedDir: "data/processed/huayue-hen",
     compositionYear: 1858,
@@ -2026,7 +2232,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "chu-renhuo",
     description:
-      "The great historical novel of the Sui-Tang transition, covering the fall of the Sui dynasty through the rise of the Tang. Features famous characters like Li Shimin, Qin Shubao, and Cheng Yaojin.",
+      "A historical novel covering the fall of the Sui dynasty and the rise of the Tang, compiled from earlier fiction and historical sources. Features some of the most beloved characters in Chinese popular culture — the warrior Qin Shubao, the irrepressible Cheng Yaojin, and the future Emperor Taizong Li Shimin — in a sweeping narrative of dynastic collapse and renewal.",
     sourceUrl: "https://zh.wikisource.org/wiki/隋唐演義",
     processedDir: "data/processed/sui-tang-yanyi",
     compositionYear: 1695,
@@ -2041,7 +2247,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhang-dai",
     description:
-      "The finest collection of nostalgic essays in Chinese literature. Zhang Dai, a ruined Ming aristocrat, recalls the vanished world of late Ming Jiangnan: opera, tea, lantern festivals, lake excursions.",
+      "Short essays recalling the vanished world of late Ming Jiangnan — opera performances, tea connoisseurship, lantern festivals, lake excursions, eccentric friends — written by a former aristocrat reduced to poverty after the Ming collapse. Each essay is a miniature of lost pleasure rendered in luminous prose, making this the supreme example of nostalgic writing in Chinese literature.",
     sourceUrl: "https://zh.wikisource.org/wiki/陶庵夢憶",
     processedDir: "data/processed/taoan-mengyi",
     compositionYear: 1665,
@@ -2056,7 +2262,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "li-yu",
     description:
-      "The most comprehensive manual of aesthetics and daily life in Chinese literature. Covers drama, music, costume, gardening, food, architecture, and health with wit and opinion.",
+      "An opinionated manual of aesthetics and daily life covering drama, music, costume, gardening, architecture, food, and health. Li Yu writes with wit and dogmatic confidence on everything from how to stage a play to how to arrange rocks in a garden, producing the most comprehensive surviving guide to the art of living in late imperial China.",
     sourceUrl: "https://zh.wikisource.org/wiki/閑情偶寄",
     processedDir: "data/processed/xianqing-ouji",
     compositionYear: 1671,
@@ -2071,7 +2277,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "youzhi-daoren",
     description:
-      "The largest and most famous Chinese joke collection. Hundreds of jokes organized by category: stupid people, ridiculous officials, stingy men, marital humor, and more.",
+      "The largest and most famous Chinese joke collection, gathering hundreds of jokes organized by type: stupidity, greed, vanity, marital discord, quack doctors, and corrupt officials. The humor is earthy and often bawdy, targeting every level of society from emperors to beggars. First compiled in 1787, it draws on joke traditions stretching back centuries.",
     sourceUrl: "https://zh.wikisource.org/wiki/笑林廣記",
     processedDir: "data/processed/xiaolin-guangji",
     compositionYear: 1787,
@@ -2086,7 +2292,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "yuan-mei",
     description:
-      "The most entertaining collection of poetry criticism in Chinese. Yuan Mei combines anecdotes, critical judgments, and hundreds of quoted poems, championing spirit and feeling over formalism.",
+      "A collection of poetry criticism combining anecdotes, critical judgments, and hundreds of quoted poems. Yuan Mei champions naturalness and personal feeling over formalist rules, arguing that poetry should express genuine emotion rather than imitate ancient models. His lively, anecdotal style made this the most widely read work of Chinese poetry criticism.",
     sourceUrl: "https://zh.wikisource.org/wiki/隨園詩話",
     processedDir: "data/processed/suiyuan-shihua",
     compositionYear: 1790,
@@ -2101,7 +2307,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhong-rong",
     description:
-      "The earliest systematic ranking and critical evaluation of Chinese poets. Zhong Rong grades 122 poets from Han to his own day into three tiers with critical comments on each.",
+      "The earliest systematic ranking of Chinese poets, grading 122 poets from the Han through the Southern Dynasties into three tiers with critical comments on each. Zhong Rong judges poets by their emotional authenticity and natural imagery, establishing an aesthetic framework that influenced Chinese literary criticism for over a millennium.",
     sourceUrl: "https://zh.wikisource.org/wiki/詩品",
     processedDir: "data/processed/shipin",
     compositionYear: 515,
@@ -2116,7 +2322,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wang-yinglin",
     description:
-      "One of the greatest works of evidential scholarship in Chinese history. Wang Yinglin meticulously investigates textual problems across the classics, histories, and philosophy.",
+      "A work of evidential scholarship investigating textual problems across the Confucian classics, dynastic histories, and philosophical texts. Wang Yinglin traces variant readings, identifies interpolations, and resolves contradictions through meticulous comparison of sources — a methodology that anticipated the kaozheng school by four centuries.",
     sourceUrl: "https://zh.wikisource.org/wiki/困學紀聞",
     processedDir: "data/processed/kunxue-jiwen",
     compositionYear: 1275,
@@ -2131,7 +2337,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "duan-chengshi",
     description:
-      "The most fascinating and eclectic biji collection of the Tang dynasty. Covers natural history, folklore, foreign lands, Buddhist and Daoist lore, food, drugs, ghosts, and oddities. Contains the earliest known Chinese Cinderella story.",
+      "An eclectic biji collection covering natural history, folklore, foreign lands, Buddhist and Daoist lore, food, drugs, ghosts, and oddities from across the Tang empire and beyond. Notable for containing the earliest known Chinese Cinderella story ('Ye Xian') and detailed accounts of Central Asian, Indian, and Southeast Asian customs gathered from foreign merchants and monks in Tang Chang'an.",
     sourceUrl: "https://zh.wikisource.org/wiki/酉陽雜俎",
     processedDir: "data/processed/youyang-zazu",
     compositionYear: 860,
@@ -2146,7 +2352,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "lu-you",
     description:
-      "Personal notes by one of the greatest Song poets. Lu You records anecdotes about politics, literature, customs, and daily life in the Southern Song, full of eyewitness accounts of the Jurchen wars.",
+      "Personal notes recording anecdotes about politics, literature, customs, and daily life in the Southern Song, including eyewitness accounts of the border wars with the Jurchen Jin dynasty. Lu You's entries range from court politics and military campaigns to folk medicine, local customs, and literary gossip, offering an intimate view of 12th-century Chinese life.",
     sourceUrl: "https://zh.wikisource.org/wiki/老學庵筆記",
     processedDir: "data/processed/laoxuean-biji",
     compositionYear: 1195,
@@ -2161,7 +2367,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "meng-yuanlao",
     description:
-      "The most detailed account of urban life in the Northern Song capital Kaifeng before its fall to the Jurchen in 1127. Markets, restaurants, festivals, entertainment, and daily customs described with nostalgic precision.",
+      "A detailed memoir of urban life in the Northern Song capital Kaifeng before its fall to the Jurchens in 1127, describing markets, restaurants, festivals, entertainments, and daily customs with nostalgic precision. Written in exile after the catastrophe, it preserves the most vivid surviving portrait of a medieval Chinese metropolis at its peak.",
     sourceUrl: "https://zh.wikisource.org/wiki/東京夢華錄",
     processedDir: "data/processed/dongjing-menghua-lu",
     compositionYear: 1147,
@@ -2176,7 +2382,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wang-shizhen-qing",
     description:
-      "A major biji collection by the leading poet-critic of the early Qing. Covers literature, history, supernatural tales, and contemporary events across four thematic sections.",
+      "A biji collection organized into four sections — narratives, anecdotes, literary criticism, and supernatural tales — covering early Qing politics, literature, and society. Wang Shizhen's extensive connections at court and in literary circles gave him access to stories and information unavailable to most writers.",
     sourceUrl: "https://zh.wikisource.org/wiki/池北偶談",
     processedDir: "data/processed/chibei-outan",
     compositionYear: 1691,
@@ -2191,7 +2397,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "li-daoyuan",
     description:
-      "The greatest geographical text of pre-modern China. Li Daoyuan expanded a terse river catalog into a richly detailed account of landscapes, cities, legends, and inscriptions along China's waterways.",
+      "A monumental geographical commentary that transformed a terse catalog of 137 rivers into a richly detailed account of landscapes, cities, ruins, legends, and inscriptions along China's waterways. Li Daoyuan's prose descriptions of mountains, gorges, and rapids are celebrated as masterpieces of Chinese landscape writing, making the work both a geographical reference and a literary classic.",
     sourceUrl: "https://zh.wikisource.org/wiki/水經注",
     processedDir: "data/processed/shuijing-zhu",
     compositionYear: 520,
@@ -2206,7 +2412,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "li-zhi",
     description:
-      "The most iconoclastic work of the late Ming. Li Zhi attacked Confucian hypocrisy, championed individual moral autonomy, and defended vernacular fiction and women's intellectual capacity.",
+      "A provocative collection of essays, letters, and critiques attacking Confucian hypocrisy and championing individual moral autonomy. Li Zhi defends the Water Margin and other vernacular novels as serious literature, argues for women's intellectual equality, and attacks the moral pretensions of establishment scholars — positions so inflammatory that the book was officially banned and Li Zhi imprisoned.",
     sourceUrl: "https://zh.wikisource.org/wiki/焚書",
     processedDir: "data/processed/fenshu",
     compositionYear: 1590,
@@ -2221,7 +2427,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "huang-zongxi",
     description:
-      "The first systematic history of philosophy in any language. Huang Zongxi traces the development of Confucian thought through the entire Ming dynasty, school by school.",
+      "A systematic survey of Ming dynasty Confucian thought organized by schools and lineages, covering 202 scholars across 19 intellectual traditions. Often called the first history of philosophy in any language, it traces how Wang Yangming's challenge to Zhu Xi orthodoxy generated a proliferation of competing schools that reshaped Chinese intellectual life.",
     sourceUrl: "https://zh.wikisource.org/wiki/明儒學案",
     processedDir: "data/processed/mingru-xuean",
     compositionYear: 1676,
@@ -2236,7 +2442,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "ji-yun",
     description:
-      "The greatest collection of supernatural tales by China's most powerful literary official. Ji Yun deliberately wrote in a classical, sparse style as a counterpoint to Pu Songling's ornate Liaozhai. Contains ~1,200 stories of wit, moral commentary, and ghost stories.",
+      "A collection of approximately 1,200 supernatural tales, moral anecdotes, and ghost stories written in a deliberately terse classical style as a counterpoint to Pu Songling's ornate Liaozhai Zhiyi. Ji Yun, the chief editor of the imperial library, uses encounters with foxes, ghosts, and strange phenomena as vehicles for sardonic moral commentary and philosophical reflection.",
     sourceUrl: "https://zh.wikisource.org/wiki/閱微草堂筆記",
     processedDir: "data/processed/yuewei-caotang-biji",
     compositionYear: 1793,
@@ -2251,7 +2457,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "xia-jingqu",
     description:
-      "The longest pre-modern Chinese novel at 154 chapters. Follows scholar Wen Suchen through examinations, romances, and military campaigns in an encyclopedic narrative.",
+      "At 154 chapters, the longest pre-modern Chinese novel. The protagonist Wen Suchen, a Neo-Confucian polymath, rises through military and scholarly achievements to become the most powerful figure in the empire while converting the entire known world to orthodox Confucian values. An extraordinary monument to late imperial scholarly ambition and ideological confidence.",
     sourceUrl: "https://zh.wikisource.org/wiki/野叟曝言",
     processedDir: "data/processed/yesou-puyan",
     compositionYear: 1750,
@@ -2266,7 +2472,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "li-luyuan",
     description:
-      "A major Qing educational novel about a scholar's son squandering his inheritance. Only rediscovered in the 20th century; no complete English translation exists.",
+      "A didactic novel tracing the moral decline and eventual redemption of a scholar's son who squanders his father's legacy through gambling, bad company, and neglect of study. Set in a vividly realized Henan provincial town, the novel was lost for over a century before its rediscovery in the 1920s. No complete English translation exists.",
     sourceUrl: "https://zh.wikisource.org/wiki/歧路燈",
     processedDir: "data/processed/qilu-deng",
     compositionYear: 1777,
@@ -2281,7 +2487,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "shi-yukun",
     description:
-      "The foundational Chinese martial-arts and detective novel combining Judge Bao courtroom drama with wuxia heroics. Source for countless later adaptations.",
+      "The foundational Chinese martial-arts and detective novel, combining the courtroom justice of Judge Bao with the exploits of righteous swordsmen who fight corruption outside the law. Originating in oral storytelling, it established the conventions of the gong'an (detective) and wuxia (martial arts) genres and has been adapted into countless operas, films, and television series.",
     sourceUrl: "https://zh.wikisource.org/wiki/三俠五義",
     processedDir: "data/processed/sanxia-wuyi",
     compositionYear: 1879,
@@ -2296,7 +2502,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zeng-pu",
     description:
-      "A major roman à clef of late Qing diplomacy, politics, and scandal. Only 5 chapters translated into English (1982). One of the four great novels of the late Qing.",
+      "A roman à clef of late Qing diplomacy, politics, and scandal, following the diplomat Jin Wenqing and the courtesan Fu Caiyun (based on the real Sai Jinhua) through 30 years of Chinese history. One of the four great 'condemnation novels' of the late Qing, it satirizes the corruption and incompetence of a dynasty in terminal decline.",
     sourceUrl: "https://zh.wikisource.org/wiki/孽海花",
     processedDir: "data/processed/niehai-hua",
     compositionYear: 1905,
@@ -2311,7 +2517,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wu-xuan",
     description:
-      "Historical novel about the founding of the Song dynasty by Zhao Kuangyin (Emperor Taizu). A classic of dynastic-founding fiction.",
+      "A historical novel depicting the founding of the Song dynasty, following Zhao Kuangyin from his youth as a wandering warrior through his rise to the imperial throne. The characters are embellished with mythological origins — Zhao Kuangyin as the incarnation of a red-bearded dragon — blending historical narrative with the conventions of Chinese dynastic-founding romance.",
     sourceUrl: "https://zh.wikisource.org/wiki/飛龍全傳",
     processedDir: "data/processed/feilong-quanzhuan",
     compositionYear: 1715,
@@ -2326,7 +2532,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "lu-xiong",
     description:
-      "Fantastical novel set during the Yongle Emperor's usurpation, blending historical events with Daoist supernatural elements and female warrior protagonists.",
+      "A fantastical novel set during the Yongle Emperor's violent usurpation of the throne (1402), centered on the historical rebel leader Tang Sai'er and a cast of female immortals and warriors. The novel uses Daoist supernatural elements and female protagonists to process the trauma of political violence, blending shenmo (gods and demons) conventions with a distinctly lyrical, elegiac sensibility.",
     sourceUrl: "https://zh.wikisource.org/wiki/女仙外史",
     processedDir: "data/processed/nuxian-waishi",
     compositionYear: 1711,
@@ -2341,7 +2547,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhang-chao",
     description:
-      "Anthology of the finest literary Chinese tales from the late Ming and early Qing, curated by one of the period's foremost literary arbiters.",
+      "An anthology of literary Chinese tales from the late Ming and early Qing, curated by the influential literary tastemaker Zhang Chao. The collection showcases biographical sketches, strange tales, travel writing, and character portraits by dozens of authors, preserving many texts that might otherwise have been lost.",
     sourceUrl: "https://zh.wikisource.org/wiki/虞初新志",
     processedDir: "data/processed/yuchu-xinzhi",
     compositionYear: 1700,
@@ -2356,7 +2562,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhang-nanzhuang",
     description:
-      "The first novel written in Wu dialect (Shanghainese). A satirical ghost-world picaresque championed by Lu Xun and Hu Shi during the New Culture Movement.",
+      "A ten-chapter comic novella set in a ghost world populated by 'living ghosts,' 'lusty ghosts,' and 'tofu-stew ghosts,' written in a hybrid of Wu dialect (Shanghainese), classical Chinese, and vernacular prose. Much of the humor derives from double meanings that shift between standard Chinese and Wu dialect readings. Championed by Lu Xun and Hu Shi during the New Culture Movement as a pioneering work of dialectal fiction.",
     sourceUrl: "https://zh.wikisource.org/wiki/何典",
     processedDir: "data/processed/hedian",
     compositionYear: 1800,
@@ -2371,7 +2577,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wu-zimu",
     description:
-      "Detailed record of life in Southern Song Hangzhou modeled on the Dongjing Menghua Lu. Documents markets, crafts, festivals, and urban culture before the Mongol conquest.",
+      "A detailed record of Southern Song Hangzhou modeled on the earlier Dongjing Menghua Lu for Kaifeng. Documents markets, crafts, festivals, temples, street entertainers, and urban institutions before the Mongol conquest, providing one of the three major sources (alongside Wu Zimu's record and Zhou Mi's) for reconstructing life in medieval Hangzhou.",
     sourceUrl: "https://zh.wikisource.org/wiki/夢粱錄_(四庫全書本)",
     processedDir: "data/processed/mengliang-lu",
     compositionYear: 1274,
@@ -2386,7 +2592,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhou-mi",
     description:
-      "Zhou Mi's nostalgic record of Southern Song Hangzhou's court ceremonies, festivals, entertainments, and daily life before the Mongol conquest.",
+      "A nostalgic record of Southern Song Hangzhou's court ceremonies, festivals, entertainments, and daily life, compiled after the Mongol conquest by one of the most cultured literati of the Song-Yuan transition. Particularly valuable for its detailed accounts of imperial celebrations, West Lake excursions, and the performing arts.",
     sourceUrl: "https://zh.wikisource.org/wiki/武林舊事",
     processedDir: "data/processed/wulin-jiushi",
     compositionYear: 1290,
@@ -2401,7 +2607,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhou-mi",
     description:
-      "Zhou Mi's politically revealing biji covering Southern Song court politics, the Zhu Xi scandal, painting connoisseurship, and other historical anecdotes.",
+      "A biji collection covering Southern Song court politics, painting connoisseurship, literary anecdotes, and historical controversies including the political persecution of Zhu Xi. Written from the perspective of a well-connected insider, it preserves politically sensitive accounts of factional struggles and policy debates that official histories suppressed or sanitized.",
     sourceUrl: "https://zh.wikisource.org/wiki/齊東野語",
     processedDir: "data/processed/qidong-yeyu",
     compositionYear: 1291,
@@ -2416,7 +2622,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "luo-dajing",
     description:
-      "Song dynasty biji covering poetry criticism, historical anecdotes, philosophical discussions, and political commentary.",
+      "A Song dynasty biji covering poetry criticism, historical anecdotes, philosophical discussions, and political commentary. Notable for its extensive quotation of Song poetry with critical analysis, its discussions of Du Fu and Su Shi, and its eyewitness observations on Southern Song governance and society.",
     sourceUrl: "https://zh.wikisource.org/wiki/鶴林玉露",
     processedDir: "data/processed/helin-yulu",
     compositionYear: 1248,
@@ -2431,7 +2637,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "sima-guang",
     description:
-      "Private notes by the great historian Sima Guang recording political events and anecdotes from the Northern Song that did not make it into the Zizhi Tongjian.",
+      "Private notes recording political events and anecdotes from the Northern Song, compiled by the historian Sima Guang as material that did not fit the scope of his Zizhi Tongjian. Particularly valuable for firsthand accounts of the Wang Anshi reform controversies and the factional politics of the 11th-century Song court.",
     sourceUrl: "https://zh.wikisource.org/wiki/涑水紀聞",
     processedDir: "data/processed/sushui-jiwen",
     compositionYear: 1075,
@@ -2446,7 +2652,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wang-dingbao",
     description:
-      "The most detailed source on Tang dynasty civil service examinations, poetry culture, and the social world of examination candidates.",
+      "The most detailed surviving source on the Tang dynasty civil service examinations, recording the social rituals, literary culture, and competitive anxieties of examination candidates. Entries cover everything from the etiquette of congratulating successful examinees to the poetry composed at farewell banquets, illuminating the culture that produced much of classical Chinese poetry.",
     sourceUrl: "https://zh.wikisource.org/wiki/唐摭言",
     processedDir: "data/processed/tang-zhiyan",
     compositionYear: 940,
@@ -2461,7 +2667,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "sun-guangxian",
     description:
-      "Important biji covering late Tang through Five Dynasties anecdotes, politics, and literary culture across three decades of compilation.",
+      "A biji collection recording anecdotes of late Tang through Five Dynasties political life, literary culture, and social customs. Compiled over three decades by a well-connected official who served multiple regimes, it preserves firsthand accounts of the chaotic period when the Tang empire fragmented into competing kingdoms.",
     sourceUrl: "https://zh.wikisource.org/wiki/北夢瑣言",
     processedDir: "data/processed/beimeng-suoyan",
     compositionYear: 960,
@@ -2476,7 +2682,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "liu-xin-ge-hong",
     description:
-      "One of the earliest Chinese short story collections, recording court life, customs, and legends of the Western Han capital Chang'an. 129 stories.",
+      "An early collection of 129 anecdotes and legends about the Western Han capital Chang'an, recording palace intrigues, imperial eccentricities, technical marvels, and urban customs. Though its authorship is disputed, it preserves vivid accounts of Han court culture — including the famous story of Sima Xiangru and Zhuo Wenjun — that became staples of later Chinese literature.",
     sourceUrl: "https://zh.wikisource.org/wiki/西京雜記",
     processedDir: "data/processed/xijing-zaji",
     compositionYear: 300,
@@ -2491,7 +2697,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "xuan-ding",
     description:
-      "Late Qing collection of classical tales in the tradition of Liaozhai, noted for its literary polish and tragic love stories.",
+      "A late Qing collection of classical tales in the tradition of Pu Songling's Liaozhai, featuring supernatural love stories, ghost encounters, and tales of fox spirits. Noted for its literary polish and emotional depth, particularly in its treatment of tragic love between humans and spirits.",
     sourceUrl: "https://zh.wikisource.org/wiki/夜雨秋燈錄",
     processedDir: "data/processed/yeyu-qiudeng-lu",
     compositionYear: 1877,
@@ -2506,7 +2712,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "xie-zhaozhe",
     description:
-      "Massive encyclopedic biji covering astronomy, geography, natural history, customs, and curiosities. Contains the earliest known mention of rock-paper-scissors.",
+      "A massive encyclopedic biji organized into five sections — heaven, earth, humanity, things, and affairs — covering astronomy, geography, natural history, customs, technology, and curiosities. Notable for containing the earliest known written reference to the hand game later known as rock-paper-scissors, as well as detailed accounts of Ming commercial and material culture.",
     sourceUrl: "https://zh.wikisource.org/wiki/五雜俎",
     processedDir: "data/processed/wuzazu",
     compositionYear: 1619,
@@ -2521,7 +2727,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "wang-jia",
     description:
-      "Important early collection of myths, legends, and supernatural tales spanning from mythological antiquity to the Jin dynasty. Includes descriptions of Penglai and Kunlun.",
+      "An early collection of myths, legends, and supernatural tales spanning from the creation of the world to the Jin dynasty, organized by historical period. Includes fantastical accounts of the mythical islands of Penglai and Kunlun, star-crossed immortals, and miraculous objects. A key source for Chinese mythology that influenced later fiction and poetry.",
     sourceUrl: "https://zh.wikisource.org/wiki/拾遺記",
     processedDir: "data/processed/shiyi-ji",
     compositionYear: 380,
@@ -2536,7 +2742,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhang-dai",
     description:
-      "Zhang Dai's lyrical guide to West Lake in Hangzhou, written decades after the Ming collapse. 72 essays organized by geographic route. Only partial translations exist in anthologies.",
+      "A lyrical guide to West Lake in Hangzhou in 72 essays organized by geographic route, written decades after the Ming collapse left the lake's gardens and temples in ruins. Each entry layers personal memory, historical anecdote, and landscape description, creating a portrait of a place that exists more fully in prose than in the changed physical reality.",
     sourceUrl: "https://zh.wikisource.org/wiki/西湖夢尋",
     processedDir: "data/processed/xihu-mengxun",
     compositionYear: 1671,
@@ -2551,7 +2757,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "feng-menglong",
     description:
-      "Massive anthology of 1,238 stories of stratagems and wit from Chinese history, organized by type of wisdom. Feng Menglong's most scholarly compilation.",
+      "An anthology of 1,238 stories of stratagems and wit drawn from Chinese history, organized by categories of intelligence: military strategy, judicial acumen, political scheming, verbal cleverness, and more. Each story illustrates a particular type of practical wisdom with examples from historical figures, making it both an entertaining collection and a manual of applied intelligence.",
     sourceUrl: "https://zh.wikisource.org/wiki/智囊",
     processedDir: "data/processed/zhinang",
     compositionYear: 1626,
@@ -2566,7 +2772,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "feng-menglong",
     description:
-      "The largest anthology of love stories in Chinese literature, with 870+ stories drawn from official histories, biji, and fiction. Organized into 24 categories of love and passion.",
+      "The largest anthology of love stories in Chinese literature, gathering over 870 stories from official histories, biji, and fiction into 24 categories of love: faithful love, tragic love, jealous love, love between friends, love of beauty, and more. Feng Menglong's arrangement treats qing (emotion, passion) as a fundamental human force deserving systematic study.",
     sourceUrl: "https://zh.wikisource.org/wiki/情史",
     processedDir: "data/processed/qingshi",
     compositionYear: 1630,
@@ -2581,7 +2787,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhao-yi",
     description:
-      "Major work of Qing evidential scholarship investigating origins of customs, institutions, and historical claims. Zhao Yi was one of the three leading historians of the Qian-Jia era.",
+      "A work of evidential scholarship investigating the origins of customs, institutions, and received historical claims through critical examination of sources. Zhao Yi traces how practices like foot-binding, the examination system, and regional customs evolved over time, correcting common misconceptions with characteristic wit and methodical rigor.",
     sourceUrl: "https://zh.wikisource.org/wiki/陔餘叢考",
     processedDir: "data/processed/gaiyu-congkao",
     compositionYear: 1790,
@@ -2596,7 +2802,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "xin-wenfang",
     description:
-      "The most important source for biographies of Tang dynasty poets. Contains entries for 398 poets arranged by quality and era.",
+      "The standard biographical reference for Tang dynasty poets, containing entries for 398 poets arranged by era and quality. Each biography sketches the poet's life, examines his works, and assesses his literary achievement, providing the most comprehensive surviving guide to the personalities behind one of the greatest periods in Chinese poetry.",
     sourceUrl: "https://zh.wikisource.org/wiki/唐才子傳",
     processedDir: "data/processed/tang-caizi-zhuan",
     compositionYear: 1304,
@@ -2611,7 +2817,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "feng-menglong",
     description:
-      "Curated anthology of witticisms and satirical anecdotes from Chinese history, organized into 36 categories. Companion volume to Zhinang and Qingshi.",
+      "An anthology of witticisms and satirical anecdotes from Chinese history, organized into 36 categories including absurd officials, pedantic scholars, shameless flatterers, and sharp retorts. A companion to Feng Menglong's Zhinang (wisdom) and Qingshi (love), this volume completes his encyclopedic survey of human behavior through its comic and ironic dimensions.",
     sourceUrl: "https://zh.wikisource.org/wiki/古今譚概",
     processedDir: "data/processed/gujin-tangai",
     compositionYear: 1620,
@@ -2626,7 +2832,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhang-dai",
     description:
-      "A witty encyclopedic compendium covering 20 categories from astronomy to botany with 4,000+ entries, meant as conversational reference for educated travelers on night boats.",
+      "An encyclopedic compendium of 4,000+ entries across 20 categories — from astronomy and geography to arts and botany — designed as a conversational reference for educated travelers. The title refers to the night boats where passengers competed in learned conversation; Zhang Dai compiled the essential facts a gentleman needed to hold his own in such exchanges.",
     sourceUrl: "https://zh.wikisource.org/wiki/夜航船",
     processedDir: "data/processed/yehangchuan",
     compositionYear: 1655,
@@ -2641,7 +2847,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "tang-yunzhou",
     description:
-      "One of the most popular late Qing martial arts novels, set during the Zhengde reign. Features a band of righteous swordsmen suppressing a princely rebellion.",
+      "A late Qing martial arts novel set during the Zhengde reign, following seven swordsmen and thirteen heroes as they suppress a princely rebellion threatening the Ming throne. Combining wuxia combat with political intrigue and moral righteousness, it was among the most widely read novels of its era and influenced the modern martial arts fiction genre.",
     sourceUrl: "https://zh.wikisource.org/wiki/七劍十三俠",
     processedDir: "data/processed/qijian-shisan-xia",
     compositionYear: 1896,
@@ -2656,7 +2862,7 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "zhaolian",
     description:
-      "Written by a Qing imperial prince (Aisin Gioro clan), this biji offers insider accounts of Qing court politics, Manchu customs, and Bannerman life unavailable from any other source.",
+      "A biji by a Qing imperial prince of the Aisin Gioro clan, offering insider accounts of court politics, Manchu customs, military campaigns, and Bannerman life from within the ruling house. The author's access to oral traditions and palace gossip makes this an irreplaceable source for aspects of Qing Manchu culture that outsiders could not observe or record.",
     sourceUrl: "https://zh.wikisource.org/wiki/嘯亭雜錄",
     processedDir: "data/processed/xiaoting-zalu",
     compositionYear: 1815,
@@ -2671,12 +2877,407 @@ const TEXTS = [
     textType: "prose" as const,
     authorSlug: "su-shi",
     description:
-      "A collection of informal prose notes and essays by Su Shi, written during his various exiles. Covers philosophy, history, anecdotes, dreams, supernatural tales, and personal reflections.",
+      "Informal prose notes and essays written during Su Shi's various exiles, covering philosophy, history, dreams, supernatural encounters, and personal reflections. The entries range from meditations on impermanence and Buddhist thought to humorous anecdotes and observations on local customs, all rendered in Su Shi's characteristically fluid and witty prose.",
     sourceUrl: "https://zh.wikisource.org/wiki/東坡志林",
     processedDir: "data/processed/dongpo-zhilin",
     compositionYear: 1097,
     compositionEra: "Song Dynasty (c. 1097)",
-  },] as const;
+  },
+  // Polish Pipeline Texts (11 new)
+  {
+    title: "Ferments (Fermenty)",
+    titleOriginalScript: "Fermenty",
+    slug: "fermenty",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "wladyslaw-reymont",
+    description:
+      "A naturalist novel tracing the restless search for meaning by a young woman of the provincial intelligentsia, moving between romantic disillusionment, social ambition, and spiritual crisis. The title's metaphor of fermentation captures the volatile, unsettled state of a generation caught between old certainties and new possibilities in late 19th-century Poland.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Fermenty",
+    processedDir: "data/processed/fermenty",
+    compositionYear: 1897,
+    compositionEra: "19th century",
+  },
+  {
+    title: "An Ancient Tale (Stara baśń)",
+    titleOriginalScript: "Stara baśń",
+    slug: "stara-basn",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "jozef-ignacy-kraszewski",
+    description:
+      "A historical novel set in pre-Christian Poland during the legendary founding of the Piast dynasty, depicting the clash between Slavic paganism and emerging Christianity against a backdrop of tribal politics and foreign threats. The novel reconstructs the world of early Slavic society — its rituals, social structures, and beliefs — at the moment of Polish national origins.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Stara_ba%C5%9B%C5%84",
+    processedDir: "data/processed/stara-basn",
+    compositionYear: 1876,
+    compositionEra: "19th century",
+  },
+  {
+    title: "The Hag (Pałuba)",
+    titleOriginalScript: "Pałuba",
+    slug: "paluba",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "karol-irzykowski",
+    description:
+      "A radically experimental metafictional novel that deconstructs the conventions of psychological realism through a self-aware narrator, embedded critical essays, and fragmented structure. Published in 1903, it anticipated techniques later associated with Joyce, Gide, and Gombrowicz by years. The novel examines the impossibility of truly knowing another person — or of honestly representing them in fiction.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Pa%C5%82uba_(Irzykowski)",
+    processedDir: "data/processed/paluba",
+    compositionYear: 1903,
+    compositionEra: "20th century",
+  },
+  {
+    title: "Sisyphean Labors (Syzyfowe prace)",
+    titleOriginalScript: "Syzyfowe prace",
+    slug: "syzyfowe-prace",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "stefan-zeromski",
+    description:
+      "A novel about the Russification of Polish youth in a gymnasium under the Russian partition, following students who are forbidden to speak Polish or learn Polish history. The 'Sisyphean labors' of the title refer both to the imperial project of cultural erasure and to the students' stubborn, seemingly futile resistance that eventually kindles their national consciousness.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Syzyfowe_prace",
+    processedDir: "data/processed/syzyfowe-prace",
+    compositionYear: 1897,
+    compositionEra: "19th century",
+  },
+  {
+    title: "The Dziurdzia Family (Dziurdziowie)",
+    titleOriginalScript: "Dziurdziowie",
+    slug: "dziurdziowie",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "eliza-orzeszkowa",
+    description:
+      "A naturalist peasant novel depicting the murder of a blacksmith's wife by a neighboring family driven by animosity, jealousy, and superstition about witchcraft. Set in rural Poland with unflinching realism, it examines how poverty, ignorance, and folk beliefs about evil can escalate into collective violence.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Dziurdziowie",
+    processedDir: "data/processed/dziurdziowie",
+    compositionYear: 1885,
+    compositionEra: "19th century",
+  },
+  {
+    title: "The Wellborn (Bene nati)",
+    titleOriginalScript: "Bene nati",
+    slug: "bene-nati",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "eliza-orzeszkowa",
+    description:
+      "A novel about an attempted marriage across class lines in rural Poland, as a noblewoman and a peasant face fierce resistance from her noble family. The title ('wellborn') is ironic — the novel questions whether inherited social status has any relationship to genuine moral worth.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Bene_nati",
+    processedDir: "data/processed/bene-nati",
+    compositionYear: 1891,
+    compositionEra: "19th century",
+  },
+  {
+    title: "Winter Wheat (Ozimina)",
+    titleOriginalScript: "Ozimina",
+    slug: "ozimina",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "waclaw-berent",
+    description:
+      "A modernist novel set over a single evening's salon gathering in Warsaw, through which Berent constructs a panoramic portrait of Polish intellectual society at the turn of the 20th century. The title ('winter wheat,' sown in autumn to germinate under snow) suggests ideas planted now that will only bear fruit in a future generation.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Ozimina_(Berent)",
+    processedDir: "data/processed/ozimina",
+    compositionYear: 1911,
+    compositionEra: "Young Poland",
+  },
+  {
+    title: "The Vampire (Wampir)",
+    titleOriginalScript: "Wampir",
+    slug: "wampir",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "wladyslaw-reymont",
+    description:
+      "A psychological novel exploring the world of spiritualism and occultism in early 20th-century Europe, following characters drawn into seances, mesmerism, and claims of psychic phenomena. Reymont treats the supernatural ambiguously — the 'vampire' of the title may be a genuine occult force or a metaphor for the predatory dynamics between the characters.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Wampir_(Reymont,_1931)",
+    processedDir: "data/processed/wampir",
+    compositionYear: 1911,
+    compositionEra: "Young Poland",
+  },
+  {
+    title: "General Barcz (Generał Barcz)",
+    titleOriginalScript: "Generał Barcz",
+    slug: "general-barcz",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "juliusz-kaden-bandrowski",
+    description:
+      "A political novel set in the early Second Polish Republic, depicting the ruthless machinations of a powerful general widely read as a portrait of Jozef Pilsudski. The novel exposes the mechanisms of political power — manipulation, patronage, intimidation — behind the idealistic rhetoric of newly independent Poland.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Genera%C5%82_Barcz",
+    processedDir: "data/processed/general-barcz",
+    compositionYear: 1923,
+    compositionEra: "Interwar period",
+  },
+  {
+    title: "The Boor (Cham)",
+    titleOriginalScript: "Cham",
+    slug: "cham",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "eliza-orzeszkowa",
+    description:
+      "A tragic novella about a humble Niemen River fisherman's love for a neurotic, sophisticated city woman convalescing in the countryside. Their mutual attraction is destroyed by the unbridgeable gulf between his world of physical labor and natural rhythms and her world of nervous sensitivity and social convention.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Cham",
+    processedDir: "data/processed/cham",
+    compositionYear: 1888,
+    compositionEra: "Positivism",
+  },
+  {
+    title: "The History of Sin (Dzieje grzechu)",
+    titleOriginalScript: "Dzieje grzechu",
+    slug: "dzieje-grzechu",
+    languageCode: "pl",
+    genre: "literature",
+    textType: "prose" as const,
+    authorSlug: "stefan-zeromski",
+    description:
+      "A two-volume naturalist novel tracing the moral downfall of Ewa Pobratynska, a young woman from a respectable family who is seduced, abandoned, and drawn into a spiral of degradation. Zeromski combines psychological realism with fierce social critique, showing how patriarchal society systematically destroys women who fall outside its narrow boundaries of respectability.",
+    sourceUrl: "https://pl.wikisource.org/wiki/Dzieje_grzechu",
+    processedDir: "data/processed/dzieje-grzechu",
+    compositionYear: 1908,
+    compositionEra: "Young Poland",
+  },
+  {
+    title: "God Save Us from the Orsenigos (Dio ne scampi dagli Orsenigo)",
+    titleOriginalScript: "Dio ne scampi dagli Orsenigo",
+    slug: "dio-ne-scampi-dagli-orsenigo",
+    textType: "prose" as const,
+    genre: "literature",
+    languageCode: "it",
+    authorSlug: "vittorio-imbriani",
+    description:
+      "A satirical novel following the intertwined fates of two Milanese families, the Dorias and the Orsenigos, through a tangle of romantic intrigue, social climbing, and moral compromise. Imbriani's sharp wit and dialectal experimentation mark this as a key work of the Scapigliatura movement.",
+    sourceUrl: "https://it.wikisource.org/wiki/Dio_ne_scampi_dagli_Orsenigo",
+    processedDir: "data/processed/dio-ne-scampi-dagli-orsenigo",
+    compositionYear: 1876,
+    compositionEra: "Scapigliatura",
+  },
+  {
+    title: "Italian Philosophy in Its Relations with European Philosophy (La filosofia italiana nelle sue relazioni con la filosofia europea)",
+    titleOriginalScript: "La filosofia italiana nelle sue relazioni con la filosofia europea",
+    slug: "la-filosofia-italiana-spaventa",
+    textType: "prose" as const,
+    genre: "philosophy",
+    languageCode: "it",
+    authorSlug: "bertrando-spaventa",
+    description:
+      "A systematic argument for the continuity of Italian philosophical thought from the Renaissance through German Idealism and back, claiming that Hegel's dialectic was anticipated by Bruno, Campanella, and Vico. Spaventa's lectures reframed Italian philosophy as central, not peripheral, to the European tradition.",
+    sourceUrl: "https://it.wikisource.org/wiki/La_filosofia_italiana_nelle_sue_relazioni_con_la_filosofia_europea",
+    processedDir: "data/processed/la-filosofia-italiana-spaventa",
+    compositionYear: 1862,
+    compositionEra: "Italian Hegelianism",
+  },
+  {
+    title: "Psychology as a Positive Science (La psicologia come scienza positiva)",
+    titleOriginalScript: "La psicologia come scienza positiva",
+    slug: "la-psicologia-come-scienza-positiva",
+    textType: "prose" as const,
+    genre: "philosophy",
+    languageCode: "it",
+    authorSlug: "roberto-ardigo",
+    description:
+      "A foundational work of Italian positivism arguing that psychology must be grounded in empirical observation rather than metaphysical speculation. Ardigò develops a naturalistic framework for understanding mental phenomena as continuous with biological processes.",
+    sourceUrl: "https://it.wikisource.org/wiki/La_psicologia_come_scienza_positiva",
+    processedDir: "data/processed/la-psicologia-come-scienza-positiva",
+    compositionYear: 1870,
+    compositionEra: "Italian Positivism",
+  },
+  {
+    title: "Essay on the Duration of the Reigns of the Kings of Rome (Saggio sopra la durata de' regni de' re di Roma)",
+    titleOriginalScript: "Saggio sopra la durata de' regni de' re di Roma",
+    slug: "saggio-durata-regni-re-di-roma",
+    textType: "prose" as const,
+    genre: "history",
+    languageCode: "it",
+    authorSlug: "francesco-algarotti",
+    description:
+      "A short critical essay examining the traditionally reported lengths of the reigns of Rome's seven kings, applying early statistical reasoning to question the historical reliability of the received chronology.",
+    sourceUrl: "https://it.wikisource.org/wiki/Saggio_sopra_la_durata_de%27_regni_de%27_re_di_Roma",
+    processedDir: "data/processed/saggio-durata-regni-re-di-roma",
+    compositionYear: 1745,
+    compositionEra: "Italian Enlightenment",
+  },
+  {
+    title: "On the Civil Renewal of Italy (Del rinnovamento civile d'Italia)",
+    titleOriginalScript: "Del rinnovamento civile d'Italia",
+    slug: "del-rinnovamento-civile-d-italia",
+    textType: "prose" as const,
+    genre: "philosophy",
+    languageCode: "it",
+    authorSlug: "vincenzo-gioberti",
+    description:
+      "A major political-philosophical treatise of the Risorgimento, written in exile after the failed revolutions of 1848. Gioberti analyzes why Italian unification failed and argues for a renewed civil and moral renewal as the precondition for political independence.",
+    sourceUrl: "https://it.wikisource.org/wiki/Del_rinnovamento_civile_d%27Italia",
+    processedDir: "data/processed/del-rinnovamento-civile-d-italia",
+    compositionYear: 1851,
+    compositionEra: "Risorgimento",
+  },
+  {
+    title: "Psychology of Associated Minds (Psicologia delle menti associate)",
+    titleOriginalScript: "Psicologia delle menti associate",
+    slug: "psicologia-delle-menti-associate",
+    textType: "prose" as const,
+    genre: "philosophy",
+    languageCode: "it",
+    authorSlug: "carlo-cattaneo",
+    description:
+      "Five lectures developing Cattaneo's original theory of collective intelligence, arguing that human thought is fundamentally social and associative rather than individual. A pioneering work in social psychology and the philosophy of collective cognition.",
+    sourceUrl: "https://filosofico.net",
+    processedDir: "data/processed/psicologia-delle-menti-associate",
+    compositionYear: 1859,
+    compositionEra: "Risorgimento",
+  },
+  {
+    title: "Confessions of a Metaphysician (Confessioni di un metafisico)",
+    titleOriginalScript: "Confessioni di un metafisico",
+    slug: "confessioni-di-un-metafisico",
+    textType: "prose" as const,
+    genre: "philosophy",
+    languageCode: "it",
+    authorSlug: "terenzio-mamiani",
+    description:
+      "An autobiographical philosophical work in which Mamiani traces the development of his metaphysical thought through personal experience, intellectual encounters, and the political upheavals of the Risorgimento. A rare first-person account of 19th-century Italian philosophical life.",
+    sourceUrl: "https://it.wikisource.org/wiki/Confessioni_di_un_metafisico",
+    processedDir: "data/processed/confessioni-di-un-metafisico",
+    compositionYear: 1865,
+    compositionEra: "Italian Idealism",
+  },
+  {
+    title: "On Sorbets (De' sorbetti)",
+    titleOriginalScript: "De' sorbetti",
+    slug: "de-sorbetti",
+    textType: "prose" as const,
+    genre: "science",
+    languageCode: "it",
+    authorSlug: "filippo-baldini",
+    description:
+      "A medical-scientific treatise examining the preparation and health effects of sorbets and cold beverages. A charming curiosity of 18th-century Neapolitan medical writing that blends culinary art with Enlightenment-era physiological theory.",
+    sourceUrl: "https://archive.org/details/desorbetti",
+    processedDir: "data/processed/de-sorbetti",
+    compositionYear: 1775,
+    compositionEra: "Neapolitan Enlightenment",
+  },
+  {
+    title: "Sri Kalahasteeswara Satakam",
+    titleOriginalScript: "శ్రీ కాళహస్తీశ్వర శతకము",
+    slug: "sri-kalahasteeswara-satakam",
+    languageCode: "te",
+    authorSlug: "dhurjati",
+    description:
+      "A century of devotional verses addressed to Lord Shiva at the Srikalahasti temple. Dhurjati's masterwork blends fervent personal devotion with philosophical inquiry, reflecting on human frailty, divine grace, and the futility of worldly attachment in verses of remarkable lyric intensity.",
+    sourceUrl: "https://www.templesinindiainfo.com/sri-kalahasteeswara-satakam-telugu",
+    processedDir: "data/processed/sri-kalahasteeswara-satakam",
+    compositionYear: 1520,
+    compositionEra: "Vijayanagara Empire",
+    textType: "poetry" as const,
+    genre: "philosophy" as const,
+  },
+  // Czech Pipeline Texts
+  {
+    title: "A Momentous Excursion of Mr. Brouček (Nový epochální výlet pana Broučka)",
+    titleOriginalScript: "Nový epochální výlet pana Broučka, tentokráte do XV. století",
+    slug: "novy-epochalni-vylet-pana-broucka",
+    languageCode: "cs",
+    authorSlug: "svatopluk-cech",
+    description:
+      "A satirical novella in which the bumbling Prague burgher Mr. Brouček is transported back to the Hussite Wars of the 15th century. Through comic misadventure and cultural clash, Čech satirizes contemporary Czech complacency by contrasting it with the heroic spirit of the Hussite reformers.",
+    sourceUrl: "https://cs.wikisource.org/wiki/Nový_epochální_výlet_pana_Broučka,_tentokráte_do_XV._století",
+    processedDir: "data/processed/novy-epochalni-vylet-pana-broucka",
+    compositionYear: 1889,
+    compositionEra: "Czech National Revival",
+    textType: "prose" as const,
+    genre: "literature" as const,
+  },
+  // Latin Pipeline Texts (new — clean Wikisource)
+  {
+    title: "History of the Discovery of Phosphorus (Historia Inventionis Phosphori)",
+    titleOriginalScript: "Historia Inventionis Phosphori",
+    slug: "historia-inventionis-phosphori",
+    languageCode: "la",
+    authorSlug: "gottfried-wilhelm-leibniz",
+    description:
+      "Leibniz's Latin account of the discovery of phosphorus by Hennig Brand in Hamburg, correcting misconceptions in earlier French reports. A fascinating document of early modern chemistry and the politics of scientific credit.",
+    sourceUrl: "https://la.wikisource.org/wiki/Historia_inventionis_phosphori",
+    processedDir: "data/processed/historia-inventionis-phosphori",
+    compositionYear: 1710,
+    compositionEra: "Early Enlightenment",
+    textType: "prose" as const,
+    genre: "science" as const,
+  },
+  {
+    title: "On the Fifteen Problems (De Quindecim Problematibus)",
+    titleOriginalScript: "De Quindecim Problematibus",
+    slug: "de-quindecim-problematibus",
+    languageCode: "la",
+    authorSlug: "albertus-magnus",
+    description:
+      "Albertus Magnus's systematic refutation of fifteen propositions condemned at the University of Paris, addressing questions on the unity of the intellect, the eternity of the world, and the nature of the soul in Aristotelian philosophy.",
+    sourceUrl: "https://la.wikisource.org/wiki/De_quindecim_problematibus",
+    processedDir: "data/processed/de-quindecim-problematibus",
+    compositionYear: 1270,
+    compositionEra: "High Medieval Scholasticism",
+    textType: "prose" as const,
+    genre: "philosophy" as const,
+  },
+  // Greek Pipeline Texts (new)
+  {
+    title: "Knowledge of the Patriarchal Thrones (Γνῶσις πατριαρχῶν θρόνων)",
+    titleOriginalScript: "Γνῶσις καὶ ἐπίγνωσις τῶν πατριαρχῶν θρόνων",
+    slug: "gnosis-patriarchon-thronon",
+    languageCode: "grc",
+    authorSlug: "anonymous",
+    description:
+      "A brief Byzantine geographical text describing the jurisdictional boundaries of the five ancient patriarchates — Jerusalem, Rome, Constantinople, Alexandria, and Antioch — enumerating the lands and peoples under each throne's ecclesiastical authority.",
+    sourceUrl: "https://el.wikisource.org/wiki/Γνῶσις_καὶ_ἐπίγνωσις_τῶν_πατριαρχῶν_θρόνων",
+    processedDir: "data/processed/gnosis-patriarchon-thronon",
+    compositionYear: 800,
+    compositionEra: "Middle Byzantine",
+    textType: "prose" as const,
+    genre: "history" as const,
+  },
+  {
+    title: "On the Inequality of Life (Εἰς τὴν τοῦ βίου ἀνισότητα)",
+    titleOriginalScript: "Εἰς τὴν τοῦ βίου ἀνισότητα",
+    slug: "eis-tin-tou-biou-anisotita",
+    languageCode: "grc",
+    authorSlug: "christopher-of-mytilene",
+    description:
+      "A 37-line poem in iambic trimeter addressing God on the injustice of worldly inequality. With bitter eloquence, Christopher demands to know why some feast while others starve, and provocatively suggests that annihilation would be preferable to cosmic unfairness.",
+    sourceUrl: "https://archive.org/details/diegedichtedes00chriuoft",
+    processedDir: "data/processed/eis-tin-tou-biou-anisotita",
+    compositionYear: 1030,
+    compositionEra: "Middle Byzantine",
+    textType: "poetry" as const,
+    genre: "literature" as const,
+  },
+  {
+    title: "Mai ve Siyah (Blue and Black)",
+    titleOriginalScript: "Mai ve Siyah",
+    slug: "mai-ve-siyah",
+    languageCode: "tr",
+    genre: "literature" as const,
+    textType: "prose" as const,
+    authorSlug: "halit-ziya-usakligil",
+    description:
+      "A landmark Turkish novel following Ahmet Cemil, a young poet in late Ottoman Istanbul, whose literary ambitions and romantic ideals collide with the harsh realities of the press world and social convention. The title's 'Blue and Black' symbolizes the contrast between dreams and disillusionment.",
+    sourceUrl: "https://archive.org/details/mai-ve-siyah",
+    processedDir: "data/processed/mai-ve-siyah",
+    compositionYear: 1897,
+    compositionEra: "Late Ottoman",
+  },
+] as const;
 
 // ============================================================
 // Seed functions

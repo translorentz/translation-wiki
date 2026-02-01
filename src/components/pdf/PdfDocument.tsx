@@ -232,9 +232,36 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
     }
   }
 
-  // Add page numbers (skip title page)
+  // Colophon page
+  doc.addPage();
+  const colophonY = PAGE_HEIGHT / 2 - 40;
+  doc.font(FONT_ITALIC).fontSize(11).fillColor("#666666");
+  doc.text("Translated at Deltoi", MARGIN_LEFT, colophonY, {
+    width: CONTENT_WIDTH,
+    align: "center",
+  });
+  doc.moveDown(0.5);
+  doc.font(FONT_REGULAR).fontSize(10).fillColor("#999999");
+  doc.text("Trial Project by Bryan Cheong", MARGIN_LEFT, doc.y, {
+    width: CONTENT_WIDTH,
+    align: "center",
+  });
+  doc.moveDown(1.5);
+  const now = new Date();
+  const downloadDate = now.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  doc.font(FONT_REGULAR).fontSize(9).fillColor("#aaaaaa");
+  doc.text(`Downloaded on ${downloadDate}`, MARGIN_LEFT, doc.y, {
+    width: CONTENT_WIDTH,
+    align: "center",
+  });
+
+  // Add page numbers (skip title page and colophon)
   const totalPages = doc.bufferedPageRange().count;
-  for (let i = 1; i < totalPages; i++) {
+  for (let i = 1; i < totalPages - 1; i++) {
     doc.switchToPage(i);
     addPageNumber(doc, i);
   }

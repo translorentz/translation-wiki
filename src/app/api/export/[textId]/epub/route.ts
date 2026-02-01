@@ -119,6 +119,21 @@ export async function GET(
     }),
   ];
 
+  // Colophon
+  const now = new Date();
+  const downloadDate = now.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const colophonHtml = `
+<div style="text-align: center; margin-top: 6em;">
+  <p style="text-indent: 0; font-style: italic; color: #666;">Translated at Deltoi</p>
+  <p style="text-indent: 0; color: #999; font-size: 0.9em;">Trial Project by Bryan Cheong</p>
+  <p style="text-indent: 0; color: #aaa; font-size: 0.85em; margin-top: 2em;">Downloaded on ${escapeHtml(downloadDate)}</p>
+</div>`;
+  epubChapters.push({ title: "Colophon", content: colophonHtml });
+
   try {
     const buffer = await epub(
       {

@@ -511,6 +511,92 @@ DO NOT:
 - Merge or split paragraphs
 - Modernise archaic vocabulary — if the Polish is deliberately archaic, use an older English register
 - Over-explain cultural references that the original leaves implicit`,
+
+  te: `You are translating Telugu devotional poetry (śatakam tradition) from the 16th century Vijayanagara period to English.
+
+CONTEXT:
+- This is Sri Kalahasteeswara Satakam by Dhurjati, a century of verses addressed to Lord Shiva at Srikalahasti
+- The poetry is in the śatakam (century/hundred) form — each verse ends with the refrain "Śrī Kāḷahastīśvarā!"
+- The language is classical Telugu with heavy Sanskrit influence (samskritam)
+- Metre: mostly sīsa padyam (a classical Telugu verse form)
+
+TRANSLATION APPROACH:
+- Translate into dignified, literary English prose that captures the devotional intensity
+- Preserve the verse structure — each verse is one paragraph, do not split or merge
+- Render the refrain "శ్రీ కాళహస్తీశ్వరా!" as "O Lord of Śrī Kāḷahasti!" at the end of each verse
+- Sanskrit philosophical/devotional terms: use standard English equivalents where clear (moksha = liberation, maya = illusion, karma = karma, samsara = cycle of rebirth, bhakti = devotion)
+- Preserve the emotional register: fervent devotion, self-abasement before God, philosophical reflection
+
+NAMES AND TERMS:
+- Śiva/Shiva, Vishnu, Brahma — use standard English transliterations
+- Preserve Telugu/Sanskrit compound epithets in translation (e.g., "destroyer of the three cities," "bearer of the crescent moon")
+- Temple and place names: keep transliterated (Śrī Kāḷahasti, Kailāsa, etc.)
+
+DO NOT:
+- Add explanatory footnotes or commentary
+- Merge or split verses
+- Simplify the devotional imagery — preserve metaphors and theological concepts`,
+
+  cs: `You are translating Czech literary prose from the late 19th century to English.
+
+CONTEXT:
+- This is satirical/humorous fiction from the Czech literary tradition
+- The prose style blends colloquial speech with literary narration
+- Authors like Svatopluk Čech use ironic social commentary and playful digressions
+
+TRANSLATION APPROACH:
+- Translate into fluent, readable English that preserves the humour and irony
+- Match the narrative register: formal narration vs colloquial dialogue vs satirical asides
+- Preserve the author's characteristic long sentences and rhetorical flourishes where they serve the comedy
+- Translate Czech proverbs and idioms into natural English equivalents rather than literal translations
+
+NAMES AND PLACES:
+- Keep Czech names as-is (they are Latin script): Brouček, Würfl, Klapzuba, etc.
+- Prague landmarks: use Czech names (Hradčany, Vikárka, Černá věž) — the setting is integral to the text
+- Titles: pan/paní = Mr/Mrs or sir/madam
+
+CZECH-SPECIFIC CONVENTIONS:
+- Diminutives are expressive — convey the tone, not the literal form
+- Historical/cultural references (Hussite wars, Czech national revival) — translate naturally without explanation
+- Archaic Czech forms should be rendered in a slightly older English register
+
+DO NOT:
+- Add explanatory footnotes or commentary
+- Merge or split paragraphs
+- Flatten the satirical tone into neutral prose`,
+
+  tr: `You are translating late 19th-century Ottoman Turkish literary prose to English.
+This is the Servet-i Fünun (Edebiyat-ı Cedide / New Literature) period, when Turkish novelists adopted French realist and naturalist techniques while writing in an ornate, heavily Persianate Ottoman literary register.
+
+CORE PRINCIPLES:
+1. FIDELITY: Translate what the text says. Preserve the author's voice, elaborate imagery, and psychological depth.
+2. READABILITY: Produce natural, flowing English suitable for a literary audience.
+3. REGISTER: This prose is consciously literary — long, sinuous sentences, dense metaphors, impressionistic description. Preserve the complexity and rhythm; do not simplify into plain modern English.
+
+STYLISTIC GUIDANCE:
+- Servet-i Fünun authors (Halit Ziya, Mehmet Rauf, Tevfik Fikret) write in a highly literary, Frenchified Ottoman style
+- Long, subordinate-clause-heavy sentences are deliberate — preserve the cadence
+- Impressionistic description of settings, light, atmosphere is central — translate with equivalent sensory precision
+- Interior monologue and free indirect discourse are common — render naturally
+- Dialogue should distinguish between formal speech (efendi, bey) and casual conversation
+
+NAMES AND PLACES:
+- Keep Turkish names as-is (they are Latin script in modern Turkish): Ahmet Cemil, Hüseyin Nazmi, Raci, etc.
+- Ottoman titles: efendi (sir/gentleman), bey (Mr/sir), paşa (pasha), hanım (madam/lady)
+- Istanbul places: use Turkish forms (Tepebaşı, Beyoğlu, Haliç = the Golden Horn)
+- Newspapers and publications: transliterate as-is (Mir'at-ı Şuun, Gencine-i Edeb)
+
+TURKISH-SPECIFIC CONVENTIONS:
+- Ottoman literary vocabulary: translate Persian/Arabic loanwords naturally into English; do not transliterate unless the term is a proper noun
+- imtiyaz sahibi = proprietor/publisher, başyazar = chief editor, matbaa = printing house
+- Diminutives and affective suffixes — convey the emotional register in English
+- Cultural context: late Ottoman Istanbul literary circles, press culture, French literary influence — translate naturally without footnotes
+
+DO NOT:
+- Add explanatory footnotes or commentary
+- Merge or split paragraphs
+- Modernise the prose style — this is deliberately ornate 1890s literary Turkish
+- Simplify the author's characteristic long, winding sentences`,
 };
 
 export function buildTranslationPrompt({

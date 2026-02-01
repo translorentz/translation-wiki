@@ -1,5 +1,135 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-01-31 Session 41 — Multi-Language Completion
+
+### Completed This Session
+- **Latin:** 2 texts (16ch) translated ✓ (Phosphori 1ch, De Quindecim 15ch)
+- **Greek:** 2 texts (2ch) translated ✓ (Gnosis 1ch, Eis tin tou biou 1ch)
+- **Czech:** 1 text (14ch) seeded + translated ✓ (Nový epochální výlet pana Broučka)
+- **Telugu:** 116 verses merged into 1 chapter, translated ✓ (Sri Kalahasteeswara Satakam)
+- **Italian:** W1 done (32ch), W4 done (29/31ch), W3b done (25ch). W2+W3a finishing.
+- **De Sorbetti:** ABANDONED per user instruction
+
+### Pipeline Status Summary
+| Pipeline | Status |
+|----------|--------|
+| Chinese | COMPLETE (99.94%) |
+| Polish | COMPLETE (231/231) |
+| Armenian | COMPLETE (18/18) |
+| Latin | COMPLETE (2 clean texts; 2 OCR deferred) |
+| Greek | COMPLETE (2 clean texts; Pisidia inaccessible) |
+| Czech | COMPLETE (14/14) |
+| Telugu | COMPLETE (1ch, 116 verses) |
+| Italian | ~92% (135/147, W2+W3a finishing) |
+| Gujarati | BLOCKED (source access) |
+| Turkish | BLOCKED (PDF only) |
+
+---
+
+## 2026-01-31 Session 40 — Italian Pipeline + Polish Completion
+
+### Italian Pipeline (8 viable / 15 suggested)
+
+**Phase 1 — Verification (COMPLETE):**
+- Agent abb82f1 checked all 15 suggested texts
+- 8 viable, 7 rejected (incomplete sources, Renaissance OCR difficulties, Annali d'Italia deferred for token economy)
+- Results: `data/it-pipeline/verified-texts.json`
+
+**Phase 2 — Processing (IN PROGRESS):**
+- Processor A (aa1c840): COMPLETE ✓ — 4 texts, 51 chapters, 1,871 paragraphs
+  - dio-ne-scampi-dagli-orsenigo: 25ch, 554 para (Wikisource)
+  - la-filosofia-italiana-spaventa: 20ch, 1,069 para (Gutenberg)
+  - la-psicologia-come-scienza-positiva: 5ch, 229 para (Wikisource)
+  - saggio-durata-regni-re-di-roma: 1ch, 19 para (Wikisource)
+- Processor B (ab3dad5): RUNNING — 4 texts
+  - del-rinnovamento-civile-d-italia: ~28ch (Wikisource 75%)
+  - psicologia-delle-menti-associate: ~6ch (PDF source)
+  - de-sorbetti: ~8ch (Archive.org)
+  - confessioni-di-un-metafisico: ~20ch (Wikisource)
+
+**Phase 3 — Quality Review (PENDING):**
+- Launch review agent once Processor B completes
+- Agent samples chapters from all 8 texts, grades cleanliness (HTML artifacts, encoding, paragraph structure)
+- Must reach B+ before proceeding
+- Same dual-agent pattern used for Polish, Chinese, OCR cleaning pipelines
+
+**Phase 4 — Seeding (PENDING):**
+- Add 8 Italian authors + 8 texts to seed-db.ts
+- Set genre field for each (literature, philosophy, science, history)
+- Run `pnpm tsx scripts/seed-db.ts`
+
+**Phase 5 — Translation Prompt Check (PENDING):**
+- `it-literary-19c` prompt exists for Italian literature (19th century prose)
+- Need to verify coverage for philosophy/science texts — may need `it-philosophy` or generic `it` prompt
+- Check `src/server/translation/prompts.ts` for auto-selection rules
+- Note: translate-batch.ts auto-selects `it-literary-19c` for Italian literature based on genre field
+
+**Phase 6 — Translation (PENDING):**
+- Split across multiple workers by text/chapter ranges
+- Use `pnpm tsx scripts/translate-batch.ts --text <slug>`
+- Estimated ~103 chapters across 8 texts
+
+**Rejected texts (revisitable later):**
+- Annali d'Italia (Muratori): Deferred for token economy, not hard size limit
+- La desinenza in A (Dossi): 25% on Wikisource, experimental dialect
+- Del merito e delle ricompense (Gioia): Not on Wikisource, two large volumes
+- Platone in Italia (Cuoco): 25% on Wikisource, two volumes
+- L'Anthropologia (Capella): DjVu scans only, 16th-century typeface
+- Dialogo sopra la generatione... (Agrippa): Not on Wikisource, 16th-century archaic Italian
+- Fisionomia naturale (Ingegneri): 1606 scans, early 17th-century typography
+
+### Polish Pipeline Status Update
+- W3 (fermenty): COMPLETE ✓ — 40/40 chapters
+- W4 (stara-basn): COMPLETE ✓ — 31/31 chapters
+- W5 (a6d4279): paluba + ozimina — STILL RUNNING
+- W6 (a9614d1): syzyfowe-prace + dziurdziowie + wampir — STILL RUNNING
+- W7 (ac4cb45): bene-nati + general-barcz + cham — STILL RUNNING
+- **Progress:** 136/231 chapters translated (59%)
+
+---
+
+## 2026-01-31 Session 39 — Polish + Armenian Pipelines + Quality Improvements
+
+### Polish Pipeline (11 texts, 231 chapters)
+- **Phase 0:** Added `pl` language, translation prompt, LANGUAGE_DISPLAY_NAMES
+- **Phase 2:** Verification agent checked 12 curated texts → 6 found, 5 replacements = 11 total
+- **Phase 3:** 2 processor agents (ad0602b, a378bff) scraped 231 chapters across 11 texts
+- **Phase 4:** Review agent (a71677d) PASS — 1 minor `<br` tag in syzyfowe-prace ch4 p29 (fixed)
+- **Phase 6:** Seeded all 11 texts + 7 authors into DB
+- **Phase 7:** 7 translation workers launched:
+  - W1 (aa39e56): dzieje-grzechu 1-33 — COMPLETE ✓
+  - W2 retry (aa0b4b2): dzieje-grzechu 37-65 — COMPLETE ✓ (original W2 a76ff62 only got 34-36)
+  - W3 (a62a0f4): fermenty 1-40 — RUNNING
+  - W4 (aacd6c1): stara-basn 1-31 — RUNNING
+  - W5 (a6d4279): paluba + ozimina — RUNNING
+  - W6 (a9614d1): syzyfowe-prace + dziurdziowie + wampir — RUNNING
+  - W7 (ac4cb45): bene-nati + general-barcz + cham — RUNNING
+
+### Armenian Pipeline (1 text, 18 chapters)
+- **Key finding:** hy.wikisource.org is very sparse — only 1/18 suggested texts had transcribed content
+  - Processor A (a43fb8c): 0/5 available (Salbi = DjVu scans only, rest redlinks)
+  - Processor B (a565f52): 1/5 available — Payqar (The Struggle) by Nar-Dos, 18 chapters
+  - 9/10 modern texts UNAVAILABLE, all 3 classical texts need archive.org OCR
+- Added Nar-Dos author + Payqar text to seed-db.ts, seeded to DB
+- Translation worker (af17f42): RUNNING, using translate-armenian.ts
+
+### Pipeline Queue Updates
+- Added Greek (grc) as priority 10 with 12 works from curated list
+- Armenian pipeline yield much lower than expected — hy.wikisource.org needs OCR/transcription work
+
+### Quality Improvement Agents
+- **Blurb agent (afea07d):** Rewriting text descriptions in seed-db.ts — ~20/138 done, RUNNING
+- **Title agent (a99a299):** Adding English translations to non-Latin-script chapter titles — RUNNING
+
+### Bug Fix
+- TextEditor.tsx paragraph index bug: was using 0-based array index instead of original 1-based paragraph index from sourceContent. Fixed in commit ca98764.
+
+### Documentation
+- Added Chapter Title Convention section to CLAUDE.md
+- Documented requirement: all non-Latin-script chapter titles must include English translation
+
+---
+
 ## 2026-01-30 Session 38 — Export Buttons + Chinese Pipeline Final Push
 
 ### Known Gaps: mengliang-lu ch 18 and 20

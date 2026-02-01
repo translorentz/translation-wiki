@@ -4,7 +4,7 @@
 # Claude Code sessions and subagents. Always read this file at the start
 # of a session to understand the current state of the project.
 #
-# Last updated: 2026-01-30 (Session 38)
+# Last updated: 2026-01-31 (Session 40)
 
 ################################################################################
 # ⚠️  CRITICAL SECURITY WARNING — READ FIRST  ⚠️
@@ -82,7 +82,7 @@ Tables:
 - discussion_threads, discussion_posts
 
 Current data:
-- 8 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil), it (Italian), hy (Armenian), ms (Malay)
+- 9 languages: zh (Classical Chinese), grc (Koine Greek), la (Latin), en (English), ta (Tamil), it (Italian), hy (Armenian), ms (Malay), pl (Polish)
 - 26 authors seeded: Zhu Xi, Constantine VII, Wang Yangming, Cassiodorus,
   Henry of Settimello, Erchempert, Hugo Falcandus, Yuan Shu, Huangdi (trad.),
   Theodore Prodromos, Wilhelm Wagner, Guliang Chi, Mudathirumaran, Ban Gu,

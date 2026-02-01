@@ -21,6 +21,7 @@ Pipelines execute sequentially (one language at a time) to avoid overwhelming AP
 | 7 | **Gujarati (gu)** | gu.wikisource.org | 1 | Yes | New language — needs prompt |
 | 8 | **Telugu (te)** | te.wikisource.org | 1 | Yes | New language — needs prompt |
 | 9 | **Turkish (tr)** | tr.wikisource.org | 1 | Yes | New language — needs prompt (Ottoman?) |
+| 10 | **Greek (grc)** | el.wikisource.org | 12 | Yes | Curated list available; already have `grc` prompt |
 
 **Total:** 9 pipelines, ~50 target works (excluding Chinese already running). Targets are approximate — verification will filter down to confirmed texts. Reduced from original ~145 due to resource constraints (Session 38).
 
@@ -35,7 +36,7 @@ Before launching each pipeline, verify:
 1. [ ] Previous pipeline fully complete (all translations done, gap-check passed)
 2. [ ] `docs/text-inventory.md` updated with previous pipeline results
 3. [ ] Commit + push previous pipeline's data
-4. [ ] **Check for User-curated text list** in `docs/<language>_text_suggestions.txt` — if it exists, use it directly (skip research phase). Currently available: `polish_text_suggestions.txt`, `armenian_text_suggestions.txt`, `latin_text_suggestions.txt`
+4. [ ] **Check for User-curated text list** in `docs/<language>_text_suggestions.txt` — if it exists, use it directly (skip research phase). Currently available: `polish_text_suggestions.txt`, `armenian_text_suggestions.txt`, `latin_text_suggestions.txt`, `greek_text_suggestions.txt`
 5. [ ] If no curated list: run research + verification agents to find texts on Wikisource
 6. [ ] **Fallback rule:** If a scraper can't find a curated work on Wikisource, it may spin up the research agent workflow to find a substitute
 7. [ ] Check if translation prompt exists for this language in `src/server/translation/prompts.ts`
@@ -128,7 +129,7 @@ Before launching each pipeline, verify:
   - May overlap with Sanskrit originals — ensure we're translating the Telugu version, not retranslating Sanskrit
 
 ### 9. Turkish (tr) — QUEUED
-- **Target:** ~5 works, pre-1900, from tr.wikisource.org (target is approximate)
+- **Target:** ~1 work, pre-1900, from tr.wikisource.org
 - **Prompt needed:** New `tr` prompt — Ottoman Turkish literary prose
 - **Considerations:**
   - Pre-1900 Turkish is Ottoman Turkish (Arabic script, heavy Persian/Arabic vocabulary)
@@ -137,6 +138,19 @@ Before launching each pipeline, verify:
   - If only Ottoman script available for an important text, it may still be included but note the encoding challenge
   - Important: Evliya Celebi, Katip Celebi, Naima — verify translation status
   - Smallest batch (~5 works) — manageable even with script challenges
+
+### 10. Greek (grc) — QUEUED
+- **Target:** 12 works from User-curated list in `docs/greek_text_suggestions.txt`
+- **Research phase: SKIP** — use the curated list directly instead of running a research agent
+- **Fallback:** If a scraper can't find a specific work on Wikisource, it may spin up the research agent workflow to find a substitute
+- **Prompt:** Existing `grc` prompt covers Medieval/Byzantine Greek — but new texts span different genres (theological polemic, hagiography, panegyric poetry, epigrams, patristic) and may need prompt variants
+- **Considerations:**
+  - Already have Historia Nova (287ch), Eustathius Odyssey (27ch), Carmina Graeca (21 works), Epitome of Histories (18ch), Semeioseis Gnomikai, Catomyomachia on Deltoi — exclude those
+  - Curated list includes: Theodore Mouzalon (anti-Bekkos polemic, hagiography), Eusebius (patristic), Evagrius Ponticus (monastic), George of Pisidia (panegyric verse), Kassia (poetry/epigrams), Christopher of Mytilene (epigrams), anonymous inscriptional epigrams
+  - Many are short works — chapter counts will be small (possibly 1-5 chapters each)
+  - Source availability: el.wikisource.org, possibly other digital Greek text repositories (TLG, Perseus, Bibliotheca Augustana)
+  - George of Pisidia and Kassia are verse — may need `textType: "poetry"` and poetry-specific prompt variant
+  - Theological/polemical texts (Mouzalon, Eusebius) need careful terminology handling
 
 ---
 
@@ -187,7 +201,8 @@ Existing prompts that WILL likely need new variants (prompts are narrowly tailor
 | Gujarati | 1 | ~20 | 1 | ~20 |
 | Telugu | 1 | ~20 | 1 | ~20 |
 | Turkish | 1 | ~20 | 1 | ~20 |
-| **Total** | **~50** | **~1,285** | — | **~1,285** |
+| Greek | 12 | ~60 | 2-3 | ~60 |
+| **Total** | **~62** | **~1,345** | — | **~1,345** |
 
 Combined with Chinese (~47 texts, ~3,358 chapters), the full queue represents ~97 texts and ~4,643 chapters.
 

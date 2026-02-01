@@ -28,7 +28,7 @@ function RegisterForm() {
   const register = useMutation(
     trpc.users.register.mutationOptions({
       onSuccess: () => {
-        router.push("/login");
+        router.push("/register/success");
       },
     })
   );

@@ -46,35 +46,41 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
-## Active Tasks (2026-01-30, Session 38)
+## Active Tasks (2026-01-31, Session 41)
 
 ### IN PROGRESS
-
 | Task | Status | Notes |
 |------|--------|-------|
-| Chinese Mass Pipeline Translation | 8 workers (W1-W7,W9-W11) | 2,512/3,155 chapters (80%), see `ACTIVE_AGENTS.md` |
-| Huangdi Neijing Reprocess + Translate | 1 worker | 162 chapters, reprocessed by 篇 |
+| Italian Translation | ~92% (135/147) | W2+W3a finishing last chapters |
 
-### SESSION 38 COMPLETED
-- PDF export: pdfkit-based, EB Garamond serif, title page, chapter breaks, page numbers ✓
-- EPUB export: epub-gen-memory, styled XHTML chapters, TOC ✓
-- ExportButtons component: PDF + EPUB side by side on text index pages ✓
-- Gemini API key restored ✓
-- W8 (a249ccd) completed: sui-tang-yanyi, dongjing-menghua-lu, xijing-zaji (93 chapters) ✓
+### SESSION 41 COMPLETED
+- Latin: 2 texts (16ch) translated ✓
+- Greek: 2 texts (2ch) translated ✓
+- Czech: 1 text (14ch) seeded + translated ✓
+- Telugu: 116 verses merged → 1 chapter, translated ✓
+- Italian W1 (32ch), W3b (25ch), W4 (29ch) complete ✓
+- De Sorbetti: ABANDONED
+- Polish: 231/231 COMPLETE ✓
+- Homepage highlights section ✓
+
+### SESSION 40 COMPLETED
+- Polish W3-W7: all 11 texts, 231/231 translated ✓
+- Italian verification: 8/15 viable ✓
+- Italian Processor A+B: 8 texts, 153 chapters, 6,466 paragraphs ✓
+- Italian Quality Review + Cleanup: all 7 viable texts grade A ✓
+- Documented Standard Multi-Language Pipeline workflow in CLAUDE.md ✓
+
+### SESSION 39 COMPLETED
+- Polish pipeline Phases 0-6: language setup, verification, processing, review, seeding ✓
+- Polish W1+W2: dzieje-grzechu 65/65 chapters translated ✓
+- Armenian pipeline: verified 18 candidates, processed + translated Payqar (18ch) ✓
+- Blurb agent: ~138 descriptions rewritten ✓
+- Title agent: ~2,087 chapter titles updated ✓
+- Greek added to pipeline queue (priority 10, 12 works from curated list) ✓
 
 ### EARLIER COMPLETED
-- Chinese mass pipeline: 44 texts scraped, processed, reviewed, seeded (1,619 chapters) ✓
-- Epitome of Histories: consolidated + translated 18 chapters ✓
-- Syair Siti Zubaidah: OCR cleaned, seeded, translated 19 chapters ✓
-- Semeioseis Gnomikai: V4 cleaning B+ SATISFIED, 38/38 translated ✓
-- La Scapigliatura: V2 cleaning B+ SATISFIED, 18/18 translated ✓
-- Pinhua Baojian: 60/60 translated ✓
-- Shiqi Shi Baijiang Zhuan: 100/100 translated ✓
-- Chinese novels: Dongzhou (108), Sanbao (100), Xingshi (100) — 308 chapters ✓
-- Italian novels: La Giovinezza (41), Cento Anni (21) — 62 chapters ✓
-- Armenian texts: 6 texts, 195 chapters ✓
-- Carmina Graeca: 21/21 translated ✓
-- Catomyomachia: 6/6 translated ✓
+- Chinese mass pipeline: ~3,356/3,358 chapters (99.94%) ✓
+- All previous texts (see text-inventory.md for full list) ✓
 
 ---
 
@@ -157,7 +163,8 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 | `la` | Latin (chronicle, philosophy, poetry) |
 | `ta` | Classical Tamil (Sangam + Medieval) |
 | `it` | 15th-century Romanesco/Latin (Diarium Urbis Romae only) |
-| `it-literary-19c` | 19th-century Italian literary prose (Rovani, etc.) |
+| `it-literary-19c` | 19th-century Italian literary prose (Rovani, Imbriani, etc.) |
+| `it-nonfiction-19c` | 18th-19th century Italian non-fiction (philosophy, science, history) |
 | `hy` | 19th-20th century Armenian literature |
 
 **If no suitable prompt exists:** Create one before translating. The prompt should specify the text's period, genre, terminology, and stylistic conventions. See existing prompts for examples.
@@ -215,6 +222,83 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 
 ---
 
+## Standard Multi-Language Pipeline (for new languages/batches)
+
+**Use case:** Adding a new language or batch of texts from Wikisource, Gutenberg, or Archive.org. This is the standard 6-phase workflow used for Polish, Armenian, Italian, and future language batches.
+
+### Phase 1 — Verification
+- **Input:** A suggestions file (e.g., `docs/italian_text_suggestions.txt`) with author-title pairs
+- **Agent:** Verification agent checks each text for:
+  - Source availability (Wikisource transcribed text, Gutenberg HTML, Archive.org OCR)
+  - Chapter count and structure
+  - Existing English translations (reject if already translated)
+  - Text size feasibility
+  - Source quality (proofread %, OCR vs transcribed, archaic typography)
+- **Output:** `data/<lang>-pipeline/verified-texts.json` with viable/not-viable verdicts
+- **Pass criterion:** Text must have clean, accessible source text. DjVu-only or <25% Wikisource completion = not viable without OCR pipeline.
+
+### Phase 2 — Processing
+- **Agents:** 2 processor agents split the viable texts
+- **Task:** Scrape source text, structure into `data/processed/<slug>/chapter-NNN.json`
+- **JSON format:** `{ "title": "Italian Title (English Title)", "paragraphs": ["para1", "para2", ...] }`
+- **Title convention:** Include English translation for non-Latin-script titles; Italian/Latin/etc. titles include English in parentheses
+- **Clean:** Remove HTML artifacts, footnote markers, page numbers, Wikisource navigation
+- **Output:** Chapter JSON files in `data/processed/<slug>/`
+
+### Phase 3 — Quality Review
+- **Agent:** Independent review agent samples chapters from ALL processed texts
+- **Checks:** HTML artifacts, encoding issues, paragraph structure integrity, text completeness, title format
+- **Grading:** A-F scale. Must reach B+ before proceeding.
+- **If issues found:** Fix and re-review. Do NOT proceed to seeding with unreviewed or low-grade texts.
+- **Output:** Review report with per-text grades and specific issues
+
+### Phase 4 — Seeding
+- **Add to `scripts/seed-db.ts`:**
+  - New language (if first text in that language): add to `languages` array
+  - New authors: add to `authors` array with name, nameOriginalScript, slug, era, description
+  - New texts: add to `texts` array with all required fields (title, titleOriginalScript, slug, languageCode, authorSlug, description, sourceUrl, processedDir, compositionYear, compositionEra, genre, textType)
+- **MANDATORY:** Set `genre` field (philosophy, commentary, literature, history, science, ritual)
+- **Run:** `pnpm tsx scripts/seed-db.ts`
+- **Verify:** Check DB for correct chapter counts
+
+### Phase 5 — Translation Prompt Check
+- **Check `src/server/translation/prompts.ts`** for a suitable prompt matching the text's language, period, and genre
+- **Auto-selection rules:** `translate-batch.ts` auto-selects variant prompts based on genre:
+  - Chinese literature/history → `zh-literary`
+  - Italian literature → `it-literary-19c`
+- **If no suitable prompt:** Create one before translating. Include period, genre, terminology conventions, stylistic guidance.
+- **Language-specific scripts:** Armenian uses `translate-armenian.ts`, Tamil uses `translate-tamil.ts`, all others use `translate-batch.ts`
+
+### Phase 6 — Translation
+- **Split** texts across multiple background workers by chapter range
+- **Script:** `pnpm tsx scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
+- **Monitor:** Track workers in ACTIVE_AGENTS.md with agent IDs, chapter ranges, status
+- **Skip logic:** Already-translated chapters are automatically skipped
+- **Gap check:** After all workers complete, verify no chapters were missed
+
+### Pipeline Data Files
+| File | Purpose |
+|------|---------|
+| `docs/<lang>_text_suggestions.txt` | User-provided text suggestions |
+| `data/<lang>-pipeline/verified-texts.json` | Verification results |
+| `data/processed/<slug>/chapter-NNN.json` | Processed chapter files |
+
+### Completed Pipelines
+| Language | Texts | Chapters | Status |
+|----------|-------|----------|--------|
+| Chinese (zh) | ~50 | ~3,358 | COMPLETE (99.94%) |
+| Greek (grc) | ~14 | ~500+ | COMPLETE (clean texts; Pisidia inaccessible) |
+| Latin (la) | ~7 | ~260+ | COMPLETE (clean texts; 2 OCR deferred) |
+| Tamil (ta) | ~5 | ~500+ | COMPLETE |
+| Armenian (hy) | 7 | ~213 | COMPLETE |
+| Italian (it) | 9 | ~147 | ~92% (W2+W3a finishing) |
+| Polish (pl) | 11 | 231 | COMPLETE |
+| Malay (ms) | 1 | 19 | COMPLETE |
+| Czech (cs) | 1 | 14 | COMPLETE |
+| Telugu (te) | 1 | 1 (116 verses) | COMPLETE |
+
+---
+
 ## Iterative Cleaning Pipeline (for complex OCR texts)
 
 **Use case:** Bilingual parallel editions, heavy apparatus contamination, multiple volumes
@@ -268,6 +352,27 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 | Tamil Pipeline | All Tamil (Gemini) | `scripts/translate-tamil.ts` |
 | Armenian Translation | All Armenian (DeepSeek) | `scripts/translate-armenian.ts` |
 | Batch Translation | zh/grc/la/it | `scripts/translate-batch.ts` |
+
+---
+
+## Chapter Title Convention
+
+**Every chapter title MUST include an English translation** displayed in grey on the chapter index page. The `parseChapterTitle()` utility in `src/lib/utils.ts` extracts the English portion.
+
+**Supported formats:**
+- `"原文標題 (English Title)"` — parenthetical (preferred for CJK, Greek, etc.)
+- `"Հայeren — English Title"` — em-dash (used for Armenian)
+
+**Examples:**
+- `"爵 (Ranks and Titles)"` → shows "爵" with grey "(Ranks and Titles)"
+- `"Գლուխ 1 — Chapter 1"` → shows "Գլុხ 1" with grey "Chapter 1"
+- `"Tom pierwszy, I (Volume One, Chapter I)"` → shows original with grey English
+
+**Rules:**
+- If the title is already in English/Latin script only (e.g. Italian, Latin, Polish), no translation needed
+- For CJK, Greek, Armenian, Tamil, Malay: always include English in parentheses or em-dash
+- For numbered-only titles like "第一卷" or "Κεφάλαιο Α", translate: "第一卷 (Volume 1)"
+- Titles are stored in `chapters.title` DB column (varchar 500) and in `data/processed/<slug>/chapter-NNN.json`
 
 ---
 
