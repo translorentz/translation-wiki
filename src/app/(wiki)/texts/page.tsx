@@ -18,6 +18,7 @@ interface LanguageGroup {
       slug: string;
       totalChapters: number;
       genre: string;
+      sortOrder: number | null;
     }[];
   }[];
 }
@@ -127,7 +128,25 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       slug: text.slug,
       totalChapters: text.totalChapters,
       genre: text.genre || "uncategorized",
+      sortOrder: text.sortOrder ?? null,
     });
+  }
+
+  // Sort texts within each author group by sortOrder (if set), then by title
+  for (const langGroup of languageMap.values()) {
+    for (const authorGroup of langGroup.authors) {
+      authorGroup.texts.sort((a, b) => {
+        // If both have sortOrder, use it (ascending)
+        if (a.sortOrder !== null && b.sortOrder !== null) {
+          return a.sortOrder - b.sortOrder;
+        }
+        // If only one has sortOrder, it comes first
+        if (a.sortOrder !== null) return -1;
+        if (b.sortOrder !== null) return 1;
+        // Otherwise sort by title
+        return a.title.localeCompare(b.title);
+      });
+    }
   }
 
   // Sort languages by descending text count (most prolific first)

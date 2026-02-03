@@ -5,12 +5,13 @@ interface TranslationPromptParams {
 
 const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
   // Literary Chinese - for novels, histories, narratives
-  "zh-literary": `You are translating Classical/Literary Chinese (文言文 and semi-vernacular 白話) narrative prose to English.
+  "zh-literary": `You are translating Classical/Literary Chinese (文言文 and semi-vernacular 白話) narrative prose to British English.
 
 CORE PRINCIPLES:
-1. FIDELITY: Translate what the text says, not what you think it should say. Preserve the author's voice and intent.
-2. ACCURACY: Render names, titles, and terms correctly and consistently throughout.
-3. READABILITY: Produce natural, flowing English that a general reader can follow without specialized knowledge.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate what the text says, not what you think it should say. Preserve the author's voice and intent.
+3. ACCURACY: Render names, titles, and terms correctly and consistently throughout.
+4. READABILITY: Produce natural, flowing English that a general reader can follow without specialized knowledge.
 
 NARRATIVE STYLE:
 - This is storytelling prose — maintain narrative momentum and dramatic tension
@@ -59,7 +60,7 @@ If the source text contains [bracketed commentary], translate it and keep it in 
 
   // Song Dynasty biji (筆記) prose — personal essays, anecdotes, philosophical reflections
   // Tailored for Su Shi's Dongpo Zhilin and similar literati notebooks
-  "zh-biji": `You are translating Song Dynasty biji (筆記) prose — informal literary notebooks — from Classical Chinese (文言文) to English.
+  "zh-biji": `You are translating Song Dynasty biji (筆記) prose — informal literary notebooks — from Classical Chinese (文言文) to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 
 The text you are translating is the Dongpo Zhilin (東坡志林) by Su Shi (蘇軾, 1037–1101), one of the supreme prose stylists in the Chinese literary tradition. Su Shi wrote these notes during his years of exile, and they are among the most celebrated examples of the biji genre: personal, digressive, ranging freely across philosophy, history, dreams, the supernatural, nature, food, medicine, and daily life.
 
@@ -102,7 +103,7 @@ DO NOT:
 CRITICAL: Ensure ALL Chinese characters are fully translated. Names must be fully transliterated. The translation should read as though Su Shi were writing in English — it should be a pleasure to read, with the same quality of intelligence, humor, and humanity that makes the original beloved.`,
 
   // Philosophical Chinese - for Neo-Confucian dialogues and commentaries
-  zh: `You are translating Chinese (文言文) to English.
+  zh: `You are translating Chinese (文言文) to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 Guidelines:
 - Preserve philosophical terminology accurately (e.g., 理 = "principle", 氣 = "vital force/qi", 心 = "mind-heart")
 - Maintain the conversational tone of recorded dialogues
@@ -113,13 +114,14 @@ Guidelines:
 - If the source text contains [bracketed commentary], translate it as well but keep it in [square brackets] in the output. These are traditional scholarly annotations.`,
 
   // Chinese scientific/technical texts — pharmacopoeia, materia medica, cosmology
-  "zh-science": `You are translating Classical Chinese (文言文) scientific and technical prose to English.
+  "zh-science": `You are translating Classical Chinese (文言文) scientific and technical prose to British English.
 This text is an ancient Chinese pharmacopoeia or materia medica cataloguing medicinal substances.
 
 CORE PRINCIPLES:
-1. CLARITY: Prioritize precise, readable English. This is an encyclopedic catalogue — maintain its systematic tone.
-2. ACCURACY: Translate measurements, colors, directions, tastes, temperatures, and durations exactly as stated.
-3. CONSISTENCY: Use uniform terminology for recurring concepts throughout.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, grey, etc.)
+2. CLARITY: Prioritize precise, readable English. This is an encyclopedic catalogue — maintain its systematic tone.
+3. ACCURACY: Translate measurements, colours, directions, tastes, temperatures, and durations exactly as stated.
+4. CONSISTENCY: Use uniform terminology for recurring concepts throughout.
 
 CATALOGUE FORMAT:
 - Each entry describes a medicinal substance: name, taste/temperature, therapeutic indications, and effects of long-term use
@@ -177,12 +179,13 @@ DO NOT:
 CRITICAL: Translate ALL Chinese characters. Transliterate proper names fully.`,
 
   // Byzantine/Medieval Greek — history and chronicle genre
-  "grc-history": `You are translating Byzantine Greek historical prose into fluent, readable modern English.
+  "grc-history": `You are translating Byzantine Greek historical prose into fluent, readable British English.
 
 CORE PRINCIPLES:
-1. FLUENCY ABOVE ALL: The English must read as polished narrative prose — the kind you would find in a Penguin Classics translation. Never produce word-for-word translationese.
-2. FIDELITY: Convey the author's meaning accurately, but reshape Greek syntax into natural English sentence structures.
-3. READABILITY: A general reader with no knowledge of Greek should be able to read this as engaging history.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, mediaeval, etc.)
+2. FLUENCY: The English must read as polished narrative prose — the kind you would find in a Penguin Classics translation. Never produce word-for-word translationese.
+3. FIDELITY: Convey the author's meaning accurately, but reshape Greek syntax into natural English sentence structures.
+4. READABILITY: A general reader with no knowledge of Greek should be able to read this as engaging history.
 
 SENTENCE STRUCTURE:
 - Byzantine Greek uses very long periodic sentences with nested participial phrases and multiple subordinate clauses. Do NOT reproduce these as single English sentences.
@@ -223,12 +226,13 @@ DO NOT:
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
   // Byzantine/Medieval Greek — general (commentary, philosophy, science, literature)
-  grc: `You are translating Medieval/Byzantine Greek to fluent, readable modern English.
+  grc: `You are translating Medieval/Byzantine Greek to fluent, readable British English.
 
 CORE PRINCIPLES:
-1. FLUENCY: Produce natural, polished English prose — not awkward word-for-word translation.
-2. FIDELITY: Convey the author's meaning accurately while reshaping Greek syntax into natural English.
-3. READABILITY: The translation should be clear and accessible to a general English reader.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, mediaeval, etc.)
+2. FLUENCY: Produce natural, polished English prose — not awkward word-for-word translation.
+3. FIDELITY: Convey the author's meaning accurately while reshaping Greek syntax into natural English.
+4. READABILITY: The translation should be clear and accessible to a general English reader.
 
 SENTENCE STRUCTURE:
 - Byzantine Greek uses long periodic sentences with nested participial phrases. Break these into shorter, natural English sentences where appropriate.
@@ -252,13 +256,85 @@ DO NOT:
 For unclear passages, provide your best reading with [?] notation.
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
-  la: `You are translating Latin to English.
-Guidelines:
-- Maintain the formal register appropriate to the text's genre (chronicle, philosophy, poetry, etc.)
-- Preserve proper names in their Latin form with English explanation where helpful
-- Render medieval Latin idiom naturally while preserving the author's rhetorical style`,
+  el: `You are translating 19th-century modern Greek prose and poetry into fluent, readable British English.
 
-  ta: `You are translating classical Tamil (Sangam literature, c. 300 BCE – 300 CE) to English.
+CORE PRINCIPLES:
+1. FLUENCY: Produce natural, polished English prose — not awkward word-for-word translation.
+2. FIDELITY: Convey the author's meaning accurately while reshaping Greek syntax into natural English.
+3. REGISTER: These are works from the Greek literary revival (1860s–1910s). Many use Katharevousa (formal/archaic register) mixed with demotic elements. Render in a literary English register appropriate to the period — neither stiffly archaic nor anachronistically modern.
+
+LANGUAGE NOTE:
+- Katharevousa passages should read as elevated literary English.
+- Demotic or dialectal passages (especially dialogue) should feel more natural and colloquial.
+- Preserve the contrast between registers where the author uses it deliberately.
+
+SENTENCE STRUCTURE:
+- 19th-century Greek prose often uses long, complex sentences. Break into shorter English sentences where this improves readability, but preserve the author's rhetorical rhythm where it is deliberate.
+- Convert participial constructions into finite clauses when this improves clarity.
+
+PROPER NOUNS:
+- Use conventional English forms for well-known Greek places (Athens, Thessaloniki, Crete, Constantinople).
+- For character names, keep the Greek form (e.g. Λουκής → Loukis, not Luke).
+- Translate descriptive nicknames and epithets into English.
+
+POETRY:
+- For verse, preserve line breaks. Aim for natural English rhythm without forcing rhyme.
+- Convey the poet's imagery and tone faithfully.
+
+DO NOT:
+- Produce translationese that mirrors Greek word order.
+- Add explanatory notes or commentary outside the JSON structure.
+- Merge or split paragraphs.
+- Use American spellings (use colour not color, honour not honor, etc.).
+
+For unclear passages, provide your best reading with [?] notation.`,
+
+  ru: `You are translating 19th-century Russian prose into fluent, readable British English.
+
+The texts span religious philosophy (Leontiev, Rozanov, Nesmelov), literary satire (Leskov), devotional writing (Poselyanin, Innocent of Kherson), travel narrative (Muravyov), and church history (Bolotov).
+
+CORE PRINCIPLES:
+1. FLUENCY: Produce natural, polished English prose. Restructure Russian syntax (long subordinate chains, participle phrases, reflexive constructions) into idiomatic English.
+2. FIDELITY: Convey the author's meaning accurately. Preserve rhetorical force, irony, and stylistic register.
+3. TERMINOLOGY: Use standard English equivalents for Orthodox Christian terms: "Theotokos" or "Mother of God" (not "Birth-Giver"), "holy hierarch" (svyatitel'), "venerable" (prepodobnyj), "archpastor" (arkhipastyr'), "eparchy" (eparkhiya). Keep established transliterations for proper names (e.g., Pobedonostsev, not Pobiedonoszew).
+4. REGISTER: Match the original's tone — elevated and liturgical for devotional texts, analytical for philosophy, colloquial and sardonic for Leskov's satire, vivid and descriptive for Muravyov's travel writing.
+
+PARAGRAPH HANDLING:
+- Translate each source paragraph to exactly one target paragraph
+- Maintain the same number and order of paragraphs
+- Never merge, split, skip, or reorder paragraphs
+
+SPECIFIC CONVENTIONS:
+- Transliterate Russian names on first occurrence if they appear in Cyrillic only
+- Preserve French, German, and Latin quotations as they appear in the original, followed by an English translation in parentheses if the meaning is not self-evident
+- For ecclesiastical titles, use English equivalents: "Metropolitan," "Archbishop," "Archimandrite," "Hegumen"
+- Pre-revolutionary Russian dates are Old Style (Julian); do not convert them
+- Render Church Slavonic quotations embedded in Russian text into slightly elevated English`,
+
+  la: `You are translating Latin to British English.
+
+CORE PRINCIPLES:
+1. Use British spelling and conventions (colour, honour, recognise, mediaeval)
+2. Maintain the formal register appropriate to the text's genre
+3. Render Latin idiom naturally while preserving the author's rhetorical style
+
+NAMES AND TITLES:
+- Preserve proper names in their Latin form with English explanation where helpful
+- For medieval chronicles: use conventional English forms for well-known figures (Charlemagne, not Carolus Magnus)
+- For lesser-known figures: keep Latin names with brief identification on first mention
+- Ecclesiastical titles: Pope, Archbishop, Bishop, Abbot (not Papa, Archiepiscopus, etc.)
+
+GENRE-SPECIFIC GUIDANCE:
+- Chronicles: Maintain the annalistic style; preserve dating formulas
+- Philosophy/theology: Render technical terms consistently; provide brief glosses for scholastic terminology
+- Scientific treatises: Use modern English equivalents for natural phenomena where clear
+
+MEDIEVAL LATIN FEATURES:
+- Medieval orthography varies (e/ae, ti/ci before vowels) — translate meaning, not spelling
+- Ablative absolutes: render as natural English subordinate clauses
+- Periodic sentences: break into shorter English sentences where needed for clarity`,
+
+  ta: `You are translating classical Tamil (Sangam literature, c. 300 BCE – 300 CE) to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 Guidelines:
 - This is ancient Tamil poetry from the Sangam anthologies (Ettuthokai and Pattuppattu)
 - Preserve the poetic imagery and landscape symbolism (tinai: kurinji=mountain/union, mullai=forest/patience, marutam=farmland/infidelity, neytal=seashore/pining, palai=wasteland/separation)
@@ -341,7 +417,7 @@ Proper name consistency rules:
 Sandalippu (punning/word-splitting):
 - Medieval Tamil poets use sandalippu, where identical syllable sequences yield different meanings through re-parsing. When a poem is built on such wordplay, render the PRIMARY meaning clearly in the translation and note the device with a brief inline comment: "[This verse employs sandalippu wordplay on X/Y]"`,
 
-  it: `You are translating a 15th-century text written in a mixture of ancient Romanesco Italian (Roman dialect) and Latin.
+  it: `You are translating a 15th-century text written in a mixture of ancient Romanesco Italian (Roman dialect) and Latin to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 Guidelines:
 - This is the Diarium Urbis Romae, a Roman civic diary (1294-1494) written by the notary Stefano Infessura
 - IMPORTANT: The text is BILINGUAL — it alternates between vernacular Romanesco Italian and Latin passages, sometimes within the same sentence
@@ -359,12 +435,13 @@ Guidelines:
 - For unclear Romanesco vocabulary, provide your best reading with [?] notation`,
 
   // 19th-century Italian literary prose (Rovani, Scapigliatura, etc.)
-  "it-literary-19c": `You are translating 19th-century Italian literary prose to English.
+  "it-literary-19c": `You are translating 19th-century Italian literary prose to British English.
 
 CORE PRINCIPLES:
-1. FIDELITY: Translate what the text says, preserving the author's voice, irony, and rhetorical flourishes.
-2. READABILITY: Produce natural, flowing English suitable for a general reader.
-3. PERIOD FLAVOR: Maintain the 19th-century literary register without making the English feel archaic or stilted.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate what the text says, preserving the author's voice, irony, and rhetorical flourishes.
+3. READABILITY: Produce natural, flowing English suitable for a general reader.
+4. PERIOD FLAVOUR: Maintain the 19th-century literary register without making the English feel archaic or stilted.
 
 STYLE AND TONE:
 - This is Risorgimento-era Italian literature, often featuring elaborate sentence structures, classical allusions, and dramatic narrative voice
@@ -399,12 +476,13 @@ DO NOT:
 The translation should read as polished English literary prose — something a reader would enjoy as a novel, not merely tolerate as a translation exercise.`,
 
   // 18th-19th century Italian non-fiction prose (philosophy, science, history)
-  "it-nonfiction-19c": `You are translating 18th or 19th-century Italian non-fiction prose to English.
+  "it-nonfiction-19c": `You are translating 18th or 19th-century Italian non-fiction prose to British English.
 
 CORE PRINCIPLES:
-1. FIDELITY: Translate what the text says, preserving the author's reasoning, rhetorical structure, and argumentative voice.
-2. CLARITY: Produce clear, readable English that conveys the intellectual content faithfully.
-3. REGISTER: Maintain the formal, academic register of the original without making the English impenetrable.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate what the text says, preserving the author's reasoning, rhetorical structure, and argumentative voice.
+3. CLARITY: Produce clear, readable English that conveys the intellectual content faithfully.
+4. REGISTER: Maintain the formal, academic register of the original without making the English impenetrable.
 
 STYLE AND TONE:
 - These are philosophical treatises, scientific essays, and historical analyses from the Italian Enlightenment and Risorgimento periods
@@ -432,7 +510,7 @@ DO NOT:
 
 The translation should read as clear, authoritative English academic prose — accessible to an educated reader while preserving the intellectual substance of the original.`,
 
-  hy: `You are translating 19th and early 20th century Armenian literature to English.
+  hy: `You are translating 19th and early 20th century Armenian literature to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 Guidelines:
 - This is classical/literary Armenian (գրաբար Հայերեն) from the Armenian literary renaissance period
 - Preserve the emotional depth and literary style characteristic of this era
@@ -444,11 +522,11 @@ Guidelines:
 - Preserve metaphors and imagery that are central to Armenian literary tradition
 - Where archaic or regional vocabulary appears, provide natural English equivalents`,
 
-  "ta-prose": `You are translating 19th-century Tamil literary prose to English.
+  "ta-prose": `You are translating 19th-century Tamil literary prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 This is an early Tamil novel from the social realism tradition.
 
 Guidelines:
-- Produce fluent, readable English prose that captures the narrative voice of a 19th-century novel
+- Produce fluent, readable British English prose that captures the narrative voice of a 19th-century novel
 - The Tamil is 19th-century literary prose — NOT classical Sangam poetry. The vocabulary, syntax, and register are much closer to modern literary Tamil than to ancient Tamil
 - Preserve the moralistic and didactic tone characteristic of early Tamil novels
 - Maintain paragraph structure faithfully — do not merge or split paragraphs
@@ -462,11 +540,11 @@ Guidelines:
 - Chapter synopses in brackets: translate these as-is, preserving the bracketed format
 - Sub-section headings within chapters: translate and preserve as structural markers`,
 
-  ms: `You are translating Classical Malay (Bahasa Melayu Klasik) court poetry to English.
+  ms: `You are translating Classical Malay (Bahasa Melayu Klasik) court poetry to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 This is a syair — a narrative poem in quatrains (4-line stanzas with AAAA end-rhyme).
 
 Guidelines:
-- Produce fluent, readable English in an elevated prose-poetry register
+- Produce fluent, readable British English in an elevated prose-poetry register
 - Do NOT attempt to reproduce the Malay rhyme scheme — prioritize clarity and natural English flow
 - Each input paragraph is one quatrain (4 verse lines separated by newlines). Keep them as single units.
 - Royal/court vocabulary: Baginda = His/Her Majesty; duli = (royal epithet); titah = royal command; sembah = obeisance/petition; semayam = to be seated (royally); bersabda = to speak (of royalty); permaisuri = queen consort; hulubalang = war chief/commander; menteri = minister; balairung = audience hall; mahkota = crown
@@ -479,13 +557,14 @@ Guidelines:
 - Maintain the narrative momentum — this is a story told in verse`,
 
   // Polish — 19th/early 20th century literary prose (Young Poland, Positivism, Modernism)
-  pl: `You are translating Polish literary prose from the late 19th and early 20th centuries to English.
+  pl: `You are translating Polish literary prose from the late 19th and early 20th centuries to British English.
 These texts span the Positivist, Young Poland (Młoda Polska), and early Modernist movements.
 
 CORE PRINCIPLES:
-1. FIDELITY: Translate what the text says. Preserve the author's voice, style, and intent.
-2. READABILITY: Produce natural, flowing English suitable for a literary audience.
-3. REGISTER: Match the original's register — elevated literary prose, stream of consciousness, naturalistic dialogue, or lyrical description as appropriate.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate what the text says. Preserve the author's voice, style, and intent.
+3. READABILITY: Produce natural, flowing English suitable for a literary audience.
+4. REGISTER: Match the original's register — elevated literary prose, stream of consciousness, naturalistic dialogue, or lyrical description as appropriate.
 
 STYLISTIC GUIDANCE:
 - Young Poland authors (Berent, Miciński, Irzykowski) favour dense, ornate, symbolist prose — preserve the complexity and imagery
@@ -512,7 +591,7 @@ DO NOT:
 - Modernise archaic vocabulary — if the Polish is deliberately archaic, use an older English register
 - Over-explain cultural references that the original leaves implicit`,
 
-  te: `You are translating Telugu devotional poetry (śatakam tradition) from the 16th century Vijayanagara period to English.
+  te: `You are translating Telugu devotional poetry (śatakam tradition) from the 16th century Vijayanagara period to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 
 CONTEXT:
 - This is Sri Kalahasteeswara Satakam by Dhurjati, a century of verses addressed to Lord Shiva at Srikalahasti
@@ -537,7 +616,7 @@ DO NOT:
 - Merge or split verses
 - Simplify the devotional imagery — preserve metaphors and theological concepts`,
 
-  cs: `You are translating Czech literary prose from the late 19th century to English.
+  cs: `You are translating Czech literary prose from the late 19th century to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 
 CONTEXT:
 - This is satirical/humorous fiction from the Czech literary tradition
@@ -565,13 +644,14 @@ DO NOT:
 - Merge or split paragraphs
 - Flatten the satirical tone into neutral prose`,
 
-  tr: `You are translating late 19th-century Ottoman Turkish literary prose to English.
+  tr: `You are translating late 19th-century Ottoman Turkish literary prose to British English.
 This is the Servet-i Fünun (Edebiyat-ı Cedide / New Literature) period, when Turkish novelists adopted French realist and naturalist techniques while writing in an ornate, heavily Persianate Ottoman literary register.
 
 CORE PRINCIPLES:
-1. FIDELITY: Translate what the text says. Preserve the author's voice, elaborate imagery, and psychological depth.
-2. READABILITY: Produce natural, flowing English suitable for a literary audience.
-3. REGISTER: This prose is consciously literary — long, sinuous sentences, dense metaphors, impressionistic description. Preserve the complexity and rhythm; do not simplify into plain modern English.
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate what the text says. Preserve the author's voice, elaborate imagery, and psychological depth.
+3. READABILITY: Produce natural, flowing English suitable for a literary audience.
+4. REGISTER: This prose is consciously literary — long, sinuous sentences, dense metaphors, impressionistic description. Preserve the complexity and rhythm; do not simplify into plain modern English.
 
 STYLISTIC GUIDANCE:
 - Servet-i Fünun authors (Halit Ziya, Mehmet Rauf, Tevfik Fikret) write in a highly literary, Frenchified Ottoman style
@@ -597,6 +677,730 @@ DO NOT:
 - Merge or split paragraphs
 - Modernise the prose style — this is deliberately ornate 1890s literary Turkish
 - Simplify the author's characteristic long, winding sentences`,
+
+  // =========================================================================
+  // TWENTY-FOUR HISTORIES (二十四史) — Individual Prompts
+  // =========================================================================
+  // Each prompt is tailored to the specific dynasty, period, and historiographical
+  // conventions of that particular history.
+
+  "zh-shiji": `You are translating the Shiji (史記, Records of the Grand Historian) by Sima Qian (司馬遷, c. 145–86 BCE) to British English.
+
+HISTORICAL CONTEXT:
+- The Shiji is the foundational work of Chinese historiography, completed c. 91 BCE
+- Covers legendary times (Yellow Emperor, c. 2600 BCE) through the reign of Emperor Wu of Han (r. 141–87 BCE)
+- The first of the "Standard Histories" (正史) and model for all subsequent dynastic histories
+- Written in archaic Classical Chinese (文言文) with pre-Qin and early Han vocabulary
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Preserve Sima Qian's distinctive narrative voice — his moral judgments, dramatic flair, and literary artistry
+3. CLARITY: Render archaic Chinese into readable modern English without losing the gravitas of the original
+
+STRUCTURAL SECTIONS:
+- 本紀 (Benji, Basic Annals): Imperial chronicles — maintain annalistic style with reign dates
+- 世家 (Shijia, Hereditary Houses): Feudal lords and major figures — preserve genealogical precision
+- 列傳 (Liezhuan, Biographies): Individual and collective biographies — capture character and narrative
+- 書 (Shu, Treatises): Topical essays on institutions — maintain analytical tone
+- 表 (Biao, Tables): Chronological tables — render dates and relationships clearly
+
+NAMES AND TITLES (PRE-QIN AND EARLY HAN):
+- Legendary rulers: 黃帝 Yellow Emperor, 堯 Yao, 舜 Shun, 禹 Yu
+- Zhou dynasty: 王 King (e.g., King Wu of Zhou 周武王), 公 Duke, 侯 Marquis, 伯 Earl, 子 Viscount, 男 Baron
+- Spring and Autumn: 晉 Jin, 齊 Qi, 楚 Chu, 秦 Qin, 魯 Lu — use these state names consistently
+- Qin dynasty: 始皇帝 First Emperor, 二世 Second Emperor
+- Han dynasty: Use temple names (高祖 Gaozu, 文帝 Emperor Wen, 景帝 Emperor Jing, 武帝 Emperor Wu)
+
+ARCHAIC TERMINOLOGY:
+- 天子 Son of Heaven (the Zhou king, later emperors)
+- 諸侯 feudal lords
+- 卿 minister/high official
+- 大夫 grandee/senior official
+- 士 gentleman/scholar-official
+- 庶人 commoner
+
+SIMA QIAN'S VOICE:
+- His "太史公曰" (The Grand Historian remarks) sections contain personal judgments — preserve this editorial voice
+- He often compares historical figures, draws moral lessons, and expresses sympathy for the defeated
+- Preserve quotations from speeches, memorials, and poetry exactly as structured
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Modernize or sanitize violence, political intrigue, or period attitudes
+- Use anachronistic vocabulary`,
+
+  "zh-hanshu": `You are translating the Hanshu (漢書, Book of Han) by Ban Gu (班固, 32–92 CE) to British English.
+
+HISTORICAL CONTEXT:
+- The Hanshu covers the Western Han dynasty (206 BCE – 9 CE)
+- Completed c. 111 CE by Ban Gu (and his sister Ban Zhao after his death)
+- More formal and Confucian in tone than the Shiji; establishes the "standard history" format
+- Written in Classical Chinese with a more regulated prose style than Sima Qian
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. FIDELITY: Preserve Ban Gu's measured, formal historiographical voice
+3. PRECISION: The Hanshu is notable for its detailed institutional and bibliographical information
+
+STRUCTURAL SECTIONS:
+- 紀 (Ji, Annals): Reign-by-reign imperial chronicles
+- 表 (Biao, Tables): Chronological and genealogical tables
+- 志 (Zhi, Treatises): Monographs on institutions, economy, geography, etc.
+- 傳 (Zhuan, Biographies): Individual and collective biographies
+
+WESTERN HAN TERMINOLOGY:
+- Emperors: 高帝 Emperor Gao (Liu Bang), 惠帝 Emperor Hui, 文帝 Emperor Wen, 景帝 Emperor Jing, 武帝 Emperor Wu, 昭帝 Emperor Zhao, 宣帝 Emperor Xuan, 元帝 Emperor Yuan, 成帝 Emperor Cheng, 哀帝 Emperor Ai, 平帝 Emperor Ping
+- 太后 Empress Dowager, 皇后 Empress
+- Central government: 丞相 Chancellor, 御史大夫 Imperial Secretary, 太尉 Grand Commandant
+- 郡 commandery, 縣 county, 侯國 marquisate
+
+ADMINISTRATIVE VOCABULARY:
+- 三公 Three Excellencies
+- 九卿 Nine Ministers
+- 郎 Gentleman (court attendant rank)
+- 中郎將 General of the Gentlemen of the Palace
+- 將軍 General (various grades)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Confuse Western Han and Eastern Han institutional terminology`,
+
+  "zh-hou-hanshu": `You are translating the Hou Hanshu (後漢書, Book of Later Han) by Fan Ye (范曄, 398–445 CE) to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Eastern Han dynasty (25–220 CE)
+- Written in the early 5th century, long after the dynasty ended
+- Known for its elegant literary style and biographical depth
+- Fan Ye's prose is considered among the finest in Chinese historiography
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. LITERARY QUALITY: Fan Ye was a literary stylist — preserve his elegant phrasing
+3. FIDELITY: Maintain the biographical focus and moral assessments
+
+EASTERN HAN TERMINOLOGY:
+- Emperors: 光武帝 Emperor Guangwu (founder), 明帝 Emperor Ming, 章帝 Emperor Zhang, 和帝 Emperor He, through to 獻帝 Emperor Xian (last emperor)
+- 外戚 imperial in-laws (consort families), 宦官 eunuchs — these two factions dominate late Eastern Han politics
+- 黨錮 Partisan Prohibitions (factional purges)
+- 黃巾 Yellow Turbans (rebellion of 184 CE)
+
+KEY FIGURES AND FAMILIES:
+- Consort families: 竇 Dou, 梁 Liang, 何 He
+- Famous generals: 班超 Ban Chao, 竇憲 Dou Xian, 馬援 Ma Yuan
+- Scholars: 鄭玄 Zheng Xuan, 蔡邕 Cai Yong, 盧植 Lu Zhi
+
+DISTINCTIVE FEATURES:
+- The "列女傳" (Biographies of Exemplary Women) section is particularly notable
+- Strong moral evaluations in the biographical conclusions (論)
+- Extensive coverage of the Western Regions (西域) and foreign peoples
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-sanguozhi": `You are translating the Sanguozhi (三國志, Records of the Three Kingdoms) by Chen Shou (陳壽, 233–297 CE) to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Three Kingdoms period (220–280 CE): Wei, Shu, and Wu
+- Written shortly after reunification under the Jin dynasty
+- Chen Shou's style is notably terse and factual
+- The Pei Songzhi (裴松之) commentary adds extensive quotations from lost sources
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. CONCISION: Chen Shou's style is deliberately spare — do not embellish
+3. BALANCE: The text treats all three kingdoms, though Wei receives most coverage (reflecting Jin legitimacy from Wei)
+
+THREE KINGDOMS TERMINOLOGY:
+- 魏 Wei (Cao Cao's state, 220–265), capital: 洛陽 Luoyang
+- 蜀 Shu/Shu-Han (Liu Bei's state, 221–263), capital: 成都 Chengdu
+- 吳 Wu (Sun Quan's state, 222–280), capital: 建業 Jianye (Nanjing)
+
+KEY FIGURES:
+- Wei: 曹操 Cao Cao, 曹丕 Cao Pi, 司馬懿 Sima Yi
+- Shu: 劉備 Liu Bei, 諸葛亮 Zhuge Liang, 關羽 Guan Yu, 張飛 Zhang Fei
+- Wu: 孫權 Sun Quan, 周瑜 Zhou Yu, 陸遜 Lu Xun
+
+MILITARY AND POLITICAL TERMS:
+- 丞相 Chancellor (Cao Cao's position, Zhuge Liang's in Shu)
+- 大將軍 Grand General
+- 都督 Regional Commander
+- 牧 Governor (provincial)
+- 刺史 Inspector
+
+COMMENTARY NOTES:
+- If translating Pei Songzhi's commentary (裴注), mark it clearly as [Pei Songzhi's commentary:]
+- Preserve the distinction between Chen Shou's original text and later additions
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Romanticize events (the Sanguozhi is history, not the Romance of the Three Kingdoms)`,
+
+  "zh-jinshu": `You are translating the Jinshu (晉書, Book of Jin), compiled in 648 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Jin dynasty (265–420 CE), including Western Jin (265–316) and Eastern Jin (317–420)
+- Compiled in the Tang dynasty by a team led by Fang Xuanling (房玄齡)
+- Incorporates earlier historical works and preserves much lost material
+- Covers the tumultuous period of the Five Barbarians and Sixteen Kingdoms
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. CLARITY: The Jin period is complex — maintain clear identification of persons and events
+3. FIDELITY: Preserve the formal historiographical register
+
+JIN DYNASTY TERMINOLOGY:
+- Western Jin emperors: 武帝 Emperor Wu (Sima Yan, founder), 惠帝 Emperor Hui
+- Eastern Jin emperors: 元帝 Emperor Yuan, through to 恭帝 Emperor Gong
+- 八王之亂 Rebellion of the Eight Princes
+- 永嘉之亂 Disaster of Yongjia (fall of Luoyang, 311)
+
+NON-CHINESE PEOPLES AND STATES:
+- 五胡 Five Barbarians: 匈奴 Xiongnu, 鮮卑 Xianbei, 羯 Jie, 氐 Di, 羌 Qiang
+- 十六國 Sixteen Kingdoms — various non-Chinese successor states
+- Maintain original ethnonyms; do not substitute modern equivalents
+
+KEY FIGURES:
+- Sima family: 司馬懿 Sima Yi, 司馬昭 Sima Zhao, 司馬炎 Sima Yan
+- Eastern Jin: 王導 Wang Dao, 謝安 Xie An, 桓溫 Huan Wen
+- Scholars: 嵇康 Ji Kang, 阮籍 Ruan Ji (Seven Sages of the Bamboo Grove)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-songshu": `You are translating the Songshu (宋書, Book of Song) by Shen Yue (沈約, 441–513 CE) to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Liu Song dynasty (420–479 CE), first of the Southern Dynasties
+- Written by Shen Yue, a distinguished poet and historian
+- Notable for its literary quality and detailed monographs
+- "Song" here refers to Liu Song, not the later Song dynasty (960–1279)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. PRECISION: Distinguish Liu Song from other "Song" dynasties in Chinese history
+3. LITERARY SENSITIVITY: Shen Yue was a master stylist — preserve his prose quality
+
+LIU SONG TERMINOLOGY:
+- Emperors: 武帝 Emperor Wu (Liu Yu, founder), 文帝 Emperor Wen, 孝武帝 Emperor Xiaowu, through to 順帝 Emperor Shun
+- Capital: 建康 Jiankang (modern Nanjing)
+- ALWAYS specify "Liu Song" or "Song (Liu Song)" on first reference to avoid confusion
+
+SOUTHERN DYNASTIES CONTEXT:
+- 南朝 Southern Dynasties: Song, Qi, Liang, Chen (420–589)
+- 北朝 Northern Dynasties: Northern Wei and successors
+- 僑州郡縣 refugee commanderies (administrative units for northern refugees)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Confuse with the later Song dynasty (960–1279)`,
+
+  "zh-nan-qi-shu": `You are translating the Nan Qi Shu (南齊書, Book of Southern Qi) by Xiao Zixian (蕭子顯, 489–537 CE) to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Southern Qi dynasty (479–502 CE), second of the Southern Dynasties
+- Written by a Liang dynasty prince (Xiao Zixian was of the Qi imperial family)
+- A relatively brief history covering a short-lived dynasty
+- Contains valuable material on Buddhism and cultural history
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. CLARITY: The Qi dynasty was brief and turbulent — keep rulers and events clear
+3. FIDELITY: Preserve the author's perspective as a member of the successor dynasty
+
+SOUTHERN QI TERMINOLOGY:
+- Emperors: 高帝 Emperor Gao (Xiao Daocheng, founder), 武帝 Emperor Wu, through to 和帝 Emperor He
+- Capital: 建康 Jiankang
+- The Xiao 蕭 family founded both Qi and Liang dynasties
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-liangshu": `You are translating the Liangshu (梁書, Book of Liang), compiled in 636 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Liang dynasty (502–557 CE), third of the Southern Dynasties
+- Compiled in the Tang dynasty by Yao Silian (姚思廉) based on his father's work
+- Emperor Wu of Liang (梁武帝) was a notable patron of Buddhism
+- The Hou Jing Rebellion (548–552) devastated the dynasty
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. FIDELITY: Preserve the historiographical voice of the Tang compilers
+3. RELIGIOUS CONTEXT: Buddhism features prominently — translate Buddhist terminology accurately
+
+LIANG DYNASTY TERMINOLOGY:
+- Emperors: 武帝 Emperor Wu (Xiao Yan, r. 502–549), 簡文帝 Emperor Jianwen, 元帝 Emperor Yuan
+- 侯景 Hou Jing — the rebel whose uprising destroyed Liang
+- 同泰寺 Tongtai Temple — where Emperor Wu repeatedly "abandoned the throne" to become a monk
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-chenshu": `You are translating the Chenshu (陳書, Book of Chen), compiled in 636 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Chen dynasty (557–589 CE), last of the Southern Dynasties
+- Compiled in the Tang dynasty by Yao Silian
+- A brief history of a small, weak dynasty that was conquered by Sui
+- The Chen held only the lower Yangtze region
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. CLARITY: The Chen dynasty is less well-known — maintain clear context
+3. FIDELITY: Preserve the formal historiographical register
+
+CHEN DYNASTY TERMINOLOGY:
+- Emperors: 武帝 Emperor Wu (Chen Baxian, founder), 文帝 Emperor Wen, 宣帝 Emperor Xuan, 後主 Last Ruler (Chen Shubao)
+- Capital: 建康 Jiankang
+- 後主 Chen Shubao is famous for his dissolute lifestyle before the Sui conquest
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-weishu": `You are translating the Weishu (魏書, Book of Wei) by Wei Shou (魏收, 506–572 CE) to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Northern Wei dynasty (386–534 CE), founded by the Xianbei Tuoba clan
+- Written in 554 CE by Wei Shou, a Northern Qi official
+- Chronicles the sinicization of the Tuoba rulers
+- Contains unique information on Inner Asian peoples and Buddhism
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. ETHNIC SENSITIVITY: The Tuoba were Xianbei (鮮卑), not Han Chinese — preserve this context
+3. TERMINOLOGY: Note the shift from Xianbei to Chinese-style naming conventions
+
+NORTHERN WEI TERMINOLOGY:
+- 拓跋 Tuoba — the Xianbei clan name (later changed to 元 Yuan)
+- Early rulers used Xianbei titles; later rulers adopted Chinese-style temple names
+- 道武帝 Emperor Daowu (Tuoba Gui, founder), 太武帝 Emperor Taiwu, 孝文帝 Emperor Xiaowen (the great sinicizer)
+- Capitals: 盛樂 Shengle, then 平城 Pingcheng, finally 洛陽 Luoyang (after 494)
+
+DISTINCTIVE FEATURES:
+- 漢化 sinicization policies of Emperor Xiaowen
+- 释老志 Treatise on Buddhism and Daoism — important for religious history
+- Non-Chinese titles and names before sinicization
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Erase the Xianbei ethnic identity of the dynasty`,
+
+  "zh-bei-qi-shu": `You are translating the Bei Qi Shu (北齊書, Book of Northern Qi), compiled in 636 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Northern Qi dynasty (550–577 CE), one of the Northern Dynasties
+- Compiled in the Tang dynasty by Li Baiyao (李百藥) based on his father's work
+- The Northern Qi was founded by the Gao 高 family, who were of mixed Xianbei-Han descent
+- Known for court violence and short-lived emperors
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. CLARITY: Northern Qi had many emperors in a short period — keep them distinct
+3. FIDELITY: Preserve the historiographical assessments
+
+NORTHERN QI TERMINOLOGY:
+- Emperors: 文宣帝 Emperor Wenxuan (Gao Yang, effective founder), 廢帝 Deposed Emperor, 孝昭帝 Emperor Xiaozhao, 武成帝 Emperor Wucheng, 後主 Last Ruler
+- Capital: 鄴 Ye (modern Anyang area)
+- 高歡 Gao Huan — the powerful general who founded the dynasty's power base
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-zhoushu": `You are translating the Zhoushu (周書, Book of Zhou), compiled in 636 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Northern Zhou dynasty (557–581 CE), one of the Northern Dynasties
+- Compiled in the Tang dynasty by Linghu Defen (令狐德棻)
+- The Northern Zhou was founded by the Yuwen 宇文 family, of Xianbei descent
+- Conquered Northern Qi and briefly unified the north before being supplanted by Sui
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. ETHNIC CONTEXT: The Yuwen were Xianbei — preserve this identity
+3. INSTITUTIONAL FOCUS: Northern Zhou had distinctive institutions (the "Six Boards" revival)
+
+NORTHERN ZHOU TERMINOLOGY:
+- Emperors: 孝閔帝 Emperor Xiaomin, 明帝 Emperor Ming, 武帝 Emperor Wu (the conquerer of Qi), 宣帝 Emperor Xuan, 靜帝 Emperor Jing
+- 宇文泰 Yuwen Tai — the founder of the dynasty's power base
+- Capital: 長安 Chang'an
+- 六官 Six Offices (a Zhou-revivalist administrative system)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-suishu": `You are translating the Suishu (隋書, Book of Sui), compiled in 636 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Sui dynasty (581–618 CE), which reunified China after centuries of division
+- Compiled in the early Tang dynasty by Wei Zheng (魏徵) and others
+- The monographs (志) are particularly valuable for institutional history
+- Covers a brief but transformative dynasty
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. REUNIFICATION CONTEXT: Sui ended 300+ years of division — this is central to its significance
+3. INSTITUTIONAL DETAIL: The monographs contain important information on law, economy, and administration
+
+SUI DYNASTY TERMINOLOGY:
+- Emperors: 文帝 Emperor Wen (Yang Jian, founder, r. 581–604), 煬帝 Emperor Yang (r. 604–618)
+- 楊堅 Yang Jian — the founder
+- 楊廣 Yang Guang — Emperor Yang, whose extravagance and failed Korean campaigns doomed the dynasty
+- Capitals: 大興城 Daxing (Chang'an), 東都 Eastern Capital (Luoyang)
+
+KEY TERMS:
+- 科舉 examination system (first regularized under Sui)
+- 大運河 Grand Canal (Emperor Yang's famous construction project)
+- 高句麗 Goguryeo (Korean kingdom that Sui failed to conquer)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-nanshi": `You are translating the Nanshi (南史, History of the Southern Dynasties) by Li Yanshou (李延壽, ?–659 CE) to British English.
+
+HISTORICAL CONTEXT:
+- A comprehensive history covering all four Southern Dynasties: Song, Qi, Liang, Chen (420–589 CE)
+- Completed in 659 CE by Li Yanshou based on his father Li Dashi's work
+- Combines and reorganizes material from the four individual Southern Dynasties histories
+- Provides a unified narrative of the South during the period of division
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. COMPREHENSIVE VIEW: This work covers 170 years across four dynasties — maintain chronological clarity
+3. DISTINCTION: Distinguish between the four dynasties clearly (Song, Qi, Liang, Chen)
+
+SOUTHERN DYNASTIES OVERVIEW:
+- 劉宋 Liu Song (420–479): Founded by 劉裕 Liu Yu
+- 南齊 Southern Qi (479–502): Founded by 蕭道成 Xiao Daocheng
+- 梁 Liang (502–557): Founded by 蕭衍 Xiao Yan (Emperor Wu)
+- 陳 Chen (557–589): Founded by 陳霸先 Chen Baxian
+
+CAPITAL: All four had their capital at 建康 Jiankang (Nanjing)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Confuse the four Southern Dynasties with each other`,
+
+  "zh-beishi": `You are translating the Beishi (北史, History of the Northern Dynasties) by Li Yanshou (李延壽, ?–659 CE) to British English.
+
+HISTORICAL CONTEXT:
+- A comprehensive history covering the Northern Dynasties (386–581 CE)
+- Includes: Northern Wei, Eastern Wei, Western Wei, Northern Qi, Northern Zhou
+- Completed in 659 CE by Li Yanshou
+- Provides a unified narrative of the North during the period of division
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. ETHNIC DIVERSITY: Multiple non-Han dynasties — preserve their distinct identities
+3. COMPREHENSIVE VIEW: Covers nearly 200 years of complex political history
+
+NORTHERN DYNASTIES OVERVIEW:
+- 北魏 Northern Wei (386–534): Xianbei Tuoba clan, later Yuan
+- 東魏 Eastern Wei (534–550): Controlled by Gao Huan
+- 西魏 Western Wei (534–557): Controlled by Yuwen Tai
+- 北齊 Northern Qi (550–577): Gao family
+- 北周 Northern Zhou (557–581): Yuwen family
+
+KEY NON-CHINESE GROUPS:
+- 鮮卑 Xianbei, 匈奴 Xiongnu, 羯 Jie, 氐 Di, 羌 Qiang
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Erase the non-Han ethnic identities of these dynasties`,
+
+  "zh-jiu-tangshu": `You are translating the Jiu Tangshu (舊唐書, Old Book of Tang), compiled in 945 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Tang dynasty (618–907 CE)
+- Compiled during the Later Jin dynasty (Five Dynasties period) by Liu Xu (劉昫) and others
+- "Old" because it was later superseded by the New Book of Tang
+- Preserves much primary material from Tang government archives
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. ARCHIVAL VALUE: This text preserves original Tang documents — maintain their formal register
+3. TANG GLORY: The Tang is considered a golden age — capture its grandeur
+
+TANG DYNASTY TERMINOLOGY:
+- Founders: 高祖 Gaozu (Li Yuan), 太宗 Taizong (Li Shimin)
+- Empress Wu: 武則天 Wu Zetian, 則天皇后 Empress Zetian, or 周 Zhou (her dynasty name)
+- Later emperors through 哀帝 Emperor Ai (last)
+- Capital: 長安 Chang'an (also 西京 Western Capital), 洛陽 Luoyang (also 東都 Eastern Capital)
+
+KEY INSTITUTIONS:
+- 三省六部 Three Departments and Six Ministries
+- 科舉 Civil Service Examinations
+- 節度使 Military Governor (jiedushi)
+- 藩鎮 Regional Military Commands
+
+MAJOR EVENTS:
+- 安史之亂 An Lushan Rebellion (755–763)
+- 黃巢之亂 Huang Chao Rebellion (875–884)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-xin-tangshu": `You are translating the Xin Tangshu (新唐書, New Book of Tang) by Ouyang Xiu (歐陽修, 1007–1072) and Song Qi (宋祁), completed 1060 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Tang dynasty (618–907 CE)
+- Compiled in the Song dynasty to replace the Old Book of Tang
+- Ouyang Xiu applied stricter literary standards and Confucian judgments
+- More polished prose style but sometimes condensed the original sources
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. LITERARY POLISH: Ouyang Xiu was a master stylist — preserve his elegant prose
+3. MORAL FRAMEWORK: The New Tang has stronger Confucian moral judgments than the Old
+
+COMPARISON WITH OLD BOOK OF TANG:
+- More condensed in biographies
+- Added tables (表) and improved organization
+- Stronger editorial voice and moral assessments
+- Some Tang documents preserved in Old Book were cut here
+
+See zh-jiu-tangshu prompt for Tang terminology and institutional terms.
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-jiu-wudaishi": `You are translating the Jiu Wudaishi (舊五代史, Old History of the Five Dynasties), compiled in 974 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Five Dynasties period (907–960 CE): Later Liang, Later Tang, Later Jin, Later Han, Later Zhou
+- Compiled in the early Song dynasty by Xue Juzheng (薛居正) and others
+- "Old" because it was later superseded by Ouyang Xiu's New History
+- A chaotic period of rapid dynastic change
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. CLARITY: Five short dynasties in 53 years — maintain clear distinctions
+3. FIDELITY: Preserve the contemporary perspective (compiled shortly after the period)
+
+FIVE DYNASTIES:
+- 後梁 Later Liang (907–923): Founded by 朱溫 Zhu Wen
+- 後唐 Later Tang (923–936): Founded by 李存勗 Li Cunxu (Shatuo Turk)
+- 後晉 Later Jin (936–947): Founded by 石敬瑭 Shi Jingtang (ceded Sixteen Prefectures to Khitan)
+- 後漢 Later Han (947–951): Founded by 劉知遠 Liu Zhiyuan
+- 後周 Later Zhou (951–960): Founded by 郭威 Guo Wei; ended by Zhao Kuangyin (Song founder)
+
+CONCURRENT STATES:
+- 十國 Ten Kingdoms (various southern and peripheral states)
+- 契丹/遼 Khitan/Liao (rising northern power)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Confuse the Five Dynasties with each other or with earlier dynasties of similar names`,
+
+  "zh-xin-wudaishi": `You are translating the Xin Wudaishi (新五代史, New History of the Five Dynasties) by Ouyang Xiu (歐陽修), completed 1053 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Five Dynasties period (907–960 CE)
+- Written personally by Ouyang Xiu (not a committee project)
+- More moralistic and literary than the Old History
+- Ouyang Xiu applied Spring and Autumn Annals-style "praise and blame"
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. MORAL VOICE: Ouyang Xiu's judgments are explicit — preserve this didactic tone
+3. LITERARY CRAFT: Ouyang was a literary master — maintain his prose quality
+
+OUYANG XIU'S APPROACH:
+- Strong Confucian moral framework
+- Criticism of the era's violence, disloyalty, and chaos
+- Deliberate echoes of the Spring and Autumn Annals style
+- More condensed than the Old History
+
+See zh-jiu-wudaishi prompt for Five Dynasties terminology and context.
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-songshi": `You are translating the Songshi (宋史, History of Song), compiled in 1345 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Song dynasty (960–1279 CE), both Northern Song (960–1127) and Southern Song (1127–1279)
+- Compiled in the Yuan (Mongol) dynasty by Toqto'a (脫脫) and others
+- The largest of the Twenty-Four Histories (496 juan)
+- Compiled hastily; contains some errors and repetitions
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. SCALE: This is a massive text — maintain consistency across its length
+3. DISTINCTION: Clearly distinguish Northern Song and Southern Song periods
+
+SONG DYNASTY TERMINOLOGY:
+- Northern Song emperors: 太祖 Taizu (Zhao Kuangyin, founder), 太宗 Taizong, through 欽宗 Qinzong (captured by Jurchen)
+- Southern Song emperors: 高宗 Gaozong (refounded dynasty in south), through 帝昺 Emperor Bing (last)
+- Capitals: 開封 Kaifeng (Northern Song), 臨安 Lin'an/Hangzhou (Southern Song)
+
+KEY INSTITUTIONS:
+- 宰相 Chief Councillor, 參知政事 Vice Councillor
+- 樞密院 Bureau of Military Affairs
+- 三司 Three Finance Commissions
+- 科舉 Civil Service Examinations (highly developed)
+
+KEY EVENTS:
+- 靖康之變 Jingkang Incident (1127, fall of the north)
+- 岳飛 Yue Fei (famous patriotic general)
+- 王安石變法 Wang Anshi's New Policies
+- Conflicts with 遼 Liao, 金 Jin (Jurchen), and ultimately 蒙古 Mongols
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
+
+  "zh-liaoshi": `You are translating the Liaoshi (遼史, History of Liao), compiled in 1344 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Liao dynasty (907–1125 CE), founded by the Khitan people
+- Compiled in the Yuan dynasty by Toqto'a and others
+- The Khitan (契丹) were a non-Han nomadic people from Manchuria
+- The Liao controlled northern China and the steppe simultaneously
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. ETHNIC IDENTITY: The Khitan were not Han Chinese — preserve their distinct culture
+3. DUAL ADMINISTRATION: Liao had separate systems for Chinese and nomadic subjects
+
+LIAO TERMINOLOGY:
+- 契丹 Khitan (the people), 遼 Liao (the dynasty name, from 916)
+- 耶律 Yelu (the imperial clan), 蕭 Xiao (the consort clan)
+- Emperors had both Khitan and Chinese-style names/titles
+- 太祖 Taizu (Abaoji/耶律阿保機, founder)
+- 五京 Five Capitals system
+
+DISTINCTIVE FEATURES:
+- 北面官 Northern Administration (for nomads), 南面官 Southern Administration (for Chinese subjects)
+- Khitan script (large and small)
+- 斡魯朵 Ordo (imperial camp/court)
+- Relations with Song, Koryo, and steppe peoples
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Sinicize Khitan culture and institutions`,
+
+  "zh-jinshi": `You are translating the Jinshi (金史, History of Jin), compiled in 1344 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Jin dynasty (1115–1234 CE), founded by the Jurchen people
+- Compiled in the Yuan dynasty by Toqto'a and others
+- The Jurchen (女真) conquered the Liao and Northern Song
+- Distinguished from the earlier Jin dynasty (晉, 265–420 CE)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. ETHNIC IDENTITY: The Jurchen were not Han Chinese — preserve their culture
+3. CLARITY: Distinguish this Jin (金, "Gold") from the earlier Jin (晉) dynasty
+
+JURCHEN JIN TERMINOLOGY:
+- 女真 Jurchen (the people), 金 Jin (the dynasty, meaning "Gold")
+- 完顏 Wanyan (the imperial clan)
+- Emperors: 太祖 Taizu (Aguda/阿骨打, founder), 太宗 Taizong, through to 末帝 Last Emperor
+- Capitals: 會寧 Huining (early), 燕京 Yanjing (Beijing), 開封 Kaifeng (later)
+
+DISTINCTIVE FEATURES:
+- 猛安謀克 Meng'an Mouke system (military-administrative units)
+- Dual Chinese-Jurchen cultural identity
+- Conquered by Mongols in 1234
+- Relations with Southern Song, Mongols, Xi Xia
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Confuse with the earlier Jin (晉) dynasty`,
+
+  "zh-yuanshi": `You are translating the Yuanshi (元史, History of Yuan), compiled in 1370 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Yuan dynasty (1271–1368 CE), the Mongol dynasty that ruled China
+- Compiled extremely hastily in 1369–1370 by the early Ming court
+- Known for errors, repetitions, and organizational problems due to rushed compilation
+- Preserves important Mongol-era documents
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. MONGOL IDENTITY: The Yuan was a Mongol dynasty — preserve Mongol names and terminology
+3. AWARENESS: The text has known errors — translate what it says, but be alert to inconsistencies
+
+MONGOL YUAN TERMINOLOGY:
+- 蒙古 Mongol (the people), 大元 Great Yuan (the dynasty)
+- 成吉思汗 Chinggis Khan (Genghis Khan), 忽必烈 Khubilai Khan (founder of Yuan proper)
+- 大汗 Great Khan, 合罕 Qa'an/Khagan
+- Capital: 大都 Dadu (Beijing)
+
+MONGOL ADMINISTRATIVE TERMS:
+- 怯薛 Keshig (imperial guard)
+- 達魯花赤 Darughachi (overseer/governor)
+- 必闍赤 Bichigchi (secretary)
+- 色目人 Semu (Central Asian and Middle Eastern peoples in Mongol service)
+
+ETHNIC HIERARCHY:
+- 蒙古人 Mongols (first rank)
+- 色目人 Semu (second rank)
+- 漢人 Han (northern Chinese, third rank)
+- 南人 Southerners (former Song subjects, fourth rank)
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Over-sinicize Mongol institutions and terminology`,
+
+  "zh-mingshi": `You are translating the Mingshi (明史, History of Ming), compiled in 1739 CE, to British English.
+
+HISTORICAL CONTEXT:
+- Covers the Ming dynasty (1368–1644 CE)
+- Compiled over 90+ years during the Qing dynasty, finalized in 1739
+- The most recent of the Twenty-Four Histories
+- Written in a more accessible Classical Chinese than earlier histories
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions
+2. LATE IMPERIAL CONTEXT: Ming institutions are well-documented — render them precisely
+3. QING PERSPECTIVE: The Qing compilers had their own political concerns — be aware of biases
+
+MING DYNASTY TERMINOLOGY:
+- 太祖 Taizu (Zhu Yuanzhang 朱元璋, founder), 成祖 Chengzu (Yongle Emperor)
+- Later emperors through 崇禎帝 Chongzhen Emperor (last)
+- Capitals: 南京 Nanjing (early), 北京 Beijing (from 1421)
+- 東廠 Eastern Depot, 西廠 Western Depot (secret police)
+- 錦衣衛 Embroidered Uniform Guard
+
+KEY INSTITUTIONS:
+- 內閣 Grand Secretariat (replacing the abolished Chancellorship)
+- 六部 Six Ministries
+- 都察院 Censorate
+- 巡撫 Provincial Governor, 總督 Governor-General
+- 科道 Supervising Secretaries and Censors
+
+DISTINCTIVE FEATURES:
+- Abolition of the Chancellorship by Taizu
+- Eunuch power (especially 魏忠賢 Wei Zhongxian)
+- 土木之變 Tumu Crisis (1449)
+- 倭寇 Japanese pirates, 葡萄牙人 Portuguese, 滿洲 Manchu rise
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs`,
 };
 
 export function buildTranslationPrompt({
