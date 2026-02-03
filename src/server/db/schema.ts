@@ -160,6 +160,7 @@ export const texts = pgTable(
     totalChapters: integer("total_chapters").notNull().default(0),
     compositionYear: integer("composition_year"),
     compositionEra: varchar("composition_era", { length: 255 }),
+    sortOrder: integer("sort_order"), // For canonical ordering within a collection (e.g., 24 Histories: 1-24)
     textType: varchar("text_type", { length: 20 }).notNull().default("prose"), // prose | poetry
     genre: varchar("genre", { length: 50 }).notNull().default("uncategorized"), // philosophy | commentary | literature | history | science | ritual
     createdAt: timestamp("created_at").notNull().defaultNow(),
