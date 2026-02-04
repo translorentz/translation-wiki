@@ -1,0 +1,913 @@
+[
+  {
+    "chapter": 1,
+    "localParagraphs": 27,
+    "wikisourceParagraphs": 29,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 2,
+    "localParagraphs": 35,
+    "wikisourceParagraphs": 36,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 3,
+    "localParagraphs": 33,
+    "wikisourceParagraphs": 35,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 4,
+    "localParagraphs": 80,
+    "wikisourceParagraphs": 85,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 5,
+    "localParagraphs": 71,
+    "wikisourceParagraphs": 77,
+    "difference": 6,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 6,
+    "localParagraphs": 103,
+    "wikisourceParagraphs": 112,
+    "difference": 9,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 7,
+    "localParagraphs": 45,
+    "wikisourceParagraphs": 48,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 8,
+    "localParagraphs": 91,
+    "wikisourceParagraphs": 94,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 9,
+    "localParagraphs": 31,
+    "wikisourceParagraphs": 35,
+    "difference": 4,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 10,
+    "localParagraphs": 41,
+    "wikisourceParagraphs": 43,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 11,
+    "localParagraphs": 19,
+    "wikisourceParagraphs": 24,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 12,
+    "localParagraphs": 52,
+    "wikisourceParagraphs": 57,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 13,
+    "localParagraphs": 6,
+    "wikisourceParagraphs": 7,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 14,
+    "localParagraphs": 2,
+    "wikisourceParagraphs": 3,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 15,
+    "localParagraphs": 4,
+    "wikisourceParagraphs": 5,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 16,
+    "localParagraphs": 3,
+    "wikisourceParagraphs": 4,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 17,
+    "localParagraphs": 4,
+    "wikisourceParagraphs": 5,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 18,
+    "localParagraphs": 6,
+    "wikisourceParagraphs": 1,
+    "difference": -5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 19,
+    "localParagraphs": 4,
+    "wikisourceParagraphs": 1,
+    "difference": -3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 20,
+    "localParagraphs": 2,
+    "wikisourceParagraphs": 7,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 21,
+    "localParagraphs": 1,
+    "wikisourceParagraphs": 3,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 22,
+    "localParagraphs": 0,
+    "wikisourceParagraphs": 0,
+    "difference": 0,
+    "status": "ERROR",
+    "error": "Local file not found"
+  },
+  {
+    "chapter": 23,
+    "localParagraphs": 26,
+    "wikisourceParagraphs": 27,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 24,
+    "localParagraphs": 59,
+    "wikisourceParagraphs": 67,
+    "difference": 8,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 25,
+    "localParagraphs": 24,
+    "wikisourceParagraphs": 25,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 26,
+    "localParagraphs": 13,
+    "wikisourceParagraphs": 167,
+    "difference": 154,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 27,
+    "localParagraphs": 122,
+    "wikisourceParagraphs": 127,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 28,
+    "localParagraphs": 102,
+    "wikisourceParagraphs": 104,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 29,
+    "localParagraphs": 14,
+    "wikisourceParagraphs": 15,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 30,
+    "localParagraphs": 49,
+    "wikisourceParagraphs": 51,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 31,
+    "localParagraphs": 40,
+    "wikisourceParagraphs": 43,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 32,
+    "localParagraphs": 85,
+    "wikisourceParagraphs": 87,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 33,
+    "localParagraphs": 94,
+    "wikisourceParagraphs": 1,
+    "difference": -93,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 34,
+    "localParagraphs": 34,
+    "wikisourceParagraphs": 35,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 35,
+    "localParagraphs": 41,
+    "wikisourceParagraphs": 41,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 36,
+    "localParagraphs": 32,
+    "wikisourceParagraphs": 33,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 37,
+    "localParagraphs": 51,
+    "wikisourceParagraphs": 55,
+    "difference": 4,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 38,
+    "localParagraphs": 55,
+    "wikisourceParagraphs": 62,
+    "difference": 7,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 39,
+    "localParagraphs": 138,
+    "wikisourceParagraphs": 143,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 40,
+    "localParagraphs": 93,
+    "wikisourceParagraphs": 95,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 41,
+    "localParagraphs": 27,
+    "wikisourceParagraphs": 29,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 42,
+    "localParagraphs": 56,
+    "wikisourceParagraphs": 60,
+    "difference": 4,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 43,
+    "localParagraphs": 116,
+    "wikisourceParagraphs": 122,
+    "difference": 6,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 44,
+    "localParagraphs": 72,
+    "wikisourceParagraphs": 1,
+    "difference": -71,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 45,
+    "localParagraphs": 31,
+    "wikisourceParagraphs": 37,
+    "difference": 6,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 46,
+    "localParagraphs": 55,
+    "wikisourceParagraphs": 56,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 47,
+    "localParagraphs": 83,
+    "wikisourceParagraphs": 86,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 48,
+    "localParagraphs": 26,
+    "wikisourceParagraphs": 27,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 49,
+    "localParagraphs": 43,
+    "wikisourceParagraphs": 43,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 50,
+    "localParagraphs": 10,
+    "wikisourceParagraphs": 12,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 51,
+    "localParagraphs": 11,
+    "wikisourceParagraphs": 12,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 52,
+    "localParagraphs": 42,
+    "wikisourceParagraphs": 45,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 53,
+    "localParagraphs": 17,
+    "wikisourceParagraphs": 20,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 54,
+    "localParagraphs": 18,
+    "wikisourceParagraphs": 19,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 55,
+    "localParagraphs": 30,
+    "wikisourceParagraphs": 33,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 56,
+    "localParagraphs": 28,
+    "wikisourceParagraphs": 29,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 57,
+    "localParagraphs": 24,
+    "wikisourceParagraphs": 25,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 58,
+    "localParagraphs": 26,
+    "wikisourceParagraphs": 27,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 59,
+    "localParagraphs": 37,
+    "wikisourceParagraphs": 39,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 60,
+    "localParagraphs": 29,
+    "wikisourceParagraphs": 29,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 61,
+    "localParagraphs": 9,
+    "wikisourceParagraphs": 10,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 62,
+    "localParagraphs": 12,
+    "wikisourceParagraphs": 13,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 63,
+    "localParagraphs": 25,
+    "wikisourceParagraphs": 27,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 64,
+    "localParagraphs": 4,
+    "wikisourceParagraphs": 5,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 65,
+    "localParagraphs": 14,
+    "wikisourceParagraphs": 15,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 66,
+    "localParagraphs": 23,
+    "wikisourceParagraphs": 25,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 67,
+    "localParagraphs": 99,
+    "wikisourceParagraphs": 158,
+    "difference": 59,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 68,
+    "localParagraphs": 12,
+    "wikisourceParagraphs": 17,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 69,
+    "localParagraphs": 64,
+    "wikisourceParagraphs": 70,
+    "difference": 6,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 70,
+    "localParagraphs": 60,
+    "wikisourceParagraphs": 65,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 71,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 26,
+    "difference": 6,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 72,
+    "localParagraphs": 11,
+    "wikisourceParagraphs": 16,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 73,
+    "localParagraphs": 16,
+    "wikisourceParagraphs": 21,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 74,
+    "localParagraphs": 13,
+    "wikisourceParagraphs": 15,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 75,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 25,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 76,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 25,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 77,
+    "localParagraphs": 18,
+    "wikisourceParagraphs": 23,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 78,
+    "localParagraphs": 17,
+    "wikisourceParagraphs": 22,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 79,
+    "localParagraphs": 33,
+    "wikisourceParagraphs": 38,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 80,
+    "localParagraphs": 13,
+    "wikisourceParagraphs": 13,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 81,
+    "localParagraphs": 28,
+    "wikisourceParagraphs": 33,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 82,
+    "localParagraphs": 9,
+    "wikisourceParagraphs": 10,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 83,
+    "localParagraphs": 15,
+    "wikisourceParagraphs": 20,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 84,
+    "localParagraphs": 32,
+    "wikisourceParagraphs": 36,
+    "difference": 4,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 85,
+    "localParagraphs": 17,
+    "wikisourceParagraphs": 23,
+    "difference": 6,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 86,
+    "localParagraphs": 39,
+    "wikisourceParagraphs": 44,
+    "difference": 5,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 87,
+    "localParagraphs": 31,
+    "wikisourceParagraphs": 40,
+    "difference": 9,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 88,
+    "localParagraphs": 11,
+    "wikisourceParagraphs": 12,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 89,
+    "localParagraphs": 29,
+    "wikisourceParagraphs": 32,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 90,
+    "localParagraphs": 12,
+    "wikisourceParagraphs": 15,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 91,
+    "localParagraphs": 18,
+    "wikisourceParagraphs": 22,
+    "difference": 4,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 92,
+    "localParagraphs": 30,
+    "wikisourceParagraphs": 1,
+    "difference": -29,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 93,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 23,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 94,
+    "localParagraphs": 13,
+    "wikisourceParagraphs": 16,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 95,
+    "localParagraphs": 34,
+    "wikisourceParagraphs": 37,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 96,
+    "localParagraphs": 29,
+    "wikisourceParagraphs": 30,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 97,
+    "localParagraphs": 24,
+    "wikisourceParagraphs": 27,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 98,
+    "localParagraphs": 13,
+    "wikisourceParagraphs": 15,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 99,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 23,
+    "difference": 3,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 100,
+    "localParagraphs": 11,
+    "wikisourceParagraphs": 12,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 101,
+    "localParagraphs": 22,
+    "wikisourceParagraphs": 23,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 102,
+    "localParagraphs": 14,
+    "wikisourceParagraphs": 15,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 103,
+    "localParagraphs": 26,
+    "wikisourceParagraphs": 27,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 104,
+    "localParagraphs": 16,
+    "wikisourceParagraphs": 17,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 105,
+    "localParagraphs": 24,
+    "wikisourceParagraphs": 25,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 106,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 21,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 107,
+    "localParagraphs": 27,
+    "wikisourceParagraphs": 28,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 108,
+    "localParagraphs": 14,
+    "wikisourceParagraphs": 15,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 109,
+    "localParagraphs": 19,
+    "wikisourceParagraphs": 20,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 110,
+    "localParagraphs": 61,
+    "wikisourceParagraphs": 61,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 111,
+    "localParagraphs": 26,
+    "wikisourceParagraphs": 27,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 112,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 22,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 113,
+    "localParagraphs": 13,
+    "wikisourceParagraphs": 14,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 114,
+    "localParagraphs": 11,
+    "wikisourceParagraphs": 11,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 115,
+    "localParagraphs": 10,
+    "wikisourceParagraphs": 10,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 116,
+    "localParagraphs": 11,
+    "wikisourceParagraphs": 12,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 117,
+    "localParagraphs": 31,
+    "wikisourceParagraphs": 32,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 118,
+    "localParagraphs": 30,
+    "wikisourceParagraphs": 31,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 119,
+    "localParagraphs": 12,
+    "wikisourceParagraphs": 12,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 120,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 22,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 121,
+    "localParagraphs": 24,
+    "wikisourceParagraphs": 26,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 122,
+    "localParagraphs": 43,
+    "wikisourceParagraphs": 44,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 123,
+    "localParagraphs": 36,
+    "wikisourceParagraphs": 38,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 124,
+    "localParagraphs": 16,
+    "wikisourceParagraphs": 17,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 125,
+    "localParagraphs": 5,
+    "wikisourceParagraphs": 5,
+    "difference": 0,
+    "status": "OK"
+  },
+  {
+    "chapter": 126,
+    "localParagraphs": 26,
+    "wikisourceParagraphs": 30,
+    "difference": 4,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 127,
+    "localParagraphs": 20,
+    "wikisourceParagraphs": 21,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 128,
+    "localParagraphs": 93,
+    "wikisourceParagraphs": 95,
+    "difference": 2,
+    "status": "REVIEW_NEEDED"
+  },
+  {
+    "chapter": 129,
+    "localParagraphs": 42,
+    "wikisourceParagraphs": 43,
+    "difference": 1,
+    "status": "OK"
+  },
+  {
+    "chapter": 130,
+    "localParagraphs": 143,
+    "wikisourceParagraphs": 144,
+    "difference": 1,
+    "status": "OK"
+  }
+]

@@ -1,5 +1,111 @@
 # Scratch Notes — Translation Wiki Project Planning
 
+## 2026-02-03 Session 43 — Twenty-Four Histories Pipeline
+
+### USER STIPULATIONS (MANDATORY)
+
+**General Rule:** All text descriptions should be thoughtful — not generic or boilerplate.
+
+**Twenty-Four Histories Descriptions (2026-02-03):** Descriptions for the 24 Histories specifically must include:
+1. Time period — describe what era/period the text covers
+2. Principal characters/incidents — name a few notable figures or events
+3. Importance — explain why the text matters
+4. Specific context — what unique perspective the text provides
+
+**Documentation Rule:** Document ALL User orders with correct deference, understanding and diligence. This stipulation was not documented properly earlier — now added to CLAUDE.md.
+
+### Completed This Session
+
+**Twenty-Four Histories (二十四史) — Major Milestone:**
+- **Phase 1 (Acquisition):** ✅ COMPLETE — All 24 histories acquired (~3,213 chapters)
+- **Phase 2 (Seeding):** ✅ COMPLETE — 3,279 chapters seeded across 24 texts
+- **Phase 3 (Sort Order):** ✅ LIVE — sortOrder 1-24 working on production (commits 16af302 + 27e3b17)
+- **Phase 4 (Descriptions):** ✅ COMPLETE — Scholarly descriptions applied to database
+- **Translation Prompts:** ✅ COMPLETE — 24 individual prompts created (zh-shiji, zh-hanshu, etc.)
+- **Phase 5 (Trial Translation):** ✅ APPROVED — hanshu ch 1-10 reviewed (all B+ or higher)
+- **Phase 6 (Mass Translation):** IN PROGRESS — 6 workers translating first 3 histories (369 chapters)
+
+**Database Updates Applied:**
+- `scripts/_fix-24h-sort.ts` — Set sort_order 1-24 for canonical ordering
+- `scripts/_apply-24h-descriptions.ts` — Applied 24 scholarly descriptions meeting User stipulations
+
+**Agents Completed:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a080d03 | Create 24 translation prompts | COMPLETE ✓ |
+| a4235ac | Write text descriptions | COMPLETE ✓ |
+| af8e0fb | Fix sorting order | FAILED (internal error, fixed manually) |
+| afa9ea1 | Fix Vercel deployment failure | COMPLETE ✓ |
+| a0e2d32 | Trial translation hanshu ch 1-10 | COMPLETE ✓ (10/10 translated, agent crashed after) |
+| - | Independent review (DeepSeek-reasoner) | COMPLETE ✓ — APPROVED for mass translation |
+
+**Key Lessons (2026-02-03):**
+1. Schema changes require successful Vercel deployment. A TypeScript error in `scripts/` blocked deployment of `sortOrder` column. Fix: exclude `scripts/` from tsconfig.json.
+2. **EFFICIENCY IS THE FIRST PRIORITY.** Never allow duplicate/competing workers on overlapping ranges. "First to translate wins" is scandalous waste. Use one worker per text or strictly exclusive partitions.
+
+**Gap-Filling (Phase 1):**
+- mingshi: chapters 102, 107, 110, 112 acquired (genealogical/chronological tables)
+- songshi: 24 table chapters (216-241) extracted with custom HTML parsing
+- jinshi: chapters 61-62 (diplomatic tables) extracted
+- liaoshi: full re-acquisition (117 chapters)
+
+### Twenty-Four Histories Overview
+
+The Twenty-Four Histories (二十四史) are the official dynastic histories of China, collectively covering over 4,000 years from legendary times to the Ming dynasty (1368-1644). They represent one of the most important historiographical traditions in world literature.
+
+| # | Slug | Chinese | English | Period Covered | Chapters |
+|---|------|---------|---------|----------------|----------|
+| 1 | shiji | 史記 | Records of the Grand Historian | Antiquity–95 BCE | 130 |
+| 2 | hanshu | 漢書 | Book of Han | 206 BCE–23 CE | 100 |
+| 3 | hou-hanshu | 後漢書 | Book of Later Han | 25–220 CE | 120 |
+| 4 | sanguozhi | 三國志 | Records of the Three Kingdoms | 220–280 CE | 65 |
+| 5 | jinshu | 晉書 | Book of Jin | 265–420 CE | 130 |
+| 6 | songshu | 宋書 | Book of Song | 420–479 CE | 100 |
+| 7 | nan-qi-shu | 南齊書 | Book of Southern Qi | 479–502 CE | 59 |
+| 8 | liangshu | 梁書 | Book of Liang | 502–557 CE | 56 |
+| 9 | chenshu | 陳書 | Book of Chen | 557–589 CE | 36 |
+| 10 | weishu | 魏書 | Book of Wei | 386–534 CE | 130 |
+| 11 | bei-qi-shu | 北齊書 | Book of Northern Qi | 550–577 CE | 50 |
+| 12 | zhoushu | 周書 | Book of Zhou | 557–581 CE | 50 |
+| 13 | suishu | 隋書 | Book of Sui | 581–618 CE | 85 |
+| 14 | nanshi | 南史 | History of Southern Dynasties | 420–589 CE | 80 |
+| 15 | beishi | 北史 | History of Northern Dynasties | 386–618 CE | 100 |
+| 16 | jiu-tangshu | 舊唐書 | Old Book of Tang | 618–907 CE | 200 |
+| 17 | xin-tangshu | 新唐書 | New Book of Tang | 618–907 CE | 225 |
+| 18 | jiu-wudaishi | 舊五代史 | Old History of Five Dynasties | 907–960 CE | 150 |
+| 19 | xin-wudaishi | 新五代史 | New History of Five Dynasties | 907–960 CE | 74 |
+| 20 | songshi | 宋史 | History of Song | 960–1279 CE | 496 |
+| 21 | liaoshi | 遼史 | History of Liao | 907–1125 CE | 116 |
+| 22 | jinshi | 金史 | History of Jin | 1115–1234 CE | 135 |
+| 23 | yuanshi | 元史 | History of Yuan | 1271–1368 CE | 210 |
+| 24 | mingshi | 明史 | History of Ming | 1368–1644 CE | 332 |
+
+**Total:** ~3,213 chapters
+
+### Pipeline Status Summary (Updated)
+| Pipeline | Status |
+|----------|--------|
+| Chinese (24 Histories) | Phase 5 Trial Translation IN PROGRESS (hanshu ch 1-10) |
+| Chinese (other) | COMPLETE (99.94%) |
+| Polish | COMPLETE (231/231) |
+| Armenian | COMPLETE (213/213) |
+| Latin | COMPLETE (Batch 1 + Batch 2) |
+| Greek | COMPLETE (10 texts) |
+| Russian | COMPLETE (235/235) |
+| Czech | COMPLETE (14/14) |
+| Telugu | COMPLETE (116 verses) |
+| Italian | ~92% (W2+W3a finishing) |
+
+### Next Steps
+1. ✅ Seeding complete (3,279 chapters)
+2. ✅ sortOrder 1-24 set in database
+3. ✅ Descriptions applied to database
+4. ✅ Schema pushed to production (commit 16af302) — sorting now works on live site
+5. Trial translation in progress (hanshu ch 1-10)
+6. Independent review after translation completes
+
+---
+
 ## 2026-01-31 Session 41 — Multi-Language Completion
 
 ### Completed This Session
@@ -3654,3 +3760,29 @@ Will use `it-literary-19c` (19th-century Italian literary prose) — already exi
 
 ### New Translation Prompts
 - `zh-science` — Chinese scientific/technical texts (Daoist pharmacopoeia, medical texts)
+
+
+### Session 43 Summary (2026-02-04)
+
+**Completed:**
+- Han Shu (Book of Han): 110/110 chapters translated ✓
+- Shiji (Records of the Grand Historian): 130/130 chapters translated ✓
+  - Fixed chapter 2 (missing Qingzhou paragraph)
+  - Fixed chapter 22 (missing entirely - Han officials table)
+  - Fixed chapter 67 (missing disciples list)
+  - Audit report: docs/shiji-audit-report.md
+  - Fix report: docs/shiji-fix-report.md
+- Xin Tangshu (New Book of Tang): 3 workers running (X1, X2, X3)
+
+**Agents completed:**
+- acb080c: Shiji audit (all 130 chapters) ✓
+- ac11939: Shiji systematic fix (ch 22, 67, etc.) ✓
+- ae4e085: Shiji DB sync + translation (ch 2, 22, 67) ✓
+
+**Key files created:**
+- scripts/check-shiji-db.ts (diagnostic)
+- scripts/sync-shiji-fixes.ts (by agent)
+- docs/shiji-audit-report.md
+- docs/shiji-fix-report.md
+- docs/shiji-audit-results.json
+
