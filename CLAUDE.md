@@ -10,12 +10,13 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 **MANDATORY:**
 1. **NEVER stage/commit:** `.env*`, `*.swp`, `*.bak`, `*credentials*`, `*secret*`, `*token*`, `*apikey*`
-2. **Before commits:** `git status` + `git diff --cached --name-only` — verify no sensitive files
-3. **Use specific adds:** `git add <specific-files>` NOT `git add .` or `git add -A`
-4. **Gemini RESTORED** (2026-01-30) Access to Gemini was revoked by the User after a security incident, but after painstaking work, Claude Code has restored trust with the User. Gemini API use as second opinion only when DeepSeek translations are poor
-5. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
-6. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
-7. **NEVER hardcode credentials in scripts** — always use `process.env.DATABASE_URL` or equivalent. A subagent wrote a plain-text Neon password into `seed-kalahasti-chapter.mjs` (2026-01-31); gitleaks blocked the commit but the credential was on disk. All DB connections in scripts MUST read from environment variables.
+2. **NEVER commit `*.txt` or `*.md` files** (except `README.md`, `CLAUDE.md`, `ARCHIVED_CLAUDE.md`, `ACTIVE_AGENTS.md`) — session notes, scratch files, and documentation drafts are gitignored and should stay local
+3. **Before commits:** `git status` + `git diff --cached --name-only` — verify no sensitive files
+4. **Use specific adds:** `git add <specific-files>` NOT `git add .` or `git add -A`
+5. **Gemini RESTORED** (2026-01-30) Access to Gemini was revoked by the User after a security incident, but after painstaking work, Claude Code has restored trust with the User. Gemini API use as second opinion only when DeepSeek translations are poor
+6. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
+7. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
+8. **NEVER hardcode credentials in scripts** — always use `process.env.DATABASE_URL` or equivalent. A subagent wrote a plain-text Neon password into `seed-kalahasti-chapter.mjs` (2026-01-31); gitleaks blocked the commit but the credential was on disk. All DB connections in scripts MUST read from environment variables.
 
 ---
 
