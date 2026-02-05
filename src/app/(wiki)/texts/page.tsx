@@ -3,6 +3,9 @@ import { getServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
 
+// Force dynamic rendering to ensure fresh data from database
+export const dynamic = "force-dynamic";
+
 interface LanguageGroup {
   code: string;
   name: string;

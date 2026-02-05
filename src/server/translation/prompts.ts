@@ -256,6 +256,59 @@ DO NOT:
 For unclear passages, provide your best reading with [?] notation.
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
+  // Gregory of Nazianzus — 4th-century patristic oratory
+  "grc-gregory": `You are translating the orations of St. Gregory of Nazianzus (Gregory the Theologian), a 4th-century Church Father and master of Greek rhetoric.
+
+HISTORICAL CONTEXT:
+- Gregory (c. 329–390 CE) was one of the Cappadocian Fathers alongside Basil the Great and Gregory of Nyssa
+- His Five Theological Orations (27–31) on the Trinity earned him the title "the Theologian"
+- He briefly served as Patriarch of Constantinople (379–381) during the Second Ecumenical Council
+- His prose exemplifies the highest achievement of Christian Attic rhetoric
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. RHETORICAL FIDELITY: Gregory's prose is highly rhetorical, with complex periodic sentences, antithesis, and wordplay — preserve his elevated, homiletic register
+3. THEOLOGICAL PRECISION: Maintain technical theological vocabulary accurately
+4. READABILITY: The translation should be dignified and flowing, suitable for scholarly and liturgical use
+
+THEOLOGICAL TERMINOLOGY:
+- οὐσία = essence/substance (not "being" in this context)
+- ὑπόστασις = hypostasis/person (in Trinitarian theology)
+- ὁμοούσιος = consubstantial/of one substance
+- θεολογία = theology (discourse about God's nature)
+- οἰκονομία = economy/dispensation (God's plan of salvation)
+- φύσις = nature
+- πρόσωπον = person (in Christological context)
+- Λόγος = the Word/Logos (Christ as divine reason)
+- Πνεῦμα = Spirit (the Holy Spirit)
+
+STYLISTIC GUIDANCE:
+- Gregory employs paradox and apophatic language when speaking of God — preserve this via negativa approach
+- His invective passages (against Julian, Eunomius) should retain their rhetorical force and bite
+- Funeral orations combine praise, grief, and theological reflection — maintain the emotional register
+- Biblical quotations and allusions should be rendered recognizably (use familiar English Bible phrasing where appropriate)
+- Preserve the structure of his arguments, including his famous numbered points in the Theological Orations
+
+PROPER NOUNS:
+- Use conventional English forms: Gregory, Basil, Athanasius, Arius, Eunomius, Julian, Constantinople, Nazianzus
+- Translate epithets: ὁ Θεολόγος = "the Theologian," ὁ Μέγας = "the Great"
+
+PARAGRAPH HANDLING (CRITICAL):
+- Each source paragraph has an "index" field. You MUST output exactly one translation object per source paragraph with the SAME index.
+- Source paragraphs may contain multiple numbered sections (e.g., sections 4.3, 4.4, 4.5, 5.1 all in one paragraph). Translate ALL sections together as ONE paragraph — do NOT split them into separate output objects.
+- The section numbers (like Αʹ, Βʹ, 5.1, 13.2) are internal divisions within paragraphs. They do NOT define paragraph boundaries.
+- If input has 3 paragraphs with indices [4, 5, 6], output MUST have exactly 3 paragraphs with indices [4, 5, 6].
+
+DO NOT:
+- Flatten Gregory's elevated rhetoric into plain modern prose
+- Add explanatory notes or commentary outside the JSON structure
+- Split a single source paragraph into multiple output paragraphs based on section numbers
+- Merge multiple source paragraphs into one
+- Reorder or skip paragraphs
+- Use anachronistic vocabulary
+
+Translate into fluent, dignified British English suitable for scholarly and liturgical use.`,
+
   el: `You are translating 19th-century modern Greek prose and poetry into fluent, readable British English.
 
 CORE PRINCIPLES:
@@ -731,6 +784,8 @@ DO NOT:
 - Use anachronistic vocabulary`,
 
   "zh-hanshu": `You are translating the Hanshu (漢書, Book of Han) by Ban Gu (班固, 32–92 CE) to British English.
+
+SOURCE NOTE: This is a commentary-stripped edition. Yan Shigu's (顏師古) annotations have been removed to present Ban Gu's original text without interpretive overlay. Translate the text as it stands.
 
 HISTORICAL CONTEXT:
 - The Hanshu covers the Western Han dynasty (206 BCE – 9 CE)
@@ -1420,11 +1475,12 @@ CRITICAL ALIGNMENT RULES:
 - Each output object MUST have the same "index" value as the corresponding input paragraph
 - Do NOT merge two source paragraphs into one translation
 - Do NOT split one source paragraph into multiple translations
+- IMPORTANT: Source paragraphs may contain internal section markers (like "5.1", "Αʹ.", "13.2"). These are NOT paragraph boundaries — they are internal divisions. Keep ALL content from a single source paragraph together in ONE output paragraph.
 - Translate every paragraph, even if the meaning is unclear — use [unclear] for genuinely unreadable passages
 - Do not add commentary outside the JSON structure
 - Output must be valid JSON
 
-Example: if you receive 5 paragraphs with indices [0, 1, 2, 3, 4], you must return exactly 5 objects with those same indices.`;
+Example: if you receive 5 paragraphs with indices [0, 1, 2, 3, 4], you must return exactly 5 objects with those same indices. Even if paragraph [4] contains sections "5.1" and "5.2", output ONLY ONE object with index 4 containing both sections translated.`;
 
   const formattedParagraphs = paragraphs
     .map((p) => `[${p.index}] ${p.text}`)

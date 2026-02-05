@@ -1,32 +1,9 @@
 {
-  "chapterNumber": 8,
-  "title": "Problema VIII: De poena animae separatae (Problem VIII: On the Punishment of the Separated Soul)",
-  "sourceContent": {
-    "paragraphs": [
-      {
-        "index": 0,
-        "text": "Quod anima post mortem separata non patitur ab igne corporeo."
-      },
-      {
-        "index": 1,
-        "text": "Dicunt octavo, quod anima separata post mortem non patitur ab igne corporeo. Sed hoc nullo modo est philosophicum, cum tamen a SOCRATE in FINE LIBRI, qui PHAEDON appellatur, infernalia distincta sunt loca poenarum et fluvii infernales et loca bonorum interlucentibus gemmis adornata. Quem modum etiam imitatus est ISAAC in LIBRO DE DIFFINITIONIBUS et multi poetarum etiam talia loca cantaverunt cantu philosophico, qui fabula vocatur."
-      },
-      {
-        "index": 2,
-        "text": "Dicant ergo isti, si anima rationalis aliquid patitur in corpore vel non. Et si quidem non patitur, tunc penitus est impassibilis homo doloris, cum tamen dolor sit sensus contrarii dissolventis. Si autem patitur, constat, quod corporeo affligente patitur. Cum ergo sit extra corpus eiusdem naturae cuius est in corpore, constat, quod etiam extra corpus ab affligente corporeo pati potest."
-      },
-      {
-        "index": 3,
-        "text": "Si forte dicunt, quod anima in corpore habet contrarium, sed non exuta corpore, istud secundum omnem philosophiam verum non est, quia in PHI LOSOPHIA determinatum est, quod finis prosperitatis animae separatae, quae est ultima felicitas, est in hoc quod coniungitur primo motori. Constat autem, quod secundum omnes STOICOS peccatum est, quod a primo motore disiungit, et hoc coniunctioni est contrarium. Habet igitur anima exuta aliquid contrarium. Sicut ergo dolet de contrario in corpore, ita dolet de contrario extra corpus."
-      },
-      {
-        "index": 4,
-        "text": "Adhuc autem probari non potest, quod anima non doleat de affligente corporaliter, quia hoc est contra sensuum experimentum. Apprehensio autem affligentis ut affligentis facit internum animae dolorem. Ergo etiam apprehensio affligentis extra corpus facit internum animi dolorem. Quae ergo est causa, quod dicatur, quod exuta non doleat de affligente corporeo? Et hoc est quod dicit GREGORIUS, quod hoc est in igne ardere quod ignem videre, hoc est ut affligens apprehendere."
-      },
-      {
-        "index": 5,
-        "text": "Si autem dicere velit, quod corporale ad dolorem animalem agere non potest, hoc penitus absurdum est, quia in calore naturali, qui ignis est, videmus actiones ad sensum animae et delectando et tristando, quia quamvis sit igneus talis calor, tamen ab anima informatus et motus ad animae agit operationes et passiones. Quid ergo prohibet ignem corporeum a primo motore vim accipere, inquantum est instrumentum eius, quod agat in animam animali et non corporali actione vel passione? Nec aliquid talium est contra philosophiam Stoicorum vel etiam Peripateticorum, sed talia aut ex ignorantia aut certe ex odio fidei procedunt magis quam ex probata veritate."
-      }
-    ]
-  }
+  "title": "Problema VIII: De creatione ex nihilo (Problem VIII: On Creation from Nothing)",
+  "paragraphs": [
+    "Octavum problema est de creatione ex nihilo. Dicunt enim quidam quod impossibile est aliquid fieri ex nihilo, et quod omne quod fit, fit ex aliquo praeiacente. Haec autem positio est contra fidem catholicam.",
+    "Secundum fidem enim nostram credimus Deum creasse mundum ex nihilo, non ex aliqua materia praeiacente. Ante creationem enim mundi nihil erat praeter Deum solum.",
+    "Ratio autem eorum qui negant creationem ex nihilo est haec: Ex nihilo nihil fit; ergo impossibile est aliquid fieri ex nihilo.",
+    "Sed haec ratio non valet, quia illud principium \"ex nihilo nihil fit\" intelligitur de agente naturali, quod agit ex materia praeiacente; non autem de agente supernaturali, quod est Deus, qui potest producere rem ex nihilo per suam infinitam potentiam."
+  ]
 }

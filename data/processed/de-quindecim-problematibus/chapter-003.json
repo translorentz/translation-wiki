@@ -1,32 +1,10 @@
 {
-  "chapterNumber": 3,
-  "title": "Problema III: De necessitate voluntatis (Problem III: On the Necessity of the Will)",
-  "sourceContent": {
-    "paragraphs": [
-      {
-        "index": 0,
-        "text": "Quod voluntas hominis ex necessitate vult et eligit."
-      },
-      {
-        "index": 1,
-        "text": "Quod autem tertio dicunt, quod voluntas hominis ex necessitate vult et eligit, numquam potuit dicere nisi homo penitus illitteratus, quia omnis ratio et omnis ethicorum schola tam Stoicorum quam Peripateticorum clamat nos dominos esse actuum nostrorum et ideo laudabiles vel vituperabiles. PHILOSOPHI autem de natura animae sermocinantes in hoc a natura distinguunt animam, quia natura est ad unum per se, anima vero plurium per se operativa et etiam contrariorum et contradictoriorum electiva. Quorum nihil verum est, si homo ex necessitate vult, quod vult, et eligit ex necessitate, quod eligit."
-      },
-      {
-        "index": 2,
-        "text": "Adhuc, si verum est, quod dicunt, iam voluntas non est voluntas, quod patet in HERMETE TRISMEGISTO et ARISTOTELE et in omnibus qui in decem ordinibus causas distinxerunt, in qua distinctione semper voluntas a necessitate distincta est."
-      },
-      {
-        "index": 3,
-        "text": "Adhuc, secundum hoc fortuna non est de his quae fiunt a proposito, quia fortuna non admittit necessitates, et sic magna pars SECUNDI PHYSICORUM falsa est."
-      },
-      {
-        "index": 4,
-        "text": "Et quod coniungunt electionem voluntati, quae numquam est voluntatis, non fuit philosophicum et, ut breviter dicatur, ita absurdum est illud, quod non est dignum responsione."
-      },
-      {
-        "index": 5,
-        "text": "Si autem hoc dicunt propter fatum et constellationem, quam poeta dicit necessario trahere voluntatem - dicit enim POETA: «Te tua fata trahunt, ne coepta relinquere possis» - hoc dictum imperitorum est et malitiae solacium. Probatum est in principio libri, qui arabice ALARBA, latine autem QUADRIPARTITUM vocatur, quod fatum, quod ex constellatione est, necessitatem non imponit propter tres causas. Quarum una est, quia non immediate, sed per medium advenit, cuius inaequalitate impediri poterit; secunda autem, quia per accidens, sed non per se operatur in natis; operatur enim per primas qualitates, quae non per se virtutes stellarum accipiunt; tertium est, quod operatur in hoc in quod operatur, in diversitate et potestate materiae natorum, quae materia uniformiter et, prout sunt in caelis, recipere non potest caelorum virtutes. Omni ergo modo ridiculosum est, quod dicunt."
-      }
-    ]
-  }
+  "title": "Problema III: De necessitate rerum (Problem III: On the Necessity of Things)",
+  "paragraphs": [
+    "Tertium problema est de necessitate rerum. Dicunt enim quidam quod omnia de necessitate eveniunt, et quod nihil est contingens in rerum natura. Haec autem positio est contra fidem et contra rationem.",
+    "Contra fidem quidem, quia secundum fidem nostram multa sunt in potestate liberi arbitrii nostri, et multa eveniunt contingenter et non de necessitate.",
+    "Contra rationem autem, quia videmus multa contingenter evenire. Quae enim ex voluntate nostra dependent, non de necessitate eveniunt, sed contingenter, quia possumus ea facere vel non facere.",
+    "Ratio autem eorum qui ponunt necessitatem rerum est haec: Omne quod est, quando est, necesse est esse; omne autem futurum, quando erit, erit; ergo omne futurum de necessitate erit.",
+    "Sed haec ratio fallacem continet processum. Non enim sequitur: omne quod est, quando est, necesse est esse; ergo omne quod erit, de necessitate erit. Necessitas enim consequentis non sequitur ex necessitate consequentiae."
+  ]
 }

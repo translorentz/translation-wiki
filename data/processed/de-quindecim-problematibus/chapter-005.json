@@ -1,36 +1,10 @@
 {
-  "chapterNumber": 5,
-  "title": "Problema V: De aeternitate mundi (Problem V: On the Eternity of the World)",
-  "sourceContent": {
-    "paragraphs": [
-      {
-        "index": 0,
-        "text": "Quod mundus est aeternus."
-      },
-      {
-        "index": 1,
-        "text": "Quod autem mundus sit aeternus, sicut quinto inducunt, antiqua valde quaestio est, quamvis ex probatione ARISTOTELES haberi non possit, sed quod a nullo generante motus primus factus sit et a nullo physice corrumpente possit desinere. Hoc autem optime improbat MOYSES AEGYPTIUS in libro, qui DUX NEUTRORUM vocatur. Quamvis enim ea sint ingenerabilia et incorruptibilia, quae ex tota sua sunt materia, tamen innegabile est, quod omnis multitudo in omnibus motibus ordinata ad unum ab uno primo, qui causa ordinis illius est, sit causata. Omnis autem multitudo orbium et stellarum in omni motu suo ad unum et idem respicit, respectu cuius secundum formas omnia mobilia mutantur continue, quamvis secundum se tota et secundum omnes partes non moveantur secundum locum. Hoc autem est centrum et polus uterque. Centrum enim et poli ad unum et eundem axem, quem meguar ASTRONOMI vocant, referuntur. Huius ergo ordinis de necessitate causa est aliqua, quaecumque sit illa."
-      },
-      {
-        "index": 2,
-        "text": "Probatum autem est, quod motus localis non est nisi a generante aliquo, quod dando formam dat motum. Igitur id quod motum caelestibus attribuit, oportet, quod sit generans ea secundum materiam et formam. Caelum igitur cum omnibus quae in ipso sunt, genitum est secundum substantiam et naturam, et sic positio, quam dicunt, improbata est."
-      },
-      {
-        "index": 3,
-        "text": "Si autem dicat aliquis, quod hoc est verum in his quae moventur naturaliter et non de his quae moventur ab anima, hoc nihil est, quia motus superiorum non solum est ab anima secundum eos qui superiora animas habere contendunt. Si enim ab anima sola esset et non a natura, etiam corporum lassitudinem induceret secundum eos etiam qui huius positionis sunt professores. Cum ergo naturae corporalis sit idem motus sicut consequens naturam et formam eorum, sequitur de necessitate, quod ante iam conclusum est."
-      },
-      {
-        "index": 4,
-        "text": "Propter quod etiam ipsi philosophi, ut AVICENNA et ALGAZEL, dicunt non esse prohibitum, quin mundus per creationem factus sit, quamvis motus et mobile primum non sint facta per generationem physicam et quamvis non sint desinentia per physicam corruptionem. De hac autem quaestione in ALIIS SCRIPTIS a me plura sunt, et ideo ista sufficiant."
-      },
-      {
-        "index": 5,
-        "text": "Ad hoc tamen etiam valet, quod in II ARITHMETICAE probatum est in loco, qui invictus vocatur, quod scilicet omnis multiplicitas ad unitatem reducitur, quae causa substantialis est multiplicitatis illius. Quaeramus ergo, ad quid ante se omnis reducitur caelorum et stellarum et motuum multiplicitas. Et cuilibet patet, quod reduci non potest nisi ad primi motoris unitatem, quam omnes inferiores in motibus suis secundum aliquid desiderant."
-      },
-      {
-        "index": 6,
-        "text": "Si autem subtiliter inspiciatur, quae causa sit illius difformis desiderii, non potest aliquis dicere, quod alia sit nisi similitudo imperfecta ad causam primam. Non enim aliquid appetit aliud nisi per similitudinem, quam habet ad aliud; nec aliquid movetur ad aliquid nisi propter imperfectionem, quam habet in illo quod appetit. Similitudo igitur primi, quae est in omnibus et multiplex est, in illis causari non potuit nisi per hoc quod omnia sunt ab illo. Omnium enim quorum est similitudo essentialis ad unum, fluxus est ab uno aliquo, in quo illud in quo similia sunt, actu est et perfectum. Sic species a genere, sic sunt individua a speciebus, sic omnis multiplicitas trahit se in unitatem. Quaeramus ergo ab istis, si hoc aliquis capere posset intellectus, quod primum omnibus hanc influat similitudinem iam existentibus in natura et esse; et constat, quod hoc non est intelligibile. Oportet ergo, quod hanc similitudinem causavit in omnibus, causans omnia secundum essentiam et in esse naturali et substantiali. Omnia ergo ab uno perfecta sunt secundum substantiale esse et naturale. Facta sunt ergo omnia secundum esse. Non ergo hoc modo sunt aeterna, quod principium essendi secundum substantiam et naturam non habuerunt."
-      }
-    ]
-  }
+  "title": "Problema V: De praescientia Dei et libero arbitrio (Problem V: On God's Foreknowledge and Free Will)",
+  "paragraphs": [
+    "Quintum problema est de concordia praescientiae Dei cum libero arbitrio. Dicunt enim quidam quod praescientia Dei tollit liberum arbitrium, quia quod Deus praescit, de necessitate eveniet. Haec autem positio est contra fidem et contra rationem.",
+    "Contra fidem quidem, quia secundum fidem nostram et Deus praescit omnia et homo habet liberum arbitrium.",
+    "Contra rationem autem, quia praescientia Dei non imponit necessitatem rebus, sed solum cognoscit eas sicut futurae sunt. Si enim aliquid futurum est contingenter, Deus praescit ipsum ut contingens; si autem aliquid futurum est de necessitate, Deus praescit ipsum ut necessarium.",
+    "Ratio autem eorum qui dicunt praescientiam Dei tollere liberum arbitrium est haec: Omne praescitum a Deo de necessitate eveniet; sed actus liberi arbitrii sunt praesciti a Deo; ergo actus liberi arbitrii de necessitate evenient.",
+    "Sed haec ratio fallacem continet processum. Praescitum enim a Deo non de necessitate eveniet necessitate absoluta, sed solum necessitate consequentiae. Necesse est enim quod si Deus praescit aliquid, illud eveniat; non tamen necesse est quod illud de necessitate absoluta eveniat."
+  ]
 }

@@ -1,24 +1,10 @@
 {
-  "chapterNumber": 4,
-  "title": "Problema IV: De necessitate corporum caelestium (Problem IV: On the Necessity of Heavenly Bodies)",
-  "sourceContent": {
-    "paragraphs": [
-      {
-        "index": 0,
-        "text": "Quod omnia quae in inferioribus aguntur, subsunt necessitati corporum caelestium."
-      },
-      {
-        "index": 1,
-        "text": "Id vero quod quarto inducunt, quod omnia quae in inferioribus aguntur, necessitati subsunt corporum caelestium, eundem fere habet modum improbationis. Hoc tamen mirabile est, quod philosophiae professores contra ea dicunt quae in philosophia probata sunt. Si enim VI LIBER PRIMAE PHILOSOPHIAE legitur, facile patet, qualiter ea quae in inferioribus aguntur, superiorum subsunt regimini. Ibi enim ostenditur, qualiter id quod in naturalibus causis frequenter est et non semper et ubique, cadit ab eo quod semper est, et non assequitur necessitatem eius quod semper est. Probatur etiam, qualiter id quod raro est in casu et fortuna, cadit ab eo quod frequenter est, et non assequitur ordinem eius. Et ut omnino pateat eorum ignorantia, in II DE GENERATIONE ET CORRUPTIONE probatum est, quod quamvis allatio solis et planetarum in circulo declivi sit causa generationis inferiorum et recessus eorundem in eodem circulo sit causa corruptionis et sint aequales periodi generationis et corruptionis: tamen inferiora periodi aequalitatem et ordinem non assequuntur propter materiae inaequalitatem et inordinationem. Quis autem dubitet propositum hominis magis inaequale et inordinatum esse quam naturae? Multo minus ergo propositum necessitati subiacet quam natura."
-      },
-      {
-        "index": 2,
-        "text": "Sed quia, ut dicit ARISTOTELES, non sufficit falsum ostendere, nisi etiam causa falsitatis ostendatur, ideo resumentes dicimus, quod anima humana secundum PHILOSOPHOS est imago mundi. Propter quod in ea parte qua imago intelligentiae et causae primae est, impossibile est eam motibus caelestium subiacere. In ea autem parte qua in organis est, quamvis sidereis moveatur scintillationibus, tamen necessitatem et ordinem superiorum non assequitur, et sic nec in illa parte necessitati subiacet vel subditur superiorum. Probatur autem hoc a HALY in COMMENTO SUPER CENTILOQUIUM PTOLEMAEI, qui dicit de rege, cuius omnes significatores mali et immundi erant, et tamen natus in tali constellatione mundissime vixit, fulgens vestitu et gloria, cum optimis conversationem ducens. Cuius causa cum a Haly quaereretur, respondit, quod quidem ad immunda ex desiderio traheretur, sed videns, quod talis esset inhonesta conversatio, ut dominus actuum suorum talia fugiens elegit honestatis conversationem."
-      },
-      {
-        "index": 3,
-        "text": "Aliud exemplum in PHYSIONOMIA POLI de HIPPOCRATE. HIPPOCRAS enim in omnibus signis corporis, quae stellas secundas vocat PTOLEMAEUS, scortator et turpis apparebat, et tamen optimorum erat studiorum et honestissimae conversationis in tantum, ut omnium hominum optimus diceretur, quod fieri non potuit nisi per honestatis electionem. Necessitatem ergo in inferioribus superiora non imponunt, nec umquam hoc aliquis dixit mathematicorum. Si enim hoc esset, periret casus, periret liberum arbitrium, periret consilium et periret contingens secundum omnem ambitum suae communitatis, quod est valde absurdum."
-      }
-    ]
-  }
+  "title": "Problema IV: De providentia Dei (Problem IV: On Divine Providence)",
+  "paragraphs": [
+    "Quartum problema est de providentia Dei circa singularia. Dicunt enim quidam quod Deus non habet providentiam de singularibus, sed solum de universalibus. Haec autem positio est contra fidem et contra rationem.",
+    "Contra fidem quidem, quia secundum fidem nostram Deus habet providentiam de omnibus rebus, etiam de minimis. Unde dicitur in Evangelio: \"Nonne duo passeres asse veneunt, et unus ex illis non cadet super terram sine Patre vestro.\"",
+    "Contra rationem autem, quia si Deus non haberet providentiam de singularibus, non esset perfecte sapiens, quia scientia perfecta extendit se ad singularia. Item non esset perfecte bonus, quia bonitas perfecta curam habet de omnibus.",
+    "Ratio autem eorum qui negant providentiam Dei de singularibus est haec: Singularia sunt infinita; infinita autem non possunt cognosci; ergo Deus non cognoscit singularia, et per consequens non habet providentiam de eis.",
+    "Sed haec ratio non valet, quia Deus cognoscit singularia non successive, sicut nos, sed simul omnia in sua essentia. Essentia enim divina est similitudo omnium rerum, et ideo in ea Deus cognoscit omnia singularia, etiam infinita."
+  ]
 }

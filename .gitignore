@@ -63,3 +63,12 @@ API_keys_DO_NOT_COMMIT.txt
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Documentation and notes (session-specific, not for repo)
+*.txt
+*.md
+# Keep essential markdown files
+!README.md
+!CLAUDE.md
+!ARCHIVED_CLAUDE.md
+!ACTIVE_AGENTS.md

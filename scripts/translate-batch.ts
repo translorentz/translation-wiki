@@ -142,13 +142,17 @@ interface Paragraph {
 
 // Language-specific limits: Chinese is very dense (1 char ≈ 2-4 English words),
 // Greek/Latin are closer to English character density.
+// REDUCED grc/la from 6000 to 2500 to prevent LLM truncation on long paragraphs.
 const MAX_CHARS_BY_LANG: Record<string, number> = {
   zh: 1500,   // Chinese: extremely dense
-  grc: 6000,  // Greek: moderate density
-  la: 6000,   // Latin: similar to Greek
+  grc: 2500,  // Greek: reduced to prevent truncation
+  la: 2500,   // Latin: reduced to prevent truncation
 };
-const DEFAULT_MAX_CHARS = 3000;
+const DEFAULT_MAX_CHARS = 2500;
 const BATCH_DELAY_MS = 2000;
+
+// Very long paragraphs (>1500 chars) should be processed alone to prevent truncation
+const SOLO_PARAGRAPH_THRESHOLD = 1500;
 
 function chunkParagraphs(paragraphs: Paragraph[], sourceLanguage: string): Paragraph[][] {
   const maxChars = MAX_CHARS_BY_LANG[sourceLanguage] ?? DEFAULT_MAX_CHARS;
@@ -157,6 +161,17 @@ function chunkParagraphs(paragraphs: Paragraph[], sourceLanguage: string): Parag
   let currentChars = 0;
 
   for (const p of paragraphs) {
+    // Very long paragraphs get their own batch to prevent truncation
+    if (p.text.length > SOLO_PARAGRAPH_THRESHOLD) {
+      if (current.length > 0) {
+        chunks.push(current);
+        current = [];
+        currentChars = 0;
+      }
+      chunks.push([p]); // Solo batch for long paragraph
+      continue;
+    }
+
     if (current.length > 0 && currentChars + p.text.length > maxChars) {
       chunks.push(current);
       current = [];
@@ -347,11 +362,10 @@ async function translateBatch(
       continue;
     }
 
-    // Final attempt failed — fall back to best-effort realignment
-    process.stdout.write(
-      `      [mismatch] expected ${expectedIndices.length} paragraphs, got ${parsed.length} — using best-effort realignment\n`
+    // Final attempt failed — throw error instead of realigning (realignment causes misalignment bugs)
+    throw new Error(
+      `Paragraph count mismatch after ${MISMATCH_MAX_RETRIES} retries: expected ${expectedIndices.length}, got ${parsed.length}. Refusing to realign.`
     );
-    return realignParagraphs(parsed, expectedIndices);
   }
 
   // Unreachable, but TypeScript needs it
@@ -489,6 +503,50 @@ async function translateChapter(
       return false;
     }
 
+    // Verify content completeness via length ratio check
+    // Translations should be at least MIN_RATIO of source length to catch truncation
+    const MIN_LENGTH_RATIO: Record<string, number> = {
+      zh: 1.5,        // Chinese expands significantly in English
+      "zh-literary": 1.5,
+      "zh-science": 1.5,
+      "zh-biji": 1.5,
+      grc: 0.5,       // Greek to English is roughly similar, but allow for compression
+      "grc-history": 0.5,
+      "grc-gregory": 0.5,
+      la: 0.5,        // Latin similar to Greek
+      default: 0.5,
+    };
+    const minRatio = MIN_LENGTH_RATIO[sourceLanguage] ?? MIN_LENGTH_RATIO.default;
+
+    const truncatedParagraphs: { index: number; srcLen: number; transLen: number; ratio: number }[] = [];
+    for (let i = 0; i < sourceContent.paragraphs.length; i++) {
+      const srcLen = sourceContent.paragraphs[i].text.length;
+      const transLen = translated[i]?.text?.length ?? 0;
+      // Only check paragraphs with substantial source content (>100 chars)
+      if (srcLen > 100) {
+        const ratio = transLen / srcLen;
+        if (ratio < minRatio) {
+          truncatedParagraphs.push({ index: i, srcLen, transLen, ratio });
+        }
+      }
+    }
+
+    if (truncatedParagraphs.length > 0) {
+      console.error(
+        `  [TRUNCATION ERROR] Chapter ${chapter.chapterNumber}: ${truncatedParagraphs.length} paragraphs appear truncated:`
+      );
+      for (const tp of truncatedParagraphs.slice(0, 5)) {
+        console.error(
+          `    - Para ${tp.index}: source ${tp.srcLen} chars, translation ${tp.transLen} chars (ratio: ${tp.ratio.toFixed(2)}, min: ${minRatio})`
+        );
+      }
+      if (truncatedParagraphs.length > 5) {
+        console.error(`    ... and ${truncatedParagraphs.length - 5} more`);
+      }
+      console.error(`  Skipping save to prevent incomplete translations.`);
+      return false;
+    }
+
     // Create or get translation record
     let translation = existingTranslation;
     if (!translation) {
@@ -593,6 +651,19 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Twenty-Four Histories use text-specific prompts (zh-shiji, zh-hanshu, etc.)
+    const twentyFourHistoriesSlugs = [
+      "shiji", "hanshu", "hou-hanshu", "sanguozhi", "jinshu", "songshu",
+      "nan-qi-shu", "liangshu", "chenshu", "weishu", "bei-qi-shu", "zhoushu",
+      "suishu", "nanshi", "beishi", "jiu-tangshu", "xin-tangshu",
+      "jiu-wudaishi", "xin-wudaishi", "songshi", "liaoshi", "jinshi",
+      "yuanshi", "mingshi"
+    ];
+    if (twentyFourHistoriesSlugs.includes(text.slug)) {
+      promptLang = `zh-${text.slug}`;
+      usingSpecialPrompt = true;
+    }
+
     // 19th-century Italian literature uses it-literary-19c prompt
     const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
     if (isLiteraryItalian) {
@@ -618,6 +689,12 @@ async function main() {
     const isGreekHistory = text.language.code === "grc" && text.genre === "history";
     if (isGreekHistory) {
       promptLang = "grc-history";
+      usingSpecialPrompt = true;
+    }
+
+    // Gregory of Nazianzus orations use grc-gregory prompt
+    if (text.slug === "gregory-orations") {
+      promptLang = "grc-gregory";
       usingSpecialPrompt = true;
     }
 

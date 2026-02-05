@@ -2,7 +2,7 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-02-04, Session 43 (Han Shu Phase 7-8: DB Updated, Translation IN PROGRESS)
+**Last updated:** 2026-02-05, Session 44 (Gregory of Nazianzus 45 Orations IN PROGRESS)
 
 ---
 
@@ -111,14 +111,30 @@ The hou-hanshu and sanguozhi "moderate issues" are ACCEPTABLE because their comm
 **✅ SHIJI FULLY COMPLETE — 130/130 chapters synced and translated**
 
 **Xin Tangshu (New Book of Tang) Translation Workers:**
-| Worker | Task ID | Chapters | Range | Progress | Status |
-|--------|---------|----------|-------|----------|--------|
-| X1 | b8139c4 | 1-124 | --start 1 --end 124 | Starting (124 ch) | RUNNING |
-| X2 | b266c65 | 125-225 | --start 125 --end 225 | Starting (101 ch) | RUNNING |
-| X3 | bd84736 | 2303-22503 | --start 2303 --end 22503 | Starting (23 ch split parts) | RUNNING |
+
+*Previous workers (stopped and reallocated):*
+| Worker | Task ID | Progress | Status |
+|--------|---------|----------|--------|
+| X1 | b8139c4 | ch 1-19 done | STOPPED |
+| X2 | b266c65 | ch 125-145 done | STOPPED |
+| X3 | bd84736 | **23/23 split parts** | DONE ✓ |
+
+*8-worker allocation (2026-02-04):*
+| Worker | Task ID | Range | Chapters | Status |
+|--------|---------|-------|----------|--------|
+| W1 | b52d6ec | 20-40 | 21 | ✅ DONE |
+| W2 | b44afab | 41-61 | 21 | ✅ DONE |
+| W3 | b3a0ae6 | 62-82 | 21 | ✅ DONE |
+| W4 | b6e3d61 | 83-103 | 21 | ✅ DONE |
+| W5 | bb42cbf | 104-124 | 21 | ✅ DONE |
+| W6 | b91d31e | 146-172 | 27 | ✅ DONE |
+| W7 | bffc468 | 173-199 | 27 | ✅ DONE |
+| W8 | b443a26 | 200-225 | 26 | ✅ DONE |
+
+**✅ XIN TANGSHU TRANSLATION COMPLETE — 248/248 chapters**
 
 **Prompt:** `zh-xin-tangshu` — Custom prompt for New Book of Tang (Ouyang Xiu/Song Qi, 1060 CE)
-**Text:** 248 chapters total (225 regular + 23 split parts), 0 pre-translated
+**Text:** 248 chapters total (225 regular + 23 split parts)
 **Note:** Split chapters use encoded numbers (e.g., ch 23下 = 2303, ch 70下 = 7003, ch 215下 = 21503)
 
 **Phase 5 Results (2026-02-03):**
@@ -229,6 +245,280 @@ All 24 histories have been successfully acquired from zh.wikisource.org.
 | ad15818 | xin-tangshu re-acquisition | **COMPLETE** ✓ |
 | ac86da1 | shiji gap check | **COMPLETE** ✓ |
 | ab5f8ae | weishu etc re-acquisition | **COMPLETE** ✓ |
+
+---
+
+## Active — Gregory of Nazianzus Complete Works Pipeline
+
+**Date:** 2026-02-05
+**Status:** PHASE 1 (ORATIONS) **TRANSLATION COMPLETE** — Review pending
+
+### Source Discovery
+
+After extensive investigation, found clean text PDFs from University of the Aegean Digital Patrology:
+- **URL:** https://greekdownloads.wordpress.com/2014/08/31/άγιος-γρηγόριος-ο-ναζιανζηνός-gregory-of-nazianzus-pg-35/
+- **Downloaded:** 63 PDFs (14MB) to `data/raw/gregory-greekdownloads/`
+- **Quality:** Grade A — Clean Unicode Greek text (NOT image scans)
+- **Coverage:** ALL 45 orations + letters + poetry + drama
+
+### Phase 1: Orations (45 chapters) — IN PROGRESS
+
+**Processing & Verification:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| ae4088c | Fix paragraph splitting (U+0374 vs U+02B9) | ✅ COMPLETE |
+| ae4a460 | Verify paragraph segmentation (1,011 paras) | ✅ COMPLETE |
+| acea321 | Fix embedded section markers (130 found) | ✅ COMPLETE |
+| ae431bc | Verify paragraph splitting fix | ✅ COMPLETE |
+| af714c5 | DeepSeek-reasoner independent review | ✅ COMPLETE (wrote report) |
+| a7b6a64 | Fix stigma spacing (Ch 2, 4) | ✅ COMPLETE (15 fixes) |
+| aacc5ce | Fix structural issues + DB update | ✅ COMPLETE (45 chapters updated) |
+
+**✅ FINAL VERIFICATION PASSED — APPROVED FOR TRANSLATION**
+
+**Current Paragraph Counts:** 1,166 total (all 45 orations verified)
+
+**All Issues Fixed:**
+- ✓ Stigma spacing: `X ςʹ.` → `Xςʹ.` (15 fixes in Ch 2, 4)
+- ✓ Orphaned markers: Removed from Ch 3, 4
+- ✓ Malformed markers: Fixed `Α.` → `Αʹ.` in Ch 35
+- ✓ Database updated with all fixes
+
+**⚠️ PARAGRAPH FIX v5 (2026-02-05):**
+- Agent acea321 found **130 embedded section markers** across 38 orations
+- Root causes: Delta variant (U+2206 ∆), spaced lowercase sigma (ς ʹ.)
+- Created `process-orations-v5.py` with comprehensive marker detection
+- **Paragraph count:** 1,012 → 1,106 (+94 properly split paragraphs)
+- Updated source_content for all 45 chapters in database
+- Deleted 38 misaligned translations (35 changed chapters)
+- **9 chapters preserved** (unchanged): 7, 11, 17, 27-31, 39
+
+**⚠️ PARAGRAPH ALIGNMENT INCIDENT (2026-02-05):**
+- Wave 3 workers STOPPED due to paragraph misalignment bug
+- Issue: LLM re-segmented based on section markers, shifting content to wrong paragraphs
+- All translations DELETED from database
+- Code FIXED: batch size reduced, solo paragraphs, explicit prompt instructions
+- See CLAUDE.md "CRITICAL: Paragraph Alignment Verification" for full details
+
+**Translation Workers (Wave 4 - COMPLETE):**
+
+| Worker | Bash ID | Orations | Status |
+|--------|---------|----------|--------|
+| W1 | b80a693 | 1-6 | ✅ DONE (Ch 4 retry: b19adb0) |
+| W2 | b775099 | 8-12 | ✅ DONE |
+| W3 | bb8c92e | 13-18 | ✅ DONE |
+| W4 | be9784b | 19-24 | ✅ DONE |
+| W5 | b91ae01 | 25-30 | ✅ DONE |
+| W6 | b52f118 | 31-36 | ✅ DONE |
+| W7 | b4511c1 | 37-42 | ✅ DONE |
+| W8 | b11e421 | 43-45 | ✅ DONE |
+
+**✅ TRANSLATION COMPLETE:** 45/45 orations translated (1,166 paragraphs)
+
+**Post-Translation:**
+- ✅ Review agent (a87af3b) PASSED: see `docs/gregory-orations-quality-review-v3.md`
+- 1,166 paragraphs with perfect alignment, theological terms correct, no truncation
+- **Phase 1 COMPLETE**
+
+**Phase 2 Processing (Additional Works):**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a9ecfe8 | Process PDFs: Miscellanea → Dramatic → Carmina → Epistulae | ✅ COMPLETE |
+
+**Phase 2 Processing Results:**
+| Book | Collection | Chapters | Paragraphs |
+|------|------------|----------|------------|
+| 1 | Epistulae (Letters) | 244 | ~2,000+ |
+| 2 | Carmina (Poetry) | 53 | ~500+ |
+| 3 | Dramatic/Liturgical | 2 | 198 |
+| 4 | Miscellanea | 3 | 12 |
+| **Total** | | **302** | |
+
+**Phase 2 Translation Workers (DeepSeek, grc-gregory prompt):**
+| Worker | ID | Text | Chapters | Status |
+|--------|-----|------|----------|--------|
+| Misc | b20aa8d | gregory-miscellanea | 1-3 | ✅ DONE (3/3) |
+| Drama | b429109 | gregory-dramatic | 1-2 | ✅ DONE (2/2, 198 para) |
+| CarmW1 | b293133 | gregory-carmina | 1-27 | 🔄 RUNNING (ch 14, 23 skipped) |
+| CarmW2 | b714ee4 | gregory-carmina | 28-53 | 🔄 RUNNING (ch 30, 38 skipped) |
+| EpW1 | bac3978 | gregory-epistulae | 1-60 | ✅ DONE (60/60) |
+| EpW2 | b211da6 | gregory-epistulae | 61-120 | ✅ DONE (60/60) |
+| EpW3 | b589934 | gregory-epistulae | 121-180 | ✅ DONE (60/60) |
+| EpW4 | bfe7795 | gregory-epistulae | 181-244 | ✅ DONE (64/64) |
+
+**Completed:** 6/8 workers, 249/302 chapters translated
+
+### ✅ CARMINA REPROCESSING COMPLETE
+
+**Problem (resolved):** All 53 Carmina chapters were stored as SINGLE PARAGRAPHS (no line breaks).
+
+**Resolution (2026-02-05):**
+1. All Carmina data DELETED from database (translations + chapters)
+2. JSON files removed from `data/processed/gregory-carmina/`
+3. New processor created: `scripts/process-carmina-de-se-ipso.py`
+4. Autonomous subagent reprocessed, reviewed, seeded, and translated
+
+**Final Results:**
+- **77 chapters** (properly segmented from Greek numeral markers)
+- **219 paragraphs** (1-31 per chapter, appropriate for poetry)
+- **Quality Grade:** B+ (clean polytonic Greek, Migne column numbers as reference)
+- **Translation:** 77/77 complete (0 errors)
+
+**Carmina Reprocessing Agent:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| ac39396 | Full Carmina pipeline (process → review → seed → translate) | ✅ COMPLETE (77ch, 219 para, B+) |
+
+**Browse Page Fix:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a58afc3 | Fix Gregory total_chapters in texts table | ✅ COMPLETE (3 texts fixed) |
+
+### Phase 2: Additional Works (PENDING — after orations complete)
+
+| Book | Slug | Contents | Chapters |
+|------|------|----------|----------|
+| 1 | `gregory-epistulae` | 244+ Letters | 1 per letter |
+| 2 | `gregory-carmina` | Poetry collections | 1 per poem |
+| 3 | `gregory-dramatic` | Christus Patiens + Liturgica | By section |
+| 4 | `gregory-miscellanea` | Testamentum + misc | By work |
+
+### Translation Prompt: `grc-gregory`
+
+Specialized prompt for Gregory's rhetorical style, preserving:
+- Complex periodic sentences and antithesis
+- Technical theological vocabulary (οὐσία, ὑπόστασις, ὁμοούσιος)
+- Biblical quotations and allusions
+- Paradox and apophatic language
+- Invective rhetorical force
+
+### Documentation
+
+- `docs/gregory-nazianzus-workflow.md` — Full workflow plan
+- `docs/gregory-greekdownloads-inventory.md` — PDF inventory
+- `docs/gregory-multi-source-plan.md` — Source investigation report
+
+### Progress Checklist
+
+**Phase 1 (Orations):**
+- [x] Source PDFs downloaded (63 files)
+- [x] PDF extraction complete
+- [x] Quality review passed (B+)
+- [x] Seeding complete (45 chapters)
+- [x] Translation complete (45/45)
+
+**Phase 2 (Additional Works):**
+- [ ] Epistulae processed
+- [ ] Carmina processed
+- [ ] Dramatic/Liturgical processed
+- [ ] Miscellanea processed
+
+---
+
+## Active — Ruyi Jun Zhuan (如意君傳) Pipeline
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a60ba00 | Ruyi Jun Zhuan full pipeline (process + seed + translate) | **STALLED** (post-verification) |
+
+**Text:** 如意君傳 (Ruyi Jun Zhuan / The Lord of Perfect Satisfaction)
+**Author:** Possibly 徐昌齡 (Xu Changling) or Huang Xun (黃訓); Ming dynasty, c. 1524-1529
+**Source:** zh.wikisource.org/zh-hant/如意君傳
+**Genre:** literature (erotic novella)
+**Content:** ~45 pages, Classical Chinese with some vernacular dialogue
+**Historical Note:** Considered the first Chinese pornographic novel; influenced erotic fiction for 100+ years
+
+**⚠️ CONTENT WARNING REQUIRED:**
+When seeding is complete, the text description MUST include:
+> **Content Note:** This text contains explicit sexual content. It is included for its historical and literary significance as a representative work of Ming dynasty erotic fiction.
+
+**Prepared Description for seed-db.ts:**
+```
+A Ming dynasty erotic novella set in the Tang dynasty, chronicling Empress Wu Zetian's
+rise to power alongside her romantic liaisons, particularly with the fictional Xue Aocao,
+who receives the title 'Lord of Perfect Satisfaction' (如意君). Written predominantly in
+Classical Chinese with vernacular dialogue, the text extensively quotes from historical
+and philosophical works including the Records of the Grand Historian, the Mencius, and the
+Classic of Poetry. Considered by some scholars as the first Chinese pornographic novel,
+it profoundly influenced subsequent erotic fiction for over a century. **Content Note:**
+This text contains explicit sexual content. It is included for its historical and literary
+significance as a representative work of Ming dynasty erotic fiction.
+```
+
+**Pipeline Status:**
+- Phase 1 (Verification): ✅ COMPLETE — agent found text on Wikisource; English translation exists (Charles Stone, 1995)
+- Phase 2 (Processing): PENDING — agent stalled at 2026-02-05T01:23:28Z after WebSearch
+- Phase 3 (Quality Review): PENDING
+- Phase 4 (Seeding): PENDING — will need content warning in description
+- Phase 5 (Translation): PENDING — use `zh-literary` prompt
+
+**Agent Recovery:** If agent remains stalled, manually complete processing:
+1. Use HTML at `/tmp/ruyi-raw.html` (already downloaded)
+2. Create processing script to extract paragraphs
+3. Seed with content warning description above
+
+---
+
+## Completed — Tamil Batch Pipeline (All Phases) ✓
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| aeba3f7 | Tamil text verification (20 candidates) | **COMPLETE** ✓ 6 viable |
+| a65c93f | Tamil text processing (6 texts) | **COMPLETE** ✓ 21 chapters |
+| a410c9f | Tamil quality review | **COMPLETE** ✓ All Grade A (1 fix applied) |
+| — | Tamil seeding (5 authors, 6 texts) | **COMPLETE** ✓ 21 chapters |
+| a9f3425 | Tamil translation (Gemini) | **COMPLETE** ✓ 21/21 chapters |
+
+**Texts:**
+| Text | Chapters | Verses | Status |
+|------|----------|--------|--------|
+| nalavenba | 4 | 399 | ✓ |
+| moovarul | 3 | 1,119 | ✓ |
+| takka-yaaga-parani | 9 | 867 | ✓ |
+| nanneri | 1 | 41 | ✓ |
+| dandi-alankaram | 3 | 126 | ✓ |
+| bharata-senapathiyam | 1 | 66 | ✓ |
+
+**Total: 6 texts, 21 chapters, ~2,618 verses — ALL TRANSLATED**
+
+**Notes:**
+- Used Gemini 2.5 Flash (per user directive: Tamil uses Gemini)
+- Texts are medieval/classical Tamil poetry (10th-18th century CE)
+- Two works by Ottakoothar (12th century Chola court poet)
+- 13 chapters newly translated, 8 chapters already done from prior session
+
+---
+
+## Completed — Latin Pipeline Batch 3 (All Phases) ✓
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a4aeda2 | Latin B3 verification (16 candidates) | **COMPLETE** ✓ 10 viable, 6 not viable |
+| ab53cac | Latin B3 processing (9 small texts) | **COMPLETE** ✓ 25ch, 496 para |
+| ae7e32e | Latin B3 processing (De vita 132ch) | **DEFERRED** — tri-lingual interleaving in 1886 edition |
+| aeb8c84 | Latin B3 quality review | **COMPLETE** ✓ 8 Grade A, 1 Grade C (cleanup done) |
+| — | Latin B3 seeding (7 authors, 9 texts) | **COMPLETE** ✓ 25 chapters |
+| a08f383 | Latin B3 translation (9 texts) | **COMPLETE** ✓ 9ch newly translated, 16 already done |
+| a5ce9c7 | Latin B3 description review | **COMPLETE** ✓ 7 descriptions improved |
+| a27f16c | Analecta Laertiana reprocessing | **COMPLETE** ✓ 1ch → 5ch, retranslated |
+
+**Texts in Latin Batch 3:**
+| Text | Author | Chapters | Status |
+|------|--------|----------|--------|
+| de-generatione-stellarum | Grosseteste | 1 | ✓ |
+| de-lunarium-montium | Borelli | 1 | ✓ |
+| dianoia-astronomica | Sizzi | 1 | ✓ |
+| de-quindecim-problematibus | Albertus Magnus | 15 | ✓ (already done B1) |
+| de-quinque-essentiis | Al-Kindi | 1 | ✓ |
+| expositiones-theologicae | Abelard | 3 | ✓ |
+| epistola-apologetica | Roffeni | 1 | ✓ |
+| de-motu-corporali-et-luce | Grosseteste | 1 | ✓ |
+| de-phoenomenis-lunae | Lagalla | 2 | ✓ |
+| analecta-laertiana | Nietzsche | 5 | ✓ (reprocessed from 1ch) |
+
+**Deferred:** De vita et moribus philosophorum (pseudo-Burley) — 132 biographies in Knust 1886 edition interleave Latin/Spanish/German on every page, making OCR unusable. User will find cleaner source.
+
+**Gap Check: 25/25 chapters translated (100%) — LATIN BATCH 3 COMPLETE**
 
 ---
 
@@ -355,6 +645,12 @@ All 24 histories have been successfully acquired from zh.wikisource.org.
 - **14 texts, 102/102 chapters translated**
 - **1 deferred:** brevis-historia-regum-dacie (severe contamination)
 
+### Latin Pipeline (Batch 3) — COMPLETE ✓
+- **9 texts, 25/25 chapters translated**
+- **1 deferred:** De vita et moribus philosophorum (tri-lingual OCR issue)
+- **Texts:** Grosseteste (2), Borelli, Sizzi, Al-Kindi, Abelard (3ch), Roffeni, Lagalla (2ch), Nietzsche (5ch)
+- **Analecta Laertiana reprocessed:** 1 chapter → 5 chapters (proper Nietzsche section boundaries)
+
 ### Russian Pipeline — COMPLETE ✓
 - **8 texts, 235/235 chapters translated**
 
@@ -367,6 +663,11 @@ All 24 histories have been successfully acquired from zh.wikisource.org.
 
 ### Telugu Pipeline — COMPLETE ✓
 - **1 text** (Sri Kalahasteeswara Satakam, 116 verses in 1 chapter) — translated
+
+### Tamil Pipeline (New Batch) — COMPLETE ✓
+- **6 texts, 21/21 chapters translated** via Gemini 2.5 Flash
+- Nalavenba (4ch), Moovarul (3ch), Takka Yaaga Parani (9ch), Nanneri (1ch), Dandi Alankaram (3ch), Bharata Senapathiyam (1ch)
+- Previous 5 Tamil texts already complete (Porunararruppadai, Nandikkalambakam, etc.)
 
 ### Chinese Mass Pipeline — COMPLETE (99.94%)
 - **Known gaps:** mengliang-lu ch 18, 20 (giant paragraphs, DeepSeek limitation)

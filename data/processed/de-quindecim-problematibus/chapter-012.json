@@ -1,20 +1,10 @@
 {
-  "chapterNumber": 12,
-  "title": "Problema XII: De providentia dei (Problem XII: On the Providence of God)",
-  "sourceContent": {
-    "paragraphs": [
-      {
-        "index": 0,
-        "text": "Quod humani actus non reguntur providentia dei."
-      },
-      {
-        "index": 1,
-        "text": "Quod autem duodecimo ponitur, scilicet quod humani actus providentia dei non reguntur, error antiquus est TULLII, qui quamvis os haberet ad lepide loquendum mirabile, tamen cor habuit fatuum in philosophia, sicut QUIDAM ante nos dixerunt de ipso."
-      },
-      {
-        "index": 2,
-        "text": "Facile autem improbatur, quod dicitur. Nihil enim est secundum ARISTOTELEM in ordine causarum, quod ad id quod est ante se in eodem ordine, secundum regimen non referatur; et cessante influentia in priori, cessat causalitas in posteriori, sicut probatur in VIII PHYSICORUM, ubi ordo ponitur moventium et motorum. Homo ergo, qui secundum ordinem suae propriae providentiae est dominus et causa suorum actuum, aut secundum ordinem providentiae habet aliquid ante se aut nihil. Si dicatur, quod nihil habet ante se secundum providentiae ordinem, sequitur, quod est primum in ordine illo. Primum autem in omni ordine causarum est essentialiter operans. Homo igitur per essentiam est providens et est ipsa providentia, quod est absurdum. Si autem aliud in ordine providentiae habet ante se, sequitur necessario, quod hoc in omni opere providentiae suae ad aliud secundum providentiam referatur. Cum autem primum in omni ordine regat omnia sequentia, sequitur, quod homo in omnibus actibus suis a providentia divina regatur. Et hoc est, quod dicitur in LIBRO DE CAUSIS, quod «primum regit res omnes praeter hoc quod commisceatur cum eis» et quod «primum est dives in se» et in omnibus aliis."
-      }
-    ]
-  }
+  "title": "Problema XII: De causalitate caeli (Problem XII: On Celestial Causality)",
+  "paragraphs": [
+    "Duodecimum problema est de causalitate caeli in his inferioribus. Dicunt enim quidam quod caelum est causa omnium quae fiunt in his inferioribus, etiam actuum voluntatis humanae. Haec autem positio est contra fidem et contra rationem.",
+    "Contra fidem quidem, quia secundum fidem nostram actus voluntatis humanae sunt in potestate hominis, et non dependent ex necessitate a causis caelestibus.",
+    "Contra rationem autem, quia voluntas humana est principium sui actus, et non movetur necessario ab aliqua causa extrinseca. Caelum autem non potest movere voluntatem nisi per modum inclinantis, non autem per modum necessitatis.",
+    "Ratio autem eorum qui dicunt caelum esse causam actuum voluntatis est haec: Omnia inferiora reguntur a superioribus; caelum est superius homine; ergo caelum regit actus hominis, etiam actus voluntatis.",
+    "Sed haec ratio non valet, quia licet caelum habeat influentiam in corpora inferiora, non tamen habet influentiam in voluntatem humanam, quae est potentia incorporea et spiritualis."
+  ]
 }

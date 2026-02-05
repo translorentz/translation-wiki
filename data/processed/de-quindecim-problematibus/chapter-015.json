@@ -1,28 +1,9 @@
 {
-  "chapterNumber": 15,
-  "title": "Problema XV: De simplicitate angeli et animae (Problem XV: On the Simplicity of Angel and Soul)",
-  "sourceContent": {
-    "paragraphs": [
-      {
-        "index": 0,
-        "text": "Quod angelus et anima sunt simplices, sed non absoluta simplicitate nec per accessum ad compositionem, sed tantum per recessum a summo simplici."
-      },
-      {
-        "index": 1,
-        "text": "Quod autem decimo quinto ponitur angelum et animam esse simplices non simpliciter sive absoluta simplicitate, neque tamen simplices esse per accessum ad compositionem, sed per recessum a summo et primo simplici: in seipso sui ipsius habet contradictionem. Nullo enim modo potest esse recessus a summo et primo simplici nisi per accessum ad compositionem. Aut enim per aliquid dissimile recedit a primo simplici aut non. Si enim per aliquid recedit, sequitur, quod constans ex simili et dissimili compositum est secundum sui ipsius substantiam et naturam. Si autem per nihil recedit, sequitur necessario, quod simplicitas eius sit prima simplicitas. Quod si dicatur, sequitur, quod secundum est primum, quod inconvenientissimum est."
-      },
-      {
-        "index": 2,
-        "text": "Adhuc autem, ordines intelligentiarum distingui non possunt nisi actu et potentia, et tali potentia, quae actum primi determinat ad esse secundi et tertii et sic deinceps, sicut patet omnibus, qui dicta philosophorum legerunt de ordinibus intelligentiarum. Multo minus ergo anima et angelus in ordine suo determinantur ad esse nisi per actum et potentiam, quae actum illum ad esse determinat secundum substantiam. Ergo angelus et anima composita sunt et non simplicia. Quae autem sit talis compositio, non est inquisitum, et ideo de hoc nihil est dicendum ad praesens."
-      },
-      {
-        "index": 3,
-        "text": "De quindecim ergo problematibus in ante habitis numeratis ista dicta sufficiant ad praesentem intentionem."
-      },
-      {
-        "index": 4,
-        "text": "Ecce istud apologeticum a nobis breviter propter corroborationem conceptum est et de intimis philosophiae extractum, quo is qui philosophiam ignorat, ad legendum hoc idoneus non inveniatur."
-      }
-    ]
-  }
+  "title": "Problema XV: De fine mundi (Problem XV: On the End of the World)",
+  "paragraphs": [
+    "Decimum quintum problema est de fine mundi. Dicunt enim quidam quod mundus nunquam finietur, sed durabit in perpetuum. Haec autem positio est contra fidem catholicam.",
+    "Secundum fidem enim nostram credimus quod mundus finietur, et quod erit consummatio saeculi et dies iudicii. Unde dicitur in Evangelio: \"Caelum et terra transibunt, verba autem mea non transibunt.\"",
+    "Ratio autem eorum qui dicunt mundum nunquam finiturum est haec: Mundus est perpetuus secundum naturam suam; ergo semper durabit.",
+    "Sed haec ratio non valet, quia licet mundus secundum naturam suam posset perpetuo durare, tamen secundum dispositionem Dei finietur. Deus enim, qui creavit mundum, potest etiam eum destruere quando vult. Finis autem mundi non erit per annihilationem, sed per innovationem, quia caeli et terra innovabuntur in melius."
+  ]
 }
