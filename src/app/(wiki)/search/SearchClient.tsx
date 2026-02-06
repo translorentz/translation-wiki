@@ -9,6 +9,7 @@ import { parseChapterTitle } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 function highlightMatch(text: string, query: string) {
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
@@ -28,11 +29,17 @@ export default function SearchClient() {
   const pathname = usePathname();
   const trpc = useTRPC();
 
+  const RESULTS_PER_PAGE = 20;
+
   // Initialize state from URL params
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(() => {
     const langParam = searchParams.get("lang");
     return langParam ? langParam.split(",").filter(Boolean) : [];
+  });
+  const [page, setPage] = useState(() => {
+    const pageParam = searchParams.get("page");
+    return pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
   });
 
   // Fetch available languages
@@ -40,12 +47,13 @@ export default function SearchClient() {
     trpc.search.languages.queryOptions()
   );
 
-  // Update URL params when query or languages change
+  // Update URL params when query, languages, or page change
   const updateUrl = useCallback(
-    (q: string, langs: string[]) => {
+    (q: string, langs: string[], p: number) => {
       const params = new URLSearchParams();
       if (q) params.set("q", q);
       if (langs.length > 0) params.set("lang", langs.join(","));
+      if (p > 1) params.set("page", p.toString());
       const newUrl = params.toString()
         ? `${pathname}?${params.toString()}`
         : pathname;
@@ -57,10 +65,15 @@ export default function SearchClient() {
   // Debounced URL update for query changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      updateUrl(query, selectedLanguages);
+      updateUrl(query, selectedLanguages, page);
     }, 300);
     return () => clearTimeout(timer);
-  }, [query, selectedLanguages, updateUrl]);
+  }, [query, selectedLanguages, page, updateUrl]);
+
+  // Reset page when query or languages change
+  useEffect(() => {
+    setPage(1);
+  }, [query, selectedLanguages]);
 
   const toggleLanguage = (code: string) => {
     setSelectedLanguages((prev) =>
@@ -75,7 +88,8 @@ export default function SearchClient() {
       {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
-        limit: 20,
+        limit: RESULTS_PER_PAGE,
+        offset: (page - 1) * RESULTS_PER_PAGE,
       },
       { enabled: query.length >= 2 }
     )
@@ -206,6 +220,36 @@ export default function SearchClient() {
                   </Card>
                 </Link>
               ))}
+            </div>
+          )}
+
+          {/* Pagination controls */}
+          {searchResults.data!.chapters.length > 0 && (
+            <div className="flex items-center justify-between border-t pt-4 mt-4">
+              <p className="text-sm text-muted-foreground">
+                Page {page}
+                {searchResults.data!.totalChapters > 0 && (
+                  <> of {Math.ceil(searchResults.data!.totalChapters / RESULTS_PER_PAGE)}</>
+                )}
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={!searchResults.data!.hasMore}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           )}
         </div>

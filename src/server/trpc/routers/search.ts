@@ -24,6 +24,7 @@ export const searchRouter = createTRPCRouter({
         q: z.string().min(1).max(200),
         languages: z.array(z.string()).optional(),
         limit: z.number().min(1).max(50).default(20),
+        offset: z.number().min(0).default(0),
       })
     )
     .query(async ({ input }) => {
@@ -74,6 +75,24 @@ export const searchRouter = createTRPCRouter({
 
       // Use lowercase pattern for case-insensitive matching in subqueries
       const lowerPattern = `%${input.q.toLowerCase()}%`;
+
+      // Build the base where clause for chapters
+      const chapterWhereClause = langFilter
+        ? and(chapterMatchConditions, langFilter)
+        : chapterMatchConditions;
+
+      // Get total count of chapter matches (excluding text-level matches)
+      const countResult = await db
+        .select({ count: sql<number>`count(DISTINCT ${chapters.id})` })
+        .from(chapters)
+        .innerJoin(texts, eq(chapters.textId, texts.id))
+        .innerJoin(authors, eq(texts.authorId, authors.id))
+        .innerJoin(languages, eq(texts.languageId, languages.id))
+        .leftJoin(translations, eq(translations.chapterId, chapters.id))
+        .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
+        .where(chapterWhereClause);
+
+      const totalChapterCount = Number(countResult[0]?.count ?? 0);
 
       const chapterResults = await db
         .select({
@@ -126,22 +145,24 @@ export const searchRouter = createTRPCRouter({
         .innerJoin(languages, eq(texts.languageId, languages.id))
         .leftJoin(translations, eq(translations.chapterId, chapters.id))
         .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
-        .where(
-          langFilter
-            ? and(chapterMatchConditions, langFilter)
-            : chapterMatchConditions
-        )
+        .where(chapterWhereClause)
         .orderBy(texts.title, chapters.chapterNumber)
-        .limit(input.limit);
+        .limit(input.limit)
+        .offset(input.offset);
 
       // Filter out chapter results from texts already shown as text-level matches
       const filteredChapterResults = chapterResults.filter(
         (ch) => !matchedTextIds.includes(ch.textId)
       );
 
+      // Adjust total count by subtracting chapters from matched texts (approximate)
+      const adjustedTotal = Math.max(0, totalChapterCount - matchedTextIds.length * 10);
+
       return {
         texts: textMatches,
         chapters: filteredChapterResults,
+        totalChapters: adjustedTotal,
+        hasMore: input.offset + filteredChapterResults.length < adjustedTotal,
       };
     }),
 });
