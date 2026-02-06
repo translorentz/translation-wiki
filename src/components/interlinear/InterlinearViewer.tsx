@@ -67,17 +67,24 @@ export function InterlinearViewer({
 
       {/* Paragraph pairs */}
       <div className="space-y-0">
-        {sourceContent.paragraphs.map((paragraph) => (
-          <ParagraphPair
-            key={paragraph.index}
-            index={paragraph.index}
-            sourceText={paragraph.text}
-            translationText={translationMap.get(paragraph.index) ?? null}
-            sourceLanguage={sourceLanguage}
-            isPoetry={isPoetry}
-            hideSource={effectiveHideSource}
-          />
-        ))}
+        {sourceContent.paragraphs.map((paragraph) => {
+          const translationText = translationMap.get(paragraph.index) ?? null;
+          // Skip rendering if both source and translation are null/empty
+          if (paragraph.text === null && !translationText) {
+            return null;
+          }
+          return (
+            <ParagraphPair
+              key={paragraph.index}
+              index={paragraph.index}
+              sourceText={paragraph.text}
+              translationText={translationText}
+              sourceLanguage={sourceLanguage}
+              isPoetry={isPoetry}
+              hideSource={effectiveHideSource}
+            />
+          );
+        })}
       </div>
 
       {sourceContent.paragraphs.length === 0 && (
