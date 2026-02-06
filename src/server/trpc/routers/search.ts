@@ -72,6 +72,9 @@ export const searchRouter = createTRPCRouter({
         sql`${translationVersions.content}::text ILIKE ${pattern}`
       );
 
+      // Use lowercase pattern for case-insensitive matching in subqueries
+      const lowerPattern = `%${input.q.toLowerCase()}%`;
+
       const chapterResults = await db
         .select({
           chapterId: chapters.id,
@@ -90,7 +93,7 @@ export const searchRouter = createTRPCRouter({
                 FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
                 FOR 80)
               FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${pattern}
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
               LIMIT 1
             ),
             (
@@ -98,7 +101,7 @@ export const searchRouter = createTRPCRouter({
                 FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
                 FOR 80)
               FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${pattern}
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
               LIMIT 1
             )
           )`.as('snippet'),
@@ -106,13 +109,13 @@ export const searchRouter = createTRPCRouter({
             (
               SELECT (para.value->>'index')::int
               FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${pattern}
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
               LIMIT 1
             ),
             (
               SELECT (para.value->>'index')::int
               FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${pattern}
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
               LIMIT 1
             )
           )`.as('match_paragraph_index'),
