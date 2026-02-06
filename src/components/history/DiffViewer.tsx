@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface Paragraph {
   index: number;
-  text: string;
+  text: string | null;
 }
 
 interface DiffViewerProps {
@@ -14,7 +14,7 @@ interface DiffViewerProps {
 }
 
 export function DiffViewer({ oldContent, newContent }: DiffViewerProps) {
-  const oldMap = new Map<number, string>();
+  const oldMap = new Map<number, string | null>();
   if (oldContent) {
     for (const p of oldContent.paragraphs) {
       oldMap.set(p.index, p.text);
@@ -27,15 +27,42 @@ export function DiffViewer({ oldContent, newContent }: DiffViewerProps) {
         const oldText = oldMap.get(paragraph.index) ?? "";
         const newText = paragraph.text;
 
-        if (oldText === newText) {
+        // Handle null (deleted) paragraphs
+        if (newText === null) {
           return (
-            <div key={paragraph.index} className="rounded-md border border-border/50 px-3 py-2 text-sm">
-              <span className="text-muted-foreground">{newText}</span>
+            <div key={paragraph.index} className="rounded-md border border-destructive/50 bg-destructive/5 px-3 py-2 text-sm">
+              <span className="italic text-muted-foreground">Paragraph removed</span>
+              {oldText && (
+                <div className="mt-1 text-destructive line-through">
+                  {oldText}
+                </div>
+              )}
             </div>
           );
         }
 
-        const changes = diffWords(oldText, newText);
+        // Handle restored paragraphs (was null, now has content)
+        if (oldText === null && newText !== null) {
+          return (
+            <div key={paragraph.index} className="rounded-md border border-green-500/50 bg-green-50 px-3 py-2 text-sm dark:bg-green-900/10">
+              <span className="text-xs text-muted-foreground">Paragraph restored:</span>
+              <div className="mt-1 text-green-900 dark:text-green-300">{newText}</div>
+            </div>
+          );
+        }
+
+        const oldString = oldText ?? "";
+        const newString = newText ?? "";
+
+        if (oldString === newString) {
+          return (
+            <div key={paragraph.index} className="rounded-md border border-border/50 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">{newString}</span>
+            </div>
+          );
+        }
+
+        const changes = diffWords(oldString, newString);
 
         return (
           <div key={paragraph.index} className="rounded-md border border-border px-3 py-2 text-sm">

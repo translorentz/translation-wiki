@@ -137,11 +137,16 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           <p className="text-sm text-muted-foreground">
             Chapter {chapterNumber} of {textData.totalChapters}
           </p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {canEdit && (
-              <Button variant="outline" size="sm" asChild>
-                <Link href={`${basePath}/${chapterSlug}/edit`}>Edit</Link>
-              </Button>
+              <>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`${basePath}/${chapterSlug}/edit`}>Edit Translation</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href={`${basePath}/${chapterSlug}/edit-source`}>Edit Source</Link>
+                </Button>
+              </>
             )}
             <Button variant="ghost" size="sm" asChild>
               <Link href={`${basePath}/${chapterSlug}/history`}>History</Link>

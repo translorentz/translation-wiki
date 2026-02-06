@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface ParagraphPairProps {
   index: number;
-  sourceText: string;
+  sourceText: string | null;
   translationText: string | null;
   sourceLanguage: string;
   isPoetry?: boolean;
@@ -99,7 +99,13 @@ export function ParagraphPair({
         lang={sourceLanguage}
         aria-hidden={hideSource}
       >
-        {renderWithCommentary(sourceText)}
+        {sourceText !== null ? (
+          renderWithCommentary(sourceText)
+        ) : (
+          <span className="italic text-muted-foreground">
+            Source paragraph removed
+          </span>
+        )}
       </div>
 
       {/* Translation paragraph */}

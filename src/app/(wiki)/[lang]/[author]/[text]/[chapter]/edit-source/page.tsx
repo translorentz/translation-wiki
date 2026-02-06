@@ -1,10 +1,11 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { parseChapterTitle } from "@/lib/utils";
-import { HistoryTabs } from "@/components/history/HistoryTabs";
+import { SourceEditor } from "@/components/editor/SourceEditor";
 
-interface HistoryPageProps {
+interface EditSourcePageProps {
   params: Promise<{
     lang: string;
     author: string;
@@ -13,8 +14,16 @@ interface HistoryPageProps {
   }>;
 }
 
-export default async function HistoryPage({ params }: HistoryPageProps) {
+export default async function EditSourcePage({ params }: EditSourcePageProps) {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
+
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+  if (session.user.role !== "editor" && session.user.role !== "admin") {
+    redirect(`/${lang}/${author}/${textSlug}/${chapterSlug}`);
+  }
 
   const trpc = await getServerTRPC();
 
@@ -42,27 +51,17 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
     notFound();
   }
 
-  // Get translation versions for this chapter
-  const translation = chapter.translations?.[0];
-  let translationVersions: Awaited<ReturnType<typeof trpc.translations.getHistory>> = [];
-  if (translation) {
-    translationVersions = await trpc.translations.getHistory({
-      translationId: translation.id,
-    });
-  }
+  const sourceContent = (chapter.sourceContent as {
+    paragraphs: { index: number; text: string | null }[];
+  }) ?? { paragraphs: [] };
 
-  // Get source versions for this chapter
-  const sourceVersions = await trpc.chapters.getSourceHistory({
-    chapterId: chapter.id,
-  });
-
-  const chapterPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
+  const returnPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
 
   return (
     <main className="mx-auto max-w-5xl">
       <div className="mb-6">
         <Link
-          href={chapterPath}
+          href={returnPath}
           className="text-sm text-muted-foreground hover:text-foreground"
         >
           Back to chapter
@@ -71,7 +70,7 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
           const { original, english } = parseChapterTitle(chapter.title);
           return (
             <h1 className="mt-1 text-2xl font-bold">
-              History: {original}
+              Edit Source: {original}
               {english && (
                 <span className="ml-2 text-lg font-normal text-muted-foreground">
                   {english}
@@ -81,13 +80,15 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
           );
         })()}
         <p className="text-sm text-muted-foreground">
-          {textData.title}
+          {textData.title} — Chapter {chapterNumber}
         </p>
       </div>
 
-      <HistoryTabs
-        translationVersions={translationVersions}
-        sourceVersions={sourceVersions}
+      <SourceEditor
+        chapterId={chapter.id}
+        sourceContent={sourceContent}
+        sourceLanguage={lang}
+        returnPath={returnPath}
       />
     </main>
   );

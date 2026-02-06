@@ -28,6 +28,7 @@ export const users = pgTable("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   translationVersions: many(translationVersions),
+  sourceVersions: many(sourceVersions),
   endorsements: many(endorsements),
   discussionThreads: many(discussionThreads),
   discussionPosts: many(discussionPosts),
@@ -197,6 +198,7 @@ export const chapters = pgTable(
     slug: varchar("slug", { length: 255 }).notNull(),
     title: varchar("title", { length: 500 }),
     sourceContent: jsonb("source_content"), // { paragraphs: [{ index, text }] }
+    currentSourceVersionId: integer("current_source_version_id"), // Points to latest sourceVersion
     ordering: integer("ordering").notNull(),
   },
   (table) => [
@@ -214,6 +216,12 @@ export const chaptersRelations = relations(chapters, ({ one, many }) => ({
     references: [texts.id],
   }),
   translations: many(translations),
+  sourceVersions: many(sourceVersions),
+  currentSourceVersion: one(sourceVersions, {
+    fields: [chapters.currentSourceVersionId],
+    references: [sourceVersions.id],
+    relationName: "currentSourceVersion",
+  }),
   discussionThreads: many(discussionThreads),
 }));
 
@@ -293,6 +301,51 @@ export const translationVersionsRelations = relations(
       fields: [translationVersions.previousVersionId],
       references: [translationVersions.id],
       relationName: "versionChain",
+    }),
+  })
+);
+
+// ============================================================
+// Source Versions
+// ============================================================
+
+export const sourceVersions = pgTable(
+  "source_versions",
+  {
+    id: serial("id").primaryKey(),
+    chapterId: integer("chapter_id")
+      .notNull()
+      .references(() => chapters.id, { onDelete: "cascade" }),
+    versionNumber: integer("version_number").notNull(),
+    content: jsonb("content").notNull(), // { paragraphs: [{ index, text: string | null }] }
+    authorId: integer("author_id")
+      .notNull()
+      .references(() => users.id),
+    editSummary: text("edit_summary"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    previousVersionId: integer("previous_version_id"),
+  },
+  (table) => [
+    index("sv_chapter_id_idx").on(table.chapterId),
+    index("sv_author_id_idx").on(table.authorId),
+  ]
+);
+
+export const sourceVersionsRelations = relations(
+  sourceVersions,
+  ({ one }) => ({
+    chapter: one(chapters, {
+      fields: [sourceVersions.chapterId],
+      references: [chapters.id],
+    }),
+    author: one(users, {
+      fields: [sourceVersions.authorId],
+      references: [users.id],
+    }),
+    previousVersion: one(sourceVersions, {
+      fields: [sourceVersions.previousVersionId],
+      references: [sourceVersions.id],
+      relationName: "sourceVersionChain",
     }),
   })
 );

@@ -8,7 +8,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 interface Paragraph {
   index: number;
-  text: string;
+  text: string | null;
 }
 
 interface InterlinearViewerProps {
@@ -28,7 +28,7 @@ export function InterlinearViewer({
   const isMobile = useIsMobile(768);
   const [hideSource, setHideSource] = useLocalStorage("hideSourceText", false);
 
-  const translationMap = new Map<number, string>();
+  const translationMap = new Map<number, string | null>();
   if (translationContent) {
     for (const p of translationContent.paragraphs) {
       translationMap.set(p.index, p.text);
