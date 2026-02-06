@@ -7,6 +7,14 @@ import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 interface Paragraph {
@@ -17,6 +25,8 @@ interface Paragraph {
 interface SourceEditorProps {
   chapterId: number;
   sourceContent: { paragraphs: Paragraph[] };
+  translationContent: { paragraphs: Paragraph[] } | null;
+  translationId: number | null;
   sourceLanguage: string;
   returnPath: string;
 }
@@ -24,6 +34,8 @@ interface SourceEditorProps {
 export function SourceEditor({
   chapterId,
   sourceContent,
+  translationContent,
+  translationId,
   sourceLanguage,
   returnPath,
 }: SourceEditorProps) {
@@ -35,10 +47,21 @@ export function SourceEditor({
     sourceContent.paragraphs.map((p) => p.text)
   );
 
+  // Track which translation paragraphs should be deleted
+  const [translationsToDelete, setTranslationsToDelete] = useState<Set<number>>(
+    new Set()
+  );
+
   const [editSummary, setEditSummary] = useState("");
 
+  // Dialog state for delete confirmation
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(
+    null
+  );
+
   const updateSource = useMutation(
-    trpc.chapters.updateSource.mutationOptions({
+    trpc.chapters.updateSourceWithTranslation.mutationOptions({
       onSuccess: () => {
         router.push(returnPath);
         router.refresh();
@@ -54,12 +77,48 @@ export function SourceEditor({
     });
   }
 
-  function handleDeleteParagraph(index: number) {
+  // Check if a translation exists for a given paragraph index
+  function hasTranslation(arrayIndex: number): boolean {
+    if (!translationContent) return false;
+    const paraIndex = sourceContent.paragraphs[arrayIndex]?.index;
+    const translationPara = translationContent.paragraphs.find(
+      (p) => p.index === paraIndex
+    );
+    return translationPara?.text !== null && translationPara?.text !== undefined;
+  }
+
+  function handleDeleteClick(index: number) {
+    if (hasTranslation(index)) {
+      // Show confirmation dialog
+      setPendingDeleteIndex(index);
+      setDeleteDialogOpen(true);
+    } else {
+      // No translation exists, delete directly
+      handleDeleteParagraph(index, false);
+    }
+  }
+
+  function handleDeleteParagraph(index: number, alsoDeleteTranslation: boolean) {
     setParagraphs((prev) => {
       const next = [...prev];
       next[index] = null;
       return next;
     });
+
+    if (alsoDeleteTranslation) {
+      const paraIndex = sourceContent.paragraphs[index]?.index;
+      if (paraIndex !== undefined) {
+        setTranslationsToDelete((prev) => new Set(prev).add(paraIndex));
+      }
+    }
+  }
+
+  function handleDialogConfirm(deleteTranslation: boolean) {
+    if (pendingDeleteIndex !== null) {
+      handleDeleteParagraph(pendingDeleteIndex, deleteTranslation);
+    }
+    setDeleteDialogOpen(false);
+    setPendingDeleteIndex(null);
   }
 
   function handleRestoreParagraph(index: number) {
@@ -69,6 +128,16 @@ export function SourceEditor({
       next[index] = sourceContent.paragraphs[index]?.text ?? "";
       return next;
     });
+
+    // Also remove from translations to delete if it was there
+    const paraIndex = sourceContent.paragraphs[index]?.index;
+    if (paraIndex !== undefined) {
+      setTranslationsToDelete((prev) => {
+        const next = new Set(prev);
+        next.delete(paraIndex);
+        return next;
+      });
+    }
   }
 
   function handleSave() {
@@ -79,17 +148,28 @@ export function SourceEditor({
       })),
     };
 
+    // Build translation updates if we have translations to delete
+    let translationUpdates: { index: number; text: string | null }[] | undefined;
+    if (translationId && translationsToDelete.size > 0 && translationContent) {
+      translationUpdates = translationContent.paragraphs.map((p) => ({
+        index: p.index,
+        text: translationsToDelete.has(p.index) ? null : p.text,
+      }));
+    }
+
     updateSource.mutate({
       chapterId,
       content,
       editSummary: editSummary || undefined,
+      translationId: translationUpdates && translationId ? translationId : undefined,
+      translationUpdates,
     });
   }
 
   // Check if anything has changed
-  const hasChanges = paragraphs.some(
-    (p, i) => p !== sourceContent.paragraphs[i]?.text
-  );
+  const hasChanges =
+    paragraphs.some((p, i) => p !== sourceContent.paragraphs[i]?.text) ||
+    translationsToDelete.size > 0;
 
   // Auto-resize textarea to fit content
   const autoResize = useCallback((el: HTMLTextAreaElement | null) => {
@@ -104,6 +184,7 @@ export function SourceEditor({
       <div className="space-y-4">
         {sourceContent.paragraphs.map((sourcePara, i) => {
           const isDeleted = paragraphs[i] === null;
+          const willDeleteTranslation = translationsToDelete.has(sourcePara.index);
 
           return (
             <div
@@ -116,6 +197,11 @@ export function SourceEditor({
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">
                   Paragraph {sourcePara.index}
+                  {isDeleted && willDeleteTranslation && (
+                    <span className="ml-2 text-destructive">
+                      (translation will also be removed)
+                    </span>
+                  )}
                 </span>
                 {isDeleted ? (
                   <Button
@@ -130,7 +216,7 @@ export function SourceEditor({
                     variant="ghost"
                     size="sm"
                     className="text-destructive hover:text-destructive"
-                    onClick={() => handleDeleteParagraph(i)}
+                    onClick={() => handleDeleteClick(i)}
                   >
                     Delete
                   </Button>
@@ -194,6 +280,42 @@ export function SourceEditor({
           Failed to save: {updateSource.error.message}
         </p>
       )}
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete paragraph with translation</DialogTitle>
+            <DialogDescription>
+              This paragraph has an existing translation. Would you like to
+              delete the translation as well, or keep it?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex-col gap-2 sm:flex-row">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setDeleteDialogOpen(false);
+                setPendingDeleteIndex(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => handleDialogConfirm(false)}
+            >
+              Keep translation
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleDialogConfirm(true)}
+            >
+              Delete both
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

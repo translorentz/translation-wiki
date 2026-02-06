@@ -55,6 +55,13 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
     paragraphs: { index: number; text: string | null }[];
   }) ?? { paragraphs: [] };
 
+  // Get translation content if it exists
+  const translation = chapter.translations?.[0];
+  const translationContent = translation?.currentVersion?.content as {
+    paragraphs: { index: number; text: string | null }[];
+  } | null;
+  const translationId = translation?.id ?? null;
+
   const returnPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
 
   return (
@@ -87,6 +94,8 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
       <SourceEditor
         chapterId={chapter.id}
         sourceContent={sourceContent}
+        translationContent={translationContent}
+        translationId={translationId}
         sourceLanguage={lang}
         returnPath={returnPath}
       />
