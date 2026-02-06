@@ -81,19 +81,7 @@ export const searchRouter = createTRPCRouter({
         ? and(chapterMatchConditions, langFilter)
         : chapterMatchConditions;
 
-      // Get total count of chapter matches (excluding text-level matches)
-      const countResult = await db
-        .select({ count: sql<number>`count(DISTINCT ${chapters.id})` })
-        .from(chapters)
-        .innerJoin(texts, eq(chapters.textId, texts.id))
-        .innerJoin(authors, eq(texts.authorId, authors.id))
-        .innerJoin(languages, eq(texts.languageId, languages.id))
-        .leftJoin(translations, eq(translations.chapterId, chapters.id))
-        .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
-        .where(chapterWhereClause);
-
-      const totalChapterCount = Number(countResult[0]?.count ?? 0);
-
+      // Fetch limit + 1 to detect if there are more results
       const chapterResults = await db
         .select({
           chapterId: chapters.id,
@@ -147,7 +135,7 @@ export const searchRouter = createTRPCRouter({
         .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
         .where(chapterWhereClause)
         .orderBy(texts.title, chapters.chapterNumber)
-        .limit(input.limit)
+        .limit(input.limit + 1)
         .offset(input.offset);
 
       // Filter out chapter results from texts already shown as text-level matches
@@ -155,14 +143,18 @@ export const searchRouter = createTRPCRouter({
         (ch) => !matchedTextIds.includes(ch.textId)
       );
 
-      // Adjust total count by subtracting chapters from matched texts (approximate)
-      const adjustedTotal = Math.max(0, totalChapterCount - matchedTextIds.length * 10);
+      // Check if there are more results beyond the current page
+      const hasMore = filteredChapterResults.length > input.limit;
+
+      // Slice to limit if we have more
+      const paginatedResults = hasMore
+        ? filteredChapterResults.slice(0, input.limit)
+        : filteredChapterResults;
 
       return {
         texts: textMatches,
-        chapters: filteredChapterResults,
-        totalChapters: adjustedTotal,
-        hasMore: input.offset + filteredChapterResults.length < adjustedTotal,
+        chapters: paginatedResults,
+        hasMore,
       };
     }),
 });

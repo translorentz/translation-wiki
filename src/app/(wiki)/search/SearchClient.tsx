@@ -228,9 +228,6 @@ export default function SearchClient() {
             <div className="flex items-center justify-between border-t pt-4 mt-4">
               <p className="text-sm text-muted-foreground">
                 Page {page}
-                {searchResults.data!.totalChapters > 0 && (
-                  <> of {Math.ceil(searchResults.data!.totalChapters / RESULTS_PER_PAGE)}</>
-                )}
               </p>
               <div className="flex gap-2">
                 <Button
