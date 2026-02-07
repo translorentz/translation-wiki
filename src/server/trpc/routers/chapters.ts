@@ -202,6 +202,7 @@ export const chaptersRouter = createTRPCRouter({
   getSourceHistory: publicProcedure
     .input(z.object({ chapterId: z.number() }))
     .query(async ({ input }) => {
+      // Get all source versions from database
       const versions = await db.query.sourceVersions.findMany({
         where: eq(sourceVersions.chapterId, input.chapterId),
         orderBy: desc(sourceVersions.versionNumber),
@@ -209,6 +210,48 @@ export const chaptersRouter = createTRPCRouter({
           author: { columns: { id: true, username: true } },
         },
       });
+
+      // Get the chapter to access original seeded content
+      const chapter = await db.query.chapters.findFirst({
+        where: eq(chapters.id, input.chapterId),
+        columns: {
+          id: true,
+          sourceContent: true,
+        },
+      });
+
+      if (!chapter) {
+        return versions;
+      }
+
+      // Check if we need to synthesize a "version 0" for the original seeded content
+      // We add version 0 if:
+      // 1. There are no versions at all, OR
+      // 2. The earliest version is version 1 (meaning the seeded content was never recorded)
+      const hasVersion0 = versions.some((v) => v.versionNumber === 0);
+      const needsSynthesizedVersion0 = !hasVersion0 && chapter.sourceContent;
+
+      if (needsSynthesizedVersion0) {
+        // Use the earliest version's createdAt if available, otherwise use a placeholder
+        const earliestVersion = versions[versions.length - 1];
+        const seededDate = earliestVersion?.createdAt ?? new Date("2024-01-01");
+
+        // Synthesize a version 0 entry for the original seeded content
+        const synthesizedVersion0 = {
+          id: -1, // Negative ID to indicate synthetic
+          chapterId: input.chapterId,
+          versionNumber: 0,
+          content: chapter.sourceContent,
+          editSummary: "Original seeded content",
+          createdAt: seededDate,
+          previousVersionId: null,
+          author: { id: 0, username: "System" },
+        };
+
+        // Return versions with synthesized version 0 at the end (lowest version number)
+        return [...versions, synthesizedVersion0];
+      }
+
       return versions;
     }),
 
