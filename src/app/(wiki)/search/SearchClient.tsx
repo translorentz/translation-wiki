@@ -194,26 +194,35 @@ export default function SearchClient() {
       const allChapterIds = accumulatedChapters.map(c => c.chapterId);
 
       // Fetch more content results (content search is what has "more" results typically)
-      const response = await fetch(`/api/trpc/search.content?input=${encodeURIComponent(JSON.stringify({
-        q: query,
-        languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
-        limit: RESULTS_PER_PAGE,
-        offset: newOffset,
-        excludeTextIds: allTextIds,
-        excludeChapterIds: allChapterIds,
-      }))}`);
+      // tRPC expects batch format: ?batch=1&input={"0":{"json":{...}}}
+      const inputPayload = {
+        "0": {
+          json: {
+            q: query,
+            languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
+            limit: RESULTS_PER_PAGE,
+            offset: newOffset,
+            excludeTextIds: allTextIds,
+            excludeChapterIds: allChapterIds,
+          }
+        }
+      };
+      const response = await fetch(
+        `/api/trpc/search.content?batch=1&input=${encodeURIComponent(JSON.stringify(inputPayload))}`
+      );
 
       const result = await response.json();
 
-      if (result.result?.data) {
-        const newChapters = result.result.data.chapters as ChapterResult[];
+      // tRPC batch response is an array: [{ result: { data: { json: ... } } }]
+      if (result[0]?.result?.data?.json) {
+        const newChapters = result[0].result.data.json.chapters as ChapterResult[];
 
         // Deduplicate against existing chapters
         const existingIds = new Set(accumulatedChapters.map(c => c.chapterId));
         const uniqueNewChapters = newChapters.filter(c => !existingIds.has(c.chapterId));
 
         setAccumulatedChapters(prev => [...prev, ...uniqueNewChapters]);
-        setHasMoreResults(result.result.data.hasMore);
+        setHasMoreResults(result[0].result.data.json.hasMore);
         setCurrentOffset(newOffset);
       }
     } catch (error) {
