@@ -23,6 +23,32 @@ function highlightMatch(text: string, query: string) {
   );
 }
 
+// Types for accumulated results
+type TextResult = {
+  textId: number;
+  textTitle: string;
+  textSlug: string;
+  authorName: string;
+  authorSlug: string;
+  langCode: string;
+  totalChapters: number;
+};
+
+type ChapterResult = {
+  chapterId: number;
+  chapterNumber: number;
+  chapterTitle: string | null;
+  chapterSlug: string;
+  textId: number;
+  textTitle: string;
+  textSlug: string;
+  authorName: string;
+  authorSlug: string;
+  langCode: string;
+  snippet?: string | null;
+  matchParagraphIndex?: number | null;
+};
+
 export default function SearchClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -37,23 +63,25 @@ export default function SearchClient() {
     const langParam = searchParams.get("lang");
     return langParam ? langParam.split(",").filter(Boolean) : [];
   });
-  const [page, setPage] = useState(() => {
-    const pageParam = searchParams.get("page");
-    return pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
-  });
+
+  // Accumulated results for "Load More" functionality
+  const [accumulatedTexts, setAccumulatedTexts] = useState<TextResult[]>([]);
+  const [accumulatedChapters, setAccumulatedChapters] = useState<ChapterResult[]>([]);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [hasMoreResults, setHasMoreResults] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Fetch available languages
   const languagesQuery = useQuery(
     trpc.search.languages.queryOptions()
   );
 
-  // Update URL params when query, languages, or page change
+  // Update URL params when query or languages change (no page param needed)
   const updateUrl = useCallback(
-    (q: string, langs: string[], p: number) => {
+    (q: string, langs: string[]) => {
       const params = new URLSearchParams();
       if (q) params.set("q", q);
       if (langs.length > 0) params.set("lang", langs.join(","));
-      if (p > 1) params.set("page", p.toString());
       const newUrl = params.toString()
         ? `${pathname}?${params.toString()}`
         : pathname;
@@ -65,14 +93,17 @@ export default function SearchClient() {
   // Debounced URL update for query changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      updateUrl(query, selectedLanguages, page);
+      updateUrl(query, selectedLanguages);
     }, 300);
     return () => clearTimeout(timer);
-  }, [query, selectedLanguages, page, updateUrl]);
+  }, [query, selectedLanguages, updateUrl]);
 
-  // Reset page when query or languages change
+  // Reset accumulated results when query or languages change
   useEffect(() => {
-    setPage(1);
+    setAccumulatedTexts([]);
+    setAccumulatedChapters([]);
+    setCurrentOffset(0);
+    setHasMoreResults(false);
   }, [query, selectedLanguages]);
 
   const toggleLanguage = (code: string) => {
@@ -83,14 +114,14 @@ export default function SearchClient() {
     );
   };
 
-  // Fast query: titles and author names only
+  // Fast query: titles and author names only (initial load, offset 0)
   const titlesQuery = useQuery(
     trpc.search.titles.queryOptions(
       {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
         limit: RESULTS_PER_PAGE,
-        offset: (page - 1) * RESULTS_PER_PAGE,
+        offset: 0,
       },
       { enabled: query.length >= 2 }
     )
@@ -114,7 +145,7 @@ export default function SearchClient() {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
         limit: RESULTS_PER_PAGE,
-        offset: (page - 1) * RESULTS_PER_PAGE,
+        offset: 0,
         excludeTextIds,
         excludeChapterIds,
       },
@@ -124,24 +155,77 @@ export default function SearchClient() {
     )
   );
 
-  // Combine results from both queries
-  const hasResults =
-    (titlesQuery.data?.texts.length ?? 0) > 0 ||
-    (titlesQuery.data?.chapters.length ?? 0) > 0 ||
-    (contentQuery.data?.chapters.length ?? 0) > 0;
+  // Update accumulated results when initial queries complete
+  useEffect(() => {
+    if (titlesQuery.isSuccess && titlesQuery.data && currentOffset === 0) {
+      setAccumulatedTexts(titlesQuery.data.texts);
 
-  const allChapters = useMemo(() => {
-    const titleChapters = titlesQuery.data?.chapters ?? [];
-    const contentChapters = contentQuery.data?.chapters ?? [];
+      // Combine title chapters with content chapters
+      const titleChapters = titlesQuery.data.chapters.map(ch => ({
+        ...ch,
+        snippet: null as string | null,
+        matchParagraphIndex: null as number | null,
+      }));
 
-    // Deduplicate by chapter ID (shouldn't happen, but just in case)
-    const seen = new Set(titleChapters.map(c => c.chapterId));
-    const uniqueContentChapters = contentChapters.filter(c => !seen.has(c.chapterId));
+      if (contentQuery.isSuccess && contentQuery.data) {
+        const seenIds = new Set(titleChapters.map(c => c.chapterId));
+        const uniqueContentChapters = contentQuery.data.chapters.filter(
+          c => !seenIds.has(c.chapterId)
+        );
+        setAccumulatedChapters([...titleChapters, ...uniqueContentChapters]);
+        setHasMoreResults(titlesQuery.data.hasMore || contentQuery.data.hasMore);
+      } else {
+        setAccumulatedChapters(titleChapters);
+        setHasMoreResults(titlesQuery.data.hasMore);
+      }
+    }
+  }, [titlesQuery.isSuccess, titlesQuery.data, contentQuery.isSuccess, contentQuery.data, currentOffset]);
 
-    return [...titleChapters, ...uniqueContentChapters];
-  }, [titlesQuery.data?.chapters, contentQuery.data?.chapters]);
+  // Load more handler
+  const handleLoadMore = async () => {
+    if (isLoadingMore) return;
 
-  const hasMore = titlesQuery.data?.hasMore || contentQuery.data?.hasMore || false;
+    setIsLoadingMore(true);
+    const newOffset = currentOffset + RESULTS_PER_PAGE;
+
+    try {
+      // Get all currently known IDs to exclude
+      const allTextIds = accumulatedTexts.map(t => t.textId);
+      const allChapterIds = accumulatedChapters.map(c => c.chapterId);
+
+      // Fetch more content results (content search is what has "more" results typically)
+      const response = await fetch(`/api/trpc/search.content?input=${encodeURIComponent(JSON.stringify({
+        q: query,
+        languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
+        limit: RESULTS_PER_PAGE,
+        offset: newOffset,
+        excludeTextIds: allTextIds,
+        excludeChapterIds: allChapterIds,
+      }))}`);
+
+      const result = await response.json();
+
+      if (result.result?.data) {
+        const newChapters = result.result.data.chapters as ChapterResult[];
+
+        // Deduplicate against existing chapters
+        const existingIds = new Set(accumulatedChapters.map(c => c.chapterId));
+        const uniqueNewChapters = newChapters.filter(c => !existingIds.has(c.chapterId));
+
+        setAccumulatedChapters(prev => [...prev, ...uniqueNewChapters]);
+        setHasMoreResults(result.result.data.hasMore);
+        setCurrentOffset(newOffset);
+      }
+    } catch (error) {
+      console.error('Error loading more results:', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
+  const hasResults = accumulatedTexts.length > 0 || accumulatedChapters.length > 0;
+  const isInitialLoading = titlesQuery.isLoading;
+  const isContentLoading = contentQuery.isLoading;
 
   return (
     <main className="mx-auto max-w-3xl">
@@ -187,8 +271,8 @@ export default function SearchClient() {
         </div>
       )}
 
-      {/* Loading states */}
-      {titlesQuery.isLoading && query.length >= 2 && (
+      {/* Loading state */}
+      {isInitialLoading && query.length >= 2 && (
         <p className="text-sm text-muted-foreground">Searching...</p>
       )}
 
@@ -201,15 +285,15 @@ export default function SearchClient() {
       )}
 
       {/* Results */}
-      {(titlesQuery.isSuccess || contentQuery.isSuccess) && hasResults && (
+      {hasResults && (
         <div className="space-y-4">
           {/* Text-level matches (title or author name) */}
-          {titlesQuery.data && titlesQuery.data.texts.length > 0 && (
+          {accumulatedTexts.length > 0 && (
             <div className="space-y-2">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 Texts
               </h2>
-              {titlesQuery.data.texts.map((result) => (
+              {accumulatedTexts.map((result) => (
                 <Link
                   key={result.textId}
                   href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}`}
@@ -227,17 +311,17 @@ export default function SearchClient() {
           )}
 
           {/* Chapter-level matches */}
-          {allChapters.length > 0 && (
+          {accumulatedChapters.length > 0 && (
             <div className="space-y-2">
-              {titlesQuery.data && titlesQuery.data.texts.length > 0 && (
+              {accumulatedTexts.length > 0 && (
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Chapters
                 </h2>
               )}
-              {allChapters.map((result) => (
+              {accumulatedChapters.map((result) => (
                 <Link
                   key={result.chapterId}
-                  href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${'matchParagraphIndex' in result && result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`}
+                  href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`}
                 >
                   <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                     {(() => {
@@ -258,7 +342,7 @@ export default function SearchClient() {
                     <p className="text-sm text-muted-foreground">
                       {result.textTitle} — {result.authorName}
                     </p>
-                    {'snippet' in result && typeof result.snippet === 'string' && result.snippet && (
+                    {result.snippet && (
                       <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
                         ...{highlightMatch(result.snippet, query)}...
                       </p>
@@ -268,7 +352,7 @@ export default function SearchClient() {
               ))}
 
               {/* Content search loading indicator */}
-              {contentQuery.isLoading && (
+              {isContentLoading && (
                 <p className="text-sm text-muted-foreground py-2">
                   Searching inside texts...
                 </p>
@@ -276,30 +360,16 @@ export default function SearchClient() {
             </div>
           )}
 
-          {/* Pagination controls */}
-          {allChapters.length > 0 && (
-            <div className="flex items-center justify-between border-t pt-4 mt-4">
-              <p className="text-sm text-muted-foreground">
-                Page {page}
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page <= 1}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPage((p) => p + 1)}
-                  disabled={!hasMore}
-                >
-                  Next
-                </Button>
-              </div>
+          {/* Load More button */}
+          {hasMoreResults && !isContentLoading && (
+            <div className="pt-4 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+              >
+                {isLoadingMore ? "Loading..." : "Load More"}
+              </Button>
             </div>
           )}
         </div>
