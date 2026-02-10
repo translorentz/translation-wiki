@@ -81,7 +81,8 @@ export const searchRouter = createTRPCRouter({
         ? and(chapterMatchConditions, langFilter)
         : chapterMatchConditions;
 
-      // Fetch limit + 1 to detect if there are more results
+      // Fetch more results to account for potential duplicates from LEFT JOINs
+      // and text-level filtering. We'll deduplicate in JavaScript.
       const chapterResults = await db
         .select({
           chapterId: chapters.id,
@@ -135,11 +136,22 @@ export const searchRouter = createTRPCRouter({
         .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
         .where(chapterWhereClause)
         .orderBy(texts.title, chapters.chapterNumber)
-        .limit(input.limit + 1)
+        // Fetch extra rows to account for duplicates and text-level filtering
+        .limit((input.limit + 1) * 2)
         .offset(input.offset);
 
+      // Deduplicate by chapter ID (LEFT JOINs can produce multiple rows per chapter)
+      const seenChapterIds = new Set<number>();
+      const deduplicatedResults = chapterResults.filter((ch) => {
+        if (seenChapterIds.has(ch.chapterId)) {
+          return false;
+        }
+        seenChapterIds.add(ch.chapterId);
+        return true;
+      });
+
       // Filter out chapter results from texts already shown as text-level matches
-      const filteredChapterResults = chapterResults.filter(
+      const filteredChapterResults = deduplicatedResults.filter(
         (ch) => !matchedTextIds.includes(ch.textId)
       );
 
