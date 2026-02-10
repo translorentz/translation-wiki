@@ -28,8 +28,11 @@ interface LanguageGroup {
 
 const GENRE_DISPLAY_NAMES: Record<string, string> = {
   philosophy: "Philosophy",
+  theology: "Theology",
+  devotional: "Devotional",
   commentary: "Commentary",
   literature: "Literature",
+  poetry: "Poetry",
   history: "History",
   science: "Science",
   ritual: "Ritual",
@@ -41,10 +44,15 @@ const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
   grc: "Greek",
   la: "Latin",
   ta: "Tamil",
+  te: "Telugu",
   hy: "Armenian",
   it: "Italian",
   ms: "Malay",
   pl: "Polish",
+  cs: "Czech",
+  ru: "Russian",
+  tr: "Turkish",
+  ko: "Korean",
 };
 
 interface BrowsePageProps {
@@ -150,6 +158,29 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         return a.title.localeCompare(b.title);
       });
     }
+
+    // Sort authors within each language group:
+    // - Authors with sortOrder texts come first (ordered by their min sortOrder)
+    // - Then authors without sortOrder texts (ordered alphabetically)
+    langGroup.authors.sort((a, b) => {
+      const minOrderA = Math.min(
+        ...a.texts.map((t) => t.sortOrder ?? Infinity)
+      );
+      const minOrderB = Math.min(
+        ...b.texts.map((t) => t.sortOrder ?? Infinity)
+      );
+
+      // Both have sortOrder values
+      if (minOrderA !== Infinity && minOrderB !== Infinity) {
+        return minOrderA - minOrderB;
+      }
+      // Only A has sortOrder
+      if (minOrderA !== Infinity) return -1;
+      // Only B has sortOrder
+      if (minOrderB !== Infinity) return 1;
+      // Neither has sortOrder - sort alphabetically
+      return a.name.localeCompare(b.name);
+    });
   }
 
   // Sort languages by descending text count (most prolific first)
@@ -180,9 +211,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     <main className="mx-auto max-w-5xl">
       <h1 className="mb-4 text-3xl font-bold">Browse Texts</h1>
 
-      {/* Genre filter bar */}
+      {/* Category filter bar */}
       <div className="mb-3 flex flex-wrap gap-2">
-        <span className="flex items-center text-sm text-muted-foreground mr-2">Genre:</span>
+        <span className="flex items-center text-sm text-muted-foreground mr-2">Category:</span>
         <Link href={buildFilterUrl(lang, undefined)}>
           <Badge
             variant={!genre ? "default" : "outline"}
