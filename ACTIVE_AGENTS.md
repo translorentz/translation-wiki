@@ -2,7 +2,573 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-02-05, Session 44 (Gregory of Nazianzus 45 Orations IN PROGRESS)
+**Last updated:** 2026-02-09, Session 48
+
+---
+
+## ⚠️ DOCUMENTATION DISCIPLINE REMINDER ⚠️
+
+**Lesson learned (2026-02-07):** Documentation was severely outdated, causing confusion about actual pipeline status.
+
+**MANDATORY:** Update this file for EVERY agent state change:
+- Agent LAUNCHED → Add entry with "🔄 Running"
+- Agent COMPLETED → Update to "✅ DONE" with results
+- Agent FAILED → Update to "❌ FAILED" with reason
+
+---
+
+## Currently Running Agents (2026-02-10, Session 48)
+
+### Joseon Wangjo Sillok (朝鮮王朝實錄) — Korean Dynastic Annals
+
+**Source:** Korean Wikisource (ko.wikisource.org)
+**Language:** Classical Chinese (文言文) — extracted from bilingual pages
+**Content:** Annals of the Joseon Dynasty (UNESCO Memory of the World)
+
+**Acquisition Complete (3 volumes):**
+
+| Volume | Agent ID | Chapters | Paragraphs | Grade | Status |
+|--------|----------|----------|------------|-------|--------|
+| Taejo (太祖, 1392-1398) | a1ba0c4 | 9 | 2,387 | A- | ✅ DONE |
+| Jeongjong (定宗, 1398-1400) | ac2d9de | 4 | 626 | A | ✅ DONE |
+| Taejong (太宗, 1400-1418) | a780293 | 20 | 10,341 | A | ✅ DONE |
+| **TOTAL** | — | **33** | **13,354** | — | ✅ READY |
+
+**Cross-Volume Review:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| ac563f2 | Independent quality review | ✅ SATISFIED |
+
+**Translation Phase (3 agents):**
+| Agent ID | Volume | Chapters | Status |
+|----------|--------|----------|--------|
+| ab3ff16 | Taejo | 9 | 🔄 Running |
+| a53f34a | Jeongjong | 4 | 🔄 Running |
+| af456b7 | Taejong | 20 | 🔄 Running |
+
+**Translation Prompt:** `zh-joseon-sillok` — includes Hangul glosses for Korean names
+
+---
+
+### Russian Orthodox Pipeline — Continuation Tasks
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| afc9b2d | Complete Bolotov Vol 2 (seed + translate) | 🔄 Running |
+| a2adc6f | Fix Russian Orthodox ch 8-9 truncation errors | 🔄 Running |
+| a1f5add | Check Bolotov Vol 3 translation status | 🔄 Running |
+
+**Background Translation Workers:**
+| Task ID | Text | Status |
+|---------|------|--------|
+| bb029f0 | Okolo tserkovnykh sten (Near the Church Walls Vol 2) | 🔄 Running (ch 8,9 truncated) |
+
+---
+
+### Czech Novels Pipeline
+
+| Agent ID | Task | Chapters | Status |
+|----------|------|----------|--------|
+| ae43736 | Process, seed, translate 4 novels | ~105 | 🔄 Running |
+
+**Novels in pipeline:**
+- pravy-vylet-pana-broucka (14 ch)
+- bludne-duse (35 ch)
+- svaty-xaverius (8 ch)
+- rok-na-vsi (48 ch)
+
+**Files Created:**
+- `scripts/process-joseon-sillok-taejo.py`
+- `scripts/process-joseon-sillok-jeongjong.py`
+- `scripts/process-joseon-sillok-taejong.py`
+- `data/processed/joseon-sillok-*/` (33 chapter JSON files)
+- `docs/joseon-sillok-*-quality-review.md` (3 review documents)
+- `docs/joseon-sillok-html-analysis.md`
+- `docs/joseon-sillok-scraping-rules.md`
+
+---
+
+### Bolotov Lectures on Ancient Church History — Vol 3 Translation
+
+**Text:** Лекции по истории древней церкви, Том 3
+**Author:** V.V. Bolotov
+**Source:** azbyka.ru
+**Volumes:** 2, 3, 4 (Volume 1 already in DB)
+**Vol 3:** 25 chapters, 814 paragraphs (seeded as text ID 298)
+
+| Task ID | Volume | Chapters | Status |
+|---------|--------|----------|--------|
+| b75ca0b | Vol 3 | 1-25 | 🔄 Running (Phase 6 Translation) |
+| a78d60d | Vol 2 | — | ❌ Failed (framework error) |
+| addcb5a | Vol 4 | — | Pending (wait for Vol 3) |
+
+---
+
+### Literature Pipeline Agents — 3 Languages
+
+**Task:** Research, verify, process, clean, review, translate novels
+
+| Agent ID | Language | Novels | Status |
+|----------|----------|--------|--------|
+| abc926c | Italian | 6 | ✅ DONE (Phase 6: Translation started) |
+| af95b6b | Czech | 5 | 🔄 Running (Phase 1: Research) |
+| af21937 | Polish (Batch 2) | 6 | ✅ DONE (Phases 1-5 complete, Phase 6 running) |
+
+---
+
+### Polish Novels Batch 2 — Translation In Progress
+
+**Completed Phases:**
+1. ✅ Research & Verification — 6 novels selected (no existing English translations)
+2. ✅ Processing — 94 chapters, 17,655 paragraphs extracted
+3. ✅ Quality Review — All texts Grade A (see `docs/pl-novels-batch2-quality-review.md`)
+4. ✅ Seeding — 3 authors, 6 texts, 94 chapters in database
+5. ✅ Prompt Check — Using `pl` prompt
+
+**Authors Added:**
+- Jozef Weyssenhoff (1860-1932) — Novelist of Lithuanian gentry life
+- Wladyslaw Orkan (1875-1930) — Goral highland naturalist
+- Tadeusz Micinski (1873-1918) — Symbolist poet and novelist
+
+**Translation Workers (Phase 6):**
+| Worker | Task ID | Text | Chapters | Status |
+|--------|---------|------|----------|--------|
+| W1 | b8f0927 | prochno | 3 | 🔄 Running |
+| W2 | b6f9a8c | sobol-i-panna | 15 | 🔄 Running |
+| W3 | b8e57fb | komornicy | 13 | 🔄 Running |
+| W4 | b785f03 | w-roztokach | 23 | 🔄 Running |
+| W5 | b577f18 | xiadz-faust | 25 | 🔄 Running |
+| W6 | b3223d4 | nietota | 15 | 🔄 Running |
+
+**Texts:**
+| Slug | Title | Author | Chapters | Paragraphs |
+|------|-------|--------|----------|------------|
+| prochno | Rotten Wood (Prochno) | Waclaw Berent | 3 | 2,816 |
+| sobol-i-panna | The Sable and the Maiden (Sobol i panna) | Jozef Weyssenhoff | 15 | 2,417 |
+| komornicy | The Tenant Farmers (Komornicy) | Wladyslaw Orkan | 13 | 1,792 |
+| w-roztokach | In the Mountain Valleys (W roztokach) | Wladyslaw Orkan | 23 | 2,915 |
+| xiadz-faust | Father Faust (Xiadz Faust) | Tadeusz Micinski | 25 | 3,215 |
+| nietota | Nietota: The Secret Book of the Tatras | Tadeusz Micinski | 15 | 4,500 |
+
+**Total: 6 texts, 94 chapters, 17,655 paragraphs**
+
+---
+
+### Italian Verismo Novels Pipeline — Translation In Progress
+
+**Completed Phases:**
+1. ✅ Research & Verification — 6 novels selected (no existing English translations)
+2. ✅ Processing — 149 chapters, ~6,900 paragraphs extracted
+3. ✅ Quality Review — All texts Grade A- to A
+4. ✅ Seeding — 3 authors, 6 texts, 149 chapters in database
+5. ✅ Prompt Check — Using `it-literary-19c` prompt
+
+**Authors Added:**
+- Giovanni Verga (1840–1922) — Master of Italian verismo
+- Luigi Capuana (1839–1915) — Verismo theorist
+- Federico De Roberto (1861–1927) — Psychological novelist
+
+**Translation Workers (Phase 6):**
+| Worker | Task ID | Text | Chapters | Status |
+|--------|---------|------|----------|--------|
+| W1 | b1a82bd | eva-verga | 1-2 | 🔄 Running |
+| W2 | bfb0ac8 | tigre-reale | 1-16 | 🔄 Running |
+| W3 | b22b80e | eros-verga | 1-25 | 🔄 Running |
+| W4 | bb7bfcd | eros-verga | 26-50 | 🔄 Running |
+| W5 | b2d86b8 | giacinta-capuana | 1-25 | 🔄 Running |
+| W6 | b23bd46 | giacinta-capuana | 26-50 | 🔄 Running |
+| W7 | b2e9741 | il-marito-di-elena | 1-16 | 🔄 Running |
+| W8 | b406595 | ermanno-raeli | 1-15 | 🔄 Running |
+
+**Texts:**
+| Slug | Title | Author | Chapters | Paragraphs |
+|------|-------|--------|----------|------------|
+| eva-verga | Eva | Giovanni Verga | 2 | ~950 |
+| tigre-reale | Royal Tigress (Tigre Reale) | Giovanni Verga | 16 | ~550 |
+| eros-verga | Eros | Giovanni Verga | 50 | ~1,900 |
+| giacinta-capuana | Giacinta | Luigi Capuana | 50 | ~2,500 |
+| il-marito-di-elena | Elena's Husband (Il marito di Elena) | Giovanni Verga | 16 | ~810 |
+| ermanno-raeli | Ermanno Raeli | Federico De Roberto | 15 | ~193 |
+
+**Total: 6 texts, 149 chapters, ~6,900 paragraphs**
+
+---
+
+### Rozanov Volume 2 — Translation In Progress
+
+**Text:** Около церковных стен. Том второй (Near the Church Walls, Vol. 2)
+**Author:** Vasily Rozanov (ID 137)
+**Text ID:** 297
+**Chapters:** 54 chapters, 982 paragraphs
+**Engine:** DeepSeek V3
+
+| Task ID | Range | Progress | Status |
+|---------|-------|----------|--------|
+| b0065a6 | ch 3-54 | 5/54 | 🔄 Running |
+
+**Note:** Chapters 1-2 translated during test phase (19 paragraphs).
+
+---
+
+### Session 48 Fixes Applied
+
+1. **Chapter title English translations fixed:** 10 Rozanov chapters now have English in parentheses
+
+---
+
+## Recently Completed (2026-02-09/10)
+
+### St. Nektarios Pipeline — ✅ COMPLETE
+
+**All 8 texts processed and translated:**
+
+| ID | Slug | Chapters | Paragraphs | Status |
+|----|------|----------|------------|--------|
+| 287 | akolouthia-enatis-oras | 1 | 27 | ✅ DONE |
+| 288 | megas-parakletikos | 1 | 118 | ✅ DONE |
+| 289 | akolouthia-apodeipnou | 1 | 71 | ✅ DONE |
+| 290 | nektarios-prayer-book | 8 | 1,001 | ✅ DONE |
+| 291 | akolouthia-esperinou | 1 | 77 | ✅ DONE |
+| 292 | katakrisis-katalalia | 1 | 14 | ✅ DONE |
+| 293 | eikona-adikias | 1 | 5 | ✅ DONE |
+| 294 | peri-phthonou | 2 | 19 | ✅ DONE |
+
+**Total: 8 texts, 16 chapters, ~1,332 paragraphs translated**
+
+**Infrastructure Created:**
+- `data/grc-orthodox-pipeline/texts.json` — Pipeline configuration
+- `scripts/seed-nektarios.ts` — Idempotent seeding script (updated to set totalChapters)
+- `src/server/translation/prompts.ts` — Added `grc-orthodox-liturgical` prompt
+
+**Fixes Applied:**
+- Fixed `total_chapters` for all 8 texts (were null)
+- Deleted duplicate translation record for akolouthia-apodeipnou
+
+---
+
+### Syair Sultan Lingga OCR V3 — ✅ COMPLETE
+
+**42 pages OCR'd with Gemini Vision (right-to-left column reading)**
+
+All 10 agents completed. Output in `data/raw/syair-sultan-lingga/ocr-output-v3/`
+
+| Agent ID | Text | Slug | Status |
+|----------|------|------|--------|
+| a929de8 | Περί Φθόνου (On Envy) | peri-phthonou | 🔄 Running |
+| a0de807 | Η εικόνα της αδικίας (Image of Injustice) | eikona-adikias | 🔄 Running |
+| a680e65 | Κατάκριση... (Slander/Calumny) | katakrisis-katalalia | 🔄 Running |
+
+---
+
+## Completed Agents (2026-02-08, Session 47)
+
+### Twenty-Four Histories Final Fixes — ✅ COMPLETE
+
+**Completed:** 2026-02-08
+
+**Issues Fixed:**
+1. **Double-encoded JSONB:** 3,966 chapters had source_content stored as JSON string inside JSONB. Fixed with SQL: `UPDATE chapters SET source_content = trim(both '"' from source_content::text)::jsonb WHERE jsonb_typeof(source_content) = 'string'`
+2. **Weishu chapter-35:** Translated via DeepSeek (35 paragraphs)
+3. **Mingshi chapters 238-248, 324-332:** Translated via Gemini fallback (~1,100 paragraphs)
+
+**Final Status:**
+| Text | Total | Translated | Remaining | Notes |
+|------|-------|------------|-----------|-------|
+| Mingshi | 332 | 331 | 1 | ch 101 empty (scrape had only copyright notice) |
+| Yuanshi | 210 | 209 | 1 | ch 111 empty (scrape had only copyright notice) |
+| All other 22 texts | 2,738 | 2,738 | 0 | COMPLETE |
+
+**Grand Total: 3,278/3,280 chapters translated (99.94%)**
+
+The 2 empty chapters (mingshi ch 101, yuanshi ch 111) cannot be translated - source data was not available on Wikisource at scrape time.
+
+---
+
+### meenakshi-irattaimani-malai Retranslation — ✅ COMPLETE
+
+**Issue:** Paragraph 21 had SEVERE cross-text contamination (~150 words from "Vaitheeswaran Temple" text instead of 7-word completion marker)
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| aef3c55 | Tamil source vs translation comparison report | ✅ DONE (`docs/meenakshi-irattaimani-malai-comparison-report.md`) |
+| a114446 | Retranslate meenakshi-irattaimani-malai | ✅ DONE (version 12878, 22 paragraphs clean) |
+
+**Result:** Contamination removed. Live on deltoi.com.
+
+---
+
+### Tamil Round 8 Content Cleaning — ✅ ALL COMPLETE
+
+**Completed:** 2026-02-08 ~11:45PM
+
+**Content Cleaning (Publisher Contamination Removal):**
+
+| Text | Fix Applied | Result |
+|------|-------------|--------|
+| mayuranatar-anthathi | Removed glossary from last paragraph | 112 → 111 ✅ |
+| meenakshi-pillaitamil | Removed TOC from paragraph 0 | 102 → 101 ✅ |
+| veeramaamunivar-kalambakam | Removed publisher content (paras 0-2), preserved Author's Note (என்னுரை) | 86 → 83 ✅ |
+| Duplicate translation record | Deleted stale translation ID 12426 | Count mismatch fixed ✅ |
+| Double-encoded JSONB | Fixed subagent encoding error | ch 16211 fixed ✅ |
+
+**Remaining Audit Warnings (1311 total):** ALL FALSE POSITIVES
+- BRACKET_PLACEHOLDER: 1292 (translator clarifications)
+- OTHER_WORKS_LIST: 15 (temple names in poetry)
+- TOC_STRUCTURE: 4 (section headers in content)
+
+**Protected Texts (Never Touch):** singai-nagar-anthathi, chithira-kavigal
+
+---
+
+### Tamil Round 8 Translation Fixes (Earlier) — ✅ COMPLETE
+
+**Completed:** 2026-02-08 ~11:30PM
+
+**Incident (2026-02-08):** 8th round of failures. 11 subagents ALL FAILED with "classifyHandoffIfNeeded is not defined". Main agent took over directly.
+
+**Root causes fixed:**
+1. Source content stored as string instead of JSONB (4 texts)
+2. Paragraph format wrong (strings instead of {text, index} objects)
+3. Corrupt translation rows with empty paragraphs
+
+| Text | Paragraphs | Engine | Status |
+|------|------------|--------|--------|
+| angayarkanni-malai | 101 | DeepSeek V3 | ✅ DONE |
+| veeramaamunivar-kalambakam | 71 | DeepSeek V3 | ✅ DONE |
+| tiruchendur-murugan-pillaitamil | 89 | DeepSeek V3 | ✅ DONE |
+| thanigai-kalambakam | 95 | Gemini (fallback) | ✅ DONE |
+| seyur-murugan-pillaitamil | 27 | DeepSeek V3 | ✅ DONE |
+| mayuranatar-anthathi | 112 | DeepSeek V3 | ✅ DONE |
+| perur-mummani-kovai | 30 | DeepSeek V3 | ✅ DONE |
+| kurukuturai-kalambakam | 240 | DeepSeek V3 | ✅ DONE |
+
+**Total:** 765 paragraphs translated across 8 texts
+
+### 24 Histories Translation Workers — ✅ ALL COMPLETE
+
+All 24 dynastic histories are now translated (except 2 empty chapters with no source data).
+
+| Text | Chapters | Status |
+|------|----------|--------|
+| Shiji | 130/130 | ✅ DONE |
+| Hanshu | 110/110 | ✅ DONE |
+| Hou Hanshu | 130/130 | ✅ DONE |
+| San Guo Zhi | 65/65 | ✅ DONE |
+| Jinshu | 130/130 | ✅ DONE |
+| Song Shu | 100/100 | ✅ DONE |
+| Nan Qi Shu | 59/59 | ✅ DONE |
+| Liangshu | 56/56 | ✅ DONE |
+| Chenshu | 36/36 | ✅ DONE |
+| Weishu | 124/124 | ✅ DONE |
+| Bei Qi Shu | 50/50 | ✅ DONE |
+| Zhoushu | 50/50 | ✅ DONE |
+| Sui Shu | 85/85 | ✅ DONE |
+| Nanshi | 80/80 | ✅ DONE |
+| Beishi | 100/100 | ✅ DONE |
+| Jiu Tangshu | 214/214 | ✅ DONE |
+| Xin Tangshu | 248/248 | ✅ DONE |
+| Jiu Wudaishi | 150/150 | ✅ DONE |
+| Xin Wudaishi | 74/74 | ✅ DONE |
+| Songshi | 496/496 | ✅ DONE |
+| Liaoshi | 116/116 | ✅ DONE |
+| Jinshi | 135/135 | ✅ DONE |
+| Yuanshi | 209/210 | ✅ 99.5% (ch 111 empty) |
+| Mingshi | 331/332 | ✅ 99.7% (ch 101 empty) |
+| ac2cf20 | Xin Wudaishi (ch 1-74) | 74 | 🔄 Running |
+| a8d76cc | Nan Qi Shu (ch 1-59) | 59 | 🔄 Running |
+| ad1f016 | Mingshi (ch 1-332) | — | 🔄 Running |
+| a1bf5e9 | Yuanshi (ch 1-210) | 210 | 🔄 Running |
+| a26742d | Jiu Wudaishi (ch 1-150) | 150 | 🔄 Running |
+| ac84757 | Jinshi (ch 1-135) | 135 | 🔄 Running |
+| a149725 | Weishu (ch 1-124) | 124 | 🔄 Running |
+
+### Pinhua Baojian — ✅ COMPLETE (61/61 chapters)
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a420178 | Pinhua W1 (ch 0-30) | ✅ DONE (27/31, 4 truncated) |
+| a95c303 | Pinhua W2 (ch 31-60) | ✅ DONE (23/30, 7 truncated) |
+| a5533a9 | Pinhua Gemini fix (ch 2, 7, 14, 17, 46, 54) | ✅ DONE |
+| a5fbf1e | Pinhua Gemini fix (ch 31-34, 60) | ✅ DONE |
+| abd6c19 | Pinhua ch 31 + 60 special fix | ✅ DONE |
+
+### Tamil A/B Comparison — ✅ COMPLETE (DeepSeek V3 wins)
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| af9b1b8 | DeepSeek translation + comparison | ✅ DONE |
+| — | Result | **DeepSeek V3 outperforms Gemini** for Tamil poetry |
+
+**Policy Update:** New Tamil texts should use `scripts/translate-batch.ts --text <slug>` with DeepSeek. See `docs/tamil-ab-comparison-report.md` for details.
+
+### Recently Completed (This Session)
+
+| Agent ID | Task | Result |
+|----------|------|--------|
+| aab9719 | Tamil OCR verification | ✅ DONE (interrupted, partial) |
+| abbd938 | Tamil OCR replacement + translation | ✅ DONE (108+19 para, report written) |
+| — | Version 0 history fix | ✅ COMMITTED (5d86813) |
+
+### Completed Earlier Today
+
+| Agent ID | Task | Result |
+|----------|------|--------|
+| a61f53a | Pinhua Baojian COMPLETE RESET | ✅ DONE (61ch, 2435 para) |
+| ab2aa0b | San Guo Zhi ch 56 (Gemini fallback) | ✅ DONE (29 para) |
+| a84a7f1 | Song Shi 211-214 fix | ✅ DONE (4/4 ch, 248 para) |
+| bddc75c | Singai Nagar DeepSeek retranslation | ✅ DONE (104 para) |
+| acc1608 | Gemini review: Chithira Kavigal | ✅ SATISFIED (Grade B+) |
+| acaba95 | Gemini review: Singai Nagar | ✅ SATISFIED (Grade B+) |
+
+---
+
+## Verified Complete (2026-02-07 Database Check)
+
+**16/24 Histories Complete:**
+| Text | Chapters | Status |
+|------|----------|--------|
+| Shiji | 130/130 | ✅ DONE |
+| Hanshu | 110/110 | ✅ DONE |
+| Hou Hanshu | 130/130 | ✅ DONE |
+| San Guo Zhi | 65/65 | ✅ DONE |
+| Jin Shu | 130/130 | ✅ DONE |
+| Song Shu | 100/100 | ✅ DONE |
+| Liangshu | 56/56 | ✅ DONE |
+| Chen Shu | 36/36 | ✅ DONE |
+| Bei Qi Shu | 50/50 | ✅ DONE |
+| Zhoushu | 50/50 | ✅ DONE |
+| Sui Shu | 85/85 | ✅ DONE |
+| Jiu Tang Shu | 214/214 | ✅ DONE |
+| Xin Tangshu | 248/248 | ✅ DONE |
+| Xin Wudaishi | 74/74 | ✅ DONE |
+| Song Shi | 496/496 | ✅ DONE |
+| Liao Shi | 116/116 | ✅ DONE |
+
+## In Progress (24 Histories) — 8 Active Workers
+
+| Text | Done/Total | Remaining | Status |
+|------|------------|-----------|--------|
+| Mingshi | 78/332 | 254 | 🔄 Running |
+| Yuanshi | 67/210 | 143 | 🔄 Running |
+| Beishi | 32/100 | 68 | 🔄 Running |
+| Weishu | 44/124 | 80 | 🔄 Running |
+| Jinshi | 71/135 | 64 | 🔄 Running |
+| Nanshi | 80/80 | 0 | ✅ DONE |
+| Nan Qi Shu | 59/59 | 0 | ✅ DONE |
+| Jiu Wudaishi | 150/150 | 0 | ✅ DONE |
+
+**Total Remaining:** 709 chapters across 8 texts
+
+**Recently Completed (Session 46):**
+- Liangshu: 56/56 ✅
+- Bei Qi Shu: 50/50 ✅
+- Zhoushu: 50/50 ✅
+- Jinshu: 130/130 ✅
+- Jiu Tangshu: 214/214 ✅
+- Xin Wudaishi: 74/74 ✅
+- Chen Shu: 36/36 ✅
+- Liaoshi: 116/116 ✅
+
+## ✅ COMPLETE — Liaoshi (遼史 / History of Liao)
+
+| Worker | Agent ID | Range | Chapters | Status |
+|--------|----------|-------|----------|--------|
+| W1 | a443253 | 1-58 | 58 | ✅ DONE |
+| W2 | a326cc3 | 59-116 | 58 | ✅ DONE |
+
+**Total:** 116/116 chapters | **Completed:** 2026-02-07
+
+## In Progress — Mingshi (明史 / History of Ming)
+
+| Worker | Agent ID | Range | Chapters | Status |
+|--------|----------|-------|----------|--------|
+| W1 | a82a010 | 79-163 | 85 | ✅ DONE (76 trans, ch 84 needs Gemini) |
+| W2 | a891bd9 | 164-248 | 85 | ✅ DONE (78 trans, ch 177,230 truncated, 242-248 not reached) |
+| W3 | a0e7057 | 249-332 | 84 | 🔄 Running |
+| W2-fix | a33d274 | 242-248 + retry 177,230 | 9 | 🔄 Running |
+
+**Total:** 332 chapters | **Done:** ~154 | **Remaining:** ~178
+**Note:** W2 timed out before completing; a33d274 launched to finish remaining 7 chapters + retry 2 failed
+
+## In Progress — Yuanshi (元史 / History of Yuan)
+
+| Worker | Agent ID | Range | Chapters | Status |
+|--------|----------|-------|----------|--------|
+| W1 | acda1e6 | 68-115 | 46/48 | ✅ DONE (2 skipped) |
+| W2 | af79d2d | 116-163 | 46/48 | ✅ DONE (2 skipped) |
+| W3 | a4e6dca | 164-210 | 47 | ✅ DONE |
+
+**Total:** 210 chapters | **Done:** 67 | **Remaining:** 143
+**Note:** Reallocated from single worker to 3 workers (2026-02-07)
+
+## ✅ ALL 24 HISTORIES LAUNCHED — No texts remaining!
+
+All 24 dynastic histories are now either complete or have active workers.
+
+**Retry Queue:** ✅ ALL CLEARED
+- jiu-tangshu ch 28, 47, 18903 → **Agent a6c5c61 COMPLETE** ✅ (26+29+72 paragraphs)
+
+## Tamil Corpus Expansion (Autonomous) — ✅ COMPLETE
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| af1118e | Find 20 Tamil texts (v1) | ❌ STOPPED (left artifacts) |
+| a189e85 | Tamil Quality Agent (clean first) | ✅ COMPLETE |
+| a9ecc05 | Seed + translate 19 texts | ✅ COMPLETE |
+
+**Final Results:**
+- **15 new authors** added to database
+- **19 texts** seeded and translated via DeepSeek V3
+- **~2,025 paragraphs** translated
+- Fixed 2 corrupted mega-paragraphs, adjusted Tamil length ratio to 0.35
+
+## Recently Completed (Session 46)
+
+| Agent ID | Task | Result |
+|----------|------|--------|
+| ac2cf20 | Xin Wudaishi (ch 1-74) | ✅ DONE (74ch, 100%) |
+| ace14ec | Jiu Tangshu W1 (ch 1-53) | ✅ DONE (51ch, ch 28,47 skipped) |
+| aa456aa | Jiu Tangshu W4 (ch 160-200+splits) | ✅ DONE (54ch, ch 18903 skipped) |
+| ad0f93b | Jiu Tangshu W2 (ch 54-106) | ✅ DONE (53ch, ~1,662 para) |
+| aa64f79 | Jinshu W2 (ch 45-88) | ✅ DONE (44ch, ~2,212 para) |
+| a5baeca | Jinshu W1 (ch 1-44) | ✅ DONE (44ch, 4,141 para) |
+| a41697f | Jinshu W3 (ch 89-130) | ✅ DONE (42ch) |
+| a949677 | Jiu Tangshu W3 (ch 107-159) | ✅ DONE (53ch) |
+| a443253 | Liaoshi W1 (ch 1-58) | ✅ DONE (58ch) |
+| a326cc3 | Liaoshi W2 (ch 59-116) | ✅ DONE (58ch) |
+| aa65e37 | Chen Shu (ch 1-36) | ✅ DONE (36ch) |
+| a5533a9 | Pinhua Gemini fix (ch 2, 7, 14, 17, 46, 54) | ✅ DONE |
+| a5fbf1e | Pinhua Gemini fix (ch 31-34, 60) | ✅ DONE |
+| abd6c19 | Pinhua ch 31 + 60 special fix | ✅ DONE |
+| af9b1b8 | Tamil A/B Comparison | ✅ DONE (DeepSeek wins) |
+
+## Tamil A/B Comparison Experiment (Task #14)
+
+**Goal:** Compare Gemini vs DeepSeek translations for Tamil devotional poetry
+
+**Workflow:**
+1. **Phase 1 (ad97aed):** DeepSeek translation with specialist prompts
+   - Output: `scratchpad/deepseek-singai-nagar.md`, `scratchpad/deepseek-chithira-kavigal.md`
+2. **Phase 2:** Impartial Claude comparison
+   - Compare paragraph-by-paragraph
+   - Evaluate: accuracy, fluency, preservation of verse structure
+3. **Phase 3:** Populate DB with winning translation
+
+**Texts:**
+- Singai Nagar Anthathi: 108 paragraphs (devotional chain-verse)
+- Chithira Kavigal: 19 paragraphs (sophisticated verse forms)
+
+**Current Status:** Phase 1 running (ad97aed)
+
+---
+
+## San Guo Zhi Chapter 56 Fix (Agent ab2aa0b)
+
+Dedicated agent with Gemini fallback capability:
+- Analyzes source paragraph structure
+- Tries DeepSeek first with smaller batches
+- Falls back to Gemini if DeepSeek fails
+- Can split long paragraphs if needed
 
 ---
 
@@ -132,6 +698,294 @@ The hou-hanshu and sanguozhi "moderate issues" are ACCEPTABLE because their comm
 | W8 | b443a26 | 200-225 | 26 | ✅ DONE |
 
 **✅ XIN TANGSHU TRANSLATION COMPLETE — 248/248 chapters**
+
+---
+
+### Four Histories Translation (2026-02-05)
+
+**Scope:** San Guo Zhi, Sui Shu, Song Shi, Song Shu — 746 chapters total
+
+**Review Agents:**
+| Agent ID | Text | Chapters | Status |
+|----------|------|----------|--------|
+| a5af96d | San Guo Zhi (三國志) | 65 | ✅ PASS (Grade A) |
+| a3f252d | Sui Shu (隋書) | 85 | ✅ PASS (Grade B+) |
+| a5a7342 | Song Shi (宋史) | 496 | ✅ PASS (Grade B+, minor cleanup) |
+| adf95e9 | Song Shu (宋書) | 100 | ✅ PASS (Grade A-) |
+
+**Translation Agents:**
+| Agent ID | Text | Chapters | Status |
+|----------|------|----------|--------|
+| a735031 | San Guo Zhi | 65 | ✅ DONE (64/65, ch 56 API issue) |
+| aa88be1 | Sui Shu | 85 | ✅ DONE |
+| a3e5312 | Song Shi | 1-35 | ✅ Done (35ch), STOPPED |
+| a10e53d | Song Shi W1 | 36-127 | ✅ DONE (168ch) |
+| a4a7b7d | Song Shi W2 | 128-219 | ✅ DONE (88ch, 4 empty) |
+| a08b744 | Song Shi W3 | 220-311 | ✅ DONE (92ch) |
+| abe6096 | Song Shi W4 | 312-403 | 🔄 Running |
+| a81ec9c | Song Shi W5 | 404-496 | ✅ DONE (93ch) |
+| a01a337 | Song Shu ch 64 fix | 1 | ✅ DONE |
+| ae7834a | Song Shu | 100 | ✅ DONE (100/100) |
+
+**Hou Hanshu (後漢書) Translation Workers:**
+
+*Previous workers (killed - used old chapter numbers before renumbering):*
+| Worker | Task ID | Range | Status |
+|--------|---------|-------|--------|
+| W1 | ae81bbb | 4-45 (old) | ❌ KILLED |
+| W2 | a58711b | 46-90 (old) | ❌ KILLED |
+| W3 | af3040c | 91-120 (old) | ❌ KILLED |
+
+*New workers (correct chapter numbers after renumbering):*
+| Worker | Task ID | Range | Pending | Status |
+|--------|---------|-------|---------|--------|
+| W1 | af5f6eb | 12-402 | 40 | ✅ DONE |
+| W2 | aeb4343 | 410-802 | 40 | ✅ DONE |
+| W3 | aa5efdc | 810-1200 | 39 | ✅ DONE |
+| Retry | b1098a6 | 402, 580 | 2 | ✅ DONE (Gemini) |
+
+**✅ HOU HANSHU COMPLETE — 192/192 chapters translated**
+
+**Note:** Chapter renumbering scheme: base×10 for regular chapters (e.g., ch 2 → 20), base×10+1 for Part 1 (e.g., ch 1上 → 11), base×10+2 for Part 2 (e.g., ch 1下 → 12)
+
+**Cleanup Applied (2026-02-05):**
+- Song Shi: Removed `{{YL|...` templates (ch 121, 125, 151) + navigation artifacts (ch 216-241)
+- Sui Shu: Removed `{{*|...}}` template (ch 31)
+
+---
+
+## Session 45 Completed (2026-02-06)
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a9dd2f8 | Search optimization (trigram indexes + remove count query) | ✅ Commit 16b640a |
+| a01a337 | Song Shu chapter 64 fix | ✅ 46 paragraphs translated |
+| a735031 | San Guo Zhi translation (65ch) | ✅ 64/65 (ch 56 API issue) |
+| a0b6668 | Qingshi retranslation (24ch) | ⚠️ 9/24 (API timeout issues) |
+| — | Qingshi data fix (re-scrape from /wiki/情史/N) | ✅ 24 chapters, ~5,000 paragraphs |
+| — | Search pagination (offset-based) | ✅ Commit a241b79 |
+| af5f6eb | Hou Hanshu W1 (12-402) | ✅ DONE |
+| aeb4343 | Hou Hanshu W2 (410-802) | ✅ DONE |
+| aa5efdc | Hou Hanshu W3 (810-1200) | ✅ DONE |
+| b1098a6 | Hou Hanshu Gemini retry (ch 402, 580) | ✅ DONE (2/2) |
+| a224be3 | Pan Walery (Polish) full pipeline | ✅ DONE (24ch, 573 para) |
+| — | Hou Hanshu slug fix | ✅ Fixed (slug = 'chapter-' || chapter_number) |
+| — | Hou Hanshu ordering fix | ✅ Fixed (sequential by chapterNumber) |
+
+**Search Performance Optimization:**
+- Added `pg_trgm` extension
+- Created `chapters_source_trgm_idx` GIN index
+- Created `translation_versions_content_trgm_idx` GIN index
+- Removed count query (now uses limit+1 strategy for hasMore)
+- Query time reduced from ~500ms-2s to ~7-16ms
+
+**Pending:**
+- Qingshi ch 10-24 retranslation (DeepSeek API issues)
+- San Guo Zhi ch 56 (paragraph mismatch - needs Gemini fallback)
+- Song Shi W4 (abe6096) — ~21 chapters remaining
+
+---
+
+## ✅ COMPLETE — Three Histories Translation (2026-02-07)
+
+**Verified via database query 2026-02-07:**
+
+**Liangshu (梁書 / Book of Liang) — 56/56 ✅ DONE**
+| Worker | Agent ID | Range | Status |
+|--------|----------|-------|--------|
+| W1 | a06488c | 1-28 | ✅ DONE (26 translated, 2 skipped) |
+| W2 | abb3350 | 29-56 | ✅ DONE |
+
+**Zhoushu (周書 / Book of Zhou) — 50/50 ✅ DONE**
+| Worker | Agent ID | Range | Status |
+|--------|----------|-------|--------|
+| W1 | a4c3b74 | 1-25 | ✅ DONE |
+| W2 | a08dd70 | 26-50 | ✅ DONE |
+
+**Bei Qi Shu (北齊書 / Book of Northern Qi) — 50/50 ✅ DONE**
+| Worker | Agent ID | Range | Status |
+|--------|----------|-------|--------|
+| W1 | a29256a | 1-25 | ✅ DONE |
+| W2 | a8a4424 | 26-50 | ✅ DONE |
+
+**Total: 156/156 chapters COMPLETE**
+
+---
+
+## Pinhua Baojian COMPLETE RESET (2026-02-07)
+
+**User Directive:** Due to repeated quality issues (duplicates → ruinous fix → paragraph misalignment), the User has ordered a complete reset with rigorous independent review.
+
+**7-Phase Pipeline:**
+| Phase | Task | Agent | Status |
+|-------|------|-------|--------|
+| 1 | Clear ALL existing data (translations + chapters) | a61f53a | 🔄 Running |
+| 2 | Study Wikisource structure (index + chapter HTML) | a61f53a | 🔄 Running |
+| 3 | Create clean processing script | a61f53a | 🔄 Running |
+| 4 | Execute scraping | a61f53a | 🔄 Running |
+| 5 | Write completion report | a61f53a | 🔄 Running |
+| 6a | **Independent Review #1** (DeepSeek-reasoner) | PENDING | — |
+| 6b | **Independent Review #2** (Standard Claude) | PENDING | — |
+| 7 | Seed chapters to database | PENDING | — |
+| 8 | Translation (zh-literary prompt, 1500 char batches) | PENDING | — |
+| 9 | **Post-Translation Review** (DeepSeek-reasoner alignment check) | PENDING | — |
+
+**Previous Issues (for the record):**
+- Initial scrape had duplicate paragraphs
+- Fix agent (a949a0d) removed duplicates from source_content but NOT translations → complete misalignment
+- Chapters 52, 53 showed missing paragraphs and content shift
+- Chapters 8, 50 were aligned but overall data quality suspect
+
+**Quality Gates:**
+- Phase 6 requires B+ from BOTH reviewers
+- Phase 9 requires paragraph-to-paragraph alignment verification
+
+---
+
+## Pinhua Baojian Alignment Incident (2026-02-07)
+
+**Status:** ✅ Ch 1 Fixed (Agent a186edb), 🔄 Ch 52-53 Fix In Progress (Agent a9b9bf8)
+
+**Incident Summary:**
+A subagent (a949a0d) attempted to fix duplicate paragraphs by removing them from `source_content` and renumbering indices. However, `translation_versions` was NOT updated, causing complete content misalignment — source paragraph N no longer matched translation paragraph N.
+
+**Resolution Steps:**
+1. ✅ JSON files restored via `git checkout 5e4d69a -- data/processed/pinhua-baojian/`
+2. ✅ Database restored via `scripts/restore-pinhua-source.ts` — 60/60 chapters updated
+3. ❌ Agent a9557db failed (framework error) before completing analysis
+4. 🔄 Agent a186edb launched (2026-02-07) to properly fix duplicates
+
+**Fix Agents:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a9557db | Analyze duplicate pattern | ❌ FAILED (framework error) |
+| a186edb | Fix duplicates safely with documentation | 🔄 Running |
+
+**Lesson:** NEVER modify source_content indices without updating translation_versions. Paragraph alignment is sacred.
+
+---
+
+## Active — Chinese Literature Pipeline (2026-02-07)
+
+**Total:** 8 texts, 628 chapters
+
+**Phases Complete:**
+- Phase 1 (Verification): ✅ 8 viable texts, 11 rejected
+- Phase 2 (Processing): ✅ 490+ chapters, 15,684+ paragraphs
+- Phase 3 (Quality Review): ✅ Wikisource templates removed
+- Phase 4 (Seeding): ✅ 7 new authors, 8 texts seeded
+- Phase 5 (Prompt Check): ✅ Using `zh-literary` prompt
+- Phase 6 (Translation): 🔄 Workers running
+
+**Current Status (verified via DB 2026-02-07 15:23 UTC):**
+| Text | Total | Done | Remaining |
+|------|-------|------|-----------|
+| yesou-puyan | 154 | 154 | 0 ✅ |
+| nu-xian-waishi | 100 | 67 | 33 |
+| lin-lan-xiang | 64 | 61 | 3 |
+| lu-mudan | 64 | 64 | 0 ✅ |
+| hou-xiyouji | 40 | 31 | 9 |
+| ernu-yingxiong-zhuan | 40 | 20 | 20 |
+| pingshan-lengyan | 20 | 15 | 5 |
+| ba-dongtian | 8 | 7 | 1 |
+
+**Total remaining: ~71 chapters across 6 texts**
+
+**Translation Workers (Wave 3 — no overlap):**
+| Worker | Task ID | Text | Chapters | Status |
+|--------|---------|------|----------|--------|
+| W1 | bf457cb | nu-xian-waishi | 7-35 | 🔄 Running |
+| W2 | b67be24 | nu-xian-waishi | 36-65 | 🔄 Running |
+| W3 | b58c61b | nu-xian-waishi | 66-100 | 🔄 Running |
+| W4 | bdeadde | lin-lan-xiang | 14-40 | 🔄 Running |
+| W5 | b5b4d35 | lin-lan-xiang | 41-64 | 🔄 Running |
+| W6 | bddf02f | lu-mudan | 11-38 | 🔄 Running |
+| W7 | — | lu-mudan | 39-64 | ✅ SKIPPED (already done) |
+| W8 | b237043 | hou-xiyouji | 6-23 | 🔄 Running |
+| W9 | b6c18ef | hou-xiyouji | 24-40 | 🔄 Running |
+| W10 | b1cb5d7 | ernu-yingxiong-zhuan | 5-22 | 🔄 Running |
+| W11 | b20ddc3 | ernu-yingxiong-zhuan | 23-40 | 🔄 Running |
+| W12 | b8ab31d | pingshan-lengyan | 3-20 | 🔄 Running |
+| W13 | b977504 | ba-dongtian | 2-8 | 🔄 Running |
+
+**Texts:**
+| Slug | Title | Chapters | Author |
+|------|-------|----------|--------|
+| hou-xiyouji | Later Journey to the West | 40 | Anonymous |
+| ernu-yingxiong-zhuan | A Tale of Heroic Lovers | 40 | Wen Kang |
+| pingshan-lengyan | Flat Mountain and Cold Swallow | 20 | Tianhuazang Zhuren |
+| lin-lan-xiang | Forest Orchid Fragrance | 64 | Qianyisheng |
+| lu-mudan | The Green Peony | 64 | Wu Bing |
+| ba-dongtian | Eight Paradises | 8 | Wuseshi Zhuren |
+| nu-xian-waishi | Unofficial History of Female Immortals | 100 | Lu Xiong |
+| yesou-puyan | Humble Words of a Rustic Elder | 154 | Xia Jingqu |
+
+---
+
+## Active — Russian Orthodox Texts Pipeline
+
+**Date:** 2026-02-05
+**Categories:** Hagiography, Patristics, Theology, Liturgy, Spiritual Literature, Church History
+
+**Phase 1 (Verification): ✅ COMPLETE**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a6b0202 | Find and verify Russian Orthodox texts | ✅ Complete |
+
+**Key Finding:** Most Orthodox classics already have English translations. 17/21 texts not viable.
+
+**Viable Texts (3-4):**
+1. **Zosima Verkhovskiy's Works** (~25-35 ch) — Hesychast tradition, Jesus Prayer, no English translation
+2. **Philaret of Moscow Sermons** (curate 20-30) — "Moscow Chrysostom", no English translation
+3. **Elias Miniatis Sermons** (50+ ch) — needs investigation
+
+**Output:** `data/ru-orthodox-pipeline/verified-texts.json`
+
+**Phase 2-3 (Processing & Review): ✅ COMPLETE**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a145d98 | Scrape, process, clean, review Zosima Verkhovskiy | ✅ Grade A, PASS |
+
+**Processing Results:**
+- 4 works, 14 chapters, 386 paragraphs, 396K chars
+- Output: `data/processed/zosima-verkhovskiy/`
+- Script: `scripts/process-zosima-verkhovskiy.py`
+
+**Phase 4 (Seeding): ✅ COMPLETE** — 14 chapters seeded
+
+**Phase 6 (Translation): ✅ COMPLETE**
+| Agent ID | Chapters | Status |
+|----------|----------|--------|
+| a7844eb | 1-4 | ✅ Done (119 para) |
+| a7ae2c5 | 5-7 | ✅ Done (74 para) |
+| a95fbeb | 8-11 | ✅ Done (120 para) |
+| af7891e | 12-14 | ✅ Done (73 para) |
+
+**✅ ZOSIMA VERKHOVSKIY COMPLETE — 14 chapters, 386 paragraphs**
+
+**Theophan the Recluse Pipeline:**
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a1c3257 | Руководство к духовной жизни | ❌ STOPPED (already translated) |
+
+**Maksimov - Нечистая, неведомая и крестная сила:**
+
+**⚠️ CORRECTION:** The text has **68 chapters** (not 32). Previous agent only scraped 32 of 68 chapters.
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| a1283b5 | Verification | ⚠️ INCORRECT (said 32ch, actually 68ch) |
+| a768140 | Seed + translate (32ch) | ❌ STOPPED (incomplete data) |
+| a95e9a7 | Complete pipeline (68ch) | 🔄 Running |
+
+**Structure (68 chapters total):**
+- От издателя (1 ch)
+- Нечистая сила (18 ch) — demons, spirits, witches
+- Неведомая сила (4 ch) — elemental forces
+- Крестная сила (~45 ch) — Christian calendar customs
+
+
+---
 
 **Prompt:** `zh-xin-tangshu` — Custom prompt for New Book of Tang (Ouyang Xiu/Song Qi, 1060 CE)
 **Text:** 248 chapters total (225 regular + 23 split parts)
@@ -627,7 +1481,10 @@ significance as a representative work of Ming dynasty erotic fiction.
 ## Active Pipelines
 
 ### Polish Pipeline — COMPLETE ✓
-- **11 texts, 231/231 chapters translated**
+- **12 texts, 255/255 chapters translated**
+- ~~Mikołaja Doświadczyńskiego przypadki~~ — STOPPED (English translation already exists)
+- **Pan Walery** — ✅ COMPLETE (24ch, 573 para, Grade A) — scrape, process, review, translate
+- **Session 45 Addition:** Full pipeline agent (a224be3) completed successfully
 
 ### Armenian Pipeline — COMPLETE ✓
 - **1 text (Payqar), 18/18 chapters translated**

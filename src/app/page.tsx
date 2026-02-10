@@ -26,8 +26,11 @@ export default async function HomePage() {
   // Count texts per genre and sort by descending count
   const genreDisplayNames: Record<string, string> = {
     philosophy: "Philosophy",
+    theology: "Theology",
+    devotional: "Devotional",
     commentary: "Commentary",
     literature: "Literature",
+    poetry: "Poetry",
     history: "History",
     science: "Science",
     ritual: "Ritual",
