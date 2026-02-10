@@ -283,7 +283,12 @@ export default function SearchClient() {
 
       {/* Loading state - show when fetching (including refetches when filters change) */}
       {isSearching && query.length >= 2 && (
-        <p className="text-sm text-muted-foreground">Searching...</p>
+        <p className="text-sm text-muted-foreground">Searching titles...</p>
+      )}
+
+      {/* Content search loading - show when titles done but content still loading */}
+      {!isSearching && isContentLoading && query.length >= 2 && (
+        <p className="text-sm text-muted-foreground">Searching inside texts...</p>
       )}
 
       {/* No results message - only show when not searching */}
@@ -360,13 +365,6 @@ export default function SearchClient() {
                   </Card>
                 </Link>
               ))}
-
-              {/* Content search loading indicator */}
-              {isContentLoading && (
-                <p className="text-sm text-muted-foreground py-2">
-                  Searching inside texts...
-                </p>
-              )}
             </div>
           )}
 
