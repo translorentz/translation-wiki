@@ -233,8 +233,9 @@ export default function SearchClient() {
   };
 
   const hasResults = accumulatedTexts.length > 0 || accumulatedChapters.length > 0;
-  const isInitialLoading = titlesQuery.isLoading;
-  const isContentLoading = contentQuery.isLoading;
+  // Use isFetching to detect any loading (including refetches when filters change)
+  const isSearching = titlesQuery.isFetching;
+  const isContentLoading = contentQuery.isFetching;
 
   return (
     <main className="mx-auto max-w-3xl">
@@ -280,21 +281,21 @@ export default function SearchClient() {
         </div>
       )}
 
-      {/* Loading state */}
-      {isInitialLoading && query.length >= 2 && (
+      {/* Loading state - show when fetching (including refetches when filters change) */}
+      {isSearching && query.length >= 2 && (
         <p className="text-sm text-muted-foreground">Searching...</p>
       )}
 
-      {/* No results message */}
-      {titlesQuery.isSuccess && contentQuery.isSuccess && !hasResults && query.length >= 2 && (
+      {/* No results message - only show when not searching */}
+      {!isSearching && !isContentLoading && !hasResults && query.length >= 2 && (
         <p className="py-4 text-muted-foreground">
           No results found for &ldquo;{query}&rdquo;
           {selectedLanguages.length > 0 && " with the selected language filter"}
         </p>
       )}
 
-      {/* Results */}
-      {hasResults && (
+      {/* Results - hide stale results while refetching */}
+      {!isSearching && hasResults && (
         <div className="space-y-4">
           {/* Text-level matches (title or author name) */}
           {accumulatedTexts.length > 0 && (
