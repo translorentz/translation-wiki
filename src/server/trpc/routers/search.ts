@@ -71,15 +71,16 @@ export const searchRouter = createTRPCRouter({
 
       const chapterTitleCondition = ilike(chapters.title, pattern);
 
-      const chapterWhereClause = langFilter
-        ? and(
-            chapterTitleCondition,
-            langFilter,
-            matchedTextIds.length > 0 ? notInArray(texts.id, matchedTextIds) : undefined
-          )
-        : matchedTextIds.length > 0
-        ? and(chapterTitleCondition, notInArray(texts.id, matchedTextIds))
-        : chapterTitleCondition;
+      // Build WHERE clause, only adding conditions that exist
+      const chapterConditions = [
+        chapterTitleCondition,
+        langFilter,
+        matchedTextIds.length > 0 ? notInArray(texts.id, matchedTextIds) : undefined
+      ].filter(Boolean);
+
+      const chapterWhereClause = chapterConditions.length > 1
+        ? and(...chapterConditions)
+        : chapterConditions[0];
 
       const chapterResults = await db
         .select({
@@ -141,7 +142,7 @@ export const searchRouter = createTRPCRouter({
       );
 
       // Build exclusions for texts/chapters already shown
-      const exclusions = [];
+      const exclusions: ReturnType<typeof notInArray>[] = [];
       if (input.excludeTextIds && input.excludeTextIds.length > 0) {
         exclusions.push(notInArray(texts.id, input.excludeTextIds));
       }
@@ -149,11 +150,11 @@ export const searchRouter = createTRPCRouter({
         exclusions.push(notInArray(chapters.id, input.excludeChapterIds));
       }
 
-      const chapterWhereClause = and(
-        contentMatchConditions,
-        langFilter,
-        ...exclusions
-      );
+      // Build WHERE clause, only adding conditions that exist
+      const conditions = [contentMatchConditions, langFilter, ...exclusions].filter(Boolean);
+      const chapterWhereClause = conditions.length > 1
+        ? and(...conditions)
+        : conditions[0];
 
       const chapterResults = await db
         .select({
