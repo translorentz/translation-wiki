@@ -2,7 +2,15 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../init";
 import { db } from "@/server/db";
 import { chapters, texts, authors, languages, translations, translationVersions } from "@/server/db/schema";
-import { sql, eq, ilike, or, and, inArray } from "drizzle-orm";
+import { sql, eq, ilike, or, and, inArray, notInArray } from "drizzle-orm";
+
+// Shared input schema for search queries
+const searchInputSchema = z.object({
+  q: z.string().min(1).max(200),
+  languages: z.array(z.string()).optional(),
+  limit: z.number().min(1).max(50).default(20),
+  offset: z.number().min(0).default(0),
+});
 
 export const searchRouter = createTRPCRouter({
   languages: publicProcedure.query(async () => {
@@ -18,15 +26,216 @@ export const searchRouter = createTRPCRouter({
     return result;
   }),
 
-  query: publicProcedure
+  // Fast query: text titles, author names, and chapter titles only
+  // No JSONB content search - should be very fast
+  titles: publicProcedure
+    .input(searchInputSchema)
+    .query(async ({ input }) => {
+      const pattern = `%${input.q}%`;
+
+      // Build language filter condition if languages are specified
+      const langFilter =
+        input.languages && input.languages.length > 0
+          ? inArray(languages.code, input.languages)
+          : undefined;
+
+      // Find texts matching by title or author name
+      const textMatchConditions = or(
+        ilike(texts.title, pattern),
+        ilike(authors.name, pattern)
+      );
+
+      const textMatches = await db
+        .select({
+          textId: texts.id,
+          textTitle: texts.title,
+          textSlug: texts.slug,
+          authorName: authors.name,
+          authorSlug: authors.slug,
+          langCode: languages.code,
+          totalChapters: texts.totalChapters,
+        })
+        .from(texts)
+        .innerJoin(authors, eq(texts.authorId, authors.id))
+        .innerJoin(languages, eq(texts.languageId, languages.id))
+        .where(
+          langFilter
+            ? and(textMatchConditions, langFilter)
+            : textMatchConditions
+        )
+        .orderBy(texts.title)
+        .limit(10);
+
+      // Find chapters matching by chapter title only (fast - no JSONB search)
+      const matchedTextIds = textMatches.map((t) => t.textId);
+
+      const chapterTitleCondition = ilike(chapters.title, pattern);
+
+      const chapterWhereClause = langFilter
+        ? and(
+            chapterTitleCondition,
+            langFilter,
+            matchedTextIds.length > 0 ? notInArray(texts.id, matchedTextIds) : undefined
+          )
+        : matchedTextIds.length > 0
+        ? and(chapterTitleCondition, notInArray(texts.id, matchedTextIds))
+        : chapterTitleCondition;
+
+      const chapterResults = await db
+        .select({
+          chapterId: chapters.id,
+          chapterNumber: chapters.chapterNumber,
+          chapterTitle: chapters.title,
+          chapterSlug: chapters.slug,
+          textId: texts.id,
+          textTitle: texts.title,
+          textSlug: texts.slug,
+          authorName: authors.name,
+          authorSlug: authors.slug,
+          langCode: languages.code,
+        })
+        .from(chapters)
+        .innerJoin(texts, eq(chapters.textId, texts.id))
+        .innerJoin(authors, eq(texts.authorId, authors.id))
+        .innerJoin(languages, eq(texts.languageId, languages.id))
+        .where(chapterWhereClause)
+        .orderBy(texts.title, chapters.chapterNumber)
+        .limit(input.limit + 1)
+        .offset(input.offset);
+
+      const hasMore = chapterResults.length > input.limit;
+      const paginatedResults = hasMore
+        ? chapterResults.slice(0, input.limit)
+        : chapterResults;
+
+      return {
+        texts: textMatches,
+        chapters: paginatedResults,
+        hasMore,
+      };
+    }),
+
+  // Slow query: JSONB content search with snippet extraction
+  // Called separately so title results can appear first
+  content: publicProcedure
     .input(
-      z.object({
-        q: z.string().min(1).max(200),
-        languages: z.array(z.string()).optional(),
-        limit: z.number().min(1).max(50).default(20),
-        offset: z.number().min(0).default(0),
+      searchInputSchema.extend({
+        excludeTextIds: z.array(z.number()).optional(),
+        excludeChapterIds: z.array(z.number()).optional(),
       })
     )
+    .query(async ({ input }) => {
+      const pattern = `%${input.q}%`;
+      const lowerPattern = `%${input.q.toLowerCase()}%`;
+
+      // Build language filter condition if languages are specified
+      const langFilter =
+        input.languages && input.languages.length > 0
+          ? inArray(languages.code, input.languages)
+          : undefined;
+
+      // Content search: source content and translation content (JSONB - slower)
+      const contentMatchConditions = or(
+        sql`${chapters.sourceContent}::text ILIKE ${pattern}`,
+        sql`${translationVersions.content}::text ILIKE ${pattern}`
+      );
+
+      // Build exclusions for texts/chapters already shown
+      const exclusions = [];
+      if (input.excludeTextIds && input.excludeTextIds.length > 0) {
+        exclusions.push(notInArray(texts.id, input.excludeTextIds));
+      }
+      if (input.excludeChapterIds && input.excludeChapterIds.length > 0) {
+        exclusions.push(notInArray(chapters.id, input.excludeChapterIds));
+      }
+
+      const chapterWhereClause = and(
+        contentMatchConditions,
+        langFilter,
+        ...exclusions
+      );
+
+      const chapterResults = await db
+        .select({
+          chapterId: chapters.id,
+          chapterNumber: chapters.chapterNumber,
+          chapterTitle: chapters.title,
+          chapterSlug: chapters.slug,
+          textId: texts.id,
+          textTitle: texts.title,
+          textSlug: texts.slug,
+          authorName: authors.name,
+          authorSlug: authors.slug,
+          langCode: languages.code,
+          snippet: sql<string>`COALESCE(
+            (
+              SELECT substring(para.value->>'text'
+                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
+                FOR 80)
+              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+              LIMIT 1
+            ),
+            (
+              SELECT substring(para.value->>'text'
+                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
+                FOR 80)
+              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+              LIMIT 1
+            )
+          )`.as('snippet'),
+          matchParagraphIndex: sql<number>`COALESCE(
+            (
+              SELECT (para.value->>'index')::int
+              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+              LIMIT 1
+            ),
+            (
+              SELECT (para.value->>'index')::int
+              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
+              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+              LIMIT 1
+            )
+          )`.as('match_paragraph_index'),
+        })
+        .from(chapters)
+        .innerJoin(texts, eq(chapters.textId, texts.id))
+        .innerJoin(authors, eq(texts.authorId, authors.id))
+        .innerJoin(languages, eq(texts.languageId, languages.id))
+        .leftJoin(translations, eq(translations.chapterId, chapters.id))
+        .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
+        .where(chapterWhereClause)
+        .orderBy(texts.title, chapters.chapterNumber)
+        .limit((input.limit + 1) * 2)
+        .offset(input.offset);
+
+      // Deduplicate by chapter ID (LEFT JOINs can produce multiple rows per chapter)
+      const seenChapterIds = new Set<number>();
+      const deduplicatedResults = chapterResults.filter((ch) => {
+        if (seenChapterIds.has(ch.chapterId)) {
+          return false;
+        }
+        seenChapterIds.add(ch.chapterId);
+        return true;
+      });
+
+      const hasMore = deduplicatedResults.length > input.limit;
+      const paginatedResults = hasMore
+        ? deduplicatedResults.slice(0, input.limit)
+        : deduplicatedResults;
+
+      return {
+        chapters: paginatedResults,
+        hasMore,
+      };
+    }),
+
+  // Legacy combined query - kept for backward compatibility
+  // Prefer using titles + content separately for better UX
+  query: publicProcedure
+    .input(searchInputSchema)
     .query(async ({ input }) => {
       const pattern = `%${input.q}%`;
 

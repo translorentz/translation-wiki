@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -83,8 +83,9 @@ export default function SearchClient() {
     );
   };
 
-  const searchResults = useQuery(
-    trpc.search.query.queryOptions(
+  // Fast query: titles and author names only
+  const titlesQuery = useQuery(
+    trpc.search.titles.queryOptions(
       {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
@@ -95,10 +96,52 @@ export default function SearchClient() {
     )
   );
 
+  // Get IDs to exclude from content search
+  const excludeTextIds = useMemo(() =>
+    titlesQuery.data?.texts.map(t => t.textId) ?? [],
+    [titlesQuery.data?.texts]
+  );
+
+  const excludeChapterIds = useMemo(() =>
+    titlesQuery.data?.chapters.map(c => c.chapterId) ?? [],
+    [titlesQuery.data?.chapters]
+  );
+
+  // Slow query: content search (only runs after titles query completes)
+  const contentQuery = useQuery(
+    trpc.search.content.queryOptions(
+      {
+        q: query,
+        languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
+        limit: RESULTS_PER_PAGE,
+        offset: (page - 1) * RESULTS_PER_PAGE,
+        excludeTextIds,
+        excludeChapterIds,
+      },
+      {
+        enabled: query.length >= 2 && titlesQuery.isSuccess,
+      }
+    )
+  );
+
+  // Combine results from both queries
   const hasResults =
-    searchResults.data &&
-    (searchResults.data.texts.length > 0 ||
-      searchResults.data.chapters.length > 0);
+    (titlesQuery.data?.texts.length ?? 0) > 0 ||
+    (titlesQuery.data?.chapters.length ?? 0) > 0 ||
+    (contentQuery.data?.chapters.length ?? 0) > 0;
+
+  const allChapters = useMemo(() => {
+    const titleChapters = titlesQuery.data?.chapters ?? [];
+    const contentChapters = contentQuery.data?.chapters ?? [];
+
+    // Deduplicate by chapter ID (shouldn't happen, but just in case)
+    const seen = new Set(titleChapters.map(c => c.chapterId));
+    const uniqueContentChapters = contentChapters.filter(c => !seen.has(c.chapterId));
+
+    return [...titleChapters, ...uniqueContentChapters];
+  }, [titlesQuery.data?.chapters, contentQuery.data?.chapters]);
+
+  const hasMore = titlesQuery.data?.hasMore || contentQuery.data?.hasMore || false;
 
   return (
     <main className="mx-auto max-w-3xl">
@@ -144,26 +187,29 @@ export default function SearchClient() {
         </div>
       )}
 
-      {searchResults.isLoading && query.length >= 2 && (
+      {/* Loading states */}
+      {titlesQuery.isLoading && query.length >= 2 && (
         <p className="text-sm text-muted-foreground">Searching...</p>
       )}
 
-      {searchResults.data && !hasResults && query.length >= 2 && (
+      {/* No results message */}
+      {titlesQuery.isSuccess && contentQuery.isSuccess && !hasResults && query.length >= 2 && (
         <p className="py-4 text-muted-foreground">
           No results found for &ldquo;{query}&rdquo;
           {selectedLanguages.length > 0 && " with the selected language filter"}
         </p>
       )}
 
-      {hasResults && (
+      {/* Results */}
+      {(titlesQuery.isSuccess || contentQuery.isSuccess) && hasResults && (
         <div className="space-y-4">
           {/* Text-level matches (title or author name) */}
-          {searchResults.data!.texts.length > 0 && (
+          {titlesQuery.data && titlesQuery.data.texts.length > 0 && (
             <div className="space-y-2">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 Texts
               </h2>
-              {searchResults.data!.texts.map((result) => (
+              {titlesQuery.data.texts.map((result) => (
                 <Link
                   key={result.textId}
                   href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}`}
@@ -180,18 +226,18 @@ export default function SearchClient() {
             </div>
           )}
 
-          {/* Chapter-level matches (chapter title or source content) */}
-          {searchResults.data!.chapters.length > 0 && (
+          {/* Chapter-level matches */}
+          {allChapters.length > 0 && (
             <div className="space-y-2">
-              {searchResults.data!.texts.length > 0 && (
+              {titlesQuery.data && titlesQuery.data.texts.length > 0 && (
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Chapters
                 </h2>
               )}
-              {searchResults.data!.chapters.map((result) => (
+              {allChapters.map((result) => (
                 <Link
                   key={result.chapterId}
-                  href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`}
+                  href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${'matchParagraphIndex' in result && result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`}
                 >
                   <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                     {(() => {
@@ -212,7 +258,7 @@ export default function SearchClient() {
                     <p className="text-sm text-muted-foreground">
                       {result.textTitle} — {result.authorName}
                     </p>
-                    {result.snippet && (
+                    {'snippet' in result && typeof result.snippet === 'string' && result.snippet && (
                       <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
                         ...{highlightMatch(result.snippet, query)}...
                       </p>
@@ -220,11 +266,18 @@ export default function SearchClient() {
                   </Card>
                 </Link>
               ))}
+
+              {/* Content search loading indicator */}
+              {contentQuery.isLoading && (
+                <p className="text-sm text-muted-foreground py-2">
+                  Searching inside texts...
+                </p>
+              )}
             </div>
           )}
 
           {/* Pagination controls */}
-          {searchResults.data!.chapters.length > 0 && (
+          {allChapters.length > 0 && (
             <div className="flex items-center justify-between border-t pt-4 mt-4">
               <p className="text-sm text-muted-foreground">
                 Page {page}
@@ -242,7 +295,7 @@ export default function SearchClient() {
                   variant="outline"
                   size="sm"
                   onClick={() => setPage((p) => p + 1)}
-                  disabled={!searchResults.data!.hasMore}
+                  disabled={!hasMore}
                 >
                   Next
                 </Button>
