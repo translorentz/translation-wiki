@@ -2,40 +2,157 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-02-11, 06:15 UTC, Session 49
+**Last updated:** 2026-02-11, 15:00 UTC, Session 49 (continued)
+
+---
+
+## ⚠️ URFASSUNG OCR CATASTROPHE — THIRD ATTEMPT IN PROGRESS
+
+### Claude's Wrong Assumptions (DOCUMENTED FOR RECORD)
+
+Claude made multiple catastrophic assumptions during Urfassung processing:
+
+1. **v1 Processing Failure:** Claude collapsed ALL 83 lectures into SINGLE paragraphs per chapter (each lecture is 8-15 printed pages, should have 30-80 paragraphs). Claude failed to detect paragraph boundaries.
+
+2. **v2 Processing Failure:** Claude's "improved" processing still:
+   - Left mid-word hyphenation breaks ("sol- chen", "Wirk- lichkeit", "Phi- losophie")
+   - Embedded page headers in content ("Zweite Vorlesung 9")
+   - Left margin line numbers (5, 10, 15, 20, 25, 30, 35) in text
+   - Included footnote markers and content inline
+   - Chapter 83 truncated mid-phrase ("s in die Zukunft des")
+
+3. **Independent Review (abbb97c) ALSO FAILED:** The review agent approved the defective text without checking chapter boundaries or sentence completion. It reported "Grade B+" for critically broken content.
+
+4. **81 chapters translated before User discovered error:** User manually found the issues by reading the website — not Claude.
+
+### Corrective Measures
+
+1. **Plan document written:** `docs/urfassung-reprocessing-plan-v3.md` (631 lines)
+   - Detailed source file analysis with line numbers
+   - 9-step processing pipeline
+   - Regex patterns for all cleaning tasks
+   - 6 quality gates before seeding
+   - Edge cases documented (Lecture 50 has no "M. H.")
+
+2. **Parallel processor + reviewer agents:**
+   - aed2e79: PROCESSOR implementing plan
+   - a4462d4: REVIEWER checking EVERY chapter as produced
+
+3. **Review document:** `docs/urfassung-v3-review-findings.md` (being written)
+
+### Current v3 Agents
+
+| Agent ID | Task | Status |
+|----------|------|--------|
+| ac95007 | Write re-OCR plan v3 | ✅ COMPLETE |
+| aed2e79 | PROCESSOR: Implement re-OCR | 🔄 RUNNING |
+| a4462d4 | REVIEWER: Check each chapter | 🔄 RUNNING |
+
+---
+
+## 🔄 Gap-Filling Workers
+
+### Qingshigao (Draft History of Qing)
+
+| Worker | Range | Status |
+|--------|-------|--------|
+| b57dc1b | ch 158-160 | ✅ COMPLETE (3 ch) |
+| b490b14 | ch 245-254 | ✅ COMPLETE (10 ch) |
+| b4c6bb9 | ch 256-260 | ✅ COMPLETE (5 ch) |
+| b36fb1f | ch 58-72 | 🔄 RUNNING (ch 63+) |
+| b0a770d | ch 74-106 | 🔄 RUNNING (ch 78+) |
+| b5d639b | ch 164-212 | 🔄 RUNNING |
+| b4359e8 | ch 388-390 | 🔄 RUNNING |
+| a70cd4c | ch 477-520 | 🔄 RUNNING |
+
+### Taejong Sillok (Korean)
+
+| Worker | Range | Status |
+|--------|-------|--------|
+| bbfe5e6 | ch 19 | 🔄 RUNNING (~70%) |
+
+---
+
+## ✅ Serbian Hagiography Pipeline — COMPLETED
+
+| Agent ID | Text | Status |
+|----------|------|--------|
+| a6dfaf4 | Житије Светог Симеона (Life of St. Simeon) | ✅ COMPLETE |
+| acad5fe | Житије светог Саве (Life of St. Sava) | ✅ COMPLETE |
+| a28caf5 | Езопове басне (Aesop's Fables) | ✅ COMPLETE |
+
+---
+
+## ❌ INVALIDATED Schelling Translation Workers (DO NOT RESUME)
+
+All previous translation work is INVALID due to broken source processing.
+
+| Agent ID | Task | Range | Status |
+|----------|------|-------|--------|
+| a6dd3fe | Stage 7-8 | all | ❌ KILLED — broken source |
+| ad1696c-af63a8b | DeepSeek W1-W4 | all | ❌ INVALID — broken source |
+| a97de70, af7d59f | DeepSeek W2, W4 | various | ❌ INVALID — broken source |
+
+---
+
+### ✅ Chapter 24-25 Segmentation Fix (09:48 UTC)
+
+**Problem:** Chapter 25 started mid-sentence with "wahre Metapher." instead of "M. H. Eine dritte Erläuterung..."
+**Root Cause:** OCR processing error placed paragraphs 67-71 of lecture 25 at end of chapter-024.json
+**Fix Applied:**
+- Chapter 24: 72 → 67 paragraphs (removed incorrectly placed content)
+- Chapter 25: 78 → 82 paragraphs (received moved content + joined fragmented sentence)
+- Both chapters retranslated with DeepSeek, paragraph alignment verified
+
+### ⚠️ GEMINI API ACCESS — REVOKED
+
+**Status:** REVOKED (2026-02-11)
+**Reason:** Claude misdiagnosed script schema errors as "DeepSeek hallucination"
+**Policy:** Use DeepSeek for ALL translations until User explicitly restores Gemini
+**Orphan cleanup:** 63 translation records with NULL current_version_id deleted
 
 ---
 
 ## Session 49 Updates (04:00+ UTC)
 
-### Schelling Urfassung Pipeline — 🔄 TRANSLATING
+### Schelling Urfassung Pipeline — 🔄 TRANSLATING (DeepSeek)
+
+**RETRACTION (Session 49):** Claude's "hallucination" diagnosis was WRONG. User proved via test script that DeepSeek translates correctly. The actual issue was **script schema errors** (`model_used` column doesn't exist in translation_versions table).
+
+**Root Cause:** Translation scripts used non-existent `model_used` column, causing INSERTs to fail silently or produce orphan records. Claude misdiagnosed this as "hallucination" without verifying translations were saved correctly.
+
+**Resolution:** Fixed script to use correct columns (version_number, author_id), now using DeepSeek. Gemini API access REVOKED by User until Claude demonstrates sufficient diligence.
 
 | Agent ID | Task | Range | Status |
 |----------|------|-------|--------|
 | af84ae4 | Processing (Phases 1-6) | — | ✅ DONE |
-| abbb97c | Independent Review | — | ✅ DONE — NOT SATISFIED → Fixes Applied |
+| abbb97c | Independent Review | — | ✅ DONE |
 | — | Seeding | — | ✅ DONE — 83 chapters seeded |
-| a7567df | Translation W1 | ch 1-10 | 🔄 Running |
-| ae6bee5 | Translation W2 | ch 11-21 | 🔄 Running |
-| ac7da99 | Translation W3 | ch 22-31 | 🔄 Running |
-| af7b46f | Translation W4 | ch 32-42 | 🔄 Running |
-| ad263c5 | Translation W5 | ch 43-52 | 🔄 Running |
-| af11e7e | Translation W6 | ch 53-62 | 🔄 Running |
-| ad3b1bf | Translation W7 | ch 63-73 | 🔄 Running |
-| ad198d3 | Translation W8 | ch 74-83 | 🔄 Running |
+| ad5491f-a10117c | Multiple workers | various | ❌ KILLED — Schema errors (not hallucination) |
+| adf2690 | Gemini W1 | ch 1-21 | ❌ KILLED — User ordered |
+| af46691 | Gemini W2 | ch 22-42 | ❌ KILLED — User ordered |
+| a007a72 | Gemini W3 | ch 43-62 | ❌ KILLED — User ordered |
+| a10117c | Gemini W4 | ch 63-83 | ❌ KILLED — User ordered |
+| ad1696c | **DeepSeek W1 (FIXED)** | ch 3-24 | ✅ DONE (18/22, ch 11+22 need retry) |
+| a0f7c20 | **DeepSeek Gap** | ch 25-27 | ✅ DONE (3/3) |
+| af8d499 | **DeepSeek W2 (FIXED)** | ch 28-48 | 🔄 Running |
+| a2a5ac1 | **DeepSeek W3 (FIXED)** | ch 49-68 | ✅ DONE (20/20 perfect) |
+| af63a8b | **DeepSeek W4 (FIXED)** | ch 69-83 | ✅ DONE (13/15, ch 75+81 need retry) |
 
 **Text:** Urfassung der Philosophie der Offenbarung (Original Version of the Philosophy of Revelation)
 **Author:** Friedrich Wilhelm Joseph Schelling (1775-1854)
 **Language:** German (de) — 19th-century philosophical prose
-**Chapters:** 83 lectures
+**Chapters:** 83 lectures (skip ch 8 = Latin bibliography)
 **Paragraphs:** ~6,675 (after cleanup)
 
-**Prompt:** Created `de:` entry in prompts.ts with Schelling-specific terminology (Offenbarung, Mythologie, positive/negative Philosophie, Potenz, etc.)
+**Script:** `scripts/translate-schelling-deepseek.ts` — Fixed with correct schema columns
+**Note:** Chapter 8 skipped (contains Latin bibliography, not German lecture content)
 
 **Independent Review Findings & Fixes:**
 1. ✅ FIXED: Deleted orphan chapter-092.json (artifact)
 2. ✅ FIXED: Truncated chapter-083 from 200 → 102 paragraphs (removed bibliographic contamination)
 3. ⚠️ KNOWN: Greek text corrupted (OCR artifacts) — moderate severity, meaning discernible
+4. ✅ FIXED: Double-nested paragraph structure `{text: {text: "..."}}` → flattened 82 chapters
 
 ---
 
@@ -55,11 +172,11 @@ Track all running agents and background workers here. Update when launching or c
 
 **Issue:** W3 was stuck on chapter 388. Gemini retry started but failed on chapter 58 with paragraph alignment error (expected 13, got 14).
 
-### Lektsii V2 (Bolotov Lectures) — Fixed double-encoding
+### Lektsii V2 (Bolotov Lectures) — ✅ COMPLETE
 
 | Worker | Task ID | Range | Status |
 |--------|---------|-------|--------|
-| Main | b6476a2 | ch 24-78 | 🔄 Running (batch ~150/573, ~26%) |
+| Main | b6476a2 | ch 24-78 | ✅ DONE (18/18 chapters) |
 
 **Issue fixed:** 78 chapters had double-encoded JSONB source_content
 
@@ -1747,3 +1864,43 @@ significance as a representative work of Ming dynasty erotic fiction.
 ### Yashodhara Kaviyam Commentary Contamination (CRITICAL)
 **Problem:** Commentary contamination in chapters 3-5
 **Status:** Not yet fixed.
+
+---
+
+## 🔄 Gap-Filling Workers (2026-02-11)
+
+### Taejong Sillok (태종실록)
+| Agent ID | Task | Gap | Status |
+|----------|------|-----|--------|
+| ad3319f | Ch 19 | 1 chapter | 🔄 RUNNING |
+
+### Qingshigao (清史稿 / Draft History of Qing)
+| Agent ID | Task | Gap Ranges | Count | Status |
+|----------|------|------------|-------|--------|
+| a5735a9 | W1 | 30-35, 58-72, 74-106 | ~53 | 🔄 RUNNING |
+| a8c7c10 | W2 | 158-160, 164-212 | ~52 | 🔄 RUNNING |
+| a69865b | W3 | 245-254, 256-260, 388-390 | ~18 | 🔄 RUNNING |
+| a70cd4c | W4 | 477-520 | 44 | 🔄 RUNNING |
+
+**Total gaps:** 167 Qingshigao + 1 Taejong = 168 chapters
+
+**Note:** If translations fail due to long paragraphs, use paragraph splitting fallback.
+
+---
+
+## Schelling Urfassung — ✅ COMPLETE (2026-02-11)
+
+- **83 chapters** seeded and translated
+- Ch 8: 9 paragraphs aligned ✓
+- Ch 22: 19 paragraphs aligned ✓ (translated by ab24f7e)
+- Agent ab24f7e completed fixing script + translating remaining chapters
+
+---
+
+## Serbian Texts — ✅ COMPLETE (2026-02-11)
+
+| Agent ID | Text | Chapters | Paragraphs | Status |
+|----------|------|----------|------------|--------|
+| a6dfaf4 | Житије Светог Симеона | 1 | 81 | ✅ DONE |
+| acad5fe | Житије светог Саве | 1 | 180 | ✅ DONE |
+| a28caf5 | Езопове басне | 161 | 713 | ✅ DONE |
