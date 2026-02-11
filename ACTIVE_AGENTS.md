@@ -2,7 +2,121 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-02-09, Session 48
+**Last updated:** 2026-02-11, 06:15 UTC, Session 49
+
+---
+
+## Session 49 Updates (04:00+ UTC)
+
+### Schelling Urfassung Pipeline — 🔄 TRANSLATING
+
+| Agent ID | Task | Range | Status |
+|----------|------|-------|--------|
+| af84ae4 | Processing (Phases 1-6) | — | ✅ DONE |
+| abbb97c | Independent Review | — | ✅ DONE — NOT SATISFIED → Fixes Applied |
+| — | Seeding | — | ✅ DONE — 83 chapters seeded |
+| a7567df | Translation W1 | ch 1-10 | 🔄 Running |
+| ae6bee5 | Translation W2 | ch 11-21 | 🔄 Running |
+| ac7da99 | Translation W3 | ch 22-31 | 🔄 Running |
+| af7b46f | Translation W4 | ch 32-42 | 🔄 Running |
+| ad263c5 | Translation W5 | ch 43-52 | 🔄 Running |
+| af11e7e | Translation W6 | ch 53-62 | 🔄 Running |
+| ad3b1bf | Translation W7 | ch 63-73 | 🔄 Running |
+| ad198d3 | Translation W8 | ch 74-83 | 🔄 Running |
+
+**Text:** Urfassung der Philosophie der Offenbarung (Original Version of the Philosophy of Revelation)
+**Author:** Friedrich Wilhelm Joseph Schelling (1775-1854)
+**Language:** German (de) — 19th-century philosophical prose
+**Chapters:** 83 lectures
+**Paragraphs:** ~6,675 (after cleanup)
+
+**Prompt:** Created `de:` entry in prompts.ts with Schelling-specific terminology (Offenbarung, Mythologie, positive/negative Philosophie, Potenz, etc.)
+
+**Independent Review Findings & Fixes:**
+1. ✅ FIXED: Deleted orphan chapter-092.json (artifact)
+2. ✅ FIXED: Truncated chapter-083 from 200 → 102 paragraphs (removed bibliographic contamination)
+3. ⚠️ KNOWN: Greek text corrupted (OCR artifacts) — moderate severity, meaning discernible
+
+---
+
+### Qingshigao (清史稿) — Draft History of Qing
+
+**Total:** 649 chapters | **Translated:** ~535 | **Pending:** ~114
+
+**DeepSeek workers stopped.** All 4 workers (W1-W4) have terminated. Gemini retry script running.
+
+| Worker | Task ID | Range | Pending | Status |
+|--------|---------|-------|---------|--------|
+| W1 | b5a07dd | ch 1-130 | 47 (56-106) | ❌ Stopped |
+| W2 | badd828 | ch 131-260 | 24 (158-260) | ❌ Stopped |
+| W3 | b4d4458 | ch 261-390 | 3 (388-390) | ❌ Killed (stuck on ch 388) |
+| W4 | b3e4e5d | ch 391-529 | 40 (477-520) | ❌ Stopped |
+| Gemini | b0a1b49 | ALL pending | 114 total | ❌ FAILED (ch 58 para mismatch) |
+
+**Issue:** W3 was stuck on chapter 388. Gemini retry started but failed on chapter 58 with paragraph alignment error (expected 13, got 14).
+
+### Lektsii V2 (Bolotov Lectures) — Fixed double-encoding
+
+| Worker | Task ID | Range | Status |
+|--------|---------|-------|--------|
+| Main | b6476a2 | ch 24-78 | 🔄 Running (batch ~150/573, ~26%) |
+
+**Issue fixed:** 78 chapters had double-encoded JSONB source_content
+
+### Joseon Sillok Taejong — Completing ch 17-20
+
+| Worker | Task ID | Range | Status |
+|--------|---------|-------|--------|
+| Main | b4f1f0d | ch 17-20 | 🔄 Running (batch ~60/150, ~40%) |
+
+### Classical Armenian Pipeline — ✅ COMPLETE
+
+| Phase | Status |
+|-------|--------|
+| 1. Source investigation | ✅ DONE |
+| 2. Translation prompt | ✅ DONE — `xcl` prompt |
+| 3. Puppeteer scraping | ✅ DONE |
+| 4. Quality review | ⚠️ Skipped → caused contamination |
+| 5. Source cleaning | ✅ DONE — Footnotes removed |
+| 6. Translation | ✅ DONE — 35/35 chapters |
+
+**Text:** Meknufiun Ynfercuafoc (Commentary on Lectionary Readings)
+**Author:** Grigoris Arsharuni (7th century)
+**Language:** Classical Armenian (xcl)
+**Chapters:** 35 translated (modern intro excluded)
+
+**Incident & Resolution:**
+- Source contained modern intro + footnotes → cleaned
+- Retranslation completed: 33 new + 2 existing = 35 total
+- All paragraph alignments verified OK
+
+**Remediation:**
+- Created `scripts/clean-grabar-source.ts` and `scripts/fix-grabar-database.ts`
+- Deleted 35 contaminated translations
+- Updated source_content with cleaned data
+- Retranslation started: Worker b8e6aa8
+
+---
+
+## Session 48 Updates (10:00-19:15 UTC)
+
+### Paragraph Alignment Fix — COMPLETE
+- **Misaligned:** 51 chapters across 3 texts
+- **Fix:** Updated batch sizes in translate-batch.ts, deleted translations, re-translated
+- **Status:** elegia ✅ DONE, nechistaya ✅ DONE (68/68), taejong 🔄 running
+- **Plan doc:** `docs/paragraph-alignment-fix-plan.md`
+
+### Taejong Sillok Data Fix — COMPLETE
+- **Issue:** 7 chapters had double-encoded source_content
+- **Fix:** `UPDATE chapters SET source_content = (source_content#>>'{}')::jsonb`
+- **Result:** All 20 chapters now have proper JSON object source content
+
+### Rok na vsi (Czech) — ✅ COMPLETE
+- **Discovery:** Wikisource has 153 episodes, not 34
+- **Fix Agent:** a3c4c2a ✅ DONE — updated script to fetch all 153 episodes
+- **Processing:** ✅ DONE — 153 chapters generated
+- **Seeding:** ✅ DONE — 153 chapters in DB
+- **Translation:** ✅ DONE — 153/153 chapters translated
 
 ---
 
@@ -42,9 +156,9 @@ Track all running agents and background workers here. Update when launching or c
 **Translation Phase (3 agents):**
 | Agent ID | Volume | Chapters | Status |
 |----------|--------|----------|--------|
-| ab3ff16 | Taejo | 9 | 🔄 Running |
+| ab3ff16 / b021fd0 | Taejo | 9 | ✅ DONE (7 trans, 2 skip) |
 | a53f34a | Jeongjong | 4 | 🔄 Running |
-| af456b7 | Taejong | 20 | 🔄 Running |
+| bb238c1 | Taejong | 20 | 🔄 Running (restarted - was bc7eddf) |
 
 **Translation Prompt:** `zh-joseon-sillok` — includes Hangul glosses for Korean names
 
@@ -54,28 +168,98 @@ Track all running agents and background workers here. Update when launching or c
 
 | Agent ID | Task | Status |
 |----------|------|--------|
-| afc9b2d | Complete Bolotov Vol 2 (seed + translate) | 🔄 Running |
+| afc9b2d | Complete Bolotov Vol 2 (seed + translate) | ✅ DONE — seeded 78 ch, translation running |
 | a2adc6f | Fix Russian Orthodox ch 8-9 truncation errors | 🔄 Running |
-| a1f5add | Check Bolotov Vol 3 translation status | 🔄 Running |
+| a1f5add | Complete Bolotov Vol 3 translation (ch 19-25) | 🔄 Running (ch 19 done, ~7 ch remaining) |
+| a0c79e2 | Bolotov Vol 4 scrape + process + review from azbyka.ru | ✅ DONE — 35 ch scraped, text ID 319 |
 
 **Background Translation Workers:**
-| Task ID | Text | Status |
-|---------|------|--------|
-| bb029f0 | Okolo tserkovnykh sten (Near the Church Walls Vol 2) | 🔄 Running (ch 8,9 truncated) |
+| Task ID | Text | Chapters | Status |
+|---------|------|----------|--------|
+| b4f0ab2 | lektsii-po-istorii-drevney-tserkvi-v2 | 29-78 | 🔄 Running (restarted) |
+
+**Translation Progress (from DB):**
+| Text | Total | Translated | Progress |
+|------|-------|------------|----------|
+| Bolotov V1 | 18 | 18 | ✅ 100% |
+| Bolotov V2 | 78 | 28 | 🔄 36% |
+| Bolotov V3 | 38 | 38 | ✅ 100% |
+| Bolotov V4 | 66 | 66 | ✅ 100% |
 
 ---
 
-### Czech Novels Pipeline
+### 備急千金要方 (Beiji Qianjin Yaofang) — Chinese Medical Text
+
+**Text:** Essential Prescriptions Worth a Thousand Gold for Emergencies
+**Author:** Sun Simiao (孫思邈), 652 CE
+**Source:** zh.wikisource.org
+**Content:** 32 chapters, ~11,507 paragraphs
+
+**Existing Translations:** PARTIAL — Sabine Wilms translated Volumes 1-5 (pediatrics, gynecology, ethics) only. No complete English translation exists.
+
+**Pipeline Status:**
+- ✅ Phase 1: Scraping (a70b29c) — DONE
+- ✅ Phase 3: Quality Review — Grade A-, see `docs/beiji-qianjin-yaofang-quality-review.md`
+- ✅ Phase 4: Seeding — 32/32 chapters, author Sun Simiao created
+- ✅ Phase 5: Translation Prompt — `zh-beiji-qianjin-yaofang` prompt created
+- 🔄 Phase 6: Translation — Starting
+
+**Translation Workers:**
+| Task ID | Chapters | Status |
+|---------|----------|--------|
+| b7287f9 | 1-11 | 🔄 Running |
+| b06775f | 12-22 | 🔄 Running |
+| bfdada0 | 23-32 | 🔄 Running |
+
+---
+
+### Draft History of the Qing (清史稿, Qingshigao)
+
+**Pipeline Status:**
+- ✅ Scraping: 529/536 chapters (ch 530-536 = ToC, not on Wikisource)
+- ✅ Processing: 529 chapters cleaned
+- ✅ Seeding: 649 chapters inserted to DB (some chapters split by Wikisource)
+- 🔄 Translation: 287/649 (44%) — REMEDIATION IN PROGRESS
+
+**Race Condition Issue (2026-02-10):**
+- Source cleaning removed "Public domainPublic domainfalsefalse" contamination (397 chapters)
+- Translation workers ran against OLD source (N+1 paragraphs), but DB had CLEANED source (N paragraphs)
+- Paragraph alignment trigger rejected ~362 translations
+- **Remediation:** Stopped DeepSeek workers, switched to Gemini with smaller batches
+
+**DeepSeek Workers (switched from Gemini per User directive):**
+| Task ID | Chapters | Status |
+|----------|----------|--------|
+| b5a07dd | 1-130 | 🔄 Running |
+| badd828 | 131-260 | 🔄 Running |
+| b4d4458 | 261-390 | 🔄 Running |
+| b3e4e5d | 391-520 | 🔄 Running |
+| b314a14 | 521-649 | ✅ DONE (9 ch) |
+
+**Remediation doc:** `docs/qingshigao-remediation.md`
+**Script:** `scripts/retry-qingshigao-gemini.ts`
+
+**NOTE:** This is NOT part of the 24 Histories. The 24 Histories end with Ming History. Qingshigao is a separate Republican-era (1914-1927) historiographical work covering the Qing dynasty (1644-1912).
+
+---
+
+### Czech Novels Pipeline — COMPLETE
 
 | Agent ID | Task | Chapters | Status |
 |----------|------|----------|--------|
-| ae43736 | Process, seed, translate 4 novels | ~105 | 🔄 Running |
+| af95b6b | Phase 1-2: Research, verify, process | — | ✅ DONE |
+| ae43736 | Phase 3-6: Quality review, seed, translate | 57 | ✅ DONE |
 
-**Novels in pipeline:**
-- pravy-vylet-pana-broucka (14 ch)
-- bludne-duse (35 ch)
-- svaty-xaverius (8 ch)
-- rok-na-vsi (48 ch)
+**Completed Translations (3 texts, 57 chapters):**
+| Text | Title | Chapters | Status |
+|------|-------|----------|--------|
+| pravy-vylet-pana-broucka | The True Excursion of Mr. Broucek to the Moon | 14 | ✅ 100% |
+| bludne-duse | Lost Souls | 35 | ✅ 100% |
+| svaty-xaverius | Saint Xaverius | 8 | ✅ 100% |
+
+**rok-na-vsi DEFERRED:** Only 7 of 33 chapters available on Wikisource (incomplete transcription)
+
+**Quality Grade:** All 3 texts graded A after cleaning template artifacts
 
 **Files Created:**
 - `scripts/process-joseon-sillok-taejo.py`
@@ -133,12 +317,19 @@ Track all running agents and background workers here. Update when launching or c
 **Translation Workers (Phase 6):**
 | Worker | Task ID | Text | Chapters | Status |
 |--------|---------|------|----------|--------|
-| W1 | b8f0927 | prochno | 3 | 🔄 Running |
-| W2 | b6f9a8c | sobol-i-panna | 15 | 🔄 Running |
-| W3 | b8e57fb | komornicy | 13 | 🔄 Running |
-| W4 | b785f03 | w-roztokach | 23 | 🔄 Running |
-| W5 | b577f18 | xiadz-faust | 25 | 🔄 Running |
-| W6 | b3223d4 | nietota | 15 | 🔄 Running |
+| W1 | b8f0927 | prochno | 3 | ✅ DONE (ch3 Gemini retry) |
+| W2 | b6f9a8c | sobol-i-panna | 15 | ✅ DONE |
+| W3 | b8e57fb | komornicy | 13 | ✅ DONE |
+| W4 | b785f03 | w-roztokach | 23 | ✅ DONE (ch3 Gemini retry) |
+| W5 | b577f18 | xiadz-faust | 25 | ✅ DONE |
+| W6 | b3223d4 | nietota | 15 | ✅ DONE |
+
+**Gemini Retry (prochno ch 3, w-roztokach ch 3):**
+| Task ID | Status |
+|---------|--------|
+| bf09f33 | ✅ DONE — 872 + 156 paragraphs translated |
+
+**PIPELINE COMPLETE: 94/94 chapters translated (100%)**
 
 **Texts:**
 | Slug | Title | Author | Chapters | Paragraphs |
@@ -1534,6 +1725,20 @@ significance as a representative work of Ming dynasty erotic fiction.
 
 ### Turkish Pipeline — BLOCKED (Phase 2)
 - Source text in PDF only. Needs PDF extraction.
+
+### Classical Armenian Pipeline — ⚠️ RESTARTED (See Session 49)
+- **Text:** Meknufiun Ynfercuafoc (Commentary on Lectionary Readings)
+- **Author:** Grigoris Arsharuni (c. 680-730 CE)
+- **Chapters:** 35 (modern intro excluded)
+- **Worker:** b8e6aa8
+- **Status:** Retranslation in progress after source cleaning
+- **Phases:**
+  - Phase 1: Source investigation ✓
+  - Phase 2: Classical Armenian prompt (xcl) ✓
+  - Phase 3: Puppeteer scraping (AJAX solved) ✓
+  - Phase 4: ⚠️ Quality review SKIPPED → caused contamination
+  - Phase 5: Source cleaning (footnotes removed) ✓
+  - Phase 6: Retranslation IN PROGRESS
 
 ---
 

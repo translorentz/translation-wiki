@@ -138,7 +138,16 @@ See `docs/tamil-fault-tracker.md` for live tracking of all issues and their reso
 
 ## ⚠️ DOUBLE-ENCODED JSONB GUARDRAILS ⚠️
 
-**INCIDENT RECORD (2026-02-10):** Lektsii V2 (78 chapters) had `source_content` stored as JSON strings inside JSONB column, causing translation workers to fail with "Cannot read properties of undefined". This is the THIRD occurrence of this bug (Tamil texts 2026-02-08, Syair Sultan Lingga 2026-02-08).
+**INCIDENT RECORD (4 OCCURRENCES):** This bug has occurred FOUR times. Each time Claude "fixed" it by patching data but failed to implement systemic guardrails until the fourth incident.
+
+| Date | Text | Chapters | Time Wasted |
+|------|------|----------|-------------|
+| 2026-02-08 | Tamil texts | 17 texts | ~2 hours |
+| 2026-02-08 | Syair Sultan Lingga | 43 stanzas | ~1 hour |
+| 2026-02-10 | Lektsii V2 (Bolotov) | 78 chapters | ~3 hours |
+| 2026-02-11 | Schelling Urfassung | 83 chapters | ~30 mins |
+
+**Full incident report:** `docs/double-encoded-jsonb-incident-report.md`
 
 ### Root Cause
 
@@ -214,6 +223,66 @@ Paragraphs MUST be objects with `index` and `text` fields:
 // Use the utility function:
 import { prepareSourceContent } from "./lib/validate-source-content";
 const content = prepareSourceContent(["text1", "text2", "text3"]);
+```
+
+### Database Trigger (Auto-Fix)
+
+A database trigger `fix_source_content_encoding` now auto-fixes double-encoded JSONB on INSERT/UPDATE. If source_content is stored as a JSON string, it automatically unwraps it.
+
+**Created:** 2026-02-11 via `scripts/create-jsonb-validation-trigger.sql`
+
+---
+
+## ⚠️ TEXT DESCRIPTION ACCURACY GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-02-11):** Claude fabricated scholarly references in the Classical Armenian text description:
+- "Venice 1964 edition by Kerobe Chrakean" — NO EVIDENCE EXISTS
+- "French translation by Charles Renoux 1975" — WRONG (Renoux's work was on Jerusalem 121, not this text)
+
+This is **unacceptable**. Citing imagined scholarly works is shocking and thoroughly unworthy of this project.
+
+### MANDATORY Rules for Text Descriptions
+
+1. **NEVER fabricate scholarly references**
+   - If unsure whether an edition/translation exists, DO NOT mention it
+   - Only cite works you have VERIFIED exist via web search
+   - When in doubt, omit — a shorter accurate description beats a longer false one
+
+2. **Descriptions must be ACCURATE**
+   - Verify dates, names, and publication details before including
+   - If a source says "supposedly" or "attributed to", use qualified language
+   - Do not invent historical context or bibliographic details
+
+3. **Descriptions must be THOUGHTFUL**
+   - Explain WHY the text matters, not just WHAT it is
+   - Note unique aspects, historical significance, or literary value
+   - Avoid generic boilerplate ("an important work of...")
+
+4. **Descriptions must be THOROUGH**
+   - Include time period and context
+   - Mention notable figures, events, or themes when relevant
+   - For 24 Histories: note existing scholarly translations (see User Stipulations)
+
+5. **When citing scholarly works:**
+   - Verify via WebSearch before including
+   - Include full citation: author, title, publisher, year
+   - Note if translation is complete, partial, or ongoing
+
+### Template for Text Descriptions
+
+```
+A [time period] [language] [genre] by [author]. [1-2 sentences on content/themes].
+[1 sentence on historical/literary significance]. [Optional: existing translations if verified].
+This edition based on [actual source, e.g., Wikisource, archive.org, etc.].
+```
+
+### What NOT to Write
+
+```
+❌ "The Venice 1964 edition by X is the modern critical text"  — unless verified
+❌ "A French translation by Y appeared in 1975" — unless verified
+❌ "This important work represents..." — generic boilerplate
+❌ "Scholars have long recognized..." — weasel words without specifics
 ```
 
 ---
