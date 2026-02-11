@@ -17,6 +17,7 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 6. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
 7. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
 8. **NEVER hardcode credentials in scripts** — always use `process.env.DATABASE_URL` or equivalent. A subagent wrote a plain-text Neon password into `seed-kalahasti-chapter.mjs` (2026-01-31); gitleaks blocked the commit but the credential was on disk. All DB connections in scripts MUST read from environment variables.
+9. **Commit messages MUST document faults** — When committing fixes for bugs or incidents, the commit message must clearly state what Claude did wrong, identify the fault without glossing over it, and explain the fix. This creates a searchable history of mistakes for future reference. Example: "fix: Prevent double-encoded JSONB — Claude repeatedly used JSON.stringify() when inserting JSONB, causing 3 incidents (Tamil, Syair, Lektsii). Added validation guardrails."
 
 ---
 
@@ -42,6 +43,178 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 **AUTONOMY requirements (User directive 2026-02-03):**
 11. **Self-reporting completion** — Subagents must report their completion status autonomously without requiring manual checking or User intervention. The User should not have to ask "is this done?" — subagents should proactively report their progress and completion.
+
+---
+
+## ⚠️ TAMIL CLEANING FAILURE RECORD (2026-02-08) ⚠️
+
+**INCIDENT RECORD:** After SEVEN rounds of audits and false completion claims, the User found 7 egregious errors still present in Tamil texts. This represents a SYSTEMATIC FAILURE of verification methodology.
+
+### Failure Patterns Identified
+
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| Count-Based Verification | Checked paragraph COUNTS only, not CONTENT quality | kurukuturai-kalambakam 240=240 but last 10 paras were OTHER WORK TITLES |
+| Front/Back Sampling Only | Checked first 3 and last 3 paras, missed middle | veeramaamunivar para[23] placeholder missed |
+| Bracket Notation Blindness | `[Bracketed terms]` not flagged as incomplete | angayarkanni-malai para[0] = `[Taravu (Kochchaka Kalippa)]` |
+| TOC/Glossary Detection Failure | Table of contents and glossary content not recognized | meenakshi-pillaitamil para[0] is TOC |
+| Extraneous Appended Content | Publisher additions at END not detected | kurukuturai ends with list of OTHER WORKS |
+| Subagent Abandonment | Marked "to verify" then never returned | kandimathiyammai-pillaitamil |
+| False Completion Claims | "ALL CLEAN" stated without exhaustive verification | 7 rounds of false assurances |
+
+### MANDATORY Guardrails for Tamil Audits
+
+1. **NEVER claim "complete"** until User explicitly verifies
+2. **Read EVERY paragraph** — no sampling, no "front and back only"
+3. **Check content quality** — not just count matching
+4. **Detect ALL contamination types:**
+   - Bracket notation: `[Term]` as primary content
+   - TOC structure: `"1. Section 2. Section..."`
+   - Glossary: `"N. Word - meaning"` patterns
+   - Works lists: `"5. OtherWorkTitle..."`
+   - Trailing markers: `===`, `---`, `***`
+5. **Use DeepSeek-reasoner** for independent review (User directive)
+6. **Document with paragraph indices** — never vague claims
+
+### Full Analysis
+See `docs/tamil-seven-rounds-failure-analysis.md` for complete failure record and remediation plan.
+
+---
+
+## ⚠️ TAMIL 8TH ROUND DATA CORRUPTION (2026-02-08) ⚠️
+
+**INCIDENT RECORD:** During the 8th round, Claude's "fix" scripts CORRUPTED Tamil text data instead of fixing it. Multiple texts lost their translations entirely.
+
+### Data Corruption Incidents
+
+| Text | What Happened | Result |
+|------|---------------|--------|
+| angayarkanni-malai | Fix script wrote empty content | Translation DELETED (101→0 paras) |
+| tiruchendur-murugan-pillaitamil | Fix script corrupted data | Page MISSING entirely |
+| thanigai-kalambakam | Fix script removed translations | Translation MISSING |
+| seyur-murugan-pillaitamil | Fix script removed translations | Translation MISSING |
+| perur-mummani-kovai | Never had translation | Was never translated |
+| mayuranatar-anthathi | Fix script caused misalignment | Source/trans count mismatch |
+
+### Root Cause: Fix Scripts Without Verification
+
+The fix scripts:
+1. Used array operations without checking results
+2. Did NOT verify data AFTER making changes
+3. Did NOT backup data BEFORE making changes
+4. Assumed operations succeeded without confirmation
+
+### MANDATORY Fix Script Requirements
+
+**BEFORE any database modification:**
+```typescript
+// 1. Query and log current state
+const before = await sql`SELECT source_content, tv.content...`;
+console.log(`BEFORE: Source ${srcCount} paras, Trans ${transCount} paras`);
+
+// 2. Verify non-empty
+if (transCount === 0) throw new Error("Already empty - abort");
+```
+
+**AFTER any database modification:**
+```typescript
+// 3. Query and verify new state
+const after = await sql`SELECT...`;
+console.log(`AFTER: Source ${newSrcCount} paras, Trans ${newTransCount} paras`);
+
+// 4. Verify non-empty result
+if (newTransCount === 0) throw new Error("FIX CORRUPTED DATA - rollback needed");
+
+// 5. Verify counts are sensible
+if (newTransCount < before.transCount * 0.5) {
+  throw new Error("Lost >50% of translations - likely corruption");
+}
+```
+
+### Active Fault Tracker
+See `docs/tamil-fault-tracker.md` for live tracking of all issues and their resolution status.
+
+---
+
+## ⚠️ DOUBLE-ENCODED JSONB GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-02-10):** Lektsii V2 (78 chapters) had `source_content` stored as JSON strings inside JSONB column, causing translation workers to fail with "Cannot read properties of undefined". This is the THIRD occurrence of this bug (Tamil texts 2026-02-08, Syair Sultan Lingga 2026-02-08).
+
+### Root Cause
+
+When inserting JSONB data, using `JSON.stringify()` causes double-encoding:
+
+```typescript
+// ❌ WRONG - causes double-encoding
+await sql`INSERT INTO chapters (source_content) VALUES (${JSON.stringify(content)}::jsonb)`;
+
+// ✅ CORRECT - postgres.js handles serialization
+await sql`INSERT INTO chapters (source_content) VALUES (${sql.json(content)})`;
+
+// ✅ ALSO CORRECT - pass object directly
+await sql`INSERT INTO chapters (source_content) VALUES (${content}::jsonb)`;
+```
+
+### Detection
+
+```sql
+-- Find double-encoded chapters
+SELECT c.id, c.slug, jsonb_typeof(c.source_content) as type
+FROM chapters c
+WHERE jsonb_typeof(c.source_content) = 'string';  -- Should be 'object'
+```
+
+### Fix
+
+```sql
+-- Unwrap the JSON string
+UPDATE chapters
+SET source_content = (source_content#>>'{}')::jsonb
+WHERE jsonb_typeof(source_content) = 'string';
+```
+
+### MANDATORY: Validation After Seeding
+
+**Every seeding script MUST call `assertValidSourceContent()` after inserting chapters:**
+
+```typescript
+import { assertValidSourceContent } from "./lib/validate-source-content";
+
+// After seeding chapters...
+await assertValidSourceContent(sql, textSlug);
+// Throws error if any chapters have double-encoded content
+```
+
+### Guardrail Utility
+
+`scripts/lib/validate-source-content.ts` provides:
+
+| Function | Purpose |
+|----------|---------|
+| `validateSourceContent(sql, slug)` | Check all chapters, return valid/invalid counts |
+| `fixDoubleEncodedContent(sql, slug)` | Fix double-encoded chapters |
+| `assertValidSourceContent(sql, slug)` | **MANDATORY** — throws if any invalid |
+| `prepareSourceContent(paragraphs)` | Correctly format paragraphs array |
+
+### Correct Paragraph Format
+
+Paragraphs MUST be objects with `index` and `text` fields:
+
+```typescript
+// ❌ WRONG - plain strings
+{ paragraphs: ["text1", "text2", "text3"] }
+
+// ✅ CORRECT - indexed objects
+{ paragraphs: [
+  { index: 0, text: "text1" },
+  { index: 1, text: "text2" },
+  { index: 2, text: "text3" }
+]}
+
+// Use the utility function:
+import { prepareSourceContent } from "./lib/validate-source-content";
+const content = prepareSourceContent(["text1", "text2", "text3"]);
+```
 
 ---
 
@@ -160,12 +333,29 @@ pnpm tsx scripts/kimi-k2-helper.ts --file prompt.txt --output response.md
 
 ---
 
-## Active Tasks (2026-02-04, Session 44)
+## Active Tasks (2026-02-06, Session 45)
 
 ### IN PROGRESS — Twenty-Four Histories (二十四史) Pipeline
-- **Phase 6 (Translation):** Xin Tangshu workers W1-W8 running
-- **Status:** Shiji (130/130) ✓, Hanshu (110/110) ✓, Xin Tangshu in progress
+- **Phase 6 (Translation):** Song Shi W4 (abe6096) running — ~21 chapters remaining
+- **Status:** 7 texts COMPLETE, 1 in progress
+  - ✓ Shiji 130/130, Hanshu 110/110, Hou Hanshu 192/192, San Guo Zhi 65/65
+  - ✓ Xin Tangshu 248/248, Sui Shu 85/85, Song Shu 100/100
+  - 🔄 Song Shi ~574/599 (95.8%)
 - See `ACTIVE_AGENTS.md` for full agent tracking
+
+### SESSION 45 COMPLETED
+- **Hou Hanshu (後漢書):** 192/192 chapters translated ✓
+  - Workers W1-W3 completed 190 chapters via DeepSeek
+  - Chapters 402, 580 retried via Gemini (paragraph splitting, JSON repair)
+  - Created `scripts/retry-hou-hanshu-gemini.ts` for failed chapter retry
+  - Fixed chapter slugs and ordering column
+- **Pan Walery (Polish):** 24/24 chapters translated ✓ (full pipeline: scrape, process, review, translate)
+- Search optimization: trigram indexes + removed count query (7-16ms vs 500ms-2s) ✓
+- Search pagination: offset-based with prev/next buttons ✓
+- Qingshi data fix: re-scraped from correct URLs (/wiki/情史/N not /wiki/情史/卷N) ✓
+- Qingshi retranslation: 9/24 chapters (API timeout issues on ch 10-24)
+- Song Shu chapter 64 fix: 46 paragraphs translated ✓
+- San Guo Zhi translation: 64/65 chapters (ch 56 API mismatch issue)
 
 ### SESSION 44 COMPLETED
 - Latin Batch 3: 9 texts, 25 chapters translated ✓
@@ -253,6 +443,12 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 4. **Seeding (two-step):**
    - `pnpm tsx scripts/seed-db.ts` — Run ONCE to insert the new language/author/text rows. This iterates the full catalogue (~4,300+ chapters) doing insert-or-skip, so it is slow (~minutes). Only needed when adding new author or text metadata.
    - `pnpm tsx scripts/seed-chapters-only.ts --text <slug>` — Run this to insert chapters for specific texts. Fast (~seconds). Safe to re-run (idempotent). **This is the preferred method for incremental seeding.**
+   - **MANDATORY: Update chapter count** — `seed-chapters-only.ts` automatically updates `texts.totalChapters`. Custom batch seeding scripts MUST also update this field after inserting chapters:
+     ```typescript
+     await db.update(schema.texts)
+       .set({ totalChapters: files.length })
+       .where(eq(schema.texts.id, text.id));
+     ```
    - **NEVER run seed-db.ts from a subagent** — it wastes tokens and time. Use seed-chapters-only.ts instead.
 5. **CHECK TRANSLATION PROMPT** (see below) — ensure `src/server/translation/prompts.ts` has a suitable prompt for this text's language, period, and genre
 6. `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil workflow below)
@@ -347,6 +543,91 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 **The paragraph count matching (29=29) is INSUFFICIENT validation.** Content can still be in wrong paragraphs.
 
+### Translation Fallback Strategies
+
+When DeepSeek translation encounters difficulties (truncation, JSON parse errors, paragraph misalignment), agents are authorized to use these fallback strategies:
+
+**1. Smaller Batches with More Paragraph Breaks**
+- Reduce `MAX_CHARS_PER_BATCH` (e.g., from 1500 to 800 chars for Chinese)
+- Process long paragraphs solo (>1000 chars)
+- This reduces context for the LLM and prevents re-segmentation
+
+**2. Gemini Translation Fallback**
+- When DeepSeek consistently fails on specific chapters, switch to Gemini
+- Script: `scripts/retry-hou-hanshu-gemini.ts` (reference implementation)
+- Uses `@google/genai` SDK with `gemini-2.5-flash` model
+- Smaller batches (1500 chars) with JSON repair for malformed output
+
+**Gemini Retry Pattern:**
+```typescript
+// Key settings for Gemini retry
+const MODEL = "gemini-2.5-flash";
+const MAX_CHARS_PER_BATCH = 1500; // Smaller than DeepSeek
+const BATCH_DELAY_MS = 2000;
+
+// JSON repair function for malformed output
+function repairAndParseJson(jsonStr: string): unknown[] {
+  // Find array start, fix unterminated arrays, extract objects via regex
+}
+```
+
+**When to Use Gemini:**
+- DeepSeek returns truncated JSON (unterminated strings)
+- Repeated paragraph count mismatches after retries
+- Specific chapters consistently fail (>3 retries)
+
+**Success Story:** Hou Hanshu chapters 402 and 580 failed with DeepSeek but succeeded with Gemini using paragraph splitting and JSON repair.
+
+**3. Source Paragraph Splitting (Last Resort)**
+
+When both DeepSeek and Gemini fail due to very long paragraphs (>3000 chars), source paragraphs can be split in the database:
+
+**When to Use:**
+- After DeepSeek and Gemini both fail on the same chapter
+- Source paragraph is unusually long (>3000 chars)
+- LLM keeps re-segmenting based on internal markers (section numbers, speaker changes)
+
+**How to Split:**
+```sql
+-- First, identify problematic paragraphs
+SELECT c.id,
+       idx,
+       length(para) as chars
+FROM chapters c
+JOIN texts t ON c.text_id = t.id,
+     jsonb_array_elements_text(c.source_content::jsonb) WITH ORDINALITY as arr(para, idx)
+WHERE t.slug = 'your-text' AND c.slug = 'chapter-N'
+ORDER BY chars DESC;
+
+-- Update source_content with split paragraphs
+-- IMPORTANT: Also update translation_versions if any exist
+```
+
+**Split Points:** Look for natural breaks like:
+- Sentence endings (。！？ for Chinese; . ! ? for Western languages)
+- Section markers that the LLM treats as boundaries
+- Speaker changes in dialogue
+
+**MANDATORY:** Document all splits in the chapter's metadata or a fix log.
+
+### CRITICAL: Source Content Cleaning During Translation
+
+**INCIDENT RECORD (2026-02-10):** Qingshigao had "Public domainPublic domainfalsefalse" contamination in 397 chapters. Cleaning script ran WHILE translation workers were active. Result: 362 chapters failed with paragraph alignment errors (source cleaned to N paragraphs, but translation had N+1 from old source).
+
+**MANDATORY when cleaning source content:**
+1. **STOP all translation workers first** — check ACTIVE_AGENTS.md and kill running workers
+2. Clean source content in database
+3. Clean any existing translations (remove same paragraph indices)
+4. Delete orphaned translation records (`current_version_id IS NULL`)
+5. Resume translation workers
+
+**Or better:** Clean source content BEFORE starting translation.
+
+**If race condition already occurred:**
+1. Delete orphaned translation records
+2. Use Gemini retry script with smaller batches (1000-1500 chars)
+3. See `docs/qingshigao-remediation.md` for example remediation plan
+
 ### CRITICAL: Check Translation Prompt Before Translating
 
 **BEFORE launching any translation**, verify that `src/server/translation/prompts.ts` targets translation into British English and has a suitable prompt for the text's language, period, and genre:
@@ -382,7 +663,11 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 ## Tamil Workflow (3-Agent Pipeline)
 
-**CRITICAL:** Tamil uses `@google/genai` SDK (Gemini), NOT DeepSeek.
+**UPDATE (2026-02-07):** Tamil A/B comparison concluded that **DeepSeek V3 outperforms Gemini** for Tamil texts. DeepSeek correctly explains chitirakavi (pattern poetry) forms, preserves wordplay with glosses, and handles Shaiva Siddhanta terms accurately. See `docs/tamil-ab-comparison-report.md`.
+
+**NEW Tamil texts:** Use `scripts/translate-batch.ts --text <slug>` with the `ta` prompt (DeepSeek).
+
+**LEGACY:** Previous Tamil texts used `@google/genai` SDK (Gemini) via `scripts/translate-tamil.ts`.
 
 **Agent 1 (Translator):**
 1. Process raw text → JSON, seed into DB
@@ -482,7 +767,13 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 - **Still add entries to `seed-db.ts`** for reference (the canonical list of all texts), but don't run it.
 - **MANDATORY:** Set `genre` field (philosophy, commentary, literature, history, science, ritual)
 - **Chapter seeding:** `pnpm tsx scripts/seed-chapters-only.ts --text <slug1> --text <slug2> ...` — FAST (~seconds)
-- **Verify:** Check DB for correct chapter counts
+- **MANDATORY Verification:** After seeding, ALWAYS verify the chapter count was updated:
+  ```sql
+  SELECT slug, total_chapters,
+         (SELECT COUNT(*) FROM chapters WHERE text_id = texts.id) as actual
+  FROM texts WHERE slug = '<your-slug>';
+  ```
+  If `total_chapters` ≠ `actual`, update it manually. This is critical for the browse page to display correctly.
 
 ### Phase 5 — Translation Prompt Check
 - **Check `src/server/translation/prompts.ts`** for a suitable prompt matching the text's language, period, and genre
@@ -499,6 +790,42 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 - **Monitor:** Track workers in ACTIVE_AGENTS.md with agent IDs, chapter ranges, status
 - **Skip logic:** Already-translated chapters are automatically skipped
 - **Gap check:** After all workers complete, verify no chapters were missed
+
+### Phase 7 — Post-Translation Review (MANDATORY)
+After all translation workers complete, run the comprehensive review:
+
+1. **Chapter count verification:**
+   - Verify `texts.total_chapters` matches actual chapter count in DB
+   - Verify all chapters have translations
+
+2. **Paragraph alignment check:**
+   - Source and translation paragraph counts must match for every chapter
+   - Use the database trigger `check_paragraph_alignment()` for real-time validation
+
+3. **Length ratio check:**
+   - Flag translations drastically shorter than source (accounting for language differences)
+   - Chinese → English typically expands 2-3x; European languages ~1:1
+   - Very short translations may indicate truncation or incomplete API responses
+
+4. **Paragraph gap detection:**
+   - Check for paragraphs with very few characters or empty content
+   - Flag paragraphs under 10 characters in translation
+
+**Review Query:**
+```sql
+SELECT t.slug, c.slug as chapter,
+       jsonb_array_length(c.source_content->'paragraphs') as src_paras,
+       jsonb_array_length(tv.content->'paragraphs') as trans_paras,
+       length(c.source_content::text) as src_chars,
+       length(tv.content::text) as trans_chars
+FROM texts t
+JOIN chapters c ON c.text_id = t.id
+JOIN translations tr ON tr.chapter_id = c.id
+JOIN translation_versions tv ON tv.id = tr.current_version_id
+WHERE t.slug = '<your-slug>'
+  AND jsonb_array_length(c.source_content->'paragraphs') != jsonb_array_length(tv.content->'paragraphs')
+ORDER BY c.sort_order;
+```
 
 ### Pipeline Data Files
 | File | Purpose |
