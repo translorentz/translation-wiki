@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
+import { getLocale } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
 import { parseChapterTitle } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
@@ -39,6 +40,7 @@ export default async function TextPage({ params }: TextPageProps) {
   const { lang, author, text: textSlug } = await params;
 
   const trpc = await getServerTRPC();
+  const locale = await getLocale();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -51,6 +53,7 @@ export default async function TextPage({ params }: TextPageProps) {
   }
 
   const basePath = `/${lang}/${author}/${textSlug}`;
+  const description = (locale === "zh" && textData.descriptionZh) || textData.description;
 
   return (
     <main className="mx-auto max-w-4xl">
@@ -71,9 +74,9 @@ export default async function TextPage({ params }: TextPageProps) {
             <span className="ml-1">({textData.author.nameOriginalScript})</span>
           )}
         </p>
-        {textData.description && (
+        {description && (
           <p className="mt-3 leading-relaxed text-muted-foreground">
-            {textData.description}
+            {description}
           </p>
         )}
         <div className="mt-4">

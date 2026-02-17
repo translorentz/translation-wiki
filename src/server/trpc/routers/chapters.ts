@@ -15,6 +15,7 @@ export const chaptersRouter = createTRPCRouter({
       z.object({
         textId: z.number(),
         chapterNumber: z.number(),
+        targetLanguage: z.string().default("en"),
       })
     )
     .query(async ({ input }) => {
@@ -25,6 +26,7 @@ export const chaptersRouter = createTRPCRouter({
         ),
         with: {
           translations: {
+            where: eq(translations.targetLanguage, input.targetLanguage),
             with: {
               currentVersion: {
                 with: {
