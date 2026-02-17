@@ -2,6 +2,9 @@ import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
+import { getServerTranslation } from "@/i18n/server";
+import { getGenreDisplayName } from "@/i18n";
+import type { TranslationKey } from "@/i18n/locales/en";
 
 // Force dynamic rendering to ensure fresh data from database
 export const dynamic = "force-dynamic";
@@ -26,35 +29,6 @@ interface LanguageGroup {
   }[];
 }
 
-const GENRE_DISPLAY_NAMES: Record<string, string> = {
-  philosophy: "Philosophy",
-  theology: "Theology",
-  devotional: "Devotional",
-  commentary: "Commentary",
-  literature: "Literature",
-  poetry: "Poetry",
-  history: "History",
-  science: "Science",
-  ritual: "Ritual",
-  uncategorized: "Uncategorized",
-};
-
-const LANGUAGE_DISPLAY_NAMES: Record<string, string> = {
-  zh: "Chinese",
-  grc: "Greek",
-  la: "Latin",
-  ta: "Tamil",
-  te: "Telugu",
-  hy: "Armenian",
-  it: "Italian",
-  ms: "Malay",
-  pl: "Polish",
-  cs: "Czech",
-  ru: "Russian",
-  tr: "Turkish",
-  ko: "Korean",
-};
-
 interface BrowsePageProps {
   searchParams: Promise<{ lang?: string; genre?: string }>;
 }
@@ -63,6 +37,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const { lang, genre } = await searchParams;
   const trpc = await getServerTRPC();
   const allTexts = await trpc.texts.list();
+  const { t } = await getServerTranslation();
 
   // Apply both filters independently
   let filteredTexts = allTexts;
@@ -91,10 +66,10 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     ? allTexts.filter((t) => t.genre === genre)
     : allTexts;
   const langCounts = new Map<string, { count: number; name: string }>();
-  for (const t of textsForLangCounts) {
-    const code = t.language.code;
+  for (const text of textsForLangCounts) {
+    const code = text.language.code;
     if (!langCounts.has(code)) {
-      langCounts.set(code, { count: 0, name: t.language.name });
+      langCounts.set(code, { count: 0, name: text.language.name });
     }
     langCounts.get(code)!.count++;
   }
@@ -200,8 +175,16 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   };
 
   // Display names for active filters
-  const genreDisplayName = genre ? GENRE_DISPLAY_NAMES[genre] || genre : null;
-  const langDisplayName = lang ? LANGUAGE_DISPLAY_NAMES[lang] || langCounts.get(lang)?.name || lang : null;
+  const genreDisplayName = genre ? getGenreDisplayName(genre, t) : null;
+
+  // Localised language display name for the active filter
+  const langDisplayName = lang
+    ? (() => {
+        const key = `sourcelang.${lang}` as TranslationKey;
+        const localized = t(key);
+        return localized !== key ? localized : (langCounts.get(lang)?.name || lang);
+      })()
+    : null;
 
   // Count totals for "All" badges
   const totalTextsForGenreAll = textsForGenreCounts.length;
@@ -209,17 +192,17 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
   return (
     <main className="mx-auto max-w-5xl">
-      <h1 className="mb-4 text-3xl font-bold">Browse Texts</h1>
+      <h1 className="mb-4 text-3xl font-bold">{t("browse.title")}</h1>
 
       {/* Category filter bar */}
       <div className="mb-3 flex flex-wrap gap-2">
-        <span className="flex items-center text-sm text-muted-foreground mr-2">Category:</span>
+        <span className="flex items-center text-sm text-muted-foreground mr-2">{t("browse.category")}</span>
         <Link href={buildFilterUrl(lang, undefined)}>
           <Badge
             variant={!genre ? "default" : "outline"}
             className="cursor-pointer transition-colors hover:bg-primary/80"
           >
-            All ({totalTextsForGenreAll})
+            {t("browse.all")} ({totalTextsForGenreAll})
           </Badge>
         </Link>
         {sortedGenres.map(([g, count]) => (
@@ -228,7 +211,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
               variant={genre === g ? "default" : "outline"}
               className="cursor-pointer transition-colors hover:bg-primary/80"
             >
-              {GENRE_DISPLAY_NAMES[g] || g} ({count})
+              {getGenreDisplayName(g, t)} ({count})
             </Badge>
           </Link>
         ))}
@@ -236,45 +219,50 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
       {/* Language filter bar */}
       <div className="mb-6 flex flex-wrap gap-2">
-        <span className="flex items-center text-sm text-muted-foreground mr-2">Language:</span>
+        <span className="flex items-center text-sm text-muted-foreground mr-2">{t("browse.language")}</span>
         <Link href={buildFilterUrl(undefined, genre)}>
           <Badge
             variant={!lang ? "default" : "outline"}
             className="cursor-pointer transition-colors hover:bg-primary/80"
           >
-            All ({totalTextsForLangAll})
+            {t("browse.all")} ({totalTextsForLangAll})
           </Badge>
         </Link>
-        {sortedLanguages.map(([code, data]) => (
-          <Link key={code} href={buildFilterUrl(code, genre)}>
-            <Badge
-              variant={lang === code ? "default" : "outline"}
-              className="cursor-pointer transition-colors hover:bg-primary/80"
-            >
-              {data.name} ({data.count})
-            </Badge>
-          </Link>
-        ))}
+        {sortedLanguages.map(([code, data]) => {
+          const key = `sourcelang.${code}` as TranslationKey;
+          const localizedName = t(key);
+          const displayName = localizedName !== key ? localizedName : data.name;
+          return (
+            <Link key={code} href={buildFilterUrl(code, genre)}>
+              <Badge
+                variant={lang === code ? "default" : "outline"}
+                className="cursor-pointer transition-colors hover:bg-primary/80"
+              >
+                {displayName} ({data.count})
+              </Badge>
+            </Link>
+          );
+        })}
       </div>
 
       {/* Active filter indicator */}
       {(genreDisplayName || langDisplayName) && (
         <p className="mb-4 text-sm text-muted-foreground">
-          Showing {filteredTexts.length} text{filteredTexts.length !== 1 ? "s" : ""}
+          {t("browse.showing")} {filteredTexts.length} {filteredTexts.length !== 1 ? t("browse.texts") : t("browse.text")}
           {genreDisplayName && (
             <>
-              {" "}in <span className="font-medium text-foreground">{genreDisplayName}</span>
+              {" "}{t("browse.in")} <span className="font-medium text-foreground">{genreDisplayName}</span>
             </>
           )}
           {langDisplayName && (
             <>
-              {genreDisplayName ? " · " : " in "}
+              {genreDisplayName ? " \u00B7 " : ` ${t("browse.in")} `}
               <span className="font-medium text-foreground">{langDisplayName}</span>
             </>
           )}
-          {" · "}
+          {" \u00B7 "}
           <Link href="/texts" className="text-primary hover:underline">
-            Clear all filters
+            {t("browse.clearFilters")}
           </Link>
         </p>
       )}

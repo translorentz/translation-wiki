@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 function highlightMatch(text: string, query: string) {
   const idx = text.toLowerCase().indexOf(query.toLowerCase());
@@ -54,6 +55,7 @@ export default function SearchClient() {
   const router = useRouter();
   const pathname = usePathname();
   const trpc = useTRPC();
+  const { t } = useTranslation();
 
   const RESULTS_PER_PAGE = 20;
 
@@ -239,11 +241,11 @@ export default function SearchClient() {
 
   return (
     <main className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-3xl font-bold">Search</h1>
+      <h1 className="mb-6 text-3xl font-bold">{t("search.title")}</h1>
 
       <Input
         type="search"
-        placeholder="Search texts and chapters..."
+        placeholder={t("search.placeholder")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="mb-4"
@@ -252,7 +254,7 @@ export default function SearchClient() {
       {/* Language filter */}
       {languagesQuery.data && languagesQuery.data.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">Filter:</span>
+          <span className="text-sm text-muted-foreground">{t("search.filter")}</span>
           {languagesQuery.data.map((lang) => {
             const isSelected = selectedLanguages.includes(lang.code);
             return (
@@ -275,7 +277,7 @@ export default function SearchClient() {
               onClick={() => setSelectedLanguages([])}
               className="text-xs text-muted-foreground underline hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
             >
-              Clear
+              {t("search.clear")}
             </button>
           )}
         </div>
@@ -283,19 +285,19 @@ export default function SearchClient() {
 
       {/* Loading state - show when fetching (including refetches when filters change) */}
       {isSearching && query.length >= 2 && (
-        <p className="text-sm text-muted-foreground">Searching titles...</p>
+        <p className="text-sm text-muted-foreground">{t("search.searchingTitles")}</p>
       )}
 
       {/* Content search loading - show when titles done but content still loading */}
       {!isSearching && isContentLoading && query.length >= 2 && (
-        <p className="text-sm text-muted-foreground">Searching inside texts...</p>
+        <p className="text-sm text-muted-foreground">{t("search.searchingContent")}</p>
       )}
 
       {/* No results message - only show when not searching */}
       {!isSearching && !isContentLoading && !hasResults && query.length >= 2 && (
         <p className="py-4 text-muted-foreground">
-          No results found for &ldquo;{query}&rdquo;
-          {selectedLanguages.length > 0 && " with the selected language filter"}
+          {t("search.noResults")} &ldquo;{query}&rdquo;
+          {selectedLanguages.length > 0 && ` ${t("search.withFilter")}`}
         </p>
       )}
 
@@ -306,7 +308,7 @@ export default function SearchClient() {
           {accumulatedTexts.length > 0 && (
             <div className="space-y-2">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                Texts
+                {t("search.texts")}
               </h2>
               {accumulatedTexts.map((result) => (
                 <Link
@@ -316,7 +318,7 @@ export default function SearchClient() {
                   <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                     <p className="font-medium">{result.textTitle}</p>
                     <p className="text-sm text-muted-foreground">
-                      {result.authorName} — {result.totalChapters} chapter
+                      {result.authorName} — {result.totalChapters} {t("browse.chapter")}
                       {result.totalChapters !== 1 ? "s" : ""}
                     </p>
                   </Card>
@@ -330,7 +332,7 @@ export default function SearchClient() {
             <div className="space-y-2">
               {accumulatedTexts.length > 0 && (
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  Chapters
+                  {t("search.chapters")}
                 </h2>
               )}
               {accumulatedChapters.map((result) => (
@@ -376,7 +378,7 @@ export default function SearchClient() {
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
               >
-                {isLoadingMore ? "Loading..." : "Load More"}
+                {isLoadingMore ? t("search.loading") : t("search.loadMore")}
               </Button>
             </div>
           )}

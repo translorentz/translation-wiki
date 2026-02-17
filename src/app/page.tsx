@@ -3,20 +3,23 @@ import { Button } from "@/components/ui/button";
 import { getServerTRPC } from "@/trpc/server";
 import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 import { HighlightCards } from "@/components/home/HighlightCards";
+import { getServerTranslation } from "@/i18n/server";
+import { getGenreDisplayName, type Locale } from "@/i18n";
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();
   const allTexts = await trpc.texts.list();
+  const { t, locale } = await getServerTranslation();
 
   // Derive language links dynamically from the texts in the database
   // Count texts per language and sort by descending count (most prolific first)
   const languageCounts = new Map<string, { name: string; count: number }>();
-  for (const t of allTexts) {
-    const existing = languageCounts.get(t.language.code);
+  for (const text of allTexts) {
+    const existing = languageCounts.get(text.language.code);
     if (existing) {
       existing.count++;
     } else {
-      languageCounts.set(t.language.code, { name: t.language.name, count: 1 });
+      languageCounts.set(text.language.code, { name: text.language.name, count: 1 });
     }
   }
   const languageLinks = Array.from(languageCounts.entries())
@@ -24,82 +27,75 @@ export default async function HomePage() {
     .sort((a, b) => b.count - a.count);
 
   // Count texts per genre and sort by descending count
-  const genreDisplayNames: Record<string, string> = {
-    philosophy: "Philosophy",
-    theology: "Theology",
-    devotional: "Devotional",
-    commentary: "Commentary",
-    literature: "Literature",
-    poetry: "Poetry",
-    history: "History",
-    science: "Science",
-    ritual: "Ritual",
-    uncategorized: "Uncategorized",
-  };
   const genreCounts = new Map<string, number>();
-  for (const t of allTexts) {
-    const genre = t.genre || "uncategorized";
+  for (const text of allTexts) {
+    const genre = text.genre || "uncategorized";
     genreCounts.set(genre, (genreCounts.get(genre) || 0) + 1);
   }
   const genreLinks = Array.from(genreCounts.entries())
     .filter(([, count]) => count > 0)
     .map(([code, count]) => ({
       code,
-      label: genreDisplayNames[code] || code,
+      label: getGenreDisplayName(code, t),
       count,
     }))
     .sort((a, b) => b.count - a.count);
 
-  const featuredTexts = allTexts.map((t) => ({
-    title: t.title,
-    titleOriginalScript: t.titleOriginalScript,
-    slug: t.slug,
-    totalChapters: t.totalChapters,
-    compositionYear: t.compositionYear,
-    compositionEra: t.compositionEra,
+  const featuredTexts = allTexts.map((text) => ({
+    title: text.title,
+    titleOriginalScript: text.titleOriginalScript,
+    slug: text.slug,
+    totalChapters: text.totalChapters,
+    compositionYear: text.compositionYear,
+    compositionEra: text.compositionEra,
     author: {
-      name: t.author.name,
-      nameOriginalScript: t.author.nameOriginalScript,
-      slug: t.author.slug,
+      name: text.author.name,
+      nameOriginalScript: text.author.nameOriginalScript,
+      slug: text.author.slug,
     },
     language: {
-      code: t.language.code,
-      name: t.language.name,
-      displayName: t.language.displayName,
+      code: text.language.code,
+      name: text.language.name,
+      displayName: text.language.displayName,
     },
   }));
+
+  // Localise language labels for the sidebar
+  const localizedLanguageLinks = languageLinks.map((lang) => {
+    const key = `sourcelang.${lang.code}` as Parameters<typeof t>[0];
+    const localized = t(key);
+    return {
+      ...lang,
+      label: localized !== key ? localized : lang.label,
+    };
+  });
 
   return (
     <div className="px-4 py-16 sm:px-6 lg:px-8">
       {/* Hero */}
       <div className="mb-16 text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Deltoi
+          {t("home.title")}
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-          A collaborative wiki of interlinear translations of pre-contemporary texts.
+          {t("home.subtitle")}
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          The goal of this project is to allow translators and scholars to
-          comment on, collaborate on, edit, criticise, check, and endorse
-          translations of important texts that are not yet available in the
-          English language. The initial translations on this website are made
-          using artificial intelligence; this project aims to build upon that
-          foundation to produce proper and accessible translations.
+          {t("home.description")}
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Button asChild>
-            <Link href="/texts">Browse Texts</Link>
+            <Link href="/texts">{t("home.browseTexts")}</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/search">Search Texts</Link>
+            <Link href="/search">{t("home.searchTexts")}</Link>
           </Button>
         </div>
       </div>
 
       {/* Highlights */}
       <div className="mx-auto mb-8 max-w-5xl">
-        <HighlightCards />
+        <HighlightCards locale={locale} />
       </div>
 
       {/* Main content: sidebar + featured texts */}
@@ -107,10 +103,10 @@ export default async function HomePage() {
         {/* Sidebar */}
         <aside className="hidden w-48 shrink-0 md:block">
           <h2 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">
-            Explore By Language
+            {t("home.exploreByLanguage")}
           </h2>
           <ul className="space-y-2">
-            {languageLinks.map((lang) => (
+            {localizedLanguageLinks.map((lang) => (
               <li key={lang.code}>
                 <Link
                   href={`/texts?lang=${lang.code}`}
@@ -124,7 +120,7 @@ export default async function HomePage() {
           </ul>
 
           <h2 className="mb-3 mt-8 text-sm font-semibold uppercase text-muted-foreground">
-            Explore By Category
+            {t("home.exploreByCategory")}
           </h2>
           <ul className="space-y-2">
             {genreLinks.map((genre) => (
@@ -143,7 +139,7 @@ export default async function HomePage() {
 
         {/* Featured texts */}
         <section className="min-w-0 flex-1">
-          <h2 className="mb-4 text-2xl font-semibold">Featured Texts</h2>
+          <h2 className="mb-4 text-2xl font-semibold">{t("home.featuredTexts")}</h2>
           <FeaturedTexts texts={featuredTexts} />
         </section>
       </div>

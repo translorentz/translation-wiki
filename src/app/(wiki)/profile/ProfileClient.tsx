@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { useTranslation } from "@/i18n";
 
 export function ProfileClient() {
   const trpc = useTRPC();
   const profileQuery = useQuery(trpc.users.getMyProfile.queryOptions());
+  const { t } = useTranslation();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -24,7 +26,7 @@ export function ProfileClient() {
   const changePassword = useMutation(
     trpc.users.changePassword.mutationOptions({
       onSuccess: () => {
-        setPasswordMsg("Password changed successfully.");
+        setPasswordMsg(t("profile.passwordChanged"));
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
@@ -41,19 +43,19 @@ export function ProfileClient() {
   );
 
   if (profileQuery.isLoading) {
-    return <p className="text-muted-foreground">Loading profile...</p>;
+    return <p className="text-muted-foreground">{t("profile.loading")}</p>;
   }
 
   const profile = profileQuery.data;
   if (!profile) {
-    return <p className="text-destructive">Profile not found.</p>;
+    return <p className="text-destructive">{t("profile.notFound")}</p>;
   }
 
   function handleChangePassword(e: React.FormEvent) {
     e.preventDefault();
     setPasswordMsg("");
     if (newPassword !== confirmPassword) {
-      setPasswordMsg("New passwords do not match.");
+      setPasswordMsg(t("profile.passwordMismatch"));
       return;
     }
     changePassword.mutate({ currentPassword, newPassword });
@@ -66,36 +68,36 @@ export function ProfileClient() {
 
   return (
     <div className="mx-auto max-w-lg space-y-8">
-      <h1 className="text-2xl font-bold">Profile</h1>
+      <h1 className="text-2xl font-bold">{t("profile.title")}</h1>
 
       {/* Account Info */}
       <Card className="p-6 space-y-3">
-        <h2 className="text-lg font-semibold">Account Information</h2>
+        <h2 className="text-lg font-semibold">{t("profile.accountInfo")}</h2>
         <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-          <span className="text-muted-foreground">Username</span>
+          <span className="text-muted-foreground">{t("profile.username")}</span>
           <span>{profile.username}</span>
-          <span className="text-muted-foreground">Email</span>
+          <span className="text-muted-foreground">{t("profile.email")}</span>
           <span>{profile.email}</span>
-          <span className="text-muted-foreground">Role</span>
+          <span className="text-muted-foreground">{t("profile.role")}</span>
           <span className="capitalize">{profile.role}</span>
-          <span className="text-muted-foreground">Joined</span>
+          <span className="text-muted-foreground">{t("profile.joined")}</span>
           <span>{new Date(profile.createdAt).toLocaleDateString()}</span>
-          <span className="text-muted-foreground">Sign-in methods</span>
+          <span className="text-muted-foreground">{t("profile.signInMethods")}</span>
           <span>
-            {profile.hasPassword && "Password"}
+            {profile.hasPassword && t("profile.password")}
             {profile.hasPassword && profile.hasGoogle && ", "}
-            {profile.hasGoogle && "Google"}
+            {profile.hasGoogle && t("profile.google")}
           </span>
         </div>
       </Card>
 
-      {/* Change Password — only for users with a password */}
+      {/* Change Password -- only for users with a password */}
       {profile.hasPassword && (
         <Card className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Change Password</h2>
+          <h2 className="text-lg font-semibold">{t("profile.changePassword")}</h2>
           <form onSubmit={handleChangePassword} className="space-y-3">
             <div>
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword">{t("profile.currentPassword")}</Label>
               <Input
                 id="currentPassword"
                 type="password"
@@ -105,7 +107,7 @@ export function ProfileClient() {
               />
             </div>
             <div>
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword">{t("profile.newPassword")}</Label>
               <Input
                 id="newPassword"
                 type="password"
@@ -116,7 +118,7 @@ export function ProfileClient() {
               />
             </div>
             <div>
-              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <Label htmlFor="confirmPassword">{t("profile.confirmPassword")}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -135,7 +137,7 @@ export function ProfileClient() {
               <p className="text-sm text-destructive">{changePassword.error.message}</p>
             )}
             <Button type="submit" disabled={changePassword.isPending}>
-              {changePassword.isPending ? "Changing..." : "Change Password"}
+              {changePassword.isPending ? t("profile.changing") : t("profile.changePassword")}
             </Button>
           </form>
         </Card>
@@ -143,10 +145,9 @@ export function ProfileClient() {
 
       {/* Delete Account */}
       <Card className="border-destructive/50 p-6 space-y-4">
-        <h2 className="text-lg font-semibold text-destructive">Delete Account</h2>
+        <h2 className="text-lg font-semibold text-destructive">{t("profile.deleteAccount")}</h2>
         <p className="text-sm text-muted-foreground">
-          This action is permanent. Your contributions (translations, comments) will be preserved
-          but your account and personal data will be permanently deleted.
+          {t("profile.deleteWarning")}
         </p>
         {!showDelete ? (
           <Button
@@ -154,13 +155,13 @@ export function ProfileClient() {
             className="text-destructive border-destructive/50"
             onClick={() => setShowDelete(true)}
           >
-            Delete my account
+            {t("profile.deleteButton")}
           </Button>
         ) : (
           <form onSubmit={handleDeleteAccount} className="space-y-3">
             <div>
               <Label htmlFor="deleteConfirm">
-                Type your username <strong>{profile.username}</strong> to confirm
+                {t("profile.deleteConfirmLabel").replace("{username}", profile.username)}
               </Label>
               <Input
                 id="deleteConfirm"
@@ -179,10 +180,10 @@ export function ProfileClient() {
                 variant="destructive"
                 disabled={deleteAccount.isPending || deleteConfirm !== profile.username}
               >
-                {deleteAccount.isPending ? "Deleting..." : "Permanently delete my account"}
+                {deleteAccount.isPending ? t("profile.deleting") : t("profile.deleteConfirmButton")}
               </Button>
               <Button variant="ghost" onClick={() => { setShowDelete(false); setDeleteConfirm(""); }}>
-                Cancel
+                {t("profile.cancel")}
               </Button>
             </div>
           </form>

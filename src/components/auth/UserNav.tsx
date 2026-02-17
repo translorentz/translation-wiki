@@ -3,9 +3,11 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 export function UserNav() {
   const { data: session, status } = useSession();
+  const { t } = useTranslation();
 
   if (status === "loading") {
     return <div className="h-8 w-16" />;
@@ -14,7 +16,7 @@ export function UserNav() {
   if (!session?.user) {
     return (
       <Button variant="ghost" size="sm" asChild>
-        <Link href="/login">Sign in</Link>
+        <Link href="/login">{t("nav.signIn")}</Link>
       </Button>
     );
   }
@@ -32,7 +34,7 @@ export function UserNav() {
           href="/admin/users"
           className="text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          Admin
+          {t("nav.admin")}
         </Link>
       )}
       <Button
@@ -40,7 +42,7 @@ export function UserNav() {
         size="sm"
         onClick={() => signOut({ callbackUrl: "/" })}
       >
-        Sign out
+        {t("nav.signOut")}
       </Button>
     </div>
   );

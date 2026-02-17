@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
+import { getTranslator, type Locale } from "@/i18n";
 
 const HIGHLIGHTS = [
   {
     slug: "zhuziyulei",
     authorSlug: "zhu-xi",
     langCode: "zh",
-    originalTitle: "朱子語類",
+    originalTitle: "\u672E\u5B50\u8A9E\u985E",
     englishTitle: "Classified Conversations of Master Zhu",
     teaser: "Neo-Confucian philosophy recorded by Zhu Xi's students.",
   },
@@ -14,7 +15,7 @@ const HIGHLIGHTS = [
     slug: "cento-anni",
     authorSlug: "giuseppe-rovani",
     langCode: "it",
-    originalTitle: "Cent'anni",
+    originalTitle: "Cent\u2019anni",
     englishTitle: "A Hundred Years (Cento Anni)",
     teaser: "A panoramic novel of Milan across a century of upheaval.",
   },
@@ -22,7 +23,7 @@ const HIGHLIGHTS = [
     slug: "epitome-historiarum",
     authorSlug: "john-zonaras",
     langCode: "grc",
-    originalTitle: "Ἐπιτομὴ ἱστοριῶν",
+    originalTitle: "\u1F18\u03C0\u03B9\u03C4\u03BF\u03BC\u1F74 \u1F31\u03C3\u03C4\u03BF\u03C1\u03B9\u1FF6\u03BD",
     englishTitle: "Epitome of Histories",
     teaser: "World history from Creation to 1118, by a Byzantine monk.",
   },
@@ -30,16 +31,20 @@ const HIGHLIGHTS = [
     slug: "dongpo-zhilin",
     authorSlug: "su-shi",
     langCode: "zh",
-    originalTitle: "東坡志林",
+    originalTitle: "\u6771\u5761\u5FD7\u6797",
     englishTitle: "Dongpo's Records from the Bamboo Grove",
     teaser: "Anecdotes, dreams, and meditations by Su Shi in exile.",
   },
 ];
 
-export function HighlightCards() {
+export function HighlightCards({ locale }: { locale: Locale }) {
+  const t = getTranslator(locale);
+
   return (
     <div>
-      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Highlights</h2>
+      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {t("home.highlights")}
+      </h2>
       <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
         {HIGHLIGHTS.map((h) => (
           <Link

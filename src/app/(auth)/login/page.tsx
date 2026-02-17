@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { useTranslation } from "@/i18n";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/";
   const errorParam = searchParams.get("error");
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +36,7 @@ function LoginForm() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Invalid email or password.");
+      setError(t("login.invalidCredentials"));
     } else {
       router.push(callbackUrl);
       router.refresh();
@@ -43,17 +45,17 @@ function LoginForm() {
 
   return (
     <Card className="w-full max-w-sm p-6">
-      <h1 className="mb-4 text-2xl font-bold">Sign In</h1>
+      <h1 className="mb-4 text-2xl font-bold">{t("login.title")}</h1>
 
       {errorParam === "email_exists" && (
         <p className="mb-4 text-sm text-destructive">
-          This email is already registered. Please sign in with your password.
+          {t("login.emailExists")}
         </p>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("login.email")}</Label>
           <Input
             id="email"
             type="email"
@@ -63,7 +65,7 @@ function LoginForm() {
           />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t("login.password")}</Label>
           <Input
             id="password"
             type="password"
@@ -76,7 +78,7 @@ function LoginForm() {
         {error && <p className="text-sm text-destructive">{error}</p>}
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? t("login.signingIn") : t("login.signIn")}
         </Button>
       </form>
 
@@ -85,7 +87,7 @@ function LoginForm() {
           <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">or</span>
+          <span className="bg-card px-2 text-muted-foreground">{t("login.or")}</span>
         </div>
       </div>
 
@@ -94,13 +96,13 @@ function LoginForm() {
         className="w-full"
         onClick={() => signIn("google", { callbackUrl })}
       >
-        Sign in with Google
+        {t("login.google")}
       </Button>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        {t("login.noAccount")}{" "}
         <Link href="/register" className="text-primary hover:underline">
-          Register
+          {t("login.register")}
         </Link>
       </p>
     </Card>

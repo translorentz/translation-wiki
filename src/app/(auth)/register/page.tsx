@@ -11,11 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { setInviteTokenCookie } from "./actions";
+import { useTranslation } from "@/i18n";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const trpc = useTRPC();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -47,38 +49,38 @@ function RegisterForm() {
 
   return (
     <Card className="w-full max-w-sm p-6">
-      <h1 className="mb-4 text-2xl font-bold">Register</h1>
+      <h1 className="mb-4 text-2xl font-bold">{t("register.title")}</h1>
 
       {errorParam === "invite_required" && (
         <p className="mb-4 text-sm text-destructive">
-          A valid invitation token is required to register.
+          {t("register.inviteRequired")}
         </p>
       )}
       {errorParam === "user_limit" && (
         <p className="mb-4 text-sm text-destructive">
-          User limit reached. No more registrations are accepted.
+          {t("register.userLimit")}
         </p>
       )}
       {errorParam === "registration_failed" && (
         <p className="mb-4 text-sm text-destructive">
-          Registration failed. Please try again.
+          {t("register.failed")}
         </p>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="inviteToken">Invitation Token</Label>
+          <Label htmlFor="inviteToken">{t("register.inviteToken")}</Label>
           <Input
             id="inviteToken"
             type="text"
             value={inviteToken}
             onChange={(e) => setInviteToken(e.target.value)}
             required
-            placeholder="Paste your invitation token"
+            placeholder={t("register.invitePlaceholder")}
           />
         </div>
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("register.email")}</Label>
           <Input
             id="email"
             type="email"
@@ -88,7 +90,7 @@ function RegisterForm() {
           />
         </div>
         <div>
-          <Label htmlFor="username">Username</Label>
+          <Label htmlFor="username">{t("register.username")}</Label>
           <Input
             id="username"
             type="text"
@@ -99,7 +101,7 @@ function RegisterForm() {
           />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t("register.password")}</Label>
           <Input
             id="password"
             type="password"
@@ -117,7 +119,7 @@ function RegisterForm() {
         )}
 
         <Button type="submit" className="w-full" disabled={register.isPending}>
-          {register.isPending ? "Creating account..." : "Create Account"}
+          {register.isPending ? t("register.creating") : t("register.create")}
         </Button>
       </form>
 
@@ -126,7 +128,7 @@ function RegisterForm() {
           <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">or</span>
+          <span className="bg-card px-2 text-muted-foreground">{t("register.or")}</span>
         </div>
       </div>
 
@@ -136,18 +138,18 @@ function RegisterForm() {
         onClick={handleGoogleSignIn}
         disabled={!inviteToken || googleLoading}
       >
-        {googleLoading ? "Redirecting..." : "Sign in with Google"}
+        {googleLoading ? t("register.redirecting") : t("register.google")}
       </Button>
       {!inviteToken && (
         <p className="mt-1 text-xs text-muted-foreground">
-          Enter an invitation token above to enable Google sign-in
+          {t("register.googleHint")}
         </p>
       )}
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        {t("register.hasAccount")}{" "}
         <Link href="/login" className="text-primary hover:underline">
-          Sign in
+          {t("register.signIn")}
         </Link>
       </p>
     </Card>
