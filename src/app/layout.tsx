@@ -6,7 +6,7 @@ import { UserNav } from "@/components/auth/UserNav";
 import { LanguageSwitcher } from "@/components/navigation/LanguageSwitcher";
 import { LocaleProvider } from "./LocaleProvider";
 import { getLocale } from "@/i18n/server";
-import { getTranslator } from "@/i18n";
+import { getTranslator } from "@/i18n/shared";
 import "./globals.css";
 
 const geistSans = Geist({

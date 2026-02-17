@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { getTranslator, type Locale } from "@/i18n";
+import { getTranslator, type Locale } from "@/i18n/shared";
 
 const HIGHLIGHTS = [
   {

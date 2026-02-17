@@ -4,6 +4,8 @@ import { createContext, useContext } from "react";
 import en, { type TranslationKey } from "./locales/en";
 import zh from "./locales/zh";
 
+export type { TranslationKey };
+
 export type Locale = "en" | "zh";
 
 export const LOCALES: { code: Locale; label: string }[] = [
@@ -11,9 +13,11 @@ export const LOCALES: { code: Locale; label: string }[] = [
   { code: "zh", label: "\u4E2D\u6587" },
 ];
 
+export const LOCALE_COOKIE = "NEXT_LOCALE";
+
 const dictionaries = { en, zh } as const;
 
-// ---- React Context ----
+// ---- React Context (client-only) ----
 
 export const LocaleContext = createContext<Locale>("en");
 
@@ -31,28 +35,3 @@ export function useTranslation() {
 
   return { t, locale };
 }
-
-// ---- Server-side helpers (called from server components) ----
-
-export function getTranslator(locale: Locale) {
-  const dict = dictionaries[locale] ?? en;
-
-  function t(key: TranslationKey): string {
-    return dict[key] ?? en[key] ?? key;
-  }
-
-  return t;
-}
-
-export function getGenreDisplayName(
-  genre: string,
-  t: (key: TranslationKey) => string,
-): string {
-  const key = `genre.${genre}` as TranslationKey;
-  const result = t(key);
-  // If the key wasn't found (returns the key itself), fall back to raw genre string
-  return result === key ? genre : result;
-}
-
-// ---- Cookie name ----
-export const LOCALE_COOKIE = "NEXT_LOCALE";

@@ -4,7 +4,7 @@ import { getServerTRPC } from "@/trpc/server";
 import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 import { HighlightCards } from "@/components/home/HighlightCards";
 import { getServerTranslation } from "@/i18n/server";
-import { getGenreDisplayName, type Locale } from "@/i18n";
+import { getGenreDisplayName, type Locale } from "@/i18n/shared";
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();

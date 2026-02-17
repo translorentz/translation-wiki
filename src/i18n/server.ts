@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-import { type Locale, LOCALE_COOKIE, getTranslator } from "./index";
+import { type Locale, LOCALE_COOKIE, getTranslator } from "./shared";
 
 /**
  * Read the UI locale from cookies on the server side.

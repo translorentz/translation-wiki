@@ -3,7 +3,7 @@ import { getServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
 import { getServerTranslation } from "@/i18n/server";
-import { getGenreDisplayName } from "@/i18n";
+import { getGenreDisplayName } from "@/i18n/shared";
 import type { TranslationKey } from "@/i18n/locales/en";
 
 // Force dynamic rendering to ensure fresh data from database
