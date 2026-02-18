@@ -8,8 +8,13 @@ import { getGenreDisplayName, type Locale } from "@/i18n/shared";
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();
-  const allTexts = await trpc.texts.list();
+  const allTextsRaw = await trpc.texts.list();
   const { t, locale } = await getServerTranslation();
+
+  // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
+  const allTexts = locale === "zh"
+    ? allTextsRaw.filter((t) => t.language.code !== "zh")
+    : allTextsRaw;
 
   // Derive language links dynamically from the texts in the database
   // Count texts per language and sort by descending count (most prolific first)

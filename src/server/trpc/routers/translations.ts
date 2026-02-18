@@ -6,7 +6,7 @@ import {
   translationVersions,
   chapters,
 } from "@/server/db/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 const paragraphSchema = z.object({
   paragraphs: z.array(
@@ -19,10 +19,16 @@ const paragraphSchema = z.object({
 
 export const translationsRouter = createTRPCRouter({
   getForChapter: publicProcedure
-    .input(z.object({ chapterId: z.number() }))
+    .input(z.object({
+      chapterId: z.number(),
+      targetLanguage: z.string().default("en"),
+    }))
     .query(async ({ input }) => {
       const translation = await db.query.translations.findFirst({
-        where: eq(translations.chapterId, input.chapterId),
+        where: and(
+          eq(translations.chapterId, input.chapterId),
+          eq(translations.targetLanguage, input.targetLanguage)
+        ),
         with: {
           currentVersion: {
             with: {
@@ -40,20 +46,27 @@ export const translationsRouter = createTRPCRouter({
         chapterId: z.number(),
         content: paragraphSchema,
         editSummary: z.string().optional(),
+        targetLanguage: z.string().default("en"),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const userId = Number(ctx.user.id);
 
-      // Find or create translation record
+      // Find or create translation record for this chapter + target language
       let translation = await db.query.translations.findFirst({
-        where: eq(translations.chapterId, input.chapterId),
+        where: and(
+          eq(translations.chapterId, input.chapterId),
+          eq(translations.targetLanguage, input.targetLanguage)
+        ),
       });
 
       if (!translation) {
         const [newTranslation] = await db
           .insert(translations)
-          .values({ chapterId: input.chapterId })
+          .values({
+            chapterId: input.chapterId,
+            targetLanguage: input.targetLanguage,
+          })
           .returning();
         translation = newTranslation;
       }
