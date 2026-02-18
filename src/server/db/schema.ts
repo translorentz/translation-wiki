@@ -162,6 +162,7 @@ export const texts = pgTable(
     sourceUrl: text("source_url"),
     totalChapters: integer("total_chapters").notNull().default(0),
     compositionYear: integer("composition_year"),
+    compositionYearDisplay: varchar("composition_year_display", { length: 100 }),
     compositionEra: varchar("composition_era", { length: 255 }),
     sortOrder: integer("sort_order"), // For canonical ordering within a collection (e.g., 24 Histories: 1-24)
     textType: varchar("text_type", { length: 20 }).notNull().default("literature"), // literature | poetry

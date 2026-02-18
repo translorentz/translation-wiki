@@ -52,6 +52,7 @@ export default async function HomePage() {
     slug: text.slug,
     totalChapters: text.totalChapters,
     compositionYear: text.compositionYear,
+    compositionYearDisplay: text.compositionYearDisplay,
     compositionEra: text.compositionEra,
     author: {
       name: text.author.name,

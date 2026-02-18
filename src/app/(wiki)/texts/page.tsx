@@ -25,6 +25,7 @@ interface LanguageGroup {
       totalChapters: number;
       genre: string;
       sortOrder: number | null;
+      compositionYearDisplay: string | null;
     }[];
   }[];
 }
@@ -120,6 +121,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       totalChapters: text.totalChapters,
       genre: text.genre || "uncategorized",
       sortOrder: text.sortOrder ?? null,
+      compositionYearDisplay: text.compositionYearDisplay ?? null,
     });
   }
 
