@@ -31,12 +31,9 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
 
   if (!textData) notFound();
 
-  const chapterNumber = parseInt(chapterSlug.replace("chapter-", ""));
-  if (isNaN(chapterNumber)) notFound();
-
-  const chapter = await trpc.chapters.getByTextAndNumber({
+  const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
-    chapterNumber,
+    slug: chapterSlug,
   });
 
   if (!chapter) notFound();
@@ -71,7 +68,7 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
         </Link>
         <h1 className="mt-1 text-2xl font-bold">{t("page.discussion")}</h1>
         <p className="text-sm text-muted-foreground">
-          {textData.title} — {t("page.chapterN").replace("{n}", String(chapterNumber))}
+          {textData.title} — {t("page.chapterN").replace("{n}", String(chapter.chapterNumber))}
         </p>
       </div>
 

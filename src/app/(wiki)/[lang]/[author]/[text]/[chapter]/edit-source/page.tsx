@@ -40,14 +40,9 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
     notFound();
   }
 
-  const chapterNumber = parseInt(chapterSlug.replace("chapter-", ""));
-  if (isNaN(chapterNumber)) {
-    notFound();
-  }
-
-  const chapter = await trpc.chapters.getByTextAndNumber({
+  const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
-    chapterNumber,
+    slug: chapterSlug,
     targetLanguage: locale,
   });
 
@@ -91,7 +86,7 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
           );
         })()}
         <p className="text-sm text-muted-foreground">
-          {textData.title} — {t("page.chapterN").replace("{n}", String(chapterNumber))}
+          {textData.title} — {t("page.chapterN").replace("{n}", String(chapter.chapterNumber))}
         </p>
       </div>
 

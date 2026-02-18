@@ -32,9 +32,8 @@ export async function generateMetadata({
 
   if (!textData) return { title: "Chapter Not Found" };
 
-  const chapterNumber = parseInt(chapterSlug.replace("chapter-", ""));
   const chapterInfo = textData.chapters.find(
-    (c) => c.chapterNumber === chapterNumber
+    (c) => c.slug === chapterSlug
   );
   const { original, english } = parseChapterTitle(chapterInfo?.title ?? null);
   const chapterTitle = english ? `${original} (${english})` : original;
@@ -65,16 +64,10 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     notFound();
   }
 
-  // Parse chapter number from slug (e.g., "chapter-5" -> 5)
-  const chapterNumber = parseInt(chapterSlug.replace("chapter-", ""));
-  if (isNaN(chapterNumber)) {
-    notFound();
-  }
-
   // Fetch chapter data with translations for the current locale
-  const chapter = await trpc.chapters.getByTextAndNumber({
+  const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
-    chapterNumber,
+    slug: chapterSlug,
     targetLanguage: locale,
   });
 
@@ -88,13 +81,12 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     paragraphs: { index: number; text: string }[];
   } | null;
 
-  // Navigation: previous and next chapters
-  const prevChapter = textData.chapters.find(
-    (c) => c.chapterNumber === chapterNumber - 1
+  // Navigation: previous and next chapters by ordering
+  const currentIdx = textData.chapters.findIndex(
+    (c) => c.slug === chapterSlug
   );
-  const nextChapter = textData.chapters.find(
-    (c) => c.chapterNumber === chapterNumber + 1
-  );
+  const prevChapter = currentIdx > 0 ? textData.chapters[currentIdx - 1] : undefined;
+  const nextChapter = currentIdx < textData.chapters.length - 1 ? textData.chapters[currentIdx + 1] : undefined;
 
   const basePath = `/${lang}/${author}/${textSlug}`;
 
@@ -107,7 +99,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         </h3>
         <TableOfContents
           chapters={textData.chapters}
-          currentChapter={chapterNumber}
+          currentChapter={chapter.chapterNumber}
           textSlug={textSlug}
           authorSlug={author}
           langCode={lang}
@@ -138,7 +130,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             );
           })()}
           <p className="text-sm text-muted-foreground">
-            {t("chapter.chapterOf").replace("{n}", String(chapterNumber)).replace("{m}", String(textData.totalChapters))}
+            {t("chapter.chapterOf").replace("{n}", String(chapter.chapterNumber)).replace("{m}", String(textData.totalChapters))}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {canEdit && (

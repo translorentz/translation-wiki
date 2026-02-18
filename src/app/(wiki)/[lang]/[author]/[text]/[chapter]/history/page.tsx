@@ -31,14 +31,9 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
     notFound();
   }
 
-  const chapterNumber = parseInt(chapterSlug.replace("chapter-", ""));
-  if (isNaN(chapterNumber)) {
-    notFound();
-  }
-
-  const chapter = await trpc.chapters.getByTextAndNumber({
+  const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
-    chapterNumber,
+    slug: chapterSlug,
     targetLanguage: locale,
   });
 

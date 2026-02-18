@@ -42,6 +42,38 @@ export const chaptersRouter = createTRPCRouter({
       return chapter ?? null;
     }),
 
+  getByTextAndSlug: publicProcedure
+    .input(
+      z.object({
+        textId: z.number(),
+        slug: z.string(),
+        targetLanguage: z.string().default("en"),
+      })
+    )
+    .query(async ({ input }) => {
+      const chapter = await db.query.chapters.findFirst({
+        where: and(
+          eq(chapters.textId, input.textId),
+          eq(chapters.slug, input.slug)
+        ),
+        with: {
+          translations: {
+            where: eq(translations.targetLanguage, input.targetLanguage),
+            with: {
+              currentVersion: {
+                with: {
+                  author: {
+                    columns: { id: true, username: true },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+      return chapter ?? null;
+    }),
+
   updateSource: editorProcedure
     .input(
       z.object({
