@@ -9,6 +9,7 @@ import { formatAuthorName, formatTextTitle } from "@/lib/utils";
 interface TextSummary {
   title: string;
   titleOriginalScript: string | null;
+  titleZh: string | null;
   slug: string;
   totalChapters: number;
   genre?: string;

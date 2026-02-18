@@ -49,6 +49,8 @@ export const searchRouter = createTRPCRouter({
         .select({
           textId: texts.id,
           textTitle: texts.title,
+          textTitleZh: texts.titleZh,
+          textTitleOriginalScript: texts.titleOriginalScript,
           textSlug: texts.slug,
           authorName: authors.name,
           authorSlug: authors.slug,
@@ -256,6 +258,8 @@ export const searchRouter = createTRPCRouter({
         .select({
           textId: texts.id,
           textTitle: texts.title,
+          textTitleZh: texts.titleZh,
+          textTitleOriginalScript: texts.titleOriginalScript,
           textSlug: texts.slug,
           authorName: authors.name,
           authorSlug: authors.slug,

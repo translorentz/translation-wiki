@@ -85,14 +85,25 @@ export function formatAuthorName(
  * For en locale: shows English title first, original script in parens.
  */
 export function formatTextTitle(
-  text: { title: string; titleOriginalScript?: string | null },
+  text: { title: string; titleOriginalScript?: string | null; titleZh?: string | null },
   locale: string
 ): { primary: string; secondary: string | null } {
-  if (!text.titleOriginalScript) {
+  if (locale === "zh") {
+    // Chinese site: show Chinese title first, original language title in grey
+    const zhTitle = text.titleZh ?? text.titleOriginalScript;
+    if (zhTitle) {
+      // For Chinese-language texts, titleOriginalScript IS Chinese — show English as secondary
+      // For other languages, show the original script as secondary
+      const secondary = text.titleZh
+        ? (text.titleOriginalScript ?? text.title)
+        : text.title;
+      // Avoid showing the same string twice
+      return { primary: zhTitle, secondary: zhTitle === secondary ? null : secondary };
+    }
     return { primary: text.title, secondary: null };
   }
-  if (locale === "zh") {
-    return { primary: text.titleOriginalScript, secondary: text.title };
+  if (!text.titleOriginalScript) {
+    return { primary: text.title, secondary: null };
   }
   return { primary: text.title, secondary: text.titleOriginalScript };
 }

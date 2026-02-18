@@ -49,6 +49,7 @@ export default async function HomePage() {
   const featuredTexts = allTexts.map((text) => ({
     title: text.title,
     titleOriginalScript: text.titleOriginalScript,
+    titleZh: text.titleZh ?? null,
     slug: text.slug,
     totalChapters: text.totalChapters,
     compositionYear: text.compositionYear,

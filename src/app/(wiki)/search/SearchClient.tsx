@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
-import { parseChapterTitle } from "@/lib/utils";
+import { parseChapterTitle, formatTextTitle } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +28,8 @@ function highlightMatch(text: string, query: string) {
 type TextResult = {
   textId: number;
   textTitle: string;
+  textTitleZh: string | null;
+  textTitleOriginalScript: string | null;
   textSlug: string;
   authorName: string;
   authorSlug: string;
@@ -55,7 +57,7 @@ export default function SearchClient() {
   const router = useRouter();
   const pathname = usePathname();
   const trpc = useTRPC();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const RESULTS_PER_PAGE = 20;
 
@@ -310,20 +312,34 @@ export default function SearchClient() {
               <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("search.texts")}
               </h2>
-              {accumulatedTexts.map((result) => (
-                <Link
-                  key={result.textId}
-                  href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}`}
-                >
-                  <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
-                    <p className="font-medium">{result.textTitle}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {result.authorName} — {result.totalChapters} {t("browse.chapter")}
-                      {result.totalChapters !== 1 ? "s" : ""}
-                    </p>
-                  </Card>
-                </Link>
-              ))}
+              {accumulatedTexts.map((result) => {
+                const titleDisplay = formatTextTitle({
+                  title: result.textTitle,
+                  titleOriginalScript: result.textTitleOriginalScript,
+                  titleZh: result.textTitleZh,
+                }, locale);
+                return (
+                  <Link
+                    key={result.textId}
+                    href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}`}
+                  >
+                    <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
+                      <p className="font-medium">
+                        {titleDisplay.primary}
+                        {titleDisplay.secondary && (
+                          <span className="ml-2 text-sm font-normal text-muted-foreground">
+                            {titleDisplay.secondary}
+                          </span>
+                        )}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {result.authorName} — {result.totalChapters} {t("browse.chapter")}
+                        {result.totalChapters !== 1 ? "s" : ""}
+                      </p>
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           )}
 

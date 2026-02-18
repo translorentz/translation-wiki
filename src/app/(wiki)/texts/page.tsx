@@ -21,6 +21,7 @@ interface LanguageGroup {
     texts: {
       title: string;
       titleOriginalScript: string | null;
+      titleZh: string | null;
       slug: string;
       totalChapters: number;
       genre: string;
@@ -117,6 +118,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     authorGroup.texts.push({
       title: text.title,
       titleOriginalScript: text.titleOriginalScript,
+      titleZh: text.titleZh ?? null,
       slug: text.slug,
       totalChapters: text.totalChapters,
       genre: text.genre || "uncategorized",

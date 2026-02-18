@@ -16,6 +16,7 @@ import { formatAuthorName, formatTextTitle } from "@/lib/utils";
 interface FeaturedText {
   title: string;
   titleOriginalScript: string | null;
+  titleZh: string | null;
   slug: string;
   totalChapters: number;
   compositionYear: number | null;

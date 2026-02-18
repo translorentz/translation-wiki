@@ -157,6 +157,7 @@ export const texts = pgTable(
     authorId: integer("author_id")
       .notNull()
       .references(() => authors.id),
+    titleZh: varchar("title_zh", { length: 500 }),
     description: text("description"),
     descriptionZh: text("description_zh"),
     sourceUrl: text("source_url"),
