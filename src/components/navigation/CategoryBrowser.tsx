@@ -10,6 +10,7 @@ interface TextSummary {
   slug: string;
   totalChapters: number;
   genre?: string;
+  compositionYearDisplay?: string | null;
 }
 
 interface AuthorSummary {
@@ -103,7 +104,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                       </p>
                     )}
                     <p className="text-xs text-muted-foreground">
-                      {text.totalChapters} ch.
+                      {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} ch.
                     </p>
                   </Card>
                 </Link>
@@ -163,7 +164,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          {text.totalChapters} ch.
+                          {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} ch.
                         </p>
                       </Card>
                     </Link>

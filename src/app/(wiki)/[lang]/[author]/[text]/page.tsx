@@ -73,6 +73,9 @@ export default async function TextPage({ params }: TextPageProps) {
           {textData.author.nameOriginalScript && (
             <span className="ml-1">({textData.author.nameOriginalScript})</span>
           )}
+          {textData.compositionYearDisplay && (
+            <span className="ml-2">&middot; {textData.compositionYearDisplay}</span>
+          )}
         </p>
         {description && (
           <p className="mt-3 leading-relaxed text-muted-foreground">
