@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslation } from "@/i18n";
 
 interface PostReplyFormProps {
   onSubmit: (content: string) => Promise<void>;
@@ -10,6 +11,7 @@ interface PostReplyFormProps {
 }
 
 export function PostReplyForm({ onSubmit, onCancel }: PostReplyFormProps) {
+  const { t } = useTranslation();
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -31,16 +33,16 @@ export function PostReplyForm({ onSubmit, onCancel }: PostReplyFormProps) {
       <Textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="Write a reply..."
+        placeholder={t("discussion.replyPlaceholder")}
         rows={3}
         required
       />
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={submitting || !content.trim()}>
-          {submitting ? "Posting..." : "Post Reply"}
+          {submitting ? t("discussion.posting") : t("discussion.postReply")}
         </Button>
         <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-          Cancel
+          {t("common.cancel")}
         </Button>
       </div>
     </form>

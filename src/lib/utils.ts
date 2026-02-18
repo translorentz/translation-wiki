@@ -60,3 +60,39 @@ export function parseChapterTitle(title: string | null): {
   // No parenthetical English — return title as-is
   return { original: title, english: null };
 }
+
+/**
+ * Format an author name with locale awareness.
+ * For zh locale: shows original script first (if available), English in parens.
+ * For en locale: shows English name first, original script in parens.
+ */
+export function formatAuthorName(
+  author: { name: string; nameOriginalScript?: string | null },
+  locale: string
+): { primary: string; secondary: string | null } {
+  if (!author.nameOriginalScript) {
+    return { primary: author.name, secondary: null };
+  }
+  if (locale === "zh") {
+    return { primary: author.nameOriginalScript, secondary: author.name };
+  }
+  return { primary: author.name, secondary: author.nameOriginalScript };
+}
+
+/**
+ * Format a text title with locale awareness.
+ * For zh locale: shows original script first (if available), English in parens.
+ * For en locale: shows English title first, original script in parens.
+ */
+export function formatTextTitle(
+  text: { title: string; titleOriginalScript?: string | null },
+  locale: string
+): { primary: string; secondary: string | null } {
+  if (!text.titleOriginalScript) {
+    return { primary: text.title, secondary: null };
+  }
+  if (locale === "zh") {
+    return { primary: text.titleOriginalScript, secondary: text.title };
+  }
+  return { primary: text.title, secondary: text.titleOriginalScript };
+}

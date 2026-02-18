@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Download, BookOpen, Loader2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface ExportButtonsProps {
   textId: number;
@@ -52,6 +53,7 @@ function useExport(textId: number, textTitle: string, format: "pdf" | "epub") {
 }
 
 export function ExportButtons({ textId, textTitle }: ExportButtonsProps) {
+  const { t } = useTranslation();
   const pdf = useExport(textId, textTitle, "pdf");
   const epubExport = useExport(textId, textTitle, "epub");
 
@@ -69,7 +71,7 @@ export function ExportButtons({ textId, textTitle }: ExportButtonsProps) {
           ) : (
             <Download className="mr-2 h-4 w-4" />
           )}
-          {pdf.loading ? "Generating..." : "PDF"}
+          {pdf.loading ? t("export.generating") : t("export.pdf")}
         </Button>
         <Button
           variant="outline"
@@ -82,7 +84,7 @@ export function ExportButtons({ textId, textTitle }: ExportButtonsProps) {
           ) : (
             <BookOpen className="mr-2 h-4 w-4" />
           )}
-          {epubExport.loading ? "Generating..." : "EPUB"}
+          {epubExport.loading ? t("export.generating") : t("export.epub")}
         </Button>
       </div>
       {(pdf.error || epubExport.error) && (

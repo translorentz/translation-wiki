@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PostReplyForm } from "./PostReplyForm";
+import { useTranslation } from "@/i18n";
 
 interface Post {
   id: number;
@@ -32,16 +33,6 @@ interface ThreadViewProps {
   onTogglePinned?: () => Promise<void>;
 }
 
-function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
 export function ThreadView({
   thread,
   currentUserId,
@@ -51,6 +42,17 @@ export function ThreadView({
   onTogglePinned,
 }: ThreadViewProps) {
   const [replying, setReplying] = useState(false);
+  const { t, locale } = useTranslation();
+
+  function formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
 
   const canResolve =
     currentUserId === thread.author.id || currentUserRole === "admin";
@@ -66,12 +68,12 @@ export function ThreadView({
       {/* Thread header */}
       <div className="mb-6">
         <div className="flex items-center gap-2">
-          {thread.isPinned && <Badge variant="secondary">Pinned</Badge>}
-          {thread.isResolved && <Badge variant="outline">Resolved</Badge>}
+          {thread.isPinned && <Badge variant="secondary">{t("discussion.pinned")}</Badge>}
+          {thread.isResolved && <Badge variant="outline">{t("discussion.resolved")}</Badge>}
         </div>
         <h1 className="mt-2 text-2xl font-bold">{thread.title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Started by {thread.author.username} &middot;{" "}
+          {t("discussion.startedBy")} {thread.author.username} &middot;{" "}
           {formatDate(thread.createdAt)}
         </p>
       </div>
@@ -81,12 +83,12 @@ export function ThreadView({
         <div className="mb-6 flex gap-2">
           {canResolve && (
             <Button variant="outline" size="sm" onClick={onToggleResolved}>
-              {thread.isResolved ? "Reopen" : "Mark Resolved"}
+              {thread.isResolved ? t("discussion.reopen") : t("discussion.markResolved")}
             </Button>
           )}
           {canPin && onTogglePinned && (
             <Button variant="outline" size="sm" onClick={onTogglePinned}>
-              {thread.isPinned ? "Unpin" : "Pin"}
+              {thread.isPinned ? t("discussion.unpin") : t("discussion.pin")}
             </Button>
           )}
         </div>
@@ -120,13 +122,13 @@ export function ThreadView({
             />
           ) : (
             <Button variant="outline" onClick={() => setReplying(true)}>
-              Reply
+              {t("discussion.replyButton")}
             </Button>
           )}
         </div>
       ) : (
         <p className="mt-6 text-sm text-muted-foreground">
-          Sign in to reply to this discussion.
+          {t("discussion.signInToReply")}
         </p>
       )}
     </div>

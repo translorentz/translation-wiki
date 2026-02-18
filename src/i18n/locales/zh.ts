@@ -152,7 +152,138 @@ const zh: Translations = {
   "footer.trial": "Bryan Cheong \u8BD5\u9A8C\u9879\u76EE\u3002",
 
   // Common
-  "common.loading": "\u52A0\u8F7D\u4E2D\u2026\u2026",
+  "common.loading": "加载中……",
+  "common.cancel": "取消",
+  "common.saving": "保存中……",
+  "common.by": "作者：",
+
+  // Text detail page
+  "textDetail.chapters": "章节",
+  "textDetail.chaptersCount": "章节 ({count})",
+  "textDetail.noChapters": "尚未添加任何章节。",
+
+  // Chapter page
+  "chapter.chapterOf": "第 {n} 章，共 {m} 章",
+  "chapter.editTranslation": "编辑译文",
+  "chapter.editSource": "编辑原文",
+  "chapter.history": "历史",
+  "chapter.discussion": "讨论",
+  "chapter.translatedBy": "译者：{name}",
+  "chapter.previous": "上一章",
+  "chapter.next": "下一章",
+
+  // Interlinear viewer
+  "interlinear.source": "原文",
+  "interlinear.translation": "译文",
+  "interlinear.noContent": "本章暂无内容。",
+  "interlinear.notTranslated": "尚未翻译",
+  "interlinear.sourceRemoved": "原文段落已删除",
+  "interlinear.showOriginal": "显示原文",
+  "interlinear.hideOriginal": "隐藏原文",
+  "interlinear.showOriginalText": "显示原文文本",
+  "interlinear.hideOriginalText": "隐藏原文文本",
+
+  // Featured texts / browse
+  "featured.sort": "排序：",
+  "featured.sortTitle": "标题",
+  "featured.sortAuthor": "作者",
+  "featured.works": "{count} 部作品",
+  "featured.work": "{count} 部作品",
+  "featured.ch": "章",
+  "featured.texts": "{count} 篇",
+  "featured.text": "{count} 篇",
+  "featured.noTexts": "该语言暂无文本。",
+  "featured.noMatch": "没有符合当前筛选条件的文本。",
+
+  // Highlight cards
+  "highlights.zhuziyulei": "朱熹门人所录的理学语录。",
+  "highlights.centanni": "一部跨越百年动荡的米兰全景小说。",
+  "highlights.epitome": "拜占庭修士所著，从创世纪到1118年的世界历史。",
+  "highlights.dongpozhilin": "苏轼在贬谪期间的轶事、梦境与沉思。",
+
+  // Editor
+  "editor.enterTranslation": "输入译文……",
+  "editor.enterSource": "输入原文……",
+  "editor.editSummary": "编辑摘要（可选）",
+  "editor.describChanges": "描述您的修改……",
+  "editor.saveTranslation": "保存译文",
+  "editor.saveSource": "保存原文",
+  "editor.failedSave": "保存失败：",
+  "editor.paragraph": "段落",
+  "editor.translationRemoved": "（译文也将被删除）",
+  "editor.restore": "恢复",
+  "editor.delete": "删除",
+  "editor.paragraphRemoved": "该段落已被删除",
+  "editor.deleteWithTranslation": "删除含译文的段落",
+  "editor.deleteConfirmation": "该段落已有对应译文。您希望同时删除译文，还是保留它？",
+  "editor.keepTranslation": "保留译文",
+  "editor.deleteBoth": "全部删除",
+
+  // Discussion
+  "discussion.noThreads": "尚无讨论帖。成为第一个发起讨论的人。",
+  "discussion.pinned": "已置顶",
+  "discussion.resolved": "已解决",
+  "discussion.reply": "条回复",
+  "discussion.replies": "条回复",
+  "discussion.replyButton": "回复",
+  "discussion.reopen": "重新打开",
+  "discussion.markResolved": "标记为已解决",
+  "discussion.unpin": "取消置顶",
+  "discussion.pin": "置顶",
+  "discussion.signInToReply": "登录后可参与讨论。",
+  "discussion.startedBy": "发起人",
+  "discussion.title": "标题",
+  "discussion.topicPlaceholder": "讨论主题",
+  "discussion.content": "内容",
+  "discussion.writePlaceholder": "写下您的想法……",
+  "discussion.creating": "创建中……",
+  "discussion.createThread": "创建讨论",
+  "discussion.replyPlaceholder": "写一条回复……",
+  "discussion.posting": "发布中……",
+  "discussion.postReply": "发布回复",
+
+  // History
+  "history.noHistory": "暂无编辑历史。",
+  "history.versions": "版本",
+  "history.version": "版本",
+  "history.on": "",
+  "history.selectVersion": "请选择一个版本查看。",
+  "history.translationHistory": "译文历史 ({count})",
+  "history.sourceHistory": "原文历史 ({count})",
+  "history.noTranslationHistory": "本章暂无译文编辑历史。",
+  "history.noSourceHistory": "本章暂无原文编辑历史。",
+  "history.paragraphRemoved": "段落已删除",
+  "history.paragraphRestored": "段落已恢复：",
+
+  // Endorsement
+  "endorsement.endorsed": "已认可",
+  "endorsement.endorse": "认可",
+
+  // Export
+  "export.failed": "生成失败",
+  "export.generating": "生成中……",
+  "export.pdf": "PDF",
+  "export.epub": "EPUB",
+
+  // Table of contents
+  "toc.title": "目录",
+
+  // Page-level strings (server components)
+  "page.backToChapter": "返回章节",
+  "page.discussion": "讨论",
+  "page.editPrefix": "编辑：",
+  "page.historyPrefix": "历史：",
+  "page.chapterN": "第 {n} 章",
+  "page.signInToDiscuss": "登录后即可发起讨论。",
+  "page.newThread": "新建讨论",
+  "page.chapterBreadcrumb": "章节",
+  "page.editSourcePrefix": "编辑原文：",
+
+  // Register success
+  "register.accountCreated": "账户已创建",
+  "register.accountCreatedDesc": "您的账户已成功创建！",
+  "register.loginPrompt": "现在可以使用您的凭据登录。",
+  "register.logIn": "登录",
 };
 
 export default zh;

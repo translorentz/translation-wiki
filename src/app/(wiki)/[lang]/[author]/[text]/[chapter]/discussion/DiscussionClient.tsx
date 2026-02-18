@@ -7,6 +7,7 @@ import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
 import { ThreadList } from "@/components/discussion/ThreadList";
 import { CreateThreadForm } from "@/components/discussion/CreateThreadForm";
+import { useTranslation } from "@/i18n";
 
 interface Thread {
   id: number;
@@ -35,6 +36,7 @@ export function DiscussionClient({
   const [showForm, setShowForm] = useState(false);
   const router = useRouter();
   const trpc = useTRPC();
+  const { t } = useTranslation();
 
   const createThread = useMutation(
     trpc.discussions.createThread.mutationOptions({
@@ -54,7 +56,7 @@ export function DiscussionClient({
       {/* New thread button / form */}
       {isLoggedIn && !showForm && (
         <div className="mb-4">
-          <Button onClick={() => setShowForm(true)}>New Thread</Button>
+          <Button onClick={() => setShowForm(true)}>{t("page.newThread")}</Button>
         </div>
       )}
 
@@ -69,7 +71,7 @@ export function DiscussionClient({
 
       {!isLoggedIn && (
         <p className="mb-4 text-sm text-muted-foreground">
-          Sign in to start a discussion.
+          {t("page.signInToDiscuss")}
         </p>
       )}
 

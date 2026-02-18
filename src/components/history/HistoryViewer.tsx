@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { EditHistory } from "./EditHistory";
 import { DiffViewer } from "./DiffViewer";
+import { useTranslation } from "@/i18n";
 
 interface Paragraph {
   index: number;
@@ -24,6 +25,7 @@ interface HistoryViewerProps {
 }
 
 export function HistoryViewer({ versions }: HistoryViewerProps) {
+  const { t, locale } = useTranslation();
   const [selectedId, setSelectedId] = useState<number | undefined>(
     versions[0]?.id
   );
@@ -38,7 +40,7 @@ export function HistoryViewer({ versions }: HistoryViewerProps) {
       {/* Version list */}
       <div>
         <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
-          Versions
+          {t("history.versions")}
         </h3>
         <EditHistory
           versions={versions}
@@ -53,11 +55,11 @@ export function HistoryViewer({ versions }: HistoryViewerProps) {
           <div>
             <div className="mb-4">
               <h3 className="font-medium">
-                Version {selectedVersion.versionNumber}
+                {t("history.version")} {selectedVersion.versionNumber}
               </h3>
               <p className="text-sm text-muted-foreground">
-                by {selectedVersion.author.username} on{" "}
-                {new Date(selectedVersion.createdAt).toLocaleString()}
+                {selectedVersion.author.username} &middot;{" "}
+                {new Date(selectedVersion.createdAt).toLocaleString(locale === "zh" ? "zh-CN" : "en-US")}
               </p>
               {selectedVersion.editSummary && (
                 <p className="mt-1 text-sm italic text-muted-foreground">
@@ -80,7 +82,7 @@ export function HistoryViewer({ versions }: HistoryViewerProps) {
             />
           </div>
         ) : (
-          <p className="text-muted-foreground">Select a version to view.</p>
+          <p className="text-muted-foreground">{t("history.selectVersion")}</p>
         )}
       </div>
     </div>

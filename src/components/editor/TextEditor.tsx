@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface Paragraph {
   index: number;
@@ -33,6 +34,7 @@ export function TextEditor({
 }: TextEditorProps) {
   const router = useRouter();
   const trpc = useTRPC();
+  const { t } = useTranslation();
 
   // Initialize paragraph texts from existing translation or empty strings
   const [paragraphs, setParagraphs] = useState<string[]>(() =>
@@ -118,7 +120,7 @@ export function TextEditor({
                   autoResize(e.target);
                 }}
                 className="min-h-[4rem] w-full resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                placeholder="Enter translation..."
+                placeholder={t("editor.enterTranslation")}
               />
             </div>
           </div>
@@ -129,32 +131,32 @@ export function TextEditor({
       <div className="mt-6 flex flex-col gap-4 border-t border-border pt-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex-1">
           <Label htmlFor="edit-summary" className="mb-1.5 block text-sm">
-            Edit summary (optional)
+            {t("editor.editSummary")}
           </Label>
           <Input
             id="edit-summary"
             value={editSummary}
             onChange={(e) => setEditSummary(e.target.value)}
-            placeholder="Describe your changes..."
+            placeholder={t("editor.describChanges")}
             className="max-w-md"
           />
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => router.back()}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             onClick={handleSave}
             disabled={!hasContent || createVersion.isPending}
           >
-            {createVersion.isPending ? "Saving..." : "Save Translation"}
+            {createVersion.isPending ? t("common.saving") : t("editor.saveTranslation")}
           </Button>
         </div>
       </div>
 
       {createVersion.isError && (
         <p className="mt-2 text-sm text-destructive">
-          Failed to save: {createVersion.error.message}
+          {t("editor.failedSave")} {createVersion.error.message}
         </p>
       )}
     </div>

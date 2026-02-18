@@ -10,6 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useTranslation } from "@/i18n";
+import { formatAuthorName, formatTextTitle } from "@/lib/utils";
 
 interface FeaturedText {
   title: string;
@@ -17,6 +19,7 @@ interface FeaturedText {
   slug: string;
   totalChapters: number;
   compositionYear: number | null;
+  compositionYearDisplay: string | null;
   compositionEra: string | null;
   author: {
     name: string;
@@ -41,6 +44,7 @@ type SortKey = "title" | "author";
  * Within each language, texts are sorted alphabetically by title or author name.
  */
 export function FeaturedTexts({ texts }: FeaturedTextsProps) {
+  const { t, locale } = useTranslation();
   const [sortBy, setSortBy] = useState<SortKey>("title");
 
   // Group texts by language and sort languages by descending text count
@@ -85,20 +89,20 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
   return (
     <div>
       <div className="mb-4 flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Sort:</span>
+        <span className="text-sm text-muted-foreground">{t("featured.sort")}</span>
         <Button
           variant={sortBy === "title" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setSortBy("title")}
         >
-          Title
+          {t("featured.sortTitle")}
         </Button>
         <Button
           variant={sortBy === "author" ? "secondary" : "ghost"}
           size="sm"
           onClick={() => setSortBy("author")}
         >
-          Author
+          {t("featured.sortAuthor")}
         </Button>
       </div>
 
@@ -107,9 +111,11 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
           <AccordionItem key={langGroup.code} value={langGroup.code}>
             <AccordionTrigger className="text-base font-semibold hover:no-underline">
               <span>
-                {langGroup.name}{" "}
+                {t(`sourcelang.${langGroup.code}` as Parameters<typeof t>[0])}{" "}
                 <span className="text-sm font-normal text-muted-foreground">
-                  ({langGroup.texts.length} {langGroup.texts.length === 1 ? "work" : "works"})
+                  ({langGroup.texts.length === 1
+                    ? t("featured.work").replace("{count}", "1")
+                    : t("featured.works").replace("{count}", String(langGroup.texts.length))})
                 </span>
               </span>
             </AccordionTrigger>
@@ -121,30 +127,31 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                     href={`/${text.language.code}/${text.author.slug}/${text.slug}`}
                   >
                     <Card className="px-4 py-2.5 transition-colors hover:bg-muted/50">
-                      <h3 className="text-base font-semibold leading-tight">
-                        {text.title}
-                        {text.titleOriginalScript && (
-                          <span className="ml-2 text-sm font-normal text-muted-foreground">
-                            ({text.titleOriginalScript})
-                          </span>
-                        )}
-                      </h3>
-                      <p className="mt-0.5 text-sm text-muted-foreground">
-                        {text.author.name}
-                        {text.author.nameOriginalScript && (
-                          <span className="ml-1">({text.author.nameOriginalScript})</span>
-                        )}
-                      </p>
+                      {(() => {
+                        const titleDisplay = formatTextTitle(text, locale);
+                        const authorDisplay = formatAuthorName(text.author, locale);
+                        return (
+                          <>
+                            <h3 className="text-base font-semibold leading-tight">
+                              {titleDisplay.primary}
+                              {titleDisplay.secondary && (
+                                <span className="ml-2 text-sm font-normal text-muted-foreground">
+                                  ({titleDisplay.secondary})
+                                </span>
+                              )}
+                            </h3>
+                            <p className="mt-0.5 text-sm text-muted-foreground">
+                              {authorDisplay.primary}
+                              {authorDisplay.secondary && (
+                                <span className="ml-1">({authorDisplay.secondary})</span>
+                              )}
+                            </p>
+                          </>
+                        );
+                      })()}
                       <p className="text-xs text-muted-foreground">
-                        {text.compositionEra && <span>{text.compositionEra}</span>}
-                        {text.compositionYear != null && (
-                          <span>
-                            {text.compositionEra ? " " : ""}
-                            ({Math.abs(text.compositionYear)} {text.compositionYear < 0 ? "BCE" : "CE"})
-                          </span>
-                        )}
-                        {(text.compositionEra || text.compositionYear != null) && " — "}
-                        {text.totalChapters} ch.
+                        {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}
+                        {text.totalChapters} {t("featured.ch")}
                       </p>
                     </Card>
                   </Link>

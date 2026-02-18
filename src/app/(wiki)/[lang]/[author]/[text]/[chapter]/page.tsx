@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
+import { getServerTranslation } from "@/i18n/server";
 import { parseChapterTitle } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
@@ -52,7 +52,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   const canEdit = session?.user?.role === "editor" || session?.user?.role === "admin";
 
   const trpc = await getServerTRPC();
-  const locale = await getLocale();
+  const { t, locale } = await getServerTranslation();
 
   // Fetch the text to get its ID and chapter list
   const textData = await trpc.texts.getBySlug({
@@ -103,7 +103,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
       {/* Sidebar */}
       <aside className="hidden w-64 shrink-0 lg:block">
         <h3 className="mb-3 text-sm font-semibold text-muted-foreground">
-          Chapters
+          {t("textDetail.chapters")}
         </h3>
         <TableOfContents
           chapters={textData.chapters}
@@ -138,24 +138,24 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             );
           })()}
           <p className="text-sm text-muted-foreground">
-            Chapter {chapterNumber} of {textData.totalChapters}
+            {t("chapter.chapterOf").replace("{n}", String(chapterNumber)).replace("{m}", String(textData.totalChapters))}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {canEdit && (
               <>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`${basePath}/${chapterSlug}/edit`}>Edit Translation</Link>
+                  <Link href={`${basePath}/${chapterSlug}/edit`}>{t("chapter.editTranslation")}</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`${basePath}/${chapterSlug}/edit-source`}>Edit Source</Link>
+                  <Link href={`${basePath}/${chapterSlug}/edit-source`}>{t("chapter.editSource")}</Link>
                 </Button>
               </>
             )}
             <Button variant="ghost" size="sm" asChild>
-              <Link href={`${basePath}/${chapterSlug}/history`}>History</Link>
+              <Link href={`${basePath}/${chapterSlug}/history`}>{t("chapter.history")}</Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link href={`${basePath}/${chapterSlug}/discussion`}>Discussion</Link>
+              <Link href={`${basePath}/${chapterSlug}/discussion`}>{t("chapter.discussion")}</Link>
             </Button>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             />
             {translation.currentVersion.author && (
               <span className="text-xs text-muted-foreground">
-                Translated by {translation.currentVersion.author.username}
+                {t("chapter.translatedBy").replace("{name}", translation.currentVersion.author.username)}
               </span>
             )}
           </div>
@@ -191,7 +191,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           {prevChapter ? (
             <Button variant="outline" asChild>
               <Link href={`${basePath}/${prevChapter.slug}`}>
-                Previous
+                {t("chapter.previous")}
               </Link>
             </Button>
           ) : (
@@ -200,7 +200,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           {nextChapter ? (
             <Button variant="outline" asChild>
               <Link href={`${basePath}/${nextChapter.slug}`}>
-                Next
+                {t("chapter.next")}
               </Link>
             </Button>
           ) : (

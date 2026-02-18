@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface VersionEntry {
   id: number;
@@ -21,9 +22,11 @@ export function EditHistory({
   selectedVersionId,
   onSelectVersion,
 }: EditHistoryProps) {
+  const { t } = useTranslation();
+
   if (versions.length === 0) {
     return (
-      <p className="py-4 text-sm text-muted-foreground">No edit history.</p>
+      <p className="py-4 text-sm text-muted-foreground">{t("history.noHistory")}</p>
     );
   }
 

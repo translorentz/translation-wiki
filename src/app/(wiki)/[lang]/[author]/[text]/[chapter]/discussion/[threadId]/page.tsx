@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
+import { getServerTranslation } from "@/i18n/server";
 import { ThreadClient } from "./ThreadClient";
 
 interface ThreadPageProps {
@@ -25,6 +26,7 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
 
   const session = await auth();
   const trpc = await getServerTRPC();
+  const { t } = await getServerTranslation();
 
   const threadId = parseInt(threadIdStr);
   if (isNaN(threadId)) notFound();
@@ -40,14 +42,14 @@ export default async function ThreadPage({ params }: ThreadPageProps) {
       <div className="mb-6">
         <div className="flex gap-2 text-sm text-muted-foreground">
           <Link href={basePath} className="hover:text-foreground">
-            Chapter
+            {t("page.chapterBreadcrumb")}
           </Link>
           <span>/</span>
           <Link
             href={`${basePath}/discussion`}
             className="hover:text-foreground"
           >
-            Discussion
+            {t("page.discussion")}
           </Link>
         </div>
       </div>

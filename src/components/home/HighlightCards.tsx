@@ -9,7 +9,7 @@ const HIGHLIGHTS = [
     langCode: "zh",
     originalTitle: "\u672E\u5B50\u8A9E\u985E",
     englishTitle: "Classified Conversations of Master Zhu",
-    teaser: "Neo-Confucian philosophy recorded by Zhu Xi's students.",
+    teaserKey: "highlights.zhuziyulei" as const,
   },
   {
     slug: "cento-anni",
@@ -17,7 +17,7 @@ const HIGHLIGHTS = [
     langCode: "it",
     originalTitle: "Cent\u2019anni",
     englishTitle: "A Hundred Years (Cento Anni)",
-    teaser: "A panoramic novel of Milan across a century of upheaval.",
+    teaserKey: "highlights.centanni" as const,
   },
   {
     slug: "epitome-historiarum",
@@ -25,7 +25,7 @@ const HIGHLIGHTS = [
     langCode: "grc",
     originalTitle: "\u1F18\u03C0\u03B9\u03C4\u03BF\u03BC\u1F74 \u1F31\u03C3\u03C4\u03BF\u03C1\u03B9\u1FF6\u03BD",
     englishTitle: "Epitome of Histories",
-    teaser: "World history from Creation to 1118, by a Byzantine monk.",
+    teaserKey: "highlights.epitome" as const,
   },
   {
     slug: "dongpo-zhilin",
@@ -33,7 +33,7 @@ const HIGHLIGHTS = [
     langCode: "zh",
     originalTitle: "\u6771\u5761\u5FD7\u6797",
     englishTitle: "Dongpo's Records from the Bamboo Grove",
-    teaser: "Anecdotes, dreams, and meditations by Su Shi in exile.",
+    teaserKey: "highlights.dongpozhilin" as const,
   },
 ];
 
@@ -54,7 +54,7 @@ export function HighlightCards({ locale }: { locale: Locale }) {
             <Card className="h-full gap-0 px-2 py-1.5 transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-3 sm:py-2">
               <p className="text-sm leading-tight sm:text-base">{h.originalTitle}</p>
               <p className="mt-0.5 text-[11px] font-medium sm:text-xs">{h.englishTitle}</p>
-              <p className="mt-0.5 hidden text-[11px] leading-snug text-muted-foreground sm:block">{h.teaser}</p>
+              <p className="mt-0.5 hidden text-[11px] leading-snug text-muted-foreground sm:block">{t(h.teaserKey)}</p>
             </Card>
           </Link>
         ))}

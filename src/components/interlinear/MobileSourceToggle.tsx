@@ -13,6 +13,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface MobileSourceToggleProps {
   hideSource: boolean;
@@ -23,24 +24,26 @@ export function MobileSourceToggle({
   hideSource,
   onToggle,
 }: MobileSourceToggleProps) {
+  const { t } = useTranslation();
+
   return (
     <Button
       variant="secondary"
       size="sm"
       onClick={onToggle}
       className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 shadow-lg backdrop-blur-sm transition-all hover:bg-background"
-      aria-label={hideSource ? "Show original text" : "Hide original text"}
+      aria-label={hideSource ? t("interlinear.showOriginalText") : t("interlinear.hideOriginalText")}
       aria-pressed={hideSource}
     >
       {hideSource ? (
         <>
           <Eye className="h-4 w-4" />
-          <span className="text-sm">Show Original</span>
+          <span className="text-sm">{t("interlinear.showOriginal")}</span>
         </>
       ) : (
         <>
           <EyeOff className="h-4 w-4" />
-          <span className="text-sm">Hide Original</span>
+          <span className="text-sm">{t("interlinear.hideOriginal")}</span>
         </>
       )}
     </Button>

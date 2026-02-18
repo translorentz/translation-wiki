@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/i18n";
 
 interface Thread {
   id: number;
@@ -19,19 +20,21 @@ interface ThreadListProps {
   basePath: string;
 }
 
-function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export function ThreadList({ threads, basePath }: ThreadListProps) {
+  const { t, locale } = useTranslation();
+
+  function formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString(locale === "zh" ? "zh-CN" : "en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
+
   if (threads.length === 0) {
     return (
       <p className="py-8 text-center text-muted-foreground">
-        No discussion threads yet. Be the first to start a conversation.
+        {t("discussion.noThreads")}
       </p>
     );
   }
@@ -49,12 +52,12 @@ export function ThreadList({ threads, basePath }: ThreadListProps) {
               <div className="flex items-center gap-2">
                 {thread.isPinned && (
                   <Badge variant="secondary" className="text-xs">
-                    Pinned
+                    {t("discussion.pinned")}
                   </Badge>
                 )}
                 {thread.isResolved && (
                   <Badge variant="outline" className="text-xs">
-                    Resolved
+                    {t("discussion.resolved")}
                   </Badge>
                 )}
                 <h3 className="truncate font-medium">{thread.title}</h3>
@@ -64,7 +67,7 @@ export function ThreadList({ threads, basePath }: ThreadListProps) {
               </p>
             </div>
             <div className="shrink-0 text-sm text-muted-foreground">
-              {thread.replyCount} {thread.replyCount === 1 ? "reply" : "replies"}
+              {thread.replyCount} {thread.replyCount === 1 ? t("discussion.reply") : t("discussion.replies")}
             </div>
           </div>
         </Link>

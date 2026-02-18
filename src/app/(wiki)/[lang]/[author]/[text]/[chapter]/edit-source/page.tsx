@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
+import { getLocale, getServerTranslation } from "@/i18n/server";
 import { parseChapterTitle } from "@/lib/utils";
 import { SourceEditor } from "@/components/editor/SourceEditor";
 
@@ -28,6 +28,7 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
 
   const trpc = await getServerTRPC();
   const locale = await getLocale();
+  const { t } = await getServerTranslation();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -74,13 +75,13 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
           href={returnPath}
           className="text-sm text-muted-foreground hover:text-foreground"
         >
-          Back to chapter
+          {t("page.backToChapter")}
         </Link>
         {(() => {
           const { original, english } = parseChapterTitle(chapter.title);
           return (
             <h1 className="mt-1 text-2xl font-bold">
-              Edit Source: {original}
+              {t("page.editSourcePrefix")} {original}
               {english && (
                 <span className="ml-2 text-lg font-normal text-muted-foreground">
                   {english}
@@ -90,7 +91,7 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
           );
         })()}
         <p className="text-sm text-muted-foreground">
-          {textData.title} — Chapter {chapterNumber}
+          {textData.title} — {t("page.chapterN").replace("{n}", String(chapterNumber))}
         </p>
       </div>
 

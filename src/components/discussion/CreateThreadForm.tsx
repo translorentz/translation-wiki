@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useTranslation } from "@/i18n";
 
 interface CreateThreadFormProps {
   onSubmit: (title: string, content: string) => Promise<void>;
@@ -12,6 +13,7 @@ interface CreateThreadFormProps {
 }
 
 export function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFormProps) {
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -31,33 +33,33 @@ export function CreateThreadForm({ onSubmit, onCancel }: CreateThreadFormProps) 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-4">
       <div>
-        <Label htmlFor="thread-title">Title</Label>
+        <Label htmlFor="thread-title">{t("discussion.title")}</Label>
         <Input
           id="thread-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Discussion topic"
+          placeholder={t("discussion.topicPlaceholder")}
           maxLength={300}
           required
         />
       </div>
       <div>
-        <Label htmlFor="thread-content">Content</Label>
+        <Label htmlFor="thread-content">{t("discussion.content")}</Label>
         <Textarea
           id="thread-content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Write your thoughts..."
+          placeholder={t("discussion.writePlaceholder")}
           rows={5}
           required
         />
       </div>
       <div className="flex gap-2">
         <Button type="submit" disabled={submitting || !title.trim() || !content.trim()}>
-          {submitting ? "Creating..." : "Create Thread"}
+          {submitting ? t("discussion.creating") : t("discussion.createThread")}
         </Button>
         <Button type="button" variant="ghost" onClick={onCancel}>
-          Cancel
+          {t("common.cancel")}
         </Button>
       </div>
     </form>

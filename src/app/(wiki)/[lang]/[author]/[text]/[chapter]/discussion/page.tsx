@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { parseChapterTitle } from "@/lib/utils";
+import { getServerTranslation } from "@/i18n/server";
 import { Button } from "@/components/ui/button";
 import { DiscussionClient } from "./DiscussionClient";
 
@@ -20,6 +21,7 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
 
   const session = await auth();
   const trpc = await getServerTRPC();
+  const { t } = await getServerTranslation();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -67,9 +69,9 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
             );
           })()}
         </Link>
-        <h1 className="mt-1 text-2xl font-bold">Discussion</h1>
+        <h1 className="mt-1 text-2xl font-bold">{t("page.discussion")}</h1>
         <p className="text-sm text-muted-foreground">
-          {textData.title} — Chapter {chapterNumber}
+          {textData.title} — {t("page.chapterN").replace("{n}", String(chapterNumber))}
         </p>
       </div>
 

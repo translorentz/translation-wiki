@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface ParagraphPairProps {
   index: number;
@@ -48,6 +49,7 @@ export function ParagraphPair({
   isPoetry,
   hideSource,
 }: ParagraphPairProps) {
+  const { t } = useTranslation();
   const sourceFontClass = LANGUAGE_FONTS[sourceLanguage] ?? "font-sans";
 
   // For poetry, show line numbers every 5th line (traditional verse numbering)
@@ -103,7 +105,7 @@ export function ParagraphPair({
           renderWithCommentary(sourceText)
         ) : (
           <span className="italic text-muted-foreground">
-            Source paragraph removed
+            {t("interlinear.sourceRemoved")}
           </span>
         )}
       </div>
@@ -121,7 +123,7 @@ export function ParagraphPair({
           <span>{renderWithCommentary(translationText)}</span>
         ) : (
           <span className="italic text-muted-foreground">
-            Not yet translated
+            {t("interlinear.notTranslated")}
           </span>
         )}
       </div>

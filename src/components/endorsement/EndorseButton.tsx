@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 interface EndorseButtonProps {
   translationVersionId: number;
@@ -15,6 +16,7 @@ export function EndorseButton({
   initialCount = 0,
 }: EndorseButtonProps) {
   const trpc = useTRPC();
+  const { t } = useTranslation();
   const [optimisticCount, setOptimisticCount] = useState(initialCount);
   const [optimisticEndorsed, setOptimisticEndorsed] = useState(false);
 
@@ -52,7 +54,7 @@ export function EndorseButton({
       onClick={() => toggle.mutate({ translationVersionId })}
       disabled={toggle.isPending}
     >
-      {optimisticEndorsed ? "Endorsed" : "Endorse"}
+      {optimisticEndorsed ? t("endorsement.endorsed") : t("endorsement.endorse")}
       {displayCount > 0 && (
         <span className="ml-1.5 text-xs">({displayCount})</span>
       )}

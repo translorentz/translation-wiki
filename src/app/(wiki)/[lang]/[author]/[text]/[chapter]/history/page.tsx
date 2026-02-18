@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
+import { getLocale, getServerTranslation } from "@/i18n/server";
 import { parseChapterTitle } from "@/lib/utils";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 
@@ -19,6 +19,7 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
 
   const trpc = await getServerTRPC();
   const locale = await getLocale();
+  const { t } = await getServerTranslation();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -68,13 +69,13 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
           href={chapterPath}
           className="text-sm text-muted-foreground hover:text-foreground"
         >
-          Back to chapter
+          {t("page.backToChapter")}
         </Link>
         {(() => {
           const { original, english } = parseChapterTitle(chapter.title);
           return (
             <h1 className="mt-1 text-2xl font-bold">
-              History: {original}
+              {t("page.historyPrefix")} {original}
               {english && (
                 <span className="ml-2 text-lg font-normal text-muted-foreground">
                   {english}

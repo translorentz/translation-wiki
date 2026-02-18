@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
+import { getServerTranslation } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
-import { parseChapterTitle } from "@/lib/utils";
+import { parseChapterTitle, formatAuthorName, formatTextTitle } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
 
 interface TextPageProps {
@@ -40,7 +40,7 @@ export default async function TextPage({ params }: TextPageProps) {
   const { lang, author, text: textSlug } = await params;
 
   const trpc = await getServerTRPC();
-  const locale = await getLocale();
+  const { t, locale } = await getServerTranslation();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -54,24 +54,26 @@ export default async function TextPage({ params }: TextPageProps) {
 
   const basePath = `/${lang}/${author}/${textSlug}`;
   const description = (locale === "zh" && textData.descriptionZh) || textData.description;
+  const titleDisplay = formatTextTitle(textData, locale);
+  const authorDisplay = formatAuthorName(textData.author, locale);
 
   return (
     <main className="mx-auto max-w-4xl">
       {/* Text metadata */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">{textData.title}</h1>
-        {textData.titleOriginalScript && (
+        <h1 className="text-3xl font-bold">{titleDisplay.primary}</h1>
+        {titleDisplay.secondary && (
           <p className="mt-1 text-xl text-muted-foreground">
-            {textData.titleOriginalScript}
+            {titleDisplay.secondary}
           </p>
         )}
         <p className="mt-2 text-muted-foreground">
-          by{" "}
+          {locale !== "zh" && <>{t("common.by")} </>}
           <span className="font-medium text-foreground">
-            {textData.author.name}
+            {authorDisplay.primary}
           </span>
-          {textData.author.nameOriginalScript && (
-            <span className="ml-1">({textData.author.nameOriginalScript})</span>
+          {authorDisplay.secondary && (
+            <span className="ml-1">({authorDisplay.secondary})</span>
           )}
           {textData.compositionYearDisplay && (
             <span className="ml-2">&middot; {textData.compositionYearDisplay}</span>
@@ -90,7 +92,7 @@ export default async function TextPage({ params }: TextPageProps) {
       {/* Chapter list */}
       <div>
         <h2 className="mb-4 text-xl font-semibold">
-          Chapters ({textData.chapters.length})
+          {t("textDetail.chaptersCount").replace("{count}", String(textData.chapters.length))}
         </h2>
         <div className="space-y-1">
           {textData.chapters.map((chapter) => {
@@ -123,7 +125,7 @@ export default async function TextPage({ params }: TextPageProps) {
 
         {textData.chapters.length === 0 && (
           <p className="py-8 text-center text-muted-foreground">
-            No chapters have been added yet.
+            {t("textDetail.noChapters")}
           </p>
         )}
       </div>

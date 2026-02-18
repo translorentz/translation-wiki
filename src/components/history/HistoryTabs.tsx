@@ -2,6 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HistoryViewer } from "./HistoryViewer";
+import { useTranslation } from "@/i18n";
 
 interface Paragraph {
   index: number;
@@ -27,14 +28,16 @@ export function HistoryTabs({
   translationVersions,
   sourceVersions,
 }: HistoryTabsProps) {
+  const { t } = useTranslation();
+
   return (
     <Tabs defaultValue="translation" className="w-full">
       <TabsList>
         <TabsTrigger value="translation">
-          Translation History ({translationVersions.length})
+          {t("history.translationHistory").replace("{count}", String(translationVersions.length))}
         </TabsTrigger>
         <TabsTrigger value="source">
-          Source History ({sourceVersions.length})
+          {t("history.sourceHistory").replace("{count}", String(sourceVersions.length))}
         </TabsTrigger>
       </TabsList>
 
@@ -43,7 +46,7 @@ export function HistoryTabs({
           <HistoryViewer versions={translationVersions} />
         ) : (
           <p className="py-8 text-center text-muted-foreground">
-            No translation history for this chapter yet.
+            {t("history.noTranslationHistory")}
           </p>
         )}
       </TabsContent>
@@ -53,7 +56,7 @@ export function HistoryTabs({
           <HistoryViewer versions={sourceVersions} />
         ) : (
           <p className="py-8 text-center text-muted-foreground">
-            No source text edit history for this chapter yet.
+            {t("history.noSourceHistory")}
           </p>
         )}
       </TabsContent>

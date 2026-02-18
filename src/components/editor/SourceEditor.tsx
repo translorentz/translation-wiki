@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface Paragraph {
   index: number;
@@ -41,6 +42,7 @@ export function SourceEditor({
 }: SourceEditorProps) {
   const router = useRouter();
   const trpc = useTRPC();
+  const { t } = useTranslation();
 
   // Initialize paragraph texts from source content
   const [paragraphs, setParagraphs] = useState<(string | null)[]>(() =>
@@ -196,10 +198,10 @@ export function SourceEditor({
             >
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">
-                  Paragraph {sourcePara.index}
+                  {t("editor.paragraph")} {sourcePara.index}
                   {isDeleted && willDeleteTranslation && (
                     <span className="ml-2 text-destructive">
-                      (translation will also be removed)
+                      {t("editor.translationRemoved")}
                     </span>
                   )}
                 </span>
@@ -209,7 +211,7 @@ export function SourceEditor({
                     size="sm"
                     onClick={() => handleRestoreParagraph(i)}
                   >
-                    Restore
+                    {t("editor.restore")}
                   </Button>
                 ) : (
                   <Button
@@ -218,14 +220,14 @@ export function SourceEditor({
                     className="text-destructive hover:text-destructive"
                     onClick={() => handleDeleteClick(i)}
                   >
-                    Delete
+                    {t("editor.delete")}
                   </Button>
                 )}
               </div>
 
               {isDeleted ? (
                 <p className="italic text-muted-foreground">
-                  This paragraph has been removed
+                  {t("editor.paragraphRemoved")}
                 </p>
               ) : (
                 <textarea
@@ -240,7 +242,7 @@ export function SourceEditor({
                     sourceLanguage === "zh" && "font-serif text-lg leading-loose"
                   )}
                   lang={sourceLanguage}
-                  placeholder="Enter source text..."
+                  placeholder={t("editor.enterSource")}
                 />
               )}
             </div>
@@ -252,32 +254,32 @@ export function SourceEditor({
       <div className="mt-6 flex flex-col gap-4 border-t border-border pt-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex-1">
           <Label htmlFor="edit-summary" className="mb-1.5 block text-sm">
-            Edit summary (optional)
+            {t("editor.editSummary")}
           </Label>
           <Input
             id="edit-summary"
             value={editSummary}
             onChange={(e) => setEditSummary(e.target.value)}
-            placeholder="Describe your changes..."
+            placeholder={t("editor.describChanges")}
             className="max-w-md"
           />
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => router.back()}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             onClick={handleSave}
             disabled={!hasChanges || updateSource.isPending}
           >
-            {updateSource.isPending ? "Saving..." : "Save Source"}
+            {updateSource.isPending ? t("common.saving") : t("editor.saveSource")}
           </Button>
         </div>
       </div>
 
       {updateSource.isError && (
         <p className="mt-2 text-sm text-destructive">
-          Failed to save: {updateSource.error.message}
+          {t("editor.failedSave")} {updateSource.error.message}
         </p>
       )}
 
@@ -285,10 +287,9 @@ export function SourceEditor({
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete paragraph with translation</DialogTitle>
+            <DialogTitle>{t("editor.deleteWithTranslation")}</DialogTitle>
             <DialogDescription>
-              This paragraph has an existing translation. Would you like to
-              delete the translation as well, or keep it?
+              {t("editor.deleteConfirmation")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="flex-col gap-2 sm:flex-row">
@@ -299,19 +300,19 @@ export function SourceEditor({
                 setPendingDeleteIndex(null);
               }}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button
               variant="secondary"
               onClick={() => handleDialogConfirm(false)}
             >
-              Keep translation
+              {t("editor.keepTranslation")}
             </Button>
             <Button
               variant="destructive"
               onClick={() => handleDialogConfirm(true)}
             >
-              Delete both
+              {t("editor.deleteBoth")}
             </Button>
           </DialogFooter>
         </DialogContent>

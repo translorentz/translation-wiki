@@ -5,6 +5,7 @@ import { ParagraphPair } from "./ParagraphPair";
 import { MobileSourceToggle } from "./MobileSourceToggle";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useTranslation } from "@/i18n";
 
 interface Paragraph {
   index: number;
@@ -24,6 +25,7 @@ export function InterlinearViewer({
   sourceLanguage,
   textType,
 }: InterlinearViewerProps) {
+  const { t } = useTranslation();
   const isPoetry = textType === "poetry";
   const isMobile = useIsMobile(768);
   const [hideSource, setHideSource] = useLocalStorage("hideSourceText", false);
@@ -59,9 +61,9 @@ export function InterlinearViewer({
       <div
         className={`sticky top-0 z-10 mb-2 hidden border-b border-border bg-background/95 pb-2 backdrop-blur md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-x-6 ${isPoetry ? "pl-10 md:pl-12" : ""}`}
       >
-        <div className="text-sm font-medium text-muted-foreground">Source</div>
+        <div className="text-sm font-medium text-muted-foreground">{t("interlinear.source")}</div>
         <div className="text-sm font-medium text-muted-foreground">
-          Translation
+          {t("interlinear.translation")}
         </div>
       </div>
 
@@ -89,7 +91,7 @@ export function InterlinearViewer({
 
       {sourceContent.paragraphs.length === 0 && (
         <p className="py-8 text-center text-muted-foreground">
-          No content available for this chapter.
+          {t("interlinear.noContent")}
         </p>
       )}
 

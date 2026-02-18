@@ -2,6 +2,7 @@
 
 import { diffWords } from "diff";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface Paragraph {
   index: number;
@@ -14,6 +15,7 @@ interface DiffViewerProps {
 }
 
 export function DiffViewer({ oldContent, newContent }: DiffViewerProps) {
+  const { t } = useTranslation();
   const oldMap = new Map<number, string | null>();
   if (oldContent) {
     for (const p of oldContent.paragraphs) {
@@ -31,7 +33,7 @@ export function DiffViewer({ oldContent, newContent }: DiffViewerProps) {
         if (newText === null) {
           return (
             <div key={paragraph.index} className="rounded-md border border-destructive/50 bg-destructive/5 px-3 py-2 text-sm">
-              <span className="italic text-muted-foreground">Paragraph removed</span>
+              <span className="italic text-muted-foreground">{t("history.paragraphRemoved")}</span>
               {oldText && (
                 <div className="mt-1 text-destructive line-through">
                   {oldText}
@@ -45,7 +47,7 @@ export function DiffViewer({ oldContent, newContent }: DiffViewerProps) {
         if (oldText === null && newText !== null) {
           return (
             <div key={paragraph.index} className="rounded-md border border-green-500/50 bg-green-50 px-3 py-2 text-sm dark:bg-green-900/10">
-              <span className="text-xs text-muted-foreground">Paragraph restored:</span>
+              <span className="text-xs text-muted-foreground">{t("history.paragraphRestored")}</span>
               <div className="mt-1 text-green-900 dark:text-green-300">{newText}</div>
             </div>
           );

@@ -156,6 +156,137 @@ const en = {
 
   // Common
   "common.loading": "Loading...",
+  "common.cancel": "Cancel",
+  "common.saving": "Saving...",
+  "common.by": "by",
+
+  // Text detail page
+  "textDetail.chapters": "Chapters",
+  "textDetail.chaptersCount": "Chapters ({count})",
+  "textDetail.noChapters": "No chapters have been added yet.",
+
+  // Chapter page
+  "chapter.chapterOf": "Chapter {n} of {m}",
+  "chapter.editTranslation": "Edit Translation",
+  "chapter.editSource": "Edit Source",
+  "chapter.history": "History",
+  "chapter.discussion": "Discussion",
+  "chapter.translatedBy": "Translated by {name}",
+  "chapter.previous": "Previous",
+  "chapter.next": "Next",
+
+  // Interlinear viewer
+  "interlinear.source": "Source",
+  "interlinear.translation": "Translation",
+  "interlinear.noContent": "No content available for this chapter.",
+  "interlinear.notTranslated": "Not yet translated",
+  "interlinear.sourceRemoved": "Source paragraph removed",
+  "interlinear.showOriginal": "Show Original",
+  "interlinear.hideOriginal": "Hide Original",
+  "interlinear.showOriginalText": "Show original text",
+  "interlinear.hideOriginalText": "Hide original text",
+
+  // Featured texts / browse
+  "featured.sort": "Sort:",
+  "featured.sortTitle": "Title",
+  "featured.sortAuthor": "Author",
+  "featured.works": "{count} works",
+  "featured.work": "{count} work",
+  "featured.ch": "ch.",
+  "featured.texts": "{count} texts",
+  "featured.text": "{count} text",
+  "featured.noTexts": "No texts in this language yet.",
+  "featured.noMatch": "No texts match the current filters.",
+
+  // Highlight cards
+  "highlights.zhuziyulei": "Neo-Confucian philosophy recorded by Zhu Xi's students.",
+  "highlights.centanni": "A panoramic novel of Milan across a century of upheaval.",
+  "highlights.epitome": "World history from Creation to 1118, by a Byzantine monk.",
+  "highlights.dongpozhilin": "Anecdotes, dreams, and meditations by Su Shi in exile.",
+
+  // Editor
+  "editor.enterTranslation": "Enter translation...",
+  "editor.enterSource": "Enter source text...",
+  "editor.editSummary": "Edit summary (optional)",
+  "editor.describChanges": "Describe your changes...",
+  "editor.saveTranslation": "Save Translation",
+  "editor.saveSource": "Save Source",
+  "editor.failedSave": "Failed to save:",
+  "editor.paragraph": "Paragraph",
+  "editor.translationRemoved": "(translation will also be removed)",
+  "editor.restore": "Restore",
+  "editor.delete": "Delete",
+  "editor.paragraphRemoved": "This paragraph has been removed",
+  "editor.deleteWithTranslation": "Delete paragraph with translation",
+  "editor.deleteConfirmation": "This paragraph has an existing translation. Would you like to delete the translation as well, or keep it?",
+  "editor.keepTranslation": "Keep translation",
+  "editor.deleteBoth": "Delete both",
+
+  // Discussion
+  "discussion.noThreads": "No discussion threads yet. Be the first to start a conversation.",
+  "discussion.pinned": "Pinned",
+  "discussion.resolved": "Resolved",
+  "discussion.reply": "reply",
+  "discussion.replies": "replies",
+  "discussion.replyButton": "Reply",
+  "discussion.reopen": "Reopen",
+  "discussion.markResolved": "Mark Resolved",
+  "discussion.unpin": "Unpin",
+  "discussion.pin": "Pin",
+  "discussion.signInToReply": "Sign in to reply to this discussion.",
+  "discussion.startedBy": "Started by",
+  "discussion.title": "Title",
+  "discussion.topicPlaceholder": "Discussion topic",
+  "discussion.content": "Content",
+  "discussion.writePlaceholder": "Write your thoughts...",
+  "discussion.creating": "Creating...",
+  "discussion.createThread": "Create Thread",
+  "discussion.replyPlaceholder": "Write a reply...",
+  "discussion.posting": "Posting...",
+  "discussion.postReply": "Post Reply",
+
+  // History
+  "history.noHistory": "No edit history.",
+  "history.versions": "Versions",
+  "history.version": "Version",
+  "history.on": "on",
+  "history.selectVersion": "Select a version to view.",
+  "history.translationHistory": "Translation History ({count})",
+  "history.sourceHistory": "Source History ({count})",
+  "history.noTranslationHistory": "No translation history for this chapter yet.",
+  "history.noSourceHistory": "No source text edit history for this chapter yet.",
+  "history.paragraphRemoved": "Paragraph removed",
+  "history.paragraphRestored": "Paragraph restored:",
+
+  // Endorsement
+  "endorsement.endorsed": "Endorsed",
+  "endorsement.endorse": "Endorse",
+
+  // Export
+  "export.failed": "Failed to generate",
+  "export.generating": "Generating...",
+  "export.pdf": "PDF",
+  "export.epub": "EPUB",
+
+  // Table of contents
+  "toc.title": "Table of contents",
+
+  // Page-level strings (server components)
+  "page.backToChapter": "Back to chapter",
+  "page.discussion": "Discussion",
+  "page.editPrefix": "Edit:",
+  "page.historyPrefix": "History:",
+  "page.chapterN": "Chapter {n}",
+  "page.signInToDiscuss": "Sign in to start a discussion.",
+  "page.newThread": "New Thread",
+  "page.chapterBreadcrumb": "Chapter",
+  "page.editSourcePrefix": "Edit Source:",
+
+  // Register success
+  "register.accountCreated": "Account Created",
+  "register.accountCreatedDesc": "Your account has been created successfully!",
+  "register.loginPrompt": "You can now log in with your credentials.",
+  "register.logIn": "Log In",
 } as const;
 
 export type TranslationKey = keyof typeof en;

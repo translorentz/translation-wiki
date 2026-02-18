@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useMemo } from "react";
+import { useTranslation } from "@/i18n";
+import { formatAuthorName, formatTextTitle } from "@/lib/utils";
 
 interface TextSummary {
   title: string;
@@ -40,6 +42,8 @@ interface CategoryBrowserProps {
  * When multiple languages, shows all grouped by language header.
  */
 export function CategoryBrowser({ languages }: CategoryBrowserProps) {
+  const { t, locale } = useTranslation();
+
   // Sort languages by descending text count
   const sortedLanguages = useMemo(() => {
     return [...languages].sort((a, b) => {
@@ -64,7 +68,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
   if (sortedLanguages.length === 0) {
     return (
       <p className="py-8 text-center text-muted-foreground">
-        No texts match the current filters.
+        {t("featured.noMatch")}
       </p>
     );
   }
@@ -74,48 +78,54 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
     const lang = sortedLanguages[0];
     return (
       <div className="space-y-6">
-        {lang.authors.map((author) => (
-          <div key={author.slug}>
-            <h3 className="mb-2 text-lg font-semibold">
-              {author.name}
-              {author.nameOriginalScript && (
-                <span className="ml-2 text-base font-normal text-muted-foreground">
-                  {author.nameOriginalScript}
-                </span>
-              )}
-              {author.era && (
-                <span className="ml-2 text-sm font-normal text-muted-foreground">
-                  ({author.era})
-                </span>
-              )}
-            </h3>
+        {lang.authors.map((author) => {
+          const authorDisplay = formatAuthorName(author, locale);
+          return (
+            <div key={author.slug}>
+              <h3 className="mb-2 text-lg font-semibold">
+                {authorDisplay.primary}
+                {authorDisplay.secondary && (
+                  <span className="ml-2 text-base font-normal text-muted-foreground">
+                    {authorDisplay.secondary}
+                  </span>
+                )}
+                {author.era && (
+                  <span className="ml-2 text-sm font-normal text-muted-foreground">
+                    ({author.era})
+                  </span>
+                )}
+              </h3>
 
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {author.texts.map((text) => (
-                <Link
-                  key={text.slug}
-                  href={`/${lang.code}/${author.slug}/${text.slug}`}
-                >
-                  <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
-                    <p className="text-sm font-medium leading-tight">{text.title}</p>
-                    {text.titleOriginalScript && (
-                      <p className="text-xs text-muted-foreground">
-                        {text.titleOriginalScript}
-                      </p>
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                      {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} ch.
-                    </p>
-                  </Card>
-                </Link>
-              ))}
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {author.texts.map((text) => {
+                  const titleDisplay = formatTextTitle(text, locale);
+                  return (
+                    <Link
+                      key={text.slug}
+                      href={`/${lang.code}/${author.slug}/${text.slug}`}
+                    >
+                      <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
+                        <p className="text-sm font-medium leading-tight">{titleDisplay.primary}</p>
+                        {titleDisplay.secondary && (
+                          <p className="text-xs text-muted-foreground">
+                            {titleDisplay.secondary}
+                          </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} {t("featured.ch")}
+                        </p>
+                      </Card>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {lang.authors.length === 0 && (
           <p className="text-muted-foreground">
-            No texts in this language yet.
+            {t("featured.noTexts")}
           </p>
         )}
       </div>
@@ -125,62 +135,73 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
   // Multiple languages: show grouped by language header
   return (
     <div className="space-y-8">
-      {sortedLanguages.map((lang) => (
-        <div key={lang.code}>
-          <h2 className="mb-4 text-xl font-bold border-b pb-2">
-            {lang.name}
-            <span className="ml-2 text-base font-normal text-muted-foreground">
-              ({textCounts.get(lang.code) ?? 0} text{(textCounts.get(lang.code) ?? 0) !== 1 ? "s" : ""})
-            </span>
-          </h2>
-          <div className="space-y-6">
-            {lang.authors.map((author) => (
-              <div key={author.slug}>
-                <h3 className="mb-2 text-lg font-semibold">
-                  {author.name}
-                  {author.nameOriginalScript && (
-                    <span className="ml-2 text-base font-normal text-muted-foreground">
-                      {author.nameOriginalScript}
-                    </span>
-                  )}
-                  {author.era && (
-                    <span className="ml-2 text-sm font-normal text-muted-foreground">
-                      ({author.era})
-                    </span>
-                  )}
-                </h3>
+      {sortedLanguages.map((lang) => {
+        const langTextCount = textCounts.get(lang.code) ?? 0;
+        return (
+          <div key={lang.code}>
+            <h2 className="mb-4 text-xl font-bold border-b pb-2">
+              {t(`sourcelang.${lang.code}` as Parameters<typeof t>[0])}
+              <span className="ml-2 text-base font-normal text-muted-foreground">
+                ({langTextCount === 1
+                  ? t("featured.text").replace("{count}", "1")
+                  : t("featured.texts").replace("{count}", String(langTextCount))})
+              </span>
+            </h2>
+            <div className="space-y-6">
+              {lang.authors.map((author) => {
+                const authorDisplay = formatAuthorName(author, locale);
+                return (
+                  <div key={author.slug}>
+                    <h3 className="mb-2 text-lg font-semibold">
+                      {authorDisplay.primary}
+                      {authorDisplay.secondary && (
+                        <span className="ml-2 text-base font-normal text-muted-foreground">
+                          {authorDisplay.secondary}
+                        </span>
+                      )}
+                      {author.era && (
+                        <span className="ml-2 text-sm font-normal text-muted-foreground">
+                          ({author.era})
+                        </span>
+                      )}
+                    </h3>
 
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  {author.texts.map((text) => (
-                    <Link
-                      key={text.slug}
-                      href={`/${lang.code}/${author.slug}/${text.slug}`}
-                    >
-                      <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
-                        <p className="text-sm font-medium leading-tight">{text.title}</p>
-                        {text.titleOriginalScript && (
-                          <p className="text-xs text-muted-foreground">
-                            {text.titleOriginalScript}
-                          </p>
-                        )}
-                        <p className="text-xs text-muted-foreground">
-                          {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} ch.
-                        </p>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+                    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                      {author.texts.map((text) => {
+                        const titleDisplay = formatTextTitle(text, locale);
+                        return (
+                          <Link
+                            key={text.slug}
+                            href={`/${lang.code}/${author.slug}/${text.slug}`}
+                          >
+                            <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
+                              <p className="text-sm font-medium leading-tight">{titleDisplay.primary}</p>
+                              {titleDisplay.secondary && (
+                                <p className="text-xs text-muted-foreground">
+                                  {titleDisplay.secondary}
+                                </p>
+                              )}
+                              <p className="text-xs text-muted-foreground">
+                                {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} {t("featured.ch")}
+                              </p>
+                            </Card>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
 
-            {lang.authors.length === 0 && (
-              <p className="text-muted-foreground">
-                No texts in this language yet.
-              </p>
-            )}
+              {lang.authors.length === 0 && (
+                <p className="text-muted-foreground">
+                  {t("featured.noTexts")}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
