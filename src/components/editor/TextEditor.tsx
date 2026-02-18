@@ -20,7 +20,6 @@ interface TextEditorProps {
   existingTranslation: { paragraphs: Paragraph[] } | null;
   sourceLanguage: string;
   returnPath: string;
-  targetLanguage?: string;
 }
 
 export function TextEditor({
@@ -29,7 +28,6 @@ export function TextEditor({
   existingTranslation,
   sourceLanguage,
   returnPath,
-  targetLanguage = "en",
 }: TextEditorProps) {
   const router = useRouter();
   const trpc = useTRPC();
@@ -72,7 +70,6 @@ export function TextEditor({
       chapterId,
       content,
       editSummary: editSummary || undefined,
-      targetLanguage,
     });
   }
 

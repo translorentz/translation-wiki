@@ -133,7 +133,6 @@ export const authors = pgTable("authors", {
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   era: varchar("era", { length: 255 }),
   description: text("description"),
-  descriptionZh: text("description_zh"),
 });
 
 export const authorsRelations = relations(authors, ({ many }) => ({
@@ -158,14 +157,13 @@ export const texts = pgTable(
       .notNull()
       .references(() => authors.id),
     description: text("description"),
-    descriptionZh: text("description_zh"),
     sourceUrl: text("source_url"),
     totalChapters: integer("total_chapters").notNull().default(0),
     compositionYear: integer("composition_year"),
     compositionEra: varchar("composition_era", { length: 255 }),
     sortOrder: integer("sort_order"), // For canonical ordering within a collection (e.g., 24 Histories: 1-24)
-    textType: varchar("text_type", { length: 20 }).notNull().default("literature"), // literature | poetry
-    genre: varchar("genre", { length: 50 }).notNull().default("uncategorized"), // philosophy | theology | devotional | commentary | literature | poetry | history | science | ritual
+    textType: varchar("text_type", { length: 20 }).notNull().default("prose"), // prose | poetry
+    genre: varchar("genre", { length: 50 }).notNull().default("uncategorized"), // philosophy | commentary | literature | history | science | ritual
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => [
@@ -238,14 +236,11 @@ export const translations = pgTable(
     chapterId: integer("chapter_id")
       .notNull()
       .references(() => chapters.id, { onDelete: "cascade" }),
-    targetLanguage: varchar("target_language", { length: 10 }).notNull().default("en"),
     currentVersionId: integer("current_version_id"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
-  (table) => [
-    uniqueIndex("translations_chapter_lang_idx").on(table.chapterId, table.targetLanguage),
-  ]
+  (table) => [index("translations_chapter_id_idx").on(table.chapterId)]
 );
 
 export const translationsRelations = relations(

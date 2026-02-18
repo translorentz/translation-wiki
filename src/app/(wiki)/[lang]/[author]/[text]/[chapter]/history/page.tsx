@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
 import { parseChapterTitle } from "@/lib/utils";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 
@@ -18,7 +17,6 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
 
   const trpc = await getServerTRPC();
-  const locale = await getLocale();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -38,7 +36,6 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
   const chapter = await trpc.chapters.getByTextAndNumber({
     textId: textData.id,
     chapterNumber,
-    targetLanguage: locale,
   });
 
   if (!chapter) {

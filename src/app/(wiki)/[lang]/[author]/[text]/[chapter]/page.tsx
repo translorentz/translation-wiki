@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
 import { parseChapterTitle } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
@@ -52,7 +51,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   const canEdit = session?.user?.role === "editor" || session?.user?.role === "admin";
 
   const trpc = await getServerTRPC();
-  const locale = await getLocale();
 
   // Fetch the text to get its ID and chapter list
   const textData = await trpc.texts.getBySlug({
@@ -71,11 +69,10 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     notFound();
   }
 
-  // Fetch chapter data with translations for the current locale
+  // Fetch chapter data with translations
   const chapter = await trpc.chapters.getByTextAndNumber({
     textId: textData.id,
     chapterNumber,
-    targetLanguage: locale,
   });
 
   if (!chapter) {

@@ -1,7 +1,7 @@
 /**
  * Batch translates untranslated chapters using the Claude API.
  *
- * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS] [--target-language en|zh]
+ * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS]
  *
  * Prerequisites:
  * - Database seeded with chapters (pnpm db:seed)
@@ -94,7 +94,6 @@ function parseArgs() {
   let end: number | undefined;
   let delay = DEFAULT_DELAY_MS;
   let retranslate = false;
-  let targetLanguage = "en";
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--text" && args[i + 1]) textSlug = args[i + 1];
@@ -102,10 +101,9 @@ function parseArgs() {
     if (args[i] === "--end" && args[i + 1]) end = parseInt(args[i + 1]);
     if (args[i] === "--delay" && args[i + 1]) delay = parseInt(args[i + 1]);
     if (args[i] === "--retranslate") retranslate = true;
-    if (args[i] === "--target-language" && args[i + 1]) targetLanguage = args[i + 1];
   }
 
-  return { textSlug, start, end, delay, retranslate, targetLanguage };
+  return { textSlug, start, end, delay, retranslate };
 }
 
 // ============================================================
@@ -325,8 +323,7 @@ const MISMATCH_MAX_RETRIES = 2;
 
 async function translateBatch(
   paragraphs: Paragraph[],
-  sourceLanguage: string,
-  targetLanguage: string = "en"
+  sourceLanguage: string
 ): Promise<Paragraph[]> {
   const expectedIndices = paragraphs.map((p) => p.index);
 
@@ -334,7 +331,6 @@ async function translateBatch(
     const { system, user } = buildTranslationPrompt({
       sourceLanguage,
       paragraphs,
-      targetLanguage,
     });
 
     const response = await openai.chat.completions.create({
@@ -387,15 +383,14 @@ async function translateBatchWithRetry(
   sourceLanguage: string,
   batchNum: number,
   totalBatches: number,
-  depth: number = 0,
-  targetLanguage: string = "en"
+  depth: number = 0
 ): Promise<{ results: Paragraph[]; failed: number }> {
   const MAX_RETRIES = 3;
   const label = totalBatches > 1 ? `    batch ${batchNum}/${totalBatches}` : "    batch 1/1";
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const result = await translateBatch(paragraphs, sourceLanguage, targetLanguage);
+      const result = await translateBatch(paragraphs, sourceLanguage);
       process.stdout.write(`${label} (${result.length} paragraphs)\n`);
       return { results: result, failed: 0 };
     } catch (err) {
@@ -416,9 +411,9 @@ async function translateBatchWithRetry(
     process.stdout.write(`${label} splitting batch (${paragraphs.length} → ${firstHalf.length}+${secondHalf.length})\n`);
 
     await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
-    const r1 = await translateBatchWithRetry(firstHalf, sourceLanguage, batchNum, totalBatches, depth + 1, targetLanguage);
+    const r1 = await translateBatchWithRetry(firstHalf, sourceLanguage, batchNum, totalBatches, depth + 1);
     await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
-    const r2 = await translateBatchWithRetry(secondHalf, sourceLanguage, batchNum, totalBatches, depth + 1, targetLanguage);
+    const r2 = await translateBatchWithRetry(secondHalf, sourceLanguage, batchNum, totalBatches, depth + 1);
 
     return { results: [...r1.results, ...r2.results], failed: r1.failed + r2.failed };
   }
@@ -442,8 +437,7 @@ async function translateChapter(
   },
   sourceLanguage: string,
   systemUserId: number,
-  textSlug: string,
-  targetLanguage: string = "en"
+  textSlug: string
 ): Promise<boolean> {
   const sourceContent = chapter.sourceContent as {
     paragraphs: Paragraph[];
@@ -454,12 +448,9 @@ async function translateChapter(
     return false;
   }
 
-  // Check if translation already exists for this target language
+  // Check if translation already exists
   const existingTranslation = await db.query.translations.findFirst({
-    where: and(
-      eq(schema.translations.chapterId, chapter.id),
-      eq(schema.translations.targetLanguage, targetLanguage)
-    ),
+    where: eq(schema.translations.chapterId, chapter.id),
   });
 
   if (existingTranslation?.currentVersionId) {
@@ -478,7 +469,7 @@ async function translateChapter(
       if (i > 0) {
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
       }
-      const batchResult = await translateBatchWithRetry(chunks[i], sourceLanguage, i + 1, chunks.length, 0, targetLanguage);
+      const batchResult = await translateBatchWithRetry(chunks[i], sourceLanguage, i + 1, chunks.length);
       translated.push(...batchResult.results);
       failedParagraphs += batchResult.failed;
     }
@@ -514,31 +505,18 @@ async function translateChapter(
 
     // Verify content completeness via length ratio check
     // Translations should be at least MIN_RATIO of source length to catch truncation
-    // When targeting Chinese, ratios are lower because Chinese is more compact than English
-    const MIN_LENGTH_RATIO_EN: Record<string, number> = {
+    const MIN_LENGTH_RATIO: Record<string, number> = {
       zh: 1.5,        // Chinese expands significantly in English
       "zh-literary": 1.5,
       "zh-science": 1.5,
       "zh-biji": 1.5,
-      "zh-dongpo-yi-zhuan": 1.5,
-      "zh-su-shen-liang-fang": 1.5,
-      "zh-tan-huo-dian-xue": 1.5,
-      "zh-shengji-zonglu": 1.5,
       grc: 0.5,       // Greek to English is roughly similar, but allow for compression
       "grc-history": 0.5,
       "grc-gregory": 0.5,
       la: 0.5,        // Latin similar to Greek
-      "sr-scholarly": 0.1, // OCR-damaged Serbian text — garbled source produces short translations
       default: 0.5,
     };
-    // When translating TO Chinese: Chinese uses fewer characters, so lower ratio threshold
-    const MIN_LENGTH_RATIO_ZH: Record<string, number> = {
-      grc: 0.2,       // Greek → Chinese is very compact
-      la: 0.2,
-      default: 0.2,
-    };
-    const ratioTable = targetLanguage === "zh" ? MIN_LENGTH_RATIO_ZH : MIN_LENGTH_RATIO_EN;
-    const minRatio = ratioTable[sourceLanguage] ?? ratioTable.default;
+    const minRatio = MIN_LENGTH_RATIO[sourceLanguage] ?? MIN_LENGTH_RATIO.default;
 
     const truncatedParagraphs: { index: number; srcLen: number; transLen: number; ratio: number }[] = [];
     for (let i = 0; i < sourceContent.paragraphs.length; i++) {
@@ -574,7 +552,7 @@ async function translateChapter(
     if (!translation) {
       const [newT] = await db
         .insert(schema.translations)
-        .values({ chapterId: chapter.id, targetLanguage })
+        .values({ chapterId: chapter.id })
         .returning();
       translation = newT;
     }
@@ -618,11 +596,10 @@ async function translateChapter(
 // ============================================================
 
 async function main() {
-  const { textSlug, start, end, delay, retranslate, targetLanguage } = parseArgs();
+  const { textSlug, start, end, delay, retranslate } = parseArgs();
 
   console.log("=== Batch Translation ===\n");
   console.log(`Model: ${MODEL}`);
-  console.log(`Target language: ${targetLanguage}`);
   console.log(`Delay: ${delay}ms between requests`);
   if (retranslate) {
     console.log(`Mode: RETRANSLATE (existing translations will be replaced)`);
@@ -654,8 +631,8 @@ async function main() {
     let promptLang = text.language.code;
     let usingSpecialPrompt = false;
 
-    // Chinese literary/historical/commentary texts use zh-literary prompt
-    const isLiteraryChinese = text.language.code === "zh" && (text.genre === "literature" || text.genre === "history" || text.genre === "commentary");
+    // Chinese literary/historical texts use zh-literary prompt
+    const isLiteraryChinese = text.language.code === "zh" && (text.genre === "literature" || text.genre === "history");
     if (isLiteraryChinese) {
       promptLang = "zh-literary";
       usingSpecialPrompt = true;
@@ -668,39 +645,9 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // Su Shen Liang Fang (medical formulary) uses text-specific prompt
-    if (text.slug === "su-shen-liang-fang") {
-      promptLang = "zh-su-shen-liang-fang";
-      usingSpecialPrompt = true;
-    }
-
-    // Tan Huo Dian Xue (Ming clinical treatise on phlegm-fire disorders) uses text-specific prompt
-    if (text.slug === "tan-huo-dian-xue") {
-      promptLang = "zh-tan-huo-dian-xue";
-      usingSpecialPrompt = true;
-    }
-
-    // Shengji Zonglu (Song imperial medical encyclopedia) uses text-specific prompt
-    if (text.slug === "shengji-zonglu") {
-      promptLang = "zh-shengji-zonglu";
-      usingSpecialPrompt = true;
-    }
-
-    // Dongpo Yi Zhuan (Yijing commentary) uses specialized prompt
-    if (text.slug === "dongpo-yi-zhuan") {
-      promptLang = "zh-dongpo-yi-zhuan";
-      usingSpecialPrompt = true;
-    }
-
-    // Song biji prose (Su Shi's notebooks) uses zh-biji prompt
-    if (text.slug === "dongpo-zhilin" || text.slug === "qiu-chi-bi-ji") {
+    // Song biji prose (Su Shi's Dongpo Zhilin) uses zh-biji prompt
+    if (text.slug === "dongpo-zhilin") {
       promptLang = "zh-biji";
-      usingSpecialPrompt = true;
-    }
-
-    // Joseon Sillok texts use zh-joseon-sillok prompt
-    if (text.slug.startsWith("joseon-sillok-")) {
-      promptLang = "zh-joseon-sillok";
       usingSpecialPrompt = true;
     }
 
@@ -731,20 +678,6 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // French poetry uses fr-poetry prompt
-    const isFrenchPoetry = text.language.code === "fr" && text.textType === "poetry";
-    if (isFrenchPoetry) {
-      promptLang = "fr-poetry";
-      usingSpecialPrompt = true;
-    }
-
-    // Chinese poetry uses zh-poetry prompt
-    const isChinesePoetry = text.language.code === "zh" && text.textType === "poetry";
-    if (isChinesePoetry) {
-      promptLang = "zh-poetry";
-      usingSpecialPrompt = true;
-    }
-
     // Tamil prose literature uses ta-prose prompt
     const isTamilProse = text.language.code === "ta" && text.genre === "literature" && text.textType === "prose";
     if (isTamilProse) {
@@ -762,18 +695,6 @@ async function main() {
     // Gregory of Nazianzus orations use grc-gregory prompt
     if (text.slug === "gregory-orations") {
       promptLang = "grc-gregory";
-      usingSpecialPrompt = true;
-    }
-
-    // French academic geography (Peninsula Balkanique) uses fr-academic prompt
-    if (text.language.code === "fr" && text.genre === "science") {
-      promptLang = "fr-academic";
-      usingSpecialPrompt = true;
-    }
-
-    // Serbian scholarly prose uses sr-scholarly prompt
-    if (text.language.code === "sr" && text.genre === "history") {
-      promptLang = "sr-scholarly";
       usingSpecialPrompt = true;
     }
 
@@ -805,10 +726,7 @@ async function main() {
       // If retranslate mode, delete existing translations first
       if (retranslate) {
         const existingTranslation = await db.query.translations.findFirst({
-          where: and(
-            eq(schema.translations.chapterId, chapter.id),
-            eq(schema.translations.targetLanguage, targetLanguage)
-          ),
+          where: eq(schema.translations.chapterId, chapter.id),
         });
         if (existingTranslation) {
           // Delete all versions first (due to foreign key constraints)
@@ -827,8 +745,7 @@ async function main() {
         chapter,
         promptLang,
         systemUserId,
-        text.slug,
-        targetLanguage
+        text.slug
       );
 
       if (success) {

@@ -2,7 +2,6 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { getLocale } from "@/i18n/server";
 import { parseChapterTitle } from "@/lib/utils";
 import { TextEditor } from "@/components/editor/TextEditor";
 
@@ -27,7 +26,6 @@ export default async function EditPage({ params }: EditPageProps) {
   }
 
   const trpc = await getServerTRPC();
-  const locale = await getLocale();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -47,7 +45,6 @@ export default async function EditPage({ params }: EditPageProps) {
   const chapter = await trpc.chapters.getByTextAndNumber({
     textId: textData.id,
     chapterNumber,
-    targetLanguage: locale,
   });
 
   if (!chapter) {
@@ -99,7 +96,6 @@ export default async function EditPage({ params }: EditPageProps) {
         existingTranslation={existingContent}
         sourceLanguage={lang}
         returnPath={returnPath}
-        targetLanguage={locale}
       />
     </main>
   );

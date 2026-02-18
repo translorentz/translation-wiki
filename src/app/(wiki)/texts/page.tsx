@@ -36,13 +36,8 @@ interface BrowsePageProps {
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const { lang, genre } = await searchParams;
   const trpc = await getServerTRPC();
-  const allTextsRaw = await trpc.texts.list();
-  const { t, locale } = await getServerTranslation();
-
-  // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
-  const allTexts = locale === "zh"
-    ? allTextsRaw.filter((t) => t.language.code !== "zh")
-    : allTextsRaw;
+  const allTexts = await trpc.texts.list();
+  const { t } = await getServerTranslation();
 
   // Apply both filters independently
   let filteredTexts = allTexts;
