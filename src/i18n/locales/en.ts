@@ -202,7 +202,7 @@ const en = {
   // Highlight cards
   "highlights.zhuziyulei": "Neo-Confucian philosophy recorded by Zhu Xi's students.",
   "highlights.centanni": "A panoramic novel of Milan across a century of upheaval.",
-  "highlights.romaike": "Byzantium from 1204 to 1359, by a polymath at the heart of the Hesychast controversy.",
+  "highlights.romaike": "Court politics, civil wars, and theological rifts in late Byzantium.",
   "highlights.dongpozhilin": "Anecdotes, dreams, and meditations by Su Shi in exile.",
 
   // Editor
