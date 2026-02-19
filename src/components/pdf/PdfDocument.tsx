@@ -257,7 +257,8 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
   doc.font("Serif").fontSize(14).fillColor("#666666");
   doc.text("DELTOI", MARGIN_LEFT, colophonY, opts);
   doc.moveDown(0.6);
-  doc.font("Serif-Italic").fontSize(10).fillColor("#999999");
+  // Use regular font for Chinese (no SC italic variant available)
+  doc.font(isChinese ? "Serif" : "Serif-Italic").fontSize(10).fillColor("#999999");
   doc.text(downloadedAt, MARGIN_LEFT, doc.y, opts);
   doc.moveDown(0.3);
   doc.fontSize(9).fillColor("#aaaaaa");
