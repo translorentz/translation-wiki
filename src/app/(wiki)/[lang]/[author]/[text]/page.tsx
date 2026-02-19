@@ -85,7 +85,7 @@ export default async function TextPage({ params }: TextPageProps) {
           </p>
         )}
         <div className="mt-4">
-          <ExportButtons textId={textData.id} textTitle={textData.title} />
+          <ExportButtons textId={textData.id} textTitle={textData.title} textSlug={textData.slug} />
         </div>
       </div>
 

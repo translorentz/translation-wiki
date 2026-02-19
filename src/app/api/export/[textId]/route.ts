@@ -7,11 +7,13 @@ export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ textId: string }> }
 ) {
   const { textId: textIdStr } = await params;
   const textId = parseInt(textIdStr, 10);
+  const url = new URL(request.url);
+  const lang = url.searchParams.get("lang") || "en";
 
   if (isNaN(textId)) {
     return Response.json({ error: "Invalid text ID" }, { status: 400 });
@@ -39,19 +41,24 @@ export async function GET(
     return Response.json({ error: "Text not found" }, { status: 404 });
   }
 
-  // Extract chapters that have translations
+  // Extract chapters that have translations in the requested language
   const translatedChapters = textData.chapters
     .filter((ch) => {
-      const translation = ch.translations[0];
+      const translation = ch.translations.find(
+        (t) => t.targetLanguage === lang
+      );
       return translation?.currentVersion?.content;
     })
     .map((ch) => {
-      const content = ch.translations[0]!.currentVersion!.content as {
+      const translation = ch.translations.find(
+        (t) => t.targetLanguage === lang
+      )!;
+      const content = translation.currentVersion!.content as {
         paragraphs: { index: number; text: string }[];
       };
       return {
         chapterNumber: ch.chapterNumber,
-        title: ch.title,
+        title: lang === "zh" ? (ch.titleZh || ch.title) : ch.title,
         translationParagraphs: content.paragraphs,
       };
     });
@@ -63,18 +70,22 @@ export async function GET(
     );
   }
 
+  const displayTitle =
+    lang === "zh" ? (textData.titleZh || textData.title) : textData.title;
+
   try {
     const pdfBuffer = await generatePdf({
-      textTitle: textData.title,
+      textTitle: displayTitle,
       titleOriginalScript: textData.titleOriginalScript,
       authorName: textData.author.name,
       languageName: textData.language.name,
       chapters: translatedChapters,
       totalChapters: textData.chapters.length,
       textType: textData.textType,
+      lang,
     });
 
-    const filename = textData.title.replace(/[^\w\s-]/g, "").trim();
+    const filename = textData.slug;
 
     return new Response(new Uint8Array(pdfBuffer), {
       headers: {

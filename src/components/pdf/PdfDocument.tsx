@@ -20,6 +20,7 @@ interface PdfDocumentProps {
   chapters: ChapterData[];
   totalChapters: number;
   textType: string;
+  lang: string;
 }
 
 // Page dimensions (US Letter)
@@ -31,14 +32,11 @@ const MARGIN_LEFT = 90;
 const MARGIN_RIGHT = 90;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
 
-// Font paths
+// Font paths — selected per language in generatePdf()
 const FONT_DIR = path.join(process.cwd(), "public", "fonts");
-const FONT_REGULAR = path.join(FONT_DIR, "EBGaramond-Regular.ttf");
-const FONT_BOLD = path.join(FONT_DIR, "EBGaramond-Bold.ttf");
-const FONT_ITALIC = path.join(FONT_DIR, "EBGaramond-Italic.ttf");
 
 function addPageNumber(doc: InstanceType<typeof PDFDocument>, pageNum: number) {
-  doc.font(FONT_REGULAR).fontSize(9).fillColor("#666666");
+  doc.font("Serif").fontSize(9).fillColor("#666666");
   doc.text(`${pageNum}`, 0, PAGE_HEIGHT - 36, {
     width: PAGE_WIDTH,
     align: "center",
@@ -49,11 +47,12 @@ function renderTitlePage(
   doc: InstanceType<typeof PDFDocument>,
   props: PdfDocumentProps
 ) {
-  const { textTitle, titleOriginalScript, authorName, languageName, chapters, totalChapters } = props;
+  const { textTitle, titleOriginalScript, authorName, languageName, chapters, totalChapters, lang } = props;
   const isPartial = chapters.length < totalChapters;
+  const isChinese = lang === "zh";
 
   // Title
-  doc.font(FONT_BOLD).fontSize(24).fillColor("#000000");
+  doc.font("Serif-Bold").fontSize(24).fillColor("#000000");
   doc.text(textTitle, MARGIN_LEFT, 200, {
     width: CONTENT_WIDTH,
     align: "center",
@@ -62,7 +61,7 @@ function renderTitlePage(
   // Original script title
   if (titleOriginalScript) {
     doc.moveDown(0.3);
-    doc.font(FONT_REGULAR).fontSize(16).fillColor("#555555");
+    doc.font("Serif").fontSize(16).fillColor("#555555");
     doc.text(titleOriginalScript, MARGIN_LEFT, doc.y, {
       width: CONTENT_WIDTH,
       align: "center",
@@ -71,7 +70,7 @@ function renderTitlePage(
 
   // Author
   doc.moveDown(1.5);
-  doc.font(FONT_REGULAR).fontSize(14).fillColor("#000000");
+  doc.font("Serif").fontSize(14).fillColor("#000000");
   doc.text(authorName, MARGIN_LEFT, doc.y, {
     width: CONTENT_WIDTH,
     align: "center",
@@ -79,8 +78,9 @@ function renderTitlePage(
 
   // Language
   doc.moveDown(0.3);
-  doc.font(FONT_REGULAR).fontSize(12).fillColor("#666666");
-  doc.text(`Translated from ${languageName}`, MARGIN_LEFT, doc.y, {
+  doc.font("Serif").fontSize(12).fillColor("#666666");
+  const translatedFrom = isChinese ? `译自${languageName}` : `Translated from ${languageName}`;
+  doc.text(translatedFrom, MARGIN_LEFT, doc.y, {
     width: CONTENT_WIDTH,
     align: "center",
   });
@@ -88,18 +88,18 @@ function renderTitlePage(
   // Partial note
   if (isPartial) {
     doc.moveDown(0.3);
-    doc.font(FONT_REGULAR).fontSize(10).fillColor("#999999");
-    doc.text(
-      `Partial translation (${chapters.length} of ${totalChapters} chapters)`,
-      MARGIN_LEFT,
-      doc.y,
-      { width: CONTENT_WIDTH, align: "center" }
-    );
+    doc.font("Serif").fontSize(10).fillColor("#999999");
+    const partialNote = isChinese
+      ? `部分翻译（${chapters.length} / ${totalChapters} 章）`
+      : `Partial translation (${chapters.length} of ${totalChapters} chapters)`;
+    doc.text(partialNote, MARGIN_LEFT, doc.y, {
+      width: CONTENT_WIDTH, align: "center",
+    });
   }
 
   // Site
   doc.moveDown(3);
-  doc.font(FONT_REGULAR).fontSize(10).fillColor("#999999");
+  doc.font("Serif").fontSize(10).fillColor("#999999");
   doc.text("deltoi.com", MARGIN_LEFT, doc.y, {
     width: CONTENT_WIDTH,
     align: "center",
@@ -112,7 +112,7 @@ function renderProseChapter(
 ) {
   // Chapter title
   if (chapter.title) {
-    doc.font(FONT_BOLD).fontSize(16).fillColor("#000000");
+    doc.font("Serif-Bold").fontSize(16).fillColor("#000000");
     doc.text(chapter.title, MARGIN_LEFT, MARGIN_TOP, {
       width: CONTENT_WIDTH,
       align: "center",
@@ -123,7 +123,7 @@ function renderProseChapter(
   }
 
   // Paragraphs
-  doc.font(FONT_REGULAR).fontSize(11).fillColor("#000000");
+  doc.font("Serif").fontSize(11).fillColor("#000000");
   for (let i = 0; i < chapter.translationParagraphs.length; i++) {
     const p = chapter.translationParagraphs[i]!;
     doc.text(p.text, MARGIN_LEFT, doc.y, {
@@ -142,7 +142,7 @@ function renderPoetryChapter(
 ) {
   // Chapter title
   if (chapter.title) {
-    doc.font(FONT_BOLD).fontSize(16).fillColor("#000000");
+    doc.font("Serif-Bold").fontSize(16).fillColor("#000000");
     doc.text(chapter.title, MARGIN_LEFT, MARGIN_TOP, {
       width: CONTENT_WIDTH,
       align: "center",
@@ -164,7 +164,7 @@ function renderPoetryChapter(
 
       if (showNumber) {
         // Line number
-        doc.font(FONT_REGULAR).fontSize(8).fillColor("#999999");
+        doc.font("Serif").fontSize(8).fillColor("#999999");
         doc.text(
           `${globalLineCount.value}`,
           MARGIN_LEFT,
@@ -176,7 +176,7 @@ function renderPoetryChapter(
       }
 
       // Poetry line
-      doc.font(FONT_REGULAR).fontSize(11).fillColor("#000000");
+      doc.font("Serif").fontSize(11).fillColor("#000000");
       doc.text(
         line,
         MARGIN_LEFT + LINE_NUM_WIDTH + LINE_NUM_GAP + POETRY_INDENT,
@@ -190,6 +190,17 @@ function renderPoetryChapter(
 }
 
 export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
+  const isChinese = props.lang === "zh";
+
+  // Select fonts based on language
+  const fontRegular = isChinese
+    ? path.join(FONT_DIR, "NotoSerifSC-Regular.ttf")
+    : path.join(FONT_DIR, "NotoSerif-Regular.ttf");
+  const fontBold = isChinese
+    ? path.join(FONT_DIR, "NotoSerifSC-Bold.ttf")
+    : path.join(FONT_DIR, "NotoSerif-Bold.ttf");
+  const fontItalic = path.join(FONT_DIR, "NotoSerif-Italic.ttf");
+
   const doc = new PDFDocument({
     size: "LETTER",
     margins: {
@@ -206,10 +217,10 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
     },
   });
 
-  // Register fonts
-  doc.registerFont("EBGaramond", FONT_REGULAR);
-  doc.registerFont("EBGaramond-Bold", FONT_BOLD);
-  doc.registerFont("EBGaramond-Italic", FONT_ITALIC);
+  // Register fonts with generic names so render functions are font-agnostic
+  doc.registerFont("Serif", fontRegular);
+  doc.registerFont("Serif-Bold", fontBold);
+  doc.registerFont("Serif-Italic", fontItalic);
 
   // Collect buffer
   const chunks: Buffer[] = [];
@@ -235,20 +246,22 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
   // Colophon page
   doc.addPage();
   const colophonY = PAGE_HEIGHT / 2 - 40;
-  const downloadDate = new Date().toLocaleDateString("en-GB", {
+  const downloadDate = new Date().toLocaleDateString(isChinese ? "zh-CN" : "en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
+  const downloadedAt = isChinese ? "于 deltoi.com 下载" : "Downloaded at deltoi.com";
+  const trialProject = isChinese ? "Bryan Cheong 的试验项目" : "A trial project by Bryan Cheong";
   const opts = { width: CONTENT_WIDTH, align: "center" as const };
-  doc.font(FONT_REGULAR).fontSize(14).fillColor("#666666");
+  doc.font("Serif").fontSize(14).fillColor("#666666");
   doc.text("DELTOI", MARGIN_LEFT, colophonY, opts);
   doc.moveDown(0.6);
-  doc.font(FONT_ITALIC).fontSize(10).fillColor("#999999");
-  doc.text("Downloaded at deltoi.com", MARGIN_LEFT, doc.y, opts);
+  doc.font("Serif-Italic").fontSize(10).fillColor("#999999");
+  doc.text(downloadedAt, MARGIN_LEFT, doc.y, opts);
   doc.moveDown(0.3);
   doc.fontSize(9).fillColor("#aaaaaa");
-  doc.text("A trial project by Bryan Cheong", MARGIN_LEFT, doc.y, opts);
+  doc.text(trialProject, MARGIN_LEFT, doc.y, opts);
   doc.moveDown(0.3);
   doc.fontSize(8).fillColor("#bbbbbb");
   doc.text(downloadDate, MARGIN_LEFT, doc.y, opts);

@@ -8,9 +8,10 @@ import { useTranslation } from "@/i18n";
 interface ExportButtonsProps {
   textId: number;
   textTitle: string;
+  textSlug: string;
 }
 
-function useExport(textId: number, textTitle: string, format: "pdf" | "epub") {
+function useExport(textId: number, textSlug: string, format: "pdf" | "epub", locale: string) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,10 +19,11 @@ function useExport(textId: number, textTitle: string, format: "pdf" | "epub") {
     setLoading(true);
     setError(null);
 
+    const langParam = locale !== "en" ? `?lang=${locale}` : "";
     const url =
       format === "pdf"
-        ? `/api/export/${textId}`
-        : `/api/export/${textId}/epub`;
+        ? `/api/export/${textId}${langParam}`
+        : `/api/export/${textId}/epub${langParam}`;
 
     try {
       const res = await fetch(url);
@@ -35,7 +37,7 @@ function useExport(textId: number, textTitle: string, format: "pdf" | "epub") {
       const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = blobUrl;
-      a.download = `${textTitle.replace(/[^\w\s-]/g, "").trim()}.${format}`;
+      a.download = `${textSlug}.${format}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -52,10 +54,10 @@ function useExport(textId: number, textTitle: string, format: "pdf" | "epub") {
   return { loading, error, handleExport };
 }
 
-export function ExportButtons({ textId, textTitle }: ExportButtonsProps) {
-  const { t } = useTranslation();
-  const pdf = useExport(textId, textTitle, "pdf");
-  const epubExport = useExport(textId, textTitle, "epub");
+export function ExportButtons({ textId, textTitle, textSlug }: ExportButtonsProps) {
+  const { t, locale } = useTranslation();
+  const pdf = useExport(textId, textSlug, "pdf", locale);
+  const epubExport = useExport(textId, textSlug, "epub", locale);
 
   return (
     <div>
