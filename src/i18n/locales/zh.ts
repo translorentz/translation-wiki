@@ -201,10 +201,8 @@ const zh: Translations = {
   "highlights.centanni": "一部跨越百年动荡的米兰全景小说。",
   "highlights.romaike": "晚期拜占庭的宫廷政治、内战与神学纷争。",
   "highlights.dongpozhilin": "苏轼在贬谪期间的轶事、梦境与沉思。",
-  "highlights.paluba":
-    "波兰先锋派元小说，以自我解构的叙事拷问心理现实主义的虚伪，比乔伊斯和贡布罗维奇早了数十年。",
-  "highlights.shahnameh":
-    "波斯民族史诗，五万对句纵贯神话、英雄与帝国的兴亡。鲁斯塔姆传奇为全书最动人的篇章。",
+  "highlights.paluba": "解构心理现实主义的波兰先锋派元小说。",
+  "highlights.shahnameh": "波斯民族史诗，神话、英雄与帝国的兴亡。",
 
   // Editor
   "editor.enterTranslation": "输入译文……",

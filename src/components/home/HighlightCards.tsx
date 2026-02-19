@@ -62,6 +62,22 @@ const HIGHLIGHTS_ZH: Highlight[] = [
     teaserKey: "highlights.paluba",
   },
   {
+    slug: "cento-anni",
+    authorSlug: "giuseppe-rovani",
+    langCode: "it",
+    originalTitle: "Cent\u2019anni",
+    secondaryTitle: "\u767E\u5E74",
+    teaserKey: "highlights.centanni",
+  },
+  {
+    slug: "romaike-historia",
+    authorSlug: "nicephorus-gregoras",
+    langCode: "grc",
+    originalTitle: "\u03A1\u03C9\u03BC\u03B1\u03CA\u03BA\u1F74 \u1F39\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1",
+    secondaryTitle: "\u7F57\u9A6C\u53F2",
+    teaserKey: "highlights.romaike",
+  },
+  {
     slug: "shahnameh",
     authorSlug: "ferdowsi",
     langCode: "fa",
