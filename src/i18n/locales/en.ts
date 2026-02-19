@@ -16,7 +16,7 @@ const en = {
   "home.subtitle":
     "A collaborative wiki of interlinear translations of pre-contemporary texts.",
   "home.description":
-    "The goal of this project is to allow translators and scholars to comment on, collaborate on, edit, criticise, check, and endorse translations of important texts that are not yet available in the English language. The initial translations on this website are made using artificial intelligence; this project aims to build upon that foundation to produce proper and accessible translations.",
+    "The goal of this project is to allow translators and scholars to comment on, collaborate on, edit, criticise, check, and endorse translations of important texts that are not yet available in English or Chinese. The initial translations on this website are made using artificial intelligence; this project aims to build upon that foundation to produce proper and accessible translations.",
   "home.browseTexts": "Browse Texts",
   "home.searchTexts": "Search Texts",
   "home.highlights": "Highlights",
