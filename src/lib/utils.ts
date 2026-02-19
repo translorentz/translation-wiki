@@ -107,3 +107,28 @@ export function formatTextTitle(
   }
   return { primary: text.title, secondary: text.titleOriginalScript };
 }
+
+/**
+ * Format a chapter title with locale awareness.
+ * For zh locale with Chinese-source texts: hides grey text (original IS Chinese).
+ * For zh locale with other texts: shows Chinese title translation if available.
+ * For en locale: shows English translation (current behaviour).
+ */
+export function formatChapterTitle(
+  chapter: { title: string | null; titleZh?: string | null },
+  locale: string,
+  sourceLangCode?: string
+): { primary: string; secondary: string | null } {
+  const { original, english } = parseChapterTitle(chapter.title);
+
+  if (locale === "zh") {
+    // Chinese-source texts: original IS Chinese, no grey text needed
+    if (sourceLangCode === "zh") {
+      return { primary: original, secondary: null };
+    }
+    // Non-Chinese texts: show Chinese title if available, else English fallback
+    return { primary: original, secondary: chapter.titleZh || english };
+  }
+
+  return { primary: original, secondary: english };
+}

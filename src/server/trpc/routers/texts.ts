@@ -43,6 +43,7 @@ export const textsRouter = createTRPCRouter({
               chapterNumber: true,
               slug: true,
               title: true,
+              titleZh: true,
               ordering: true,
             },
           },

@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { cn, parseChapterTitle } from "@/lib/utils";
+import { cn, formatChapterTitle } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "@/i18n";
 
 interface Chapter {
   chapterNumber: number;
   title: string | null;
+  titleZh?: string | null;
   slug: string;
 }
 
@@ -26,6 +28,7 @@ export function TableOfContents({
   authorSlug,
   langCode,
 }: TableOfContentsProps) {
+  const { locale } = useTranslation();
   const activeRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
@@ -41,7 +44,7 @@ export function TableOfContents({
           {chapters.map((chapter) => {
             const isActive = chapter.chapterNumber === currentChapter;
             const href = `/${langCode}/${authorSlug}/${textSlug}/${chapter.slug}`;
-            const { original, english } = parseChapterTitle(chapter.title);
+            const { primary, secondary } = formatChapterTitle(chapter, locale, langCode);
 
             return (
               <li key={chapter.chapterNumber}>
@@ -58,10 +61,10 @@ export function TableOfContents({
                   <span className="mr-2 inline-block w-6 text-right text-xs opacity-60">
                     {chapter.chapterNumber}
                   </span>
-                  <span>{original}</span>
-                  {english && (
+                  <span>{primary}</span>
+                  {secondary && (
                     <span className="ml-1 text-xs opacity-70">
-                      {english}
+                      {secondary}
                     </span>
                   )}
                 </Link>

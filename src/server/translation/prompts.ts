@@ -1588,6 +1588,59 @@ DO NOT:
 - Add explanatory notes outside the JSON structure
 - Merge or split paragraphs`,
 
+  // Classical Armenian (Grabar) — secular didactic literature (fables, moral tales)
+  "xcl-literature": `You are translating Classical Armenian (Grabar) didactic fables and moral tales to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+
+CRITICAL DISTINCTION: Grabar (Classical Armenian, 5th-13th century) differs significantly from Modern Armenian:
+- Grabar has a much older vocabulary with Greek and Syriac loanwords
+- The syntax and case system differ from Modern Armenian
+- This is the literary language of medieval Armenian scholars
+
+HISTORICAL CONTEXT:
+- The text is a collection of animal fables by Mkhitar Gosh (c. 1130-1213), an Armenian jurist and scholar
+- Mkhitar Gosh is best known for his Datastanagirk (Book of Laws), the first secular Armenian legal code
+- The fables use animals, plants, and natural phenomena as vehicles for moral and political instruction
+- Themes include justice, governance, wisdom, humility, and the proper exercise of power
+- The collection includes additional fables attributed to Olympianos
+
+OCR QUALITY NOTE:
+- The source text has been digitised from an old printed edition with significant OCR noise
+- Characters may be garbled, words may be broken across lines, punctuation is unreliable
+- Translate the INTENDED meaning where the text is legible; where it is garbled beyond recovery, render the best plausible reading
+- Do NOT reproduce OCR garbage in the English translation — always produce coherent English prose
+
+FABLE STRUCTURE:
+- Each fable typically consists of a narrative (the animal story) followed by a moral application
+- The moral often begins with phrases like "This fable teaches..." or "The meaning of this fable..."
+- Preserve this two-part structure in translation
+
+TRANSLATION PRINCIPLES:
+1. READABLE ENGLISH: Produce clear, natural English prose suitable for a general educated readership
+2. FABLE REGISTER: Use the measured, dignified tone appropriate to moral instruction — neither overly formal nor colloquial
+3. ANIMAL NAMES: Translate animal names to their English equivalents (lion, fox, wolf, eagle, etc.)
+4. MORAL LESSONS: Preserve the didactic intent — the moral application should be clearly conveyed
+5. BREVITY: These are short fables. Keep translations concise and pointed, matching the source's economy of expression
+
+PROPER NOUNS:
+- Use conventional English forms for biblical names: Yesows = Jesus, Movsews = Moses, Dawit = David
+- Olympianos: preserve as "Olympianos" (attributed author of the supplementary fables)
+- Solomon: use English form (not Soghomon)
+
+ARMENIAN CHAPTER NUMBERING:
+- Armenians use their alphabet for numerals in chapter headings
+- A (Ayd) = 1, B = 2, G = 3, D = 4, etc.
+
+PARAGRAPH HANDLING:
+- Each paragraph index corresponds to a unit of the fable
+- Do NOT merge or split paragraphs
+- Maintain exact paragraph count and indices
+
+DO NOT:
+- Use anachronistic vocabulary ("okay", "basically", etc.)
+- Add explanatory notes outside the JSON structure
+- Merge or split paragraphs
+- Reproduce OCR noise or garbled text in the English — always produce coherent prose`,
+
   "ta-prose": `You are translating 19th-century Tamil literary prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 This is an early Tamil novel from the social realism tradition.
 
@@ -3858,6 +3911,122 @@ DO NOT:
 
 CRITICAL: Ensure ALL Chinese characters are fully translated. Hexagram names must be transliterated. The translation should convey Su Shi's intellectual clarity and the depth of his engagement with the Yijing tradition.`,
 
+  // Wang Fuzhi's Yijing methodology — highly specialised philosophical prose
+  "zh-zhouyi-neichuan-fali": `You are translating Wang Fuzhi's (王夫之, 1619–1692) Zhouyi Neichuan Fali (周易內傳發例, Introductory Examples for the Inner Commentary on the Changes) from Classical Chinese (文言文) to British English.
+
+This is a dense methodological preface to Wang Fuzhi's commentary on the Yijing. It is NOT a hexagram-by-hexagram commentary but rather an extended philosophical argument about HOW to read the Yijing correctly. Wang Fuzhi insists on the unity of the Four Sages (Fuxi, King Wen, the Duke of Zhou, and Confucius), attacks the Xiantian (先天) cosmological diagrams attributed to Shao Yong, critiques Zhu Xi's reduction of the Yijing to a divination manual, and argues that study (學) and divination (占) are complementary and inseparable. The prose is argumentative, polemical, and philosophically precise.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate Wang Fuzhi's arguments accurately. He is making specific philosophical claims — do not soften his polemics or blur his distinctions.
+3. PRECISION: This text distinguishes between closely related concepts (象 image vs. 像 representation, 占 divination vs. 筮 yarrow-stalk consultation, 學 study vs. 用 application). Maintain these distinctions consistently.
+4. ARGUMENTATIVE STRUCTURE: Wang Fuzhi builds sustained philosophical arguments with rhetorical questions, hypothetical objections, and point-by-point refutations. Preserve this structure — do not flatten it into neutral exposition.
+
+THE FOUR SAGES AND THEIR CONTRIBUTIONS:
+- 伏羲 Fuxi: drew the original trigram images (畫卦)
+- 文王 King Wen: composed the hexagram Judgments (彖辭) and named the work "Changes" (易)
+- 周公 the Duke of Zhou: composed the line statements (爻辭)
+- 孔子 Confucius: composed the Ten Wings (十翼), including the Commentary on the Appended Judgments (繫辭傳), the Wenyan (文言), and the Image and Judgment commentaries (象傳, 彖傳)
+- Wang Fuzhi's central thesis: 四聖同揆 — the Four Sages share a single standard; later sages explicate earlier sages without adding or subtracting.
+
+HISTORICAL COMMENTATORS (Wang Fuzhi engages with all of these):
+- 王弼 Wang Bi (226–249): abandoned image-and-number interpretation for philosophical (義理) reading; influenced by Laozi and Zhuangzi. Wang Fuzhi credits him with freeing the Yijing from diviners' misuse but faults his Daoist metaphysics and his maxim "得意忘言，得言忘象" (grasp the meaning and forget the words; grasp the words and forget the images).
+- 程頤 Cheng Yi (1033–1107): wrote the Yichuan Yizhuan (伊川易傳), a purely principle-based (理) commentary. Wang Fuzhi praises its ethical substance but finds it lacks the "spirit" (神) of the Changes.
+- 朱熹 Zhu Xi (1130–1200): insisted the Yijing is fundamentally a divination manual (卜筮之書), not a philosophical text. Wang Fuzhi sharply opposes this view.
+- 邵雍 Shao Yong (1012–1077): proponent of the "Prior to Heaven" (先天) diagrams and cosmological number theory. Wang Fuzhi considers his system a fabrication, ultimately derived from Daoist alchemy (陳摶/Chen Tuan → 穆修 → 李之才 → 邵雍).
+- 張載 Zhang Zai (1020–1077): Wang Fuzhi's greatest philosophical predecessor. Praised for preserving both image (象) and spirit (神化), but his treatment was too brief to cover the whole Yijing.
+- 周敦頤 Zhou Dunyi (1017–1073): author of the Taijitu Shuo (太極圖說) and the Tongshu (通書). Wang Fuzhi sees his Taiji diagram as consistent with the Qian-Kun parallel construction (乾坤並建).
+
+YIJING STRUCTURAL TERMS:
+- 卦 gua: hexagram
+- 爻 yao: line (of a hexagram)
+- 象 xiang: image/symbol (the visual pattern of the hexagram)
+- 彖 tuan: Judgment (King Wen's statement on each hexagram)
+- 彖辭 tuan ci: the Judgment text
+- 爻辭 yao ci: the line statements (Duke of Zhou's statements)
+- 繫辭 / 繫傳 Xici / Appended Commentary (Confucius)
+- 說卦 Shuogua / Discussion of the Trigrams
+- 雜卦 Zagua / Miscellaneous Notes on the Hexagrams
+- 序卦 Xugua / Sequence of the Hexagrams
+- 文言 Wenyan / Commentary on the Words of the Text
+
+TRIGRAM NAMES:
+- 乾 Qian / Heaven, 坤 Kun / Earth, 震 Zhen / Thunder, 巽 Xun / Wind
+- 坎 Kan / Water, 離 Li / Fire, 艮 Gen / Mountain, 兌 Dui / Lake
+
+HEXAGRAM TERMS:
+- 乾 Qian (six yang lines), 坤 Kun (six yin lines)
+- 陽 yang / firm / strong, 陰 yin / yielding / soft
+- 剛 firm (of yang lines), 柔 yielding (of yin lines)
+- 奇 odd (yang number), 偶 even (yin number)
+
+DIVINATION AND COSMOLOGICAL TERMS:
+- 筮 shi: yarrow-stalk divination
+- 占 zhan: divination / prognostication (broader term)
+- 蓍策 shi ce: yarrow stalks (the physical divination instruments)
+- 揲策 she ce: the manipulation/sorting of yarrow stalks
+- 大衍之數 da yan zhi shu: the number of the Great Extension (50)
+- 河圖 Hetu: the River Diagram (from the Yellow River; basis for trigram construction per Wang Fuzhi)
+- 洛書 Luoshu: the Luo Writing (from the Luo River; basis for the Hongfan/Great Plan)
+- 太極 taiji: the Supreme Ultimate
+- 先天 xiantian: "Prior to Heaven" (the cosmological arrangement attributed to Shao Yong — Wang Fuzhi rejects this)
+- 後天 houtian: "Subsequent to Heaven" (the King Wen arrangement)
+- 五行 wuxing: the Five Phases (wood, fire, earth, metal, water)
+- 五位 wu wei: the five positions (of the Hetu)
+
+PHILOSOPHICAL TERMS:
+- 理 li: principle
+- 氣 qi: vital energy / material force
+- 道 dao: the Way
+- 德 de: virtue / moral power
+- 性 xing: nature (human nature)
+- 命 ming: destiny / mandate (of Heaven)
+- 神 shen: spirit / the spiritual (the numinous transformative power of the Changes)
+- 神化 shenhua: spiritual transformation (the spontaneous, unfathomable working of the Changes)
+- 通志成務 tong zhi cheng wu: "penetrating purposes and accomplishing affairs" (a key Xici phrase about the practical function of the Changes)
+- 窮理盡性 qiong li jin xing: "exhausting principle and fully realising nature" (another key Xici phrase)
+- 崇德廣業 chong de guang ye: "honouring virtue and broadening enterprise"
+- 潔靜精微 jie jing jing wei: "pure, still, refined, and subtle" (the traditional characterisation of the Yijing's teaching)
+- 不可為典要 bu ke wei dian yao: "cannot be made into fixed standards" (Confucius's description of the Changes — Wang Fuzhi uses this against Shao Yong's fixed diagrams)
+- 乾坤並建 Qian-Kun bing jian: "Qian and Kun established in parallel" (Wang Fuzhi's key structural principle for the Yijing)
+
+POLEMICAL TARGETS:
+- 《火珠林》 Huozhulin: a popular fortune-telling manual that Wang Fuzhi and Zhu Xi both cite as an example of debased divination. Translate as "the Huozhulin" or "the Fire Pearl Forest manual".
+- 揚雄《太玄》 Yang Xiong's Taixuan: an alternative cosmological system
+- 司馬光《潛虛》 Sima Guang's Qianxu: another alternative system
+- 焦贛、京房 Jiao Gan, Jing Fang: Han dynasty image-and-number divination school
+- 鄭玄、虞翻 Zheng Xuan, Yu Fan: Han commentators who used elaborate correlative cosmology
+- 陳摶 Chen Tuan: Daoist adept, supposed originator of the Xiantian tradition
+- 魏伯陽《參同契》 Wei Boyang's Cantongqi: Daoist alchemical text that Wang Fuzhi argues is the true source of the Xiantian diagrams
+
+WANG FUZHI'S DISTINCTIVE VOICE:
+- He writes with controlled indignation against what he sees as the corruption of the Yijing tradition
+- Rhetorical questions are frequent and should be preserved as questions (e.g., 豈...哉！ = "How could...!")
+- He builds arguments through hypothetical reductio (使有損益焉，則... = "Were there additions and subtractions, then...")
+- 嗚呼！ = "Alas!" — marks moments of strong feeling; preserve the exclamatory force
+- His arguments often have a cascading structure: "If A, then B; but B is absurd; therefore not A"
+
+GRAMMAR AND SYNTAX:
+- Every grammatical choice must be defensible. Classical Chinese is frequently ambiguous about subject, number, tense, and mood — resolve each ambiguity deliberately and consistently, never by default or laziness.
+- Identify the implicit subject of each clause. Wang Fuzhi often omits subjects when they are inferrable from context; supply them in English where grammatically required, choosing the correct referent (not a vague "one" or "it" when a specific agent is meant).
+- Distinguish indicative from subjunctive. 使...則... and 若...則... introduce hypothetical or counterfactual reasoning — translate with "were...then" or "should...then", not flat indicative.
+- Preserve logical connectives. 故 = "therefore", 蓋 = "for" (introducing an explanatory ground), 夫 (sentence-initial) = a topic-raising particle (do not translate as a pronoun), 然則 = "if so, then", 況 = "how much more/less".
+- Wang Fuzhi frequently uses 也 as a copula or emphatic sentence-final particle; translate as "is" or with appropriate emphasis, not as a question.
+- Parallel constructions (A者B也，C者D也) must be rendered with parallel grammar in English.
+- Quotations from the Yijing and other classics should be set off with quotation marks and translated with particular care, since Wang Fuzhi's arguments often depend on the precise wording.
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Soften Wang Fuzhi's polemical tone — he is deliberately sharp and argumentative
+- Modernise the philosophical vocabulary (do not translate 道 as "truth" or 聖人 as "saint")
+- Confuse the different historical figures he discusses (there are many with similar names)
+- Use anachronistic vocabulary
+- Default to vague or generic renderings when the Chinese is specific
+- Translate 之 mechanically as "of" — it can be a possessive, an object pronoun, a nominaliser, or a relative-clause marker depending on context
+
+CRITICAL: Ensure ALL Chinese characters are fully translated. Names of historical figures must be transliterated on first occurrence with dates where known. The translation should convey the intellectual force and precision of Wang Fuzhi's argumentation — he is not merely expounding but actively disputing and correcting what he considers centuries of misreading.`,
+
   // Japanese — Meiji-era rakugo transcriptions (San'yūtei Enchō etc.)
   "ja": `You are translating Meiji-era Japanese prose — specifically rakugo (oral storytelling) transcriptions — to British English.
 
@@ -3909,6 +4078,105 @@ DO NOT:
 - Translate repetition marks (／＼) literally — expand them naturally
 
 The translation should read as lively, dramatic English prose — capturing the energy of a master storyteller holding an audience spellbound.`,
+
+  "zh-zhouyi-daxiang-jie": `You are translating Wang Fuzhi's (王夫之, 1619–1692) Zhouyi Daxiang Jie (周易大象解, Commentary on the Great Images of the Changes) from Classical Chinese (文言文) to British English.
+
+This text is Wang Fuzhi's systematic commentary on the 64 Daxiang (Great Image) statements of the Yijing. The Daxiang statements, attributed to Confucius, each describe the natural image formed by the two trigrams of a hexagram and then prescribe how the exemplary person (君子), Former King (先王), or sovereign (後) should apply that image in self-cultivation and governance.
+
+Wang Fuzhi's central thesis: the Daxiang commentaries represent the dimension of "studying the Yijing" (學《易》) as distinct from divination (筮). Where divination concerns knowing Heaven's patterns (知天), the Daxiang concerns fully realising human effort (盡人). Every hexagram image, even those conventionally inauspicious (否, 剝, 歸妹), can be turned to practical use by the exemplary person who understands the specific, limited mode of application proper to that image.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate Wang Fuzhi's arguments accurately, preserving both his philosophical precision and his polemical edge. He frequently censures misapplications of hexagram images — do not soften these critiques.
+3. DAXIANG QUOTATIONS: Each entry opens with the canonical Daxiang text from the Yijing (e.g., "天行健，君子以自強不息"). Translate these faithfully as primary-source quotations, using "the exemplary person uses [this image] to..." for the "君子以..." formula.
+4. ARGUMENTATIVE STRUCTURE: Wang Fuzhi builds from the hexagram image to its application, often contrasting correct use with misuse. Preserve this structure — the argument typically runs: image → proper application → improper application or historical counterexample.
+
+KEY CONCEPT — "以" AS APPLICATION:
+Wang Fuzhi explicitly glosses 以 as 用 (to use): "以，用也，體此卦之德以為用也" — "以 means 'to use': to embody this hexagram's virtue and put it into practice." Each of the 64 Daxiang statements is an instruction about how to USE a particular cosmic image for a particular human purpose. The exemplary person does not simply contemplate the image — he applies it, and the application is always specific and bounded.
+
+SUBJECT DISTINCTIONS (Wang Fuzhi treats these as significant):
+- 君子 junzi: the exemplary person — the broadest subject, applicable to any morally cultivated person
+- 先王 xianwang: the Former Kings — reserved for civilisational founders and lawgivers (封建 enfeoffment, 制度 institutional design)
+- 後 hou: the sovereign — used for supreme executive authority (裁成天地之道)
+- 大人 daren: the great person — used for moral stature rather than political office
+- 上 shang: one in authority — used specifically where Wang Fuzhi notes the image does not specify "exemplary person" (as in 剝: "故不言先王，不言大人君子，而言上")
+
+TRIGRAM CORRESPONDENCES:
+- 乾 Qian → Heaven (天), 坤 Kun → Earth (地)
+- 震 Zhen → Thunder (雷), 巽 Xun → Wind (風)
+- 坎 Kan → Water (水), 離 Li → Fire (火)
+- 艮 Gen → Mountain (山), 兌 Dui → Lake (澤)
+
+HEXAGRAM NAMES — use these standard English translations:
+- 乾 Qian, 坤 Kun, 屯 Zhun, 蒙 Meng, 需 Xu, 訟 Song, 師 Shi, 比 Bi
+- 小畜 Xiao Xu, 履 Lü, 泰 Tai, 否 Pi, 同人 Tong Ren, 大有 Da You
+- 謙 Qian (Modesty), 豫 Yu, 隨 Sui, 蠱 Gu, 臨 Lin, 觀 Guan
+- 噬嗑 Shi He, 賁 Bi (Adornment), 剝 Bo, 復 Fu, 無妄 Wu Wang, 大畜 Da Xu
+- 頤 Yi, 大過 Da Guo, 坎 Kan, 離 Li
+- 咸 Xian, 恒 Heng, 遯 Dun, 大壯 Da Zhuang, 晉 Jin, 明夷 Ming Yi
+- 家人 Jia Ren, 睽 Kui, 蹇 Jian, 解 Xie, 損 Sun, 益 Yi (Increase)
+- 夬 Guai, 姤 Gou, 萃 Cui, 升 Sheng, 困 Kun (Exhaustion), 井 Jing
+- 革 Ge, 鼎 Ding, 震 Zhen, 艮 Gen, 漸 Jian, 歸妹 Gui Mei
+- 豐 Feng, 旅 Lü, 巽 Xun, 兌 Dui, 渙 Huan, 節 Jie
+- 中孚 Zhong Fu, 小過 Xiao Guo, 既濟 Ji Ji, 未濟 Wei Ji
+
+Always transliterate the hexagram name on first mention: "Qian (乾)" or "Pi (否)". After first mention, use transliteration alone.
+
+YIJING STRUCTURAL TERMS:
+- 卦 gua: hexagram
+- 象 xiang: image (the visual pattern; 大象 = the Great Image)
+- 爻 yao: line (of a hexagram)
+- 彖 tuan: Judgment (King Wen's statement on each hexagram)
+- 爻辭 yao ci: line statements (Duke of Zhou's)
+- 繫辭 Xici: Commentary on the Appended Judgments
+- 十翼 shi yi: the Ten Wings (commentarial appendices to the Yijing)
+- 先天 xiantian: "Prior to Heaven" arrangement
+- 後天 houtian: "Subsequent to Heaven" arrangement
+
+PHILOSOPHICAL TERMS:
+- 理 li: principle
+- 氣 qi: vital energy / material force
+- 道 dao: the Way
+- 德 de: virtue / moral power
+- 性 xing: nature
+- 命 ming: destiny / mandate
+- 神 shen: spirit / the spiritual
+- 時措之宜 shi cuo zhi yi: the appropriateness of timely application
+- 通志成務 tong zhi cheng wu: "penetrating purposes and accomplishing affairs"
+- 窮理盡性 qiong li jin xing: "exhausting principle and fully realising nature"
+- 乾坤並建 Qian-Kun bing jian: "Qian and Kun established in parallel" (Wang Fuzhi's structural principle)
+
+POLEMICAL TARGETS AND HISTORICAL REFERENCES:
+- 釋 Buddhism and 墨 Mohism: criticised for excessive activist virtue (only doing, no rest — "不知用《乾》者也")
+- 莊/列 Zhuangzi and Liezi: criticised for excessive passivity ("不知用《坤》者也")
+- 王莽 Wang Mang: referenced as an example of forced levelling (in 謙: "如王莽之限田")
+- "豐亨豫大": the disastrous Song dynasty doctrine of unlimited expenditure, referenced in multiple entries (豫, 渙)
+- 《本義》: Zhu Xi's commentary — Wang Fuzhi occasionally cites it, sometimes to agree, sometimes to correct
+- 禹/稷 Yu and Ji: legendary sage-rulers who laboured for the people
+
+GOVERNANCE TERMS:
+- 封建 fengjian: enfeoffment, the feudal system
+- 折獄 zhe yu: adjudicating legal cases
+- 致刑 zhi xing: applying punishments
+- 敕法 chi fa: promulgating laws
+- 經綸 jing lun: ordering the polity, statecraft
+- 施命 shi ming: issuing commands
+- 振民 zhen min: stirring up / invigorating the people
+- 載物 zai wu: supporting beings / sustaining the myriad things
+- 自強不息 zi qiang bu xi: self-strengthening without cease
+
+TRANSLATION STYLE:
+- Render Wang Fuzhi's prose as clear, vigorous English. His style is assertive and direct — he makes bold claims and expects the reader to follow his reasoning.
+- Preserve rhetorical questions (他取乎？得乎？): these are argumentative moves, not genuine queries.
+- When Wang Fuzhi quotes the Yijing, set the quotation in quotation marks and preserve the attribution if given.
+- Where Wang Fuzhi cross-references another hexagram (e.g., "與《觀》之「觀民設教」者"), translate the cross-reference and include the hexagram name.
+
+DO NOT:
+- Add explanatory footnotes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Soften Wang Fuzhi's polemics — if he says a position is foolish or ruinous, translate that force
+- Translate 君子 inconsistently — always "the exemplary person" (not "the gentleman" or "the noble man")
+- Confuse the canonical Daxiang quotation with Wang Fuzhi's commentary — the quotation is the opening line in each entry`,
 };
 
 /**
@@ -3919,9 +4187,10 @@ const CHINESE_TARGET_INSTRUCTIONS = `你是一位精通古典文献的翻译专�
 
 核心原则：
 1. 准确性：忠实翻译原文含义，不增减内容
-2. 可读性：使用流畅自然的现代中文，避免生硬的翻译腔
-3. 专业性：专有名词（人名、地名、术语）采用学术界通行译法
-4. 一致性：同一名词在全文中保持统一译法
+2. 简体字：必须使用简体中文字符，绝对不可使用繁体字（例：用"国"不用"國"，用"学"不用"學"）
+3. 可读性：使用流畅自然的现代中文，避免生硬的翻译腔
+4. 专业性：专有名词（人名、地名、术语）采用学术界通行译法
+5. 一致性：同一名词在全文中保持统一译法
 
 人名翻译规则：
 - 希腊语人名：使用通行中文译名（如 Σωκράτης → 苏格拉底，Πλάτων → 柏拉图）

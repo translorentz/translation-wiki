@@ -70,6 +70,7 @@ const en = {
   "sourcelang.de": "German",
   "sourcelang.xcl": "Classical Armenian",
   "sourcelang.ja": "Japanese",
+  "sourcelang.el": "Modern Greek",
 
   // Search page
   "search.title": "Search",
@@ -201,7 +202,7 @@ const en = {
   // Highlight cards
   "highlights.zhuziyulei": "Neo-Confucian philosophy recorded by Zhu Xi's students.",
   "highlights.centanni": "A panoramic novel of Milan across a century of upheaval.",
-  "highlights.epitome": "World history from Creation to 1118, by a Byzantine monk.",
+  "highlights.romaike": "Byzantium from 1204 to 1359, by a polymath at the heart of the Hesychast controversy.",
   "highlights.dongpozhilin": "Anecdotes, dreams, and meditations by Su Shi in exile.",
 
   // Editor

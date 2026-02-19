@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { getLocale, getServerTranslation } from "@/i18n/server";
-import { parseChapterTitle } from "@/lib/utils";
+import { formatChapterTitle } from "@/lib/utils";
 import { SourceEditor } from "@/components/editor/SourceEditor";
 
 interface EditSourcePageProps {
@@ -73,13 +73,13 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
           {t("page.backToChapter")}
         </Link>
         {(() => {
-          const { original, english } = parseChapterTitle(chapter.title);
+          const { primary, secondary } = formatChapterTitle(chapter, locale, lang);
           return (
             <h1 className="mt-1 text-2xl font-bold">
-              {t("page.editSourcePrefix")} {original}
-              {english && (
+              {t("page.editSourcePrefix")} {primary}
+              {secondary && (
                 <span className="ml-2 text-lg font-normal text-muted-foreground">
-                  {english}
+                  {secondary}
                 </span>
               )}
             </h1>

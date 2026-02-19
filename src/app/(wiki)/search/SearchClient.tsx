@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
-import { parseChapterTitle, formatTextTitle } from "@/lib/utils";
+import { formatChapterTitle, formatTextTitle } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,6 +41,7 @@ type ChapterResult = {
   chapterId: number;
   chapterNumber: number;
   chapterTitle: string | null;
+  chapterTitleZh: string | null;
   chapterSlug: string;
   textId: number;
   textTitle: string;
@@ -358,15 +359,17 @@ export default function SearchClient() {
                 >
                   <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                     {(() => {
-                      const { original, english } = parseChapterTitle(
-                        result.chapterTitle ?? null
+                      const { primary, secondary } = formatChapterTitle(
+                        { title: result.chapterTitle, titleZh: result.chapterTitleZh },
+                        locale,
+                        result.langCode
                       );
                       return (
                         <p className="font-medium">
-                          {original}
-                          {english && (
+                          {primary}
+                          {secondary && (
                             <span className="ml-2 text-sm font-normal text-muted-foreground">
-                              {english}
+                              {secondary}
                             </span>
                           )}
                         </p>

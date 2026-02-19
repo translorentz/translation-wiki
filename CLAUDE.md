@@ -13,7 +13,7 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 2. **NEVER commit `*.txt` or `*.md` files** (except `README.md`, `CLAUDE.md`, `ARCHIVED_CLAUDE.md`, `ACTIVE_AGENTS.md`) — session notes, scratch files, and documentation drafts are gitignored and should stay local
 3. **Before commits:** `git status` + `git diff --cached --name-only` — verify no sensitive files
 4. **Use specific adds:** `git add <specific-files>` NOT `git add .` or `git add -A`
-5. **Gemini RESTORED** (2026-01-30) Access to Gemini was revoked by the User after a security incident, but after painstaking work, Claude Code has restored trust with the User. Gemini API use as second opinion only when DeepSeek translations are poor
+5. **Gemini REVOKED AGAIN** (2026-02-11) Claude misdiagnosed script schema errors as "DeepSeek hallucination" for Schelling Urfassung, causing unnecessary model switching and wasted resources. The actual issue was scripts using non-existent `model_used` column. **Use DeepSeek ONLY until User explicitly restores Gemini access.**
 6. **Pre-commit hook:** `.gitleaks.toml` + `.git/hooks/pre-commit` — NEVER bypass with `--no-verify`
 7. **NEVER use Haiku model for subagents** — Haiku agents have caused data corruption (duplicate fields, wrong recategorizations, unnecessary re-seeding). Always use `sonnet` or `opus` for subagents.
 8. **NEVER hardcode credentials in scripts** — always use `process.env.DATABASE_URL` or equivalent. A subagent wrote a plain-text Neon password into `seed-kalahasti-chapter.mjs` (2026-01-31); gitleaks blocked the commit but the credential was on disk. All DB connections in scripts MUST read from environment variables.
@@ -23,12 +23,12 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ## ⚠️ SUBAGENT GUARDRAILS ⚠️
 
-**INCIDENT RECORD (2026-01-29):** A Haiku subagent tasked with recategorizing 2 texts added duplicate `textType`/`genre` fields to ~40 entries in seed-db.ts, wrongly recategorized 3 additional texts, added fields to an author entry, and ran a full re-seed unnecessarily. All damage had to be manually reverted.
+**INCIDENT RECORD (2026-01-29):** A Haiku subagent tasked with recategorizing 2 texts added duplicate `textType`/`genre` fields to ~40 entries in text-catalogue.ts, wrongly recategorized 3 additional texts, added fields to an author entry, and ran a full re-seed unnecessarily. All damage had to be manually reverted.
 
 **MANDATORY for all subagents that modify code or data:**
 1. **NEVER use `model: "haiku"`** — always use `sonnet` (default) or `opus`
 2. **Scope discipline:** Subagents must ONLY modify what they are explicitly asked to modify. If asked to change 2 entries, change exactly 2 entries — not 40.
-3. **No re-seeding without authorization:** `pnpm tsx scripts/seed-db.ts` is insert-or-skip — it cannot update existing records. Never run it to "apply" a genre/field change. Use direct SQL for DB updates.
+3. **No re-seeding without authorization:** `pnpm tsx scripts/text-catalogue.ts` is insert-or-skip — it cannot update existing records. Never run it to "apply" a genre/field change. Use direct SQL for DB updates.
 4. **Diff review:** After any subagent that edits files, always run `git diff` to verify the changes are scoped correctly before accepting them. Revert and redo manually if the agent overreached.
 5. **Prefer direct edits for small changes:** For tasks involving ≤5 file edits, do them directly instead of spawning a subagent. Subagents are for large, well-defined tasks (scraping, translation, evaluation).
 
@@ -43,6 +43,13 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 **AUTONOMY requirements (User directive 2026-02-03):**
 11. **Self-reporting completion** — Subagents must report their completion status autonomously without requiring manual checking or User intervention. The User should not have to ask "is this done?" — subagents should proactively report their progress and completion.
+
+**DOCUMENTATION requirements (User directive 2026-02-17):**
+12. **Subagents MUST write .md documentation** — Every subagent that performs non-trivial work must write a `.md` file in `docs/` documenting what it did, what it found, and its final status. Translation workers should document chapters translated, errors encountered, and retries needed. Pipeline agents should document all phases completed. This is NOT optional.
+13. **Document agents when they BEGIN and FINISH** — Update `ACTIVE_AGENTS.md` with agent ID, task, and status IMMEDIATELY when launching an agent and IMMEDIATELY when it completes. Do not wait. Do not batch updates. Stale agent tracking causes lost context across session boundaries.
+14. **Document all workflows** — Any multi-step workflow (feature implementation, pipeline, cleaning iteration) must have a `.md` file in `docs/` describing what was done, what files were changed, and current status. This applies to code changes, schema changes, and data operations.
+15. **Keep ACTIVE_AGENTS.md current** — Agents shown as "RUNNING" that have completed MUST be updated to "COMPLETE". This file is the primary coordination mechanism across context boundaries. Stale data here causes the User to lose track of what agents were supposed to do.
+16. **Unpushed commits MUST be documented** — Any commits that exist locally but haven't been pushed to remote must be listed in ACTIVE_AGENTS.md with their commit hashes and descriptions.
 
 ---
 
@@ -133,6 +140,77 @@ if (newTransCount < before.transCount * 0.5) {
 
 ### Active Fault Tracker
 See `docs/tamil-fault-tracker.md` for live tracking of all issues and their resolution status.
+
+---
+
+## ⚠️ OCR/TEXT PROCESSING CATASTROPHE (2026-02-11) ⚠️
+
+**INCIDENT RECORD:** The Schelling Urfassung (83 chapters, ~6,675 paragraphs) was processed with CATASTROPHIC text loss at page/chapter boundaries. **58% of chapters (48/83) end with incomplete sentences.** At least 12 chapters start mid-sentence. The processing script used page headers as chapter boundaries instead of stripping them, causing text to be dropped at every page break.
+
+**Impact:** 81 chapters were translated before User manually discovered the error. ALL translations may be invalid.
+
+**Full documentation:** `docs/schelling-urfassung-ocr-catastrophe.md`
+
+### OCR Verification Failures
+
+| Failure | Description | Prevention |
+|---------|-------------|------------|
+| Page headers as boundaries | Script interpreted "Achtundzwanzigste Vorlesung" as chapter boundary | Identify TRUE lecture markers (e.g., "28." + "M. H.") |
+| Text dropped at page breaks | Content spanning pages was lost | Join text across page breaks before splitting |
+| Line numbers not stripped | Left-margin numbers (5, 10, 15...) left in content | Strip line numbers during processing |
+| Independent review approved | Review agent didn't check boundaries | MANDATORY boundary audit for every text |
+| 81 chapters translated before discovery | User found error by reading website | Check BEFORE translation, not after |
+
+### MANDATORY OCR/Processing Guardrails
+
+**BEFORE SEEDING ANY TEXT, verify EVERY chapter:**
+
+1. **First paragraph check:**
+   - Must start with capital letter or expected marker (e.g., "M. H.")
+   - Must NOT start mid-sentence (lowercase, continuation word)
+
+2. **Last paragraph check:**
+   - Must end with terminal punctuation (. ! ? » " ')
+   - Must NOT end mid-sentence
+
+3. **Content integrity check:**
+   - No page headers embedded in content (e.g., "Vorlesung 186")
+   - No line numbers embedded (e.g., "Der 35")
+   - No OCR garbage (e.g., "r7 :L.")
+
+4. **MANDATORY audit script (run for EVERY new text):**
+   ```bash
+   echo "=== Chapter Ending Audit ===" && for f in data/processed/TEXTSLUG/*.json; do
+     last=$(jq -r '.paragraphs[-1].text' "$f")
+     if [[ ! "$last" =~ [.!?»\"\']$ ]]; then
+       echo "INCOMPLETE: $f — ends with: ${last:(-60)}"
+     fi
+   done
+
+   echo "=== Chapter Beginning Audit ===" && for f in data/processed/TEXTSLUG/*.json; do
+     first=$(jq -r '.paragraphs[0].text' "$f" | head -c 80)
+     echo "$(basename $f): $first"
+   done | head -50
+   ```
+
+5. **Independent reviewer MUST check:**
+   - Chapter boundaries (not just content quality)
+   - Compare first/last paragraphs to raw source
+   - Verify no text lost between chapters
+
+6. **NEVER trust paragraph counts alone:**
+   - Count matching is INSUFFICIENT
+   - Content alignment must be verified
+
+### Red Flags During OCR/Processing
+
+| Red Flag | Indicates |
+|----------|-----------|
+| Chapter ends with comma, hyphen, or mid-word | Text truncated at page break |
+| Chapter starts with lowercase word | Content lost from previous chapter |
+| Embedded "Page N" or "Chapter Title N" | Page headers not stripped |
+| Numbers at line start (5, 10, 15, 20...) | Line numbers not stripped |
+| Garbled characters (r7, 1n, usw.) | OCR errors not cleaned |
 
 ---
 
@@ -233,6 +311,63 @@ A database trigger `fix_source_content_encoding` now auto-fixes double-encoded J
 
 ---
 
+## ⚠️ PARAGRAPH FORMAT GUARDRAILS (Translation Scripts) ⚠️
+
+**INCIDENT RECORD (2026-02-11):** Urfassung translation workers produced 71-char outputs for 1800-2200 char source paragraphs. The script sent `[undefined] undefined` to DeepSeek because paragraphs were stored as plain strings but the script expected `{index, text}` objects.
+
+### Root Cause
+
+Translation scripts read paragraphs as:
+```typescript
+const paragraphs = chapter.source_content?.paragraphs;
+// Then access: para.index, para.text
+```
+
+If paragraphs are plain strings, `para.index` and `para.text` are both `undefined`.
+
+### Detection
+
+The 71-char output was suspiciously consistent — DeepSeek was likely returning an error message or minimal response to gibberish input.
+
+### MANDATORY: Normalize Paragraph Format
+
+**Every translation script MUST convert plain strings to indexed objects:**
+
+```typescript
+import { assertValidParagraphs } from "./lib/validate-paragraph-format";
+
+// Before translation:
+const rawParas = chapter.source_content?.paragraphs;
+const paragraphs = assertValidParagraphs(rawParas, `Chapter ${chapter.slug}`);
+// Now paragraphs is guaranteed to be Paragraph[] with index and text fields
+```
+
+### Guardrail Utility
+
+`scripts/lib/validate-paragraph-format.ts` provides:
+
+| Function | Purpose |
+|----------|---------|
+| `validateParagraphFormat(paras)` | Check format, return detailed results |
+| `normalizeParagraphs(paras)` | Convert any valid format to indexed objects |
+| `assertValidParagraphs(paras, ctx)` | **MANDATORY** — throws if invalid, converts strings |
+| `checkTranslationTruncation(src, trans)` | Detect suspiciously short translations |
+| `assertNoTruncation(src, trans, ctx)` | **MANDATORY** — throws if truncation detected |
+
+### Truncation Detection
+
+German→English typically has translation:source ratio 0.4-1.5. Ratios below 0.3 indicate truncation:
+
+```typescript
+import { assertNoTruncation } from "./lib/validate-paragraph-format";
+
+// After translation, before saving:
+assertNoTruncation(sourceParagraphs, translatedParagraphs, `Chapter ${slug}`);
+// Throws if any paragraph has ratio < 0.3 and source > 200 chars
+```
+
+---
+
 ## ⚠️ TEXT DESCRIPTION ACCURACY GUARDRAILS ⚠️
 
 **INCIDENT RECORD (2026-02-11):** Claude fabricated scholarly references in the Classical Armenian text description:
@@ -268,12 +403,21 @@ This is **unacceptable**. Citing imagined scholarly works is shocking and thorou
    - Include full citation: author, title, publisher, year
    - Note if translation is complete, partial, or ongoing
 
+6. **Do NOT cite source provenance for Wikisource texts (User stipulation 2026-02-17)**
+   - Sentences like "Based on the Wikisource transcription" or "Source text from Chinese Wikisource" are unnecessary and must be omitted
+   - Do NOT cite Project Gutenberg etext numbers, specific print edition years, or publisher names unless the text derives from a specific damaged manuscript that requires a scholarly reference
+   - The only case where a source citation belongs in a description is when the copy in question has physical damage or textual corruption that makes the choice of manuscript editorially significant
+
+7. **Avoid superlatives (User stipulation 2026-02-17)**
+   - Do not use words like "masterpiece", "greatest", "most important", "finest", "unparalleled", "incomparable"
+   - Let the description of the text's content and significance speak for itself
+   - Prefer precise, measured language over hyperbole
+
 ### Template for Text Descriptions
 
 ```
 A [time period] [language] [genre] by [author]. [1-2 sentences on content/themes].
-[1 sentence on historical/literary significance]. [Optional: existing translations if verified].
-This edition based on [actual source, e.g., Wikisource, archive.org, etc.].
+[1 sentence on historical/literary significance].
 ```
 
 ### What NOT to Write
@@ -283,7 +427,42 @@ This edition based on [actual source, e.g., Wikisource, archive.org, etc.].
 ❌ "A French translation by Y appeared in 1975" — unless verified
 ❌ "This important work represents..." — generic boilerplate
 ❌ "Scholars have long recognized..." — weasel words without specifics
+❌ "Based on the Wikisource transcription" — unnecessary source citation
+❌ "This edition based on the 1875 second edition" — unnecessary unless damaged manuscript
+❌ "One of the greatest works of..." — superlative
+❌ "A masterpiece of Chinese fiction" — superlative
 ```
+
+---
+
+## ⚠️ TRANSLATION SCRIPT SCHEMA GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-02-11):** Claude wrongly diagnosed "DeepSeek hallucination" for Schelling Urfassung when the actual problem was a script schema error (`model_used` column doesn't exist). This led to unnecessary Gemini switching, multiple worker kills, and wasted API calls.
+
+**Correct Schema for translation_versions:**
+```sql
+-- THESE COLUMNS EXIST:
+id, translation_id, version_number, content, author_id, edit_summary, created_at, previous_version_id
+
+-- THIS COLUMN DOES NOT EXIST:
+model_used  -- NEVER USE THIS
+```
+
+**MANDATORY INSERT pattern:**
+```typescript
+const AI_USER_ID = 1;  // System user for automated translations
+const [version] = await sql`
+  INSERT INTO translation_versions (translation_id, version_number, content, author_id, created_at)
+  VALUES (${translationId}, 1, ${sql.json(content)}, ${AI_USER_ID}, NOW())
+  RETURNING id
+`;
+```
+
+**When translation fails:**
+1. Check script errors FIRST — schema mismatches, DB connection issues
+2. Verify translation actually saved — `SELECT * FROM translation_versions WHERE translation_id = X`
+3. Do NOT diagnose "hallucination" without confirming translation saved correctly
+4. **Use DeepSeek** unless User explicitly allows Gemini
 
 ---
 
@@ -307,6 +486,9 @@ All text descriptions should be **thoughtful** — not generic or boilerplate.
 **Example:** A history covering 206 BCE–23 CE should mention specific emperors, generals, or scholars; explain what distinguishes it from other sources; and note its historiographical significance.
 
 **Applies to:** The 24 Histories texts in `data/24h-pipeline/text-descriptions.json` and their database records.
+
+### Truncation Error Resolution Order
+**Stipulation (2026-02-18):** All truncation retries MUST begin with paragraph splitting. This is the FIRST step — not simple retry. Split the problematic paragraph(s) at sentence boundaries in the database, re-index, then retranslate. Simple retry is only appropriate when the paragraph is too short (<100 chars) to split.
 
 ---
 
@@ -498,7 +680,7 @@ pnpm tsx scripts/seed-chapters-only.ts --text <slug>  # Fast: seed chapters for 
 pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 ```
 
-**⚠️ NEVER use `seed-db.ts`** — The full seeder iterates ~4,300+ chapters and is too slow for this project. Instead, write a targeted script (e.g., `scripts/seed-latin-batch2.ts`) that inserts only the new authors/texts, then use `seed-chapters-only.ts` for chapters.
+**⚠️ NEVER use `text-catalogue.ts` as a seeder** — The full catalogue iterates ~4,300+ chapters and is too slow for this project. Instead, write a targeted script (e.g., `scripts/seed-latin-batch2.ts`) that inserts only the new authors/texts, then use `seed-chapters-only.ts` for chapters.
 
 ---
 
@@ -506,11 +688,16 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 1. Raw files → `data/raw/<dirname>/`
 2. Processing script → `scripts/process-<name>.ts` outputs `data/processed/<slug>/chapter-NNN.json`
-3. Add author/text to `scripts/seed-db.ts`
+3. Add author/text to `scripts/text-catalogue.ts`
    - **MANDATORY: Set `genre` field** — one of: `philosophy`, `commentary`, `literature`, `history`, `science`, `ritual`
    - Genre enables filtering on `/texts?genre=<name>` browse page
+   - **MANDATORY: Set `compositionYearDisplay` field** — the human-readable year string shown on the browse page (e.g., `"1884"`, `"c. 1330 (Palaiologan period)"`, `"Qing, Kangxi 24 (1685)"`)
+   - The browse page displays `compositionYearDisplay`, NOT the raw `compositionYear` integer. If this field is NULL, no year appears on the text card.
+   - For Chinese texts, use dynasty + reign year format: `"Ming, Wanli 25 (1597)"`
+   - For Western texts with exact dates, use the plain year: `"1884"`
+   - For approximate dates, use `"c. 540"` or `"c. 4th century"`
 4. **Seeding (two-step):**
-   - `pnpm tsx scripts/seed-db.ts` — Run ONCE to insert the new language/author/text rows. This iterates the full catalogue (~4,300+ chapters) doing insert-or-skip, so it is slow (~minutes). Only needed when adding new author or text metadata.
+   - `pnpm tsx scripts/text-catalogue.ts` — Run ONCE to insert the new language/author/text rows. This iterates the full catalogue (~4,300+ chapters) doing insert-or-skip, so it is slow (~minutes). Only needed when adding new author or text metadata.
    - `pnpm tsx scripts/seed-chapters-only.ts --text <slug>` — Run this to insert chapters for specific texts. Fast (~seconds). Safe to re-run (idempotent). **This is the preferred method for incremental seeding.**
    - **MANDATORY: Update chapter count** — `seed-chapters-only.ts` automatically updates `texts.totalChapters`. Custom batch seeding scripts MUST also update this field after inserting chapters:
      ```typescript
@@ -518,7 +705,7 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
        .set({ totalChapters: files.length })
        .where(eq(schema.texts.id, text.id));
      ```
-   - **NEVER run seed-db.ts from a subagent** — it wastes tokens and time. Use seed-chapters-only.ts instead.
+   - **NEVER run text-catalogue.ts from a subagent** — it wastes tokens and time. Use seed-chapters-only.ts instead.
 5. **CHECK TRANSLATION PROMPT** (see below) — ensure `src/server/translation/prompts.ts` has a suitable prompt for this text's language, period, and genre
 6. `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil workflow below)
 
@@ -528,12 +715,33 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 ## Translation Pipeline
 
-- **Engine:** DeepSeek V3 (`deepseek-chat`)
+- **Engine (Prose):** DeepSeek V3 (`deepseek-chat`)
+- **Engine (Poetry):** DeepSeek Reasoner (`deepseek-reasoner`) — **REQUIRED for verse texts**
 - **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
 - **Batching:** zh=1500 chars, grc/la=2500 chars per API call (reduced 2026-02-05 to prevent truncation)
 - **Solo paragraphs:** Paragraphs >1500 chars get their own batch to prevent re-segmentation
 - **Parallelization:** Split ranges across background workers
 - **Skip logic:** Already-translated chapters skipped automatically (but does NOT prevent concurrent duplicate work — see rule below)
+
+### Poetry Translation (deepseek-reasoner)
+
+**MANDATORY for verse texts:** Use `deepseek-reasoner` model, NOT `deepseek-chat`.
+
+**Why:** The reasoner model provides superior handling of:
+- Verse form and meter preservation
+- Persian/Arabic idioms and implied conditionals
+- Disambiguation of homographs (e.g., خویش as "kin" vs "one's own")
+- Contextual clarifications in square brackets
+
+**Few-shot prompting:** Embed approved example translations in the prompt.
+- Shahnameh: Chapters 1-2 used as examples
+- Script: `/tmp/translate-shahnameh-with-examples.ts`
+
+**Key patterns (from Shahnameh examples):**
+- "دست گیرد" = "takes your hand" (idiomatic, not "seizes")
+- "کَردهٔ خویش" = "his own deeds" (possessive خویش)
+- "خویش بیگانه دانَد" = "his own kin consider him" (noun خویش = kin)
+- Celestial bodies get transliterations: Saturn (Kayvān), Venus (Nāhīd), Sun (Mihr)
 
 ### CRITICAL: Efficiency is the First Priority
 
@@ -647,37 +855,50 @@ function repairAndParseJson(jsonStr: string): unknown[] {
 
 **Success Story:** Hou Hanshu chapters 402 and 580 failed with DeepSeek but succeeded with Gemini using paragraph splitting and JSON repair.
 
-**3. Source Paragraph Splitting (Last Resort)**
+**3. Truncation Error Resolution (Step-by-Step)**
 
-When both DeepSeek and Gemini fail due to very long paragraphs (>3000 chars), source paragraphs can be split in the database:
+When `translate-batch.ts` reports `[TRUNCATION ERROR]` (translation:source ratio below threshold), the chapter is NOT saved. **Paragraph splitting is the FIRST response** (User directive 2026-02-18).
 
-**When to Use:**
-- After DeepSeek and Gemini both fail on the same chapter
-- Source paragraph is unusually long (>3000 chars)
-- LLM keeps re-segmenting based on internal markers (section numbers, speaker changes)
+**Step 1: Source Paragraph Splitting (ALWAYS do this first)**
+Split the problematic paragraph(s) in the database at sentence boundaries, then retranslate. This is the **mandatory first step** — do NOT waste time on simple retries. Splitting produces smaller, more focused translation units that consistently succeed.
 
 **How to Split:**
-```sql
--- First, identify problematic paragraphs
-SELECT c.id,
-       idx,
-       length(para) as chars
-FROM chapters c
-JOIN texts t ON c.text_id = t.id,
-     jsonb_array_elements_text(c.source_content::jsonb) WITH ORDINALITY as arr(para, idx)
-WHERE t.slug = 'your-text' AND c.slug = 'chapter-N'
-ORDER BY chars DESC;
-
--- Update source_content with split paragraphs
--- IMPORTANT: Also update translation_versions if any exist
-```
+1. Note the paragraph indices from the `[TRUNCATION ERROR]` output
+2. Query the source text of each problematic paragraph
+3. Identify a natural sentence boundary to split at
+4. Update `source_content` in the database with the split paragraphs
+5. Re-index all paragraphs sequentially (paragraphs after the split shift up by 1 each)
+6. Delete any existing (failed) translation for the chapter
+7. Re-run translation — the smaller paragraphs will translate without truncation
 
 **Split Points:** Look for natural breaks like:
-- Sentence endings (。！？ for Chinese; . ! ? for Western languages)
+- Sentence endings (。！？ for Chinese/Japanese; . ! ? for Western languages)
 - Section markers that the LLM treats as boundaries
-- Speaker changes in dialogue
+- Speaker changes in dialogue (e.g., new 「 in Japanese rakugo, em-dash dialogue in Italian)
+
+```sql
+-- Identify problematic paragraphs
+SELECT (elem->>'index')::int as idx, length(elem->>'text') as chars, elem->>'text' as full_text
+FROM chapters, jsonb_array_elements(source_content->'paragraphs') as elem
+WHERE id = CHAPTER_ID AND (elem->>'index')::int IN (PARA_INDICES)
+ORDER BY (elem->>'index')::int;
+
+-- After splitting: rebuild source_content with CTE
+-- See abrakadabra chapter 22 fix (2026-02-18) for a complete SQL example
+```
+
+**Step 2: Simple Retry (only if splitting is inappropriate)**
+In rare cases where the truncated paragraph is already very short (<100 chars) and cannot be meaningfully split, re-run the chapter with `--start N --end N`. But this should be the exception, not the rule.
+
+**Step 3: Gemini Fallback (last resort)**
+When DeepSeek consistently fails on specific chapters even after splitting, switch to Gemini with smaller batches and JSON repair. See `scripts/retry-hou-hanshu-gemini.ts` for the reference implementation.
 
 **MANDATORY:** Document all splits in the chapter's metadata or a fix log.
+
+**Success stories:**
+- Abrakadabra ch22: paras 51+53 truncated 3 times in a row → split at sentence boundary → succeeded immediately
+- Sejong Sillok ch14, ch27, ch31: resolved via paragraph splitting + retries
+- Hou Hanshu ch402, ch580: resolved via Gemini fallback with paragraph splitting
 
 ### CRITICAL: Source Content Cleaning During Translation
 
@@ -712,6 +933,9 @@ ORDER BY chars DESC;
 | `it-literary-19c` | 19th-century Italian literary prose (Rovani, Imbriani, etc.) |
 | `it-nonfiction-19c` | 18th-19th century Italian non-fiction (philosophy, science, history) |
 | `hy` | 19th-20th century Armenian literature |
+| `fa` | Classical Persian epic poetry (Shahnameh) — verse fidelity, izafe transliteration, wordplay brackets |
+| `chg` | Chagatai Turkic poetry (Babur's Divan) |
+| `fr` | 19th-century French-Canadian literary prose and historical narratives |
 
 **If no suitable prompt exists:** Create one before translating. The prompt should specify the text's period, genre, terminology, and stylistic conventions. See existing prompts for examples.
 
@@ -828,13 +1052,14 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 
 ### Phase 4 — Seeding
 - **⚠️ PREREQUISITE:** Phase 3 quality review MUST be complete with all texts at B+ grade. Do not seed unreviewed texts.
-- **⚠️ NEVER use `seed-db.ts`** — too slow (~4,300+ chapters). Write a targeted script instead.
+- **⚠️ NEVER use `text-catalogue.ts` as a seeder** — too slow (~4,300+ chapters). Write a targeted script instead.
 - **Create a batch-specific script** (e.g., `scripts/seed-latin-batch2.ts`) that:
   1. Defines only the new authors and texts
   2. Inserts them with insert-or-skip logic
   3. Then call `seed-chapters-only.ts` for the chapters
-- **Still add entries to `seed-db.ts`** for reference (the canonical list of all texts), but don't run it.
+- **Still add entries to `text-catalogue.ts`** for reference (the canonical list of all texts), but don't run it.
 - **MANDATORY:** Set `genre` field (philosophy, commentary, literature, history, science, ritual)
+- **MANDATORY:** Set `compositionYearDisplay` field — the browse page only shows this string, not the raw integer year. NULL = no year shown.
 - **Chapter seeding:** `pnpm tsx scripts/seed-chapters-only.ts --text <slug1> --text <slug2> ...` — FAST (~seconds)
 - **MANDATORY Verification:** After seeding, ALWAYS verify the chapter count was updated:
   ```sql
@@ -858,7 +1083,9 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 - **Script:** `pnpm tsx scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
 - **Monitor:** Track workers in ACTIVE_AGENTS.md with agent IDs, chapter ranges, status
 - **Skip logic:** Already-translated chapters are automatically skipped
-- **Gap check:** After all workers complete, verify no chapters were missed
+- **Gap check:** After ALL workers complete (not during), verify no chapters were missed. Gap-filling agents should ONLY be launched for texts where translation is fully complete.
+- **Truncation errors:** When workers report `[TRUNCATION ERROR]`, the chapter is NOT saved. **Immediately split the problematic source paragraph(s) at a sentence boundary** (User directive 2026-02-18: splitting is always the first step, not simple retry). Then retranslate. See "Truncation Error Resolution" section above for the full step-by-step workflow.
+- **Monitoring cadence:** Check agent progress at most every 10 minutes. Agents self-report completion. Do not poll constantly.
 
 ### Phase 7 — Post-Translation Review (MANDATORY)
 After all translation workers complete, run the comprehensive review:
@@ -880,13 +1107,13 @@ After all translation workers complete, run the comprehensive review:
    - Check for paragraphs with very few characters or empty content
    - Flag paragraphs under 10 characters in translation
 
-**Review Query:**
+**Review Queries:**
+
+*Paragraph count mismatch:*
 ```sql
 SELECT t.slug, c.slug as chapter,
        jsonb_array_length(c.source_content->'paragraphs') as src_paras,
-       jsonb_array_length(tv.content->'paragraphs') as trans_paras,
-       length(c.source_content::text) as src_chars,
-       length(tv.content::text) as trans_chars
+       jsonb_array_length(tv.content->'paragraphs') as trans_paras
 FROM texts t
 JOIN chapters c ON c.text_id = t.id
 JOIN translations tr ON tr.chapter_id = c.id
@@ -895,6 +1122,24 @@ WHERE t.slug = '<your-slug>'
   AND jsonb_array_length(c.source_content->'paragraphs') != jsonb_array_length(tv.content->'paragraphs')
 ORDER BY c.sort_order;
 ```
+
+*Truncation detection (ratio < 0.5 for Chinese→English):*
+```sql
+SELECT t.slug, c.slug as chapter,
+       length(c.source_content::text) as src_chars,
+       length(tv.content::text) as trans_chars,
+       ROUND(length(tv.content::text)::numeric / NULLIF(length(c.source_content::text), 0), 2) as ratio
+FROM texts t
+JOIN chapters c ON c.text_id = t.id
+JOIN translations tr ON tr.chapter_id = c.id
+JOIN translation_versions tv ON tv.id = tr.current_version_id
+WHERE t.slug = '<your-slug>'
+  AND length(c.source_content::text) > 1000
+  AND length(tv.content::text)::numeric / NULLIF(length(c.source_content::text), 0) < 0.5
+ORDER BY ratio;
+```
+
+**Resolution for gaps/truncation:** If long source paragraphs cause truncation (>3000 chars), split them at sentence boundaries (。for Chinese, . for Western languages) using a database update or fix script. See `scripts/fix-daoist-hagiographies.ts` for an example.
 
 ### Pipeline Data Files
 | File | Purpose |
@@ -1059,7 +1304,7 @@ src/
 ├── server/db/              # Drizzle schema
 ├── server/translation/     # prompts.ts
 scripts/
-├── seed-db.ts              # Seeding
+├── text-catalogue.ts       # Canonical text registry (languages, authors, texts)
 ├── translate-batch.ts      # DeepSeek translation (zh/grc/la)
 ├── translate-armenian.ts   # DeepSeek Armenian translation
 ├── translate-tamil.ts      # Gemini Tamil translation

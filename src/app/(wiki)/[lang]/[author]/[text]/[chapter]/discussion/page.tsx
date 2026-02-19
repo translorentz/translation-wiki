@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { parseChapterTitle } from "@/lib/utils";
+import { formatChapterTitle } from "@/lib/utils";
 import { getServerTranslation } from "@/i18n/server";
 import { Button } from "@/components/ui/button";
 import { DiscussionClient } from "./DiscussionClient";
@@ -21,7 +21,7 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
 
   const session = await auth();
   const trpc = await getServerTRPC();
-  const { t } = await getServerTranslation();
+  const { t, locale } = await getServerTranslation();
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -53,13 +53,13 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
           className="text-sm text-muted-foreground hover:text-foreground"
         >
           {(() => {
-            const { original, english } = parseChapterTitle(chapter.title);
+            const { primary, secondary } = formatChapterTitle(chapter, locale, lang);
             return (
               <>
-                {original}
-                {english && (
+                {primary}
+                {secondary && (
                   <span className="ml-1 text-muted-foreground">
-                    {english}
+                    {secondary}
                   </span>
                 )}
               </>

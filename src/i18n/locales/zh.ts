@@ -71,6 +71,7 @@ const zh: Translations = {
   "sourcelang.de": "\u5FB7\u8BED",
   "sourcelang.xcl": "\u53E4\u5178\u4E9A\u7F8E\u5C3C\u4E9A\u8BED",
   "sourcelang.ja": "\u65E5\u8BED",
+  "sourcelang.el": "现代希腊语",
 
   // Search page
   "search.title": "\u641C\u7D22",
@@ -198,7 +199,7 @@ const zh: Translations = {
   // Highlight cards
   "highlights.zhuziyulei": "朱熹门人所录的理学语录。",
   "highlights.centanni": "一部跨越百年动荡的米兰全景小说。",
-  "highlights.epitome": "拜占庭修士所著，从创世纪到1118年的世界历史。",
+  "highlights.romaike": "拜占庭博学家笔下1204年至1359年的帝国历史，深涉静修主义论争。",
   "highlights.dongpozhilin": "苏轼在贬谪期间的轶事、梦境与沉思。",
 
   // Editor

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { getServerTranslation } from "@/i18n/server";
-import { parseChapterTitle } from "@/lib/utils";
+import { parseChapterTitle, formatChapterTitle } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
@@ -117,13 +117,13 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             {textData.title}
           </Link>
           {(() => {
-            const { original, english } = parseChapterTitle(chapter.title);
+            const { primary, secondary } = formatChapterTitle(chapter, locale, lang);
             return (
               <h1 className="mt-1 text-2xl font-bold">
-                {original}
-                {english && (
+                {primary}
+                {secondary && (
                   <span className="ml-2 text-lg font-normal text-muted-foreground">
-                    {english}
+                    {secondary}
                   </span>
                 )}
               </h1>

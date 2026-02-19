@@ -201,6 +201,7 @@ export const chapters = pgTable(
     chapterNumber: integer("chapter_number").notNull(),
     slug: varchar("slug", { length: 255 }).notNull(),
     title: varchar("title", { length: 500 }),
+    titleZh: varchar("title_zh", { length: 500 }),
     sourceContent: jsonb("source_content"), // { paragraphs: [{ index, text }] }
     currentSourceVersionId: integer("current_source_version_id"), // Points to latest sourceVersion
     ordering: integer("ordering").notNull(),

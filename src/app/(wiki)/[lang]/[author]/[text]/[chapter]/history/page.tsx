@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { getLocale, getServerTranslation } from "@/i18n/server";
-import { parseChapterTitle } from "@/lib/utils";
+import { formatChapterTitle } from "@/lib/utils";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 
 interface HistoryPageProps {
@@ -67,13 +67,13 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
           {t("page.backToChapter")}
         </Link>
         {(() => {
-          const { original, english } = parseChapterTitle(chapter.title);
+          const { primary, secondary } = formatChapterTitle(chapter, locale, lang);
           return (
             <h1 className="mt-1 text-2xl font-bold">
-              {t("page.historyPrefix")} {original}
-              {english && (
+              {t("page.historyPrefix")} {primary}
+              {secondary && (
                 <span className="ml-2 text-lg font-normal text-muted-foreground">
-                  {english}
+                  {secondary}
                 </span>
               )}
             </h1>

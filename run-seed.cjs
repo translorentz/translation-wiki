@@ -16,10 +16,10 @@ for (const line of envContent.split('\n')) {
     env[key] = val;
   }
 }
-console.log('Running seed-db.ts with Neon DATABASE_URL...');
+console.log('Running text-catalogue.ts with Neon DATABASE_URL...');
 console.log('DATABASE_URL starts with:', env.DATABASE_URL ? env.DATABASE_URL.substring(0, 30) + '...' : 'NOT SET');
 try {
-  const result = execSync('npx tsx scripts/seed-db.ts', {
+  const result = execSync('npx tsx scripts/text-catalogue.ts', {
     env: { ...process.env, ...env },
     encoding: 'utf8',
     timeout: 180000,

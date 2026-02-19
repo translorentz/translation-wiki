@@ -20,12 +20,12 @@ const HIGHLIGHTS = [
     teaserKey: "highlights.centanni" as const,
   },
   {
-    slug: "epitome-historiarum",
-    authorSlug: "john-zonaras",
+    slug: "romaike-historia",
+    authorSlug: "nicephorus-gregoras",
     langCode: "grc",
-    originalTitle: "\u1F18\u03C0\u03B9\u03C4\u03BF\u03BC\u1F74 \u1F31\u03C3\u03C4\u03BF\u03C1\u03B9\u1FF6\u03BD",
-    englishTitle: "Epitome of Histories",
-    teaserKey: "highlights.epitome" as const,
+    originalTitle: "\u03A1\u03C9\u03BC\u03B1\u03CA\u03BA\u1F74 \u1F39\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1",
+    englishTitle: "Roman History",
+    teaserKey: "highlights.romaike" as const,
   },
   {
     slug: "dongpo-zhilin",

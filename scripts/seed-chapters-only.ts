@@ -7,8 +7,8 @@
  * for texts that already exist (authors/texts rows must already be in DB).
  * Uses ON CONFLICT DO NOTHING for safety — idempotent, safe to re-run.
  *
- * This replaces the slow full-catalogue seed-db.ts for incremental additions.
- * seed-db.ts iterates ALL ~4,300+ chapters doing insert-or-skip on each,
+ * This replaces the slow full-catalogue text-catalogue.ts for incremental additions.
+ * text-catalogue.ts iterates ALL ~4,300+ chapters doing insert-or-skip on each,
  * which takes minutes. This script only touches the texts you specify.
  */
 
@@ -64,7 +64,7 @@ async function main() {
     // Look up text
     const [text] = await db.select().from(schema.texts).where(eq(schema.texts.slug, slug)).limit(1);
     if (!text) {
-      console.error(`  SKIP: text "${slug}" not found in DB — add it to seed-db.ts first`);
+      console.error(`  SKIP: text "${slug}" not found in DB — add it to text-catalogue.ts first`);
       continue;
     }
 

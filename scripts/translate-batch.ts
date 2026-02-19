@@ -59,7 +59,15 @@ const db = drizzle(client, { schema });
 const openai = new OpenAI({ apiKey, baseURL: "https://api.deepseek.com" });
 
 const DEFAULT_DELAY_MS = 3000;
-const MODEL = "deepseek-chat";
+const DEFAULT_MODEL = "deepseek-chat";
+
+// Texts that require deepseek-reasoner for more careful, defensible translation
+const REASONER_SLUGS = new Set([
+  "zhouyi-neichuan-fali",  // Wang Fuzhi's Yijing methodology — dense philosophical argumentation
+  "zhouyi-daxiang-jie",    // Wang Fuzhi's Great Image commentary — philosophical application of hexagrams
+]);
+
+let MODEL = DEFAULT_MODEL;
 
 // ============================================================
 // Text-specific post-processing fixes
@@ -521,6 +529,8 @@ async function translateChapter(
       "zh-science": 1.5,
       "zh-biji": 1.5,
       "zh-dongpo-yi-zhuan": 1.5,
+      "zh-zhouyi-neichuan-fali": 1.5,
+      "zh-zhouyi-daxiang-jie": 1.5,
       "zh-su-shen-liang-fang": 1.5,
       "zh-tan-huo-dian-xue": 1.5,
       "zh-shengji-zonglu": 1.5,
@@ -529,13 +539,23 @@ async function translateChapter(
       "grc-gregory": 0.5,
       la: 0.5,        // Latin similar to Greek
       "sr-scholarly": 0.1, // OCR-damaged Serbian text — garbled source produces short translations
+      "xcl-literature": 0.1, // OCR-damaged Classical Armenian — garbled source produces short translations
       default: 0.5,
     };
-    // When translating TO Chinese: Chinese uses fewer characters, so lower ratio threshold
+    // When translating TO Chinese: Chinese uses far fewer characters than European source languages
+    // Italian/French/German → Chinese can compress 5-8x, so ratio 0.12-0.18 is normal
+    // Only flag truly truncated output (ratio < 0.1)
     const MIN_LENGTH_RATIO_ZH: Record<string, number> = {
-      grc: 0.2,       // Greek → Chinese is very compact
-      la: 0.2,
-      default: 0.2,
+      grc: 0.1,       // Greek → Chinese is very compact
+      la: 0.1,
+      it: 0.1,        // Italian is verbose; Chinese translation naturally much shorter
+      fr: 0.1,        // French similarly verbose
+      de: 0.1,        // German compound words compress heavily
+      ru: 0.1,        // Russian → Chinese also compresses
+      sr: 0.1,
+      pl: 0.1,
+      cs: 0.1,
+      default: 0.1,
     };
     const ratioTable = targetLanguage === "zh" ? MIN_LENGTH_RATIO_ZH : MIN_LENGTH_RATIO_EN;
     const minRatio = ratioTable[sourceLanguage] ?? ratioTable.default;
@@ -686,9 +706,17 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // Dongpo Yi Zhuan (Yijing commentary) uses specialized prompt
+    // Yijing commentary texts use specialized prompts
     if (text.slug === "dongpo-yi-zhuan") {
       promptLang = "zh-dongpo-yi-zhuan";
+      usingSpecialPrompt = true;
+    }
+    if (text.slug === "zhouyi-neichuan-fali") {
+      promptLang = "zh-zhouyi-neichuan-fali";
+      usingSpecialPrompt = true;
+    }
+    if (text.slug === "zhouyi-daxiang-jie") {
+      promptLang = "zh-zhouyi-daxiang-jie";
       usingSpecialPrompt = true;
     }
 
@@ -777,10 +805,19 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Classical Armenian literature (fables, moral tales) uses xcl-literature prompt
+    if (text.language.code === "xcl" && text.genre === "literature") {
+      promptLang = "xcl-literature";
+      usingSpecialPrompt = true;
+    }
+
+    // Select model — use deepseek-reasoner for texts requiring careful philosophical translation
+    MODEL = REASONER_SLUGS.has(text.slug) ? "deepseek-reasoner" : DEFAULT_MODEL;
+
     if (usingSpecialPrompt) {
-      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre}, using ${promptLang} prompt) ---\n`);
+      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre}, using ${promptLang} prompt, model: ${MODEL}) ---\n`);
     } else {
-      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre || "none"}) ---\n`);
+      console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre || "none"}, model: ${MODEL}) ---\n`);
     }
 
     // Build query conditions

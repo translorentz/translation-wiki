@@ -14,6 +14,8 @@
  * Gemini models are superior to DeepSeek for this task.
  */
 
+import fs from "fs";
+import path from "path";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { eq, and, asc, gte, lte } from "drizzle-orm";
@@ -24,6 +26,22 @@ import { getGeminiClient } from "../src/server/translation/gemini-client";
 // ============================================================
 // Configuration
 // ============================================================
+
+// Load .env.local
+const envPath = path.resolve(__dirname, "../.env.local");
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const dbMatch = line.match(/^DATABASE_URL=(.+)$/);
+    if (dbMatch) {
+      process.env.DATABASE_URL = dbMatch[1]!.replace(/^['"]|['"]$/g, "");
+    }
+    const geminiMatch = line.match(/^GEMINI_API_KEY=(.+)$/);
+    if (geminiMatch) {
+      process.env.GEMINI_API_KEY = geminiMatch[1]!.replace(/^['"]|['"]$/g, "");
+    }
+  }
+}
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {

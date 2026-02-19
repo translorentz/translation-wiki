@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { getServerTranslation } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
-import { parseChapterTitle, formatAuthorName, formatTextTitle } from "@/lib/utils";
+import { formatChapterTitle, formatAuthorName, formatTextTitle } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
 
 interface TextPageProps {
@@ -96,7 +96,7 @@ export default async function TextPage({ params }: TextPageProps) {
         </h2>
         <div className="space-y-1">
           {textData.chapters.map((chapter) => {
-            const { original, english } = parseChapterTitle(chapter.title);
+            const { primary, secondary } = formatChapterTitle(chapter, locale, lang);
             return (
               <Link
                 key={chapter.chapterNumber}
@@ -109,10 +109,10 @@ export default async function TextPage({ params }: TextPageProps) {
                       {chapter.chapterNumber}
                     </span>
                     <span>
-                      {original}
-                      {english && (
+                      {primary}
+                      {secondary && (
                         <span className="ml-2 text-sm text-muted-foreground">
-                          {english}
+                          {secondary}
                         </span>
                       )}
                     </span>
