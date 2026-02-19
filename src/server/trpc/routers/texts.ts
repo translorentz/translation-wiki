@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../init";
 import { db } from "@/server/db";
-import { texts, authors, languages, chapters } from "@/server/db/schema";
-import { eq, and } from "drizzle-orm";
+import { texts, authors, languages, chapters, translations } from "@/server/db/schema";
+import { eq, and, isNotNull } from "drizzle-orm";
 
 export const textsRouter = createTRPCRouter({
   list: publicProcedure
@@ -20,6 +20,22 @@ export const textsRouter = createTRPCRouter({
         return result.filter((t) => t.language.code === input.languageCode);
       }
       return result;
+    }),
+
+  getTextIdsWithTranslation: publicProcedure
+    .input(z.object({ targetLanguage: z.string() }))
+    .query(async ({ input }) => {
+      const result = await db
+        .selectDistinct({ textId: chapters.textId })
+        .from(chapters)
+        .innerJoin(translations, eq(translations.chapterId, chapters.id))
+        .where(
+          and(
+            eq(translations.targetLanguage, input.targetLanguage),
+            isNotNull(translations.currentVersionId)
+          )
+        );
+      return result.map((r) => r.textId);
     }),
 
   getBySlug: publicProcedure

@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useTranslation } from "@/i18n";
-import { formatAuthorName, formatTextTitle } from "@/lib/utils";
+import { cn, formatAuthorName, formatTextTitle } from "@/lib/utils";
 
 interface FeaturedText {
   title: string;
@@ -22,6 +22,7 @@ interface FeaturedText {
   compositionYear: number | null;
   compositionYearDisplay: string | null;
   compositionEra: string | null;
+  hasZhTranslation?: boolean;
   author: {
     name: string;
     nameOriginalScript: string | null;
@@ -131,9 +132,13 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                       {(() => {
                         const titleDisplay = formatTextTitle(text, locale);
                         const authorDisplay = formatAuthorName(text.author, locale);
+                        const isUntranslated = locale === "zh" && text.hasZhTranslation === false;
                         return (
                           <>
-                            <h3 className="text-base font-semibold leading-tight">
+                            <h3 className={cn(
+                              "text-base font-semibold leading-tight",
+                              isUntranslated && "text-[#800000]"
+                            )}>
                               {titleDisplay.primary}
                               {titleDisplay.secondary && (
                                 <span className="ml-2 text-sm font-normal text-muted-foreground">

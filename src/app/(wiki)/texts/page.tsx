@@ -27,6 +27,7 @@ interface LanguageGroup {
       genre: string;
       sortOrder: number | null;
       compositionYearDisplay: string | null;
+      hasZhTranslation?: boolean;
     }[];
   }[];
 }
@@ -40,6 +41,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const trpc = await getServerTRPC();
   const allTextsRaw = await trpc.texts.list();
   const { t, locale } = await getServerTranslation();
+
+  // Get text IDs with Chinese translations (only needed in zh locale)
+  const zhTranslatedIds = locale === "zh"
+    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "zh" }))
+    : null;
 
   // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
   const allTexts = locale === "zh"
@@ -124,6 +130,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       genre: text.genre || "uncategorized",
       sortOrder: text.sortOrder ?? null,
       compositionYearDisplay: text.compositionYearDisplay ?? null,
+      hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
     });
   }
 

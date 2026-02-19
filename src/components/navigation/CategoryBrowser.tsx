@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useMemo } from "react";
 import { useTranslation } from "@/i18n";
-import { formatAuthorName, formatTextTitle } from "@/lib/utils";
+import { cn, formatAuthorName, formatTextTitle } from "@/lib/utils";
 
 interface TextSummary {
   title: string;
@@ -14,6 +14,7 @@ interface TextSummary {
   totalChapters: number;
   genre?: string;
   compositionYearDisplay?: string | null;
+  hasZhTranslation?: boolean;
 }
 
 interface AuthorSummary {
@@ -100,13 +101,17 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {author.texts.map((text) => {
                   const titleDisplay = formatTextTitle(text, locale);
+                  const isUntranslated = locale === "zh" && text.hasZhTranslation === false;
                   return (
                     <Link
                       key={text.slug}
                       href={`/${lang.code}/${author.slug}/${text.slug}`}
                     >
                       <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
-                        <p className="text-sm font-medium leading-tight">{titleDisplay.primary}</p>
+                        <p className={cn(
+                          "text-sm font-medium leading-tight",
+                          isUntranslated && "text-[#800000]"
+                        )}>{titleDisplay.primary}</p>
                         {titleDisplay.secondary && (
                           <p className="text-xs text-muted-foreground">
                             {titleDisplay.secondary}
@@ -170,13 +175,17 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                       {author.texts.map((text) => {
                         const titleDisplay = formatTextTitle(text, locale);
+                        const isUntranslated = locale === "zh" && text.hasZhTranslation === false;
                         return (
                           <Link
                             key={text.slug}
                             href={`/${lang.code}/${author.slug}/${text.slug}`}
                           >
                             <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
-                              <p className="text-sm font-medium leading-tight">{titleDisplay.primary}</p>
+                              <p className={cn(
+                                "text-sm font-medium leading-tight",
+                                isUntranslated && "text-[#800000]"
+                              )}>{titleDisplay.primary}</p>
                               {titleDisplay.secondary && (
                                 <p className="text-xs text-muted-foreground">
                                   {titleDisplay.secondary}
