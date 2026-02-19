@@ -267,10 +267,15 @@ export async function generatePdf(props: PdfDocumentProps): Promise<Buffer> {
   doc.text(downloadDate, MARGIN_LEFT, doc.y, opts);
 
   // Add page numbers (skip title page and colophon)
+  // Temporarily remove bottom margin so PDFKit doesn't auto-paginate
+  // when placing text below the normal content area
   const totalPages = doc.bufferedPageRange().count;
   for (let i = 1; i < totalPages - 1; i++) {
     doc.switchToPage(i);
+    const saved = doc.page.margins.bottom;
+    doc.page.margins.bottom = 0;
     addPageNumber(doc, i);
+    doc.page.margins.bottom = saved;
   }
 
   doc.end();
