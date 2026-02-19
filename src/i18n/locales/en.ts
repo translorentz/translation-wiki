@@ -204,6 +204,10 @@ const en = {
   "highlights.centanni": "A panoramic novel of Milan across a century of upheaval.",
   "highlights.romaike": "Court politics, civil wars, and theological rifts in late Byzantium.",
   "highlights.dongpozhilin": "Anecdotes, dreams, and meditations by Su Shi in exile.",
+  "highlights.paluba":
+    "A metafictional Polish novel that deconstructs psychological realism through a self-aware narrator.",
+  "highlights.shahnameh":
+    "The Persian national epic — myth, heroism, and empire across fifty thousand couplets.",
 
   // Editor
   "editor.enterTranslation": "Enter translation...",
