@@ -85,9 +85,6 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
     });
   };
 
-  // All language codes for default expanded state
-  const allLanguageCodes = languageGroups.map((g) => g.code);
-
   return (
     <div>
       <div className="mb-4 flex items-center gap-2">
@@ -108,7 +105,7 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
         </Button>
       </div>
 
-      <Accordion type="multiple" defaultValue={allLanguageCodes} className="w-full">
+      <Accordion type="multiple" className="w-full">
         {languageGroups.map((langGroup) => (
           <AccordionItem key={langGroup.code} value={langGroup.code}>
             <AccordionTrigger className="text-base font-semibold hover:no-underline">

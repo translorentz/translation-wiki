@@ -3604,7 +3604,7 @@ British English spelling throughout (colour, honour, favour, recognise).
 
 CRITICAL: These poets represent the finest Serbian verse. Your translation should convey both the musicality of their verse and the depth of their patriotic and personal emotion. Preserve the careful craft of their European-influenced poetry.`,
 
-  fr: `You are translating 19th-century French-Canadian historical fiction to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organise, etc.)
+  "fr-les-fiances-1812": `You are translating 19th-century French-Canadian historical fiction to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organise, etc.)
 
 CONTEXT:
 This is Les Fiancés de 1812 by Joseph Doutre (1844), one of the first French-Canadian novels. Set during the War of 1812, it recounts the adventures of two militia officers during the American invasion of Lower Canada. The novel is notable for its defence of liberal politics and literary fiction against conservative religious opposition.
