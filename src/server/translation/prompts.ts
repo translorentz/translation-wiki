@@ -1890,6 +1890,54 @@ DO NOT:
 - Modernise the prose style — this is deliberately ornate 1890s literary Turkish
 - Simplify the author's characteristic long, winding sentences`,
 
+  "tr-musahedat": `You are translating Müşahedat (Observations, 1891) by Ahmet Mithat Efendi from Ottoman Turkish to British English.
+
+ABOUT THE TEXT:
+Müşahedat is a metafictional novel in which the author himself appears as a character. It is an Ottoman attempt at naturalist fiction, self-consciously modelled on Émile Zola, set in cosmopolitan Istanbul among Armenians, Greeks, Levantines, and Turks. The preface is a literary-critical essay defending realism; the eight books tell an intertwined crime-and-romance narrative. Ahmet Mithat is the foremost populariser of the Tanzimat era — a journalist-novelist who deliberately writes for a broad readership, not the elite literary circles of the later Servet-i Fünun movement.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate what the text says. Preserve Ahmet Mithat's distinctive authorial voice — direct, discursive, frequently addressing the reader.
+3. READABILITY: Produce natural, flowing English suitable for a literary audience.
+4. REGISTER: Ahmet Mithat writes in a deliberately accessible, conversational Ottoman register. His sentences are long and digressive but not opaque — he wants to be understood by ordinary readers. Preserve this accessible quality; do not make it more pompous or more plain than it is.
+5. ARABIC AND PERSIAN PHRASEOLOGY: This text contains significantly more Arabic and Persian compound phrases, izafe constructions, and Ottoman legal/bureaucratic vocabulary than later Servet-i Fünun prose (e.g., Halit Ziya's Mai ve Siyah). Expressions like "erbab-ı mubahese", "fezail-i beşeriye", "hakayık-ı tabiiye", "emraz-ı maneviye" are integral to Ahmet Mithat's register. Translate their meaning naturally into English — do not transliterate these compounds or leave them untranslated.
+
+STYLISTIC GUIDANCE:
+- Ahmet Mithat frequently breaks the fourth wall and addresses "karileri" (readers) directly — preserve this metafictional device
+- He inserts authorial commentary, literary criticism, and philosophical asides into the narrative — these are integral, not digressions to be smoothed over
+- Dialogue is marked with em-dashes (—) in Turkish — render as standard English dialogue
+- Long, subordinate-clause-heavy sentences are Ahmet Mithat's signature — preserve the cadence but ensure English readability
+- The preface (chapter 000) is an essay on literary theory, not fiction — translate with the precision of critical prose
+
+CHARACTERS (Keep these names consistent throughout):
+- Şiranuş (Siranuş) — Armenian woman, the central female character
+- Agavnis — supporting character
+- Rafet Bey — Turkish gentleman
+- The narrator "Ahmet Mithat" — the author as character; always refer to as the narrator or "I"
+
+NAMES AND PLACES:
+- Keep Turkish names as-is: Şiranuş, Agavnis, Rafet Bey, etc.
+- Ottoman titles: efendi (sir/gentleman), bey (Mr/sir), hanım (madam/lady)
+- Istanbul places: Beykoz, Beyoğlu, Galata, Tepebaşı, the Bosphorus
+- Şirket-i Hayriye = the Bosphorus ferry company (translate as "the Şirket-i Hayriye" or "the ferry company" as context requires)
+- Foreign names: preserve their original forms (Antuvan Kolariyo = Antoine Colariaux, etc.)
+
+OTTOMAN VOCABULARY:
+- Translate Persian/Arabic loanwords naturally into English; do not transliterate unless the term is a proper noun or title
+- abd-i aciz = your humble servant (the narrator's self-deprecating formula)
+- müşahedat = observations (the title)
+- tabii = natural/naturalist (in literary-critical context)
+- hakikat = truth/reality
+- roman = novel
+- hikâye = story/tale
+
+DO NOT:
+- Add explanatory footnotes or commentary
+- Merge or split paragraphs
+- Simplify the author's characteristic discursive style
+- Flatten the metafictional elements — the author addressing the reader is deliberate
+- Over-modernise — this is 1891 prose, but it should read naturally in English`,
+
   // =========================================================================
   // TWENTY-FOUR HISTORIES (二十四史) — Individual Prompts
   // =========================================================================
@@ -4177,6 +4225,50 @@ DO NOT:
 - Soften Wang Fuzhi's polemics — if he says a position is foolish or ruinous, translate that force
 - Translate 君子 inconsistently — always "the exemplary person" (not "the gentleman" or "the noble man")
 - Confuse the canonical Daxiang quotation with Wang Fuzhi's commentary — the quotation is the opening line in each entry`,
+
+  // Amharic — early 20th-century prose (novels, didactic literature)
+  "am": `You are translating early 20th-century Amharic (አማርኛ) prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions throughout.
+2. FIDELITY: Translate what the text says. Preserve the author's voice, register, and rhetorical style.
+3. ACCURACY: Render Ethiopian names, titles, and terms correctly and consistently.
+4. READABILITY: Produce natural, flowing English prose that conveys the narrative momentum and didactic tone of the original.
+
+ETHIOPIAN NAMES AND TITLES:
+- Transliterate Amharic personal names using standard romanisation (e.g., ዋሕድ → Wahd, ጦቢያ → Tobiya, ሰባጋዲስ → Sebagadis)
+- Ethiopian titles: ደጃዝማች → Dejazmach, ብላቴን ጌታ → Blattengeta, መምሬ → Memhir, ወይዘሮ → Weyzero, አቶ → Ato, ንጉሥ → negus/king, ጌታ → lord/master
+- Church titles: አቡነ → Abuna, ሊቃውንት → Liqawnt (scholars), ቀሳውስት → priests
+- Keep transliterations consistent throughout — do not alternate spellings
+
+RELIGIOUS AND CULTURAL TERMS:
+- ተዝካር → tezkar (memorial feast for the dead)
+- ነፍስ አባት/ነፍስ ልጅ → spiritual father/spiritual child (confession relationship)
+- ታቦት → Tabot (Ark replica), ቅዳሴ → Qiddase (Mass/Divine Liturgy)
+- ደብረ ብርሃን → Debre Birhan (place name — "Mount of Light")
+- ዕጣነ ሞገር → Etane Moger (liturgical incense ceremony)
+- Biblical names: use standard English forms (ሰሎሞን → Solomon, ጳውሎስ → Paul, ኤርምያስ → Jeremiah)
+- Ethiopic book abbreviations: ምሳ. → Prov., ማቴ. → Matt., ቆሮ. → Cor., ኤር. → Jer.
+
+LITERARY CONVENTIONS:
+- Proverbs and maxims: translate faithfully, preserving parallelism and rhythm
+- Dialogue: use quotation marks; identify speakers from context
+- Allegorical passages: translate literally — do not explain the allegory
+- Scene breaks marked with = should be preserved as paragraph separators
+- Ethiopian numerals (፩, ፪, ፫... ፲, ፳, ፻) should be converted to Arabic numerals in context
+
+STYLE:
+- Early 20th-century Amharic prose has a formal, sometimes homiletic register — preserve this gravity
+- Sentences can be long and periodic — maintain the original sentence structure where English allows
+- Preserve rhetorical questions and exclamations
+- Court and military language should sound appropriately formal
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs — maintain exact paragraph boundaries
+- Modernise or sanitise period attitudes, violence, or social hierarchies
+- Use anachronistic vocabulary
+- Translate section/chapter numbers that are part of structural markers`,
 };
 
 /**

@@ -129,6 +129,7 @@ export const languagesRelations = relations(languages, ({ many }) => ({
 export const authors = pgTable("authors", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
+  nameZh: varchar("name_zh", { length: 255 }),
   nameOriginalScript: varchar("name_original_script", { length: 255 }),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   era: varchar("era", { length: 255 }),
