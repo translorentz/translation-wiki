@@ -71,6 +71,7 @@ const en = {
   "sourcelang.xcl": "Classical Armenian",
   "sourcelang.ja": "Japanese",
   "sourcelang.el": "Modern Greek",
+  "sourcelang.am": "Amharic",
 
   // Search page
   "search.title": "Search",

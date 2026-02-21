@@ -72,6 +72,7 @@ const zh: Translations = {
   "sourcelang.xcl": "\u53E4\u5178\u4E9A\u7F8E\u5C3C\u4E9A\u8BED",
   "sourcelang.ja": "\u65E5\u8BED",
   "sourcelang.el": "现代希腊语",
+  "sourcelang.am": "阿姆哈拉语",
 
   // Search page
   "search.title": "\u641C\u7D22",
