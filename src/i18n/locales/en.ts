@@ -86,6 +86,7 @@ const en = {
   "search.chapters": "Chapters",
   "search.loadMore": "Load More",
   "search.loading": "Loading...",
+  "search.searchContent": "Search inside texts",
 
   // Auth - Login
   "login.title": "Sign In",

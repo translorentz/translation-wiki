@@ -138,10 +138,11 @@ export const searchRouter = createTRPCRouter({
           ? inArray(languages.code, input.languages)
           : undefined;
 
-      // Content search: source content and translation content (JSONB - slower)
+      // Content search: tsvector full-text search (GIN-indexed)
+      const tsQuery = sql`plainto_tsquery('simple', ${input.q})`;
       const contentMatchConditions = or(
-        sql`${chapters.sourceContent}::text ILIKE ${pattern}`,
-        sql`${translationVersions.content}::text ILIKE ${pattern}`
+        sql`"chapters"."source_tsv" @@ ${tsQuery}`,
+        sql`"translation_versions"."content_tsv" @@ ${tsQuery}`
       );
 
       // Build exclusions for texts/chapters already shown
@@ -283,10 +284,11 @@ export const searchRouter = createTRPCRouter({
       // Exclude chapters from texts already found above to avoid duplication
       const matchedTextIds = textMatches.map((t) => t.textId);
 
+      const tsQuery = sql`plainto_tsquery('simple', ${input.q})`;
       const chapterMatchConditions = or(
         ilike(chapters.title, pattern),
-        sql`${chapters.sourceContent}::text ILIKE ${pattern}`,
-        sql`${translationVersions.content}::text ILIKE ${pattern}`
+        sql`"chapters"."source_tsv" @@ ${tsQuery}`,
+        sql`"translation_versions"."content_tsv" @@ ${tsQuery}`
       );
 
       // Use lowercase pattern for case-insensitive matching in subqueries

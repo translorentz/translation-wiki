@@ -87,6 +87,7 @@ const zh: Translations = {
   "search.chapters": "\u7AE0\u8282",
   "search.loadMore": "\u52A0\u8F7D\u66F4\u591A",
   "search.loading": "\u52A0\u8F7D\u4E2D\u2026\u2026",
+  "search.searchContent": "搜索正文内容",
 
   // Auth - Login
   "login.title": "\u767B\u5F55",

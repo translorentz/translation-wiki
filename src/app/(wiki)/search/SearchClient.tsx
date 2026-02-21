@@ -64,6 +64,9 @@ export default function SearchClient() {
 
   // Initialize state from URL params
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const [searchContent, setSearchContent] = useState(() => {
+    return searchParams.get("content") === "1";
+  });
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(() => {
     const langParam = searchParams.get("lang");
     return langParam ? langParam.split(",").filter(Boolean) : [];
@@ -87,6 +90,7 @@ export default function SearchClient() {
       const params = new URLSearchParams();
       if (q) params.set("q", q);
       if (langs.length > 0) params.set("lang", langs.join(","));
+      if (searchContent) params.set("content", "1");
       const newUrl = params.toString()
         ? `${pathname}?${params.toString()}`
         : pathname;
@@ -101,15 +105,15 @@ export default function SearchClient() {
       updateUrl(query, selectedLanguages);
     }, 300);
     return () => clearTimeout(timer);
-  }, [query, selectedLanguages, updateUrl]);
+  }, [query, selectedLanguages, searchContent, updateUrl]);
 
-  // Reset accumulated results when query or languages change
+  // Reset accumulated results when query, languages, or content toggle change
   useEffect(() => {
     setAccumulatedTexts([]);
     setAccumulatedChapters([]);
     setCurrentOffset(0);
     setHasMoreResults(false);
-  }, [query, selectedLanguages]);
+  }, [query, selectedLanguages, searchContent]);
 
   const toggleLanguage = (code: string) => {
     setSelectedLanguages((prev) =>
@@ -155,7 +159,7 @@ export default function SearchClient() {
         excludeChapterIds,
       },
       {
-        enabled: query.length >= 2 && titlesQuery.isSuccess,
+        enabled: query.length >= 2 && titlesQuery.isSuccess && searchContent,
       }
     )
   );
@@ -172,7 +176,7 @@ export default function SearchClient() {
         matchParagraphIndex: null as number | null,
       }));
 
-      if (contentQuery.isSuccess && contentQuery.data) {
+      if (searchContent && contentQuery.isSuccess && contentQuery.data) {
         const seenIds = new Set(titleChapters.map(c => c.chapterId));
         const uniqueContentChapters = contentQuery.data.chapters.filter(
           c => !seenIds.has(c.chapterId)
@@ -184,7 +188,7 @@ export default function SearchClient() {
         setHasMoreResults(titlesQuery.data.hasMore);
       }
     }
-  }, [titlesQuery.isSuccess, titlesQuery.data, contentQuery.isSuccess, contentQuery.data, currentOffset]);
+  }, [titlesQuery.isSuccess, titlesQuery.data, contentQuery.isSuccess, contentQuery.data, currentOffset, searchContent]);
 
   // Load more handler
   const handleLoadMore = async () => {
@@ -254,6 +258,17 @@ export default function SearchClient() {
         className="mb-4"
       />
 
+      {/* Content search toggle */}
+      <label className="mb-4 flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={searchContent}
+          onChange={(e) => setSearchContent(e.target.checked)}
+          className="rounded border-muted-foreground"
+        />
+        {t("search.searchContent")}
+      </label>
+
       {/* Language filter */}
       {languagesQuery.data && languagesQuery.data.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
@@ -292,12 +307,12 @@ export default function SearchClient() {
       )}
 
       {/* Content search loading - show when titles done but content still loading */}
-      {!isSearching && isContentLoading && query.length >= 2 && (
+      {!isSearching && searchContent && isContentLoading && query.length >= 2 && (
         <p className="text-sm text-muted-foreground">{t("search.searchingContent")}</p>
       )}
 
       {/* No results message - only show when not searching */}
-      {!isSearching && !isContentLoading && !hasResults && query.length >= 2 && (
+      {!isSearching && !(searchContent && isContentLoading) && !hasResults && query.length >= 2 && (
         <p className="py-4 text-muted-foreground">
           {t("search.noResults")} &ldquo;{query}&rdquo;
           {selectedLanguages.length > 0 && ` ${t("search.withFilter")}`}
