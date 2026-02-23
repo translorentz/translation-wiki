@@ -16,8 +16,11 @@ export function LanguageSwitcher() {
   function switchLocale(newLocale: string) {
     const currentPath = window.location.pathname;
     const search = window.location.search;
-    // Strip existing /zh prefix to get the base path
-    const basePath = currentPath.replace(/^\/zh/, "") || "/";
+    // Only strip /zh prefix if current locale is zh (i.e., it's the locale prefix).
+    // Do NOT strip when locale is en — a leading /zh is the source language code.
+    const basePath = locale === "zh"
+      ? (currentPath.replace(/^\/zh/, "") || "/")
+      : currentPath;
     // Add /zh/ prefix for Chinese, bare path for English
     const newPath = newLocale === "zh" ? `/zh${basePath}` : basePath;
     // Full navigation so middleware runs and sets the correct cookie

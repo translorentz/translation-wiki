@@ -8,11 +8,14 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Prepend /zh/ to a path when locale is Chinese.
- * English paths have no prefix. Guards against double-prefixing.
+ * English paths have no prefix.
+ *
+ * NOTE: No guard against "/zh" prefix — the source language code "zh"
+ * produces paths like /zh/author/text, which must STILL get the locale
+ * prefix: /zh/zh/author/text. The middleware strips only the first /zh/.
  */
 export function localePath(path: string, locale: Locale | string): string {
   if (locale !== "zh") return path;
-  if (path.startsWith("/zh")) return path;
   return `/zh${path}`;
 }
 
