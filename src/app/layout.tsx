@@ -79,7 +79,16 @@ export default async function RootLayout({
                   {t("footer.description")}
                 </p>
                 <p className="mt-2 text-center text-xs text-gray-400">
-                  {t("footer.trial")}
+                  {t("footer.trial")}{" "}
+                  <a
+                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-gray-300"
+                  >
+                    {t("footer.license")}
+                  </a>
+                  {t("footer.licenseSuffix")}
                 </p>
               </div>
             </footer>

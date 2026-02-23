@@ -159,6 +159,10 @@ export function TextEditor({
           {t("editor.failedSave")} {createVersion.error.message}
         </p>
       )}
+
+      <p className="mt-4 text-xs text-gray-400">
+        {t("editor.ccNotice")}
+      </p>
     </div>
   );
 }

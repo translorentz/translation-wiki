@@ -155,7 +155,9 @@ const en = {
   // Footer
   "footer.description":
     "Deltoi — A collaborative wiki of interlinear translations of pre-contemporary texts.",
-  "footer.trial": "Trial project by Bryan Cheong.",
+  "footer.trial": "Trial project by Bryan Cheong. Content licensed under",
+  "footer.license": "CC BY-NC-SA 4.0",
+  "footer.licenseSuffix": ".",
 
   // Common
   "common.loading": "Loading...",
@@ -228,6 +230,8 @@ const en = {
   "editor.deleteConfirmation": "This paragraph has an existing translation. Would you like to delete the translation as well, or keep it?",
   "editor.keepTranslation": "Keep translation",
   "editor.deleteBoth": "Delete both",
+  "editor.ccNotice":
+    "Translations released to Deltoi are published under Creative Commons BY-NC-SA.",
 
   // Discussion
   "discussion.noThreads": "No discussion threads yet. Be the first to start a conversation.",

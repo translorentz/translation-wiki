@@ -152,7 +152,9 @@ const zh: Translations = {
   // Footer
   "footer.description":
     "Deltoi \u2014 \u53E4\u5178\u6587\u672C\u9010\u884C\u5BF9\u7167\u7FFB\u8BD1\u534F\u4F5C\u7EF4\u57FA\u3002",
-  "footer.trial": "Bryan Cheong \u8BD5\u9A8C\u9879\u76EE\u3002",
+  "footer.trial": "Bryan Cheong \u8BD5\u9A8C\u9879\u76EE\u3002\u5185\u5BB9\u4EE5",
+  "footer.license": "CC BY-NC-SA 4.0",
+  "footer.licenseSuffix": "\u8BB8\u53EF\u534F\u8BAE\u53D1\u5E03",
 
   // Common
   "common.loading": "加载中……",
@@ -223,6 +225,8 @@ const zh: Translations = {
   "editor.deleteConfirmation": "该段落已有对应译文。您希望同时删除译文，还是保留它？",
   "editor.keepTranslation": "保留译文",
   "editor.deleteBoth": "全部删除",
+  "editor.ccNotice":
+    "发布到 Deltoi 的译文以 Creative Commons BY-NC-SA 许可协议发布。",
 
   // Discussion
   "discussion.noThreads": "尚无讨论帖。成为第一个发起讨论的人。",
