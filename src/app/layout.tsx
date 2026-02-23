@@ -57,7 +57,7 @@ export default async function RootLayout({
             <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
               <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-6">
-                  <Link href={localePath("/", locale)} className="text-lg font-semibold">
+                  <Link href={localePath("/", locale)} className="font-[family-name:var(--font-lora)] text-lg font-semibold">
                     Deltoi
                   </Link>
                   <nav className="hidden gap-4 sm:flex">
