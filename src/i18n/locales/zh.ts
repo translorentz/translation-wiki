@@ -295,7 +295,7 @@ const zh: Translations = {
     "本项目旨在为翻译者和学者提供一个平台，对尚未有英文或中文翻译的重要文本进行评论、协作、编辑、审查和认可。本网站的初始翻译由人工智能完成，项目目标是在此基础上制作出规范且易于理解的翻译。",
   "about.registrationTitle": "注册",
   "about.registration":
-    "目前注册仅限受邀用户。如您有兴趣参与贡献，请联系 Bryan Cheong：",
+    "目前注册仅限受邀用户。如您有兴趣参与贡献，请联系 Bryan Cheong。",
   "about.licenseTitle": "许可协议",
   "about.licenseText":
     "发布到 Deltoi 的所有译文均以",

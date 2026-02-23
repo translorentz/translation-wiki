@@ -17,13 +17,7 @@ export default async function AboutPage() {
 
       <h2 className="mt-10 text-xl font-semibold">{t("about.registrationTitle")}</h2>
       <p className="mt-3 leading-relaxed text-muted-foreground">
-        {t("about.registration")}{" "}
-        <a
-          href="mailto:bryan@deltoi.com"
-          className="text-foreground underline hover:text-primary"
-        >
-          bryan@deltoi.com
-        </a>
+        {t("about.registration")}
       </p>
 
       <h2 className="mt-10 text-xl font-semibold">{t("about.licenseTitle")}</h2>

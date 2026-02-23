@@ -300,7 +300,7 @@ const en = {
     "The goal of this project is to allow translators and scholars to comment on, collaborate on, edit, criticise, check, and endorse translations of important texts that are not yet available in English or Chinese. The initial translations on this website are made using artificial intelligence; this project aims to build upon that foundation to produce proper and accessible translations.",
   "about.registrationTitle": "Registration",
   "about.registration":
-    "Sign-ups are currently limited to select users by invitation. If you are interested in contributing, please contact Bryan Cheong at",
+    "Sign-ups are currently limited to select users by invitation. If you are interested in contributing, please contact Bryan Cheong.",
   "about.licenseTitle": "Licence",
   "about.licenseText":
     "All translations published on Deltoi are released under the",
