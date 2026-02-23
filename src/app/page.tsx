@@ -87,14 +87,14 @@ export default async function HomePage() {
   return (
     <div className="px-4 py-16 sm:px-6 lg:px-8">
       {/* Hero */}
-      <div className="mb-16 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+      <div className="mx-auto mb-16 max-w-5xl">
+        <h1 className="font-[family-name:var(--font-lora)] text-4xl font-bold tracking-tight sm:text-5xl">
           {t("home.title")}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+        <p className="mt-4 max-w-2xl font-[family-name:var(--font-lora)] text-lg text-muted-foreground">
           {t("home.subtitle")}
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-8 flex gap-4">
           <Button asChild>
             <Link href={localePath("/texts", locale)}>{t("home.browseTexts")}</Link>
           </Button>

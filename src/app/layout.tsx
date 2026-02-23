@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Lora } from "next/font/google";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/client";
@@ -18,6 +18,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
 });
 
@@ -44,7 +49,7 @@ export default async function RootLayout({
         <link rel="alternate" hrefLang="zh-Hans" href={`/zh${effectivePath}`} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} min-h-screen antialiased`}
       >
         <TRPCReactProvider>
           <LocaleProvider locale={locale}>
