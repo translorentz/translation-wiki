@@ -12,12 +12,13 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { setInviteTokenCookie } from "./actions";
 import { useTranslation } from "@/i18n";
+import { localePath } from "@/lib/utils";
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const trpc = useTRPC();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -30,7 +31,7 @@ function RegisterForm() {
   const register = useMutation(
     trpc.users.register.mutationOptions({
       onSuccess: () => {
-        router.push("/register/success");
+        router.push(localePath("/register/success", locale));
       },
     })
   );
@@ -44,7 +45,7 @@ function RegisterForm() {
     if (!inviteToken) return;
     setGoogleLoading(true);
     await setInviteTokenCookie(inviteToken);
-    await signIn("google", { callbackUrl: "/" });
+    await signIn("google", { callbackUrl: localePath("/", locale) });
   }
 
   return (
@@ -148,7 +149,7 @@ function RegisterForm() {
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
         {t("register.hasAccount")}{" "}
-        <Link href="/login" className="text-primary hover:underline">
+        <Link href={localePath("/login", locale)} className="text-primary hover:underline">
           {t("register.signIn")}
         </Link>
       </p>

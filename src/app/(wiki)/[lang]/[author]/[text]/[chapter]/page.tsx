@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { getServerTranslation } from "@/i18n/server";
-import { parseChapterTitle, formatChapterTitle } from "@/lib/utils";
+import { parseChapterTitle, formatChapterTitle, localePath } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,17 @@ export async function generateMetadata({
   const { original, english } = parseChapterTitle(chapterInfo?.title ?? null);
   const chapterTitle = english ? `${original} (${english})` : original;
 
+  const canonicalPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
   return {
     title: `${chapterTitle} — ${textData.title} — Deltoi`,
     description: `Read the translation of ${chapterTitle} from ${textData.title} by ${textData.author.name}`,
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        en: canonicalPath,
+        "zh-Hans": `/zh${canonicalPath}`,
+      },
+    },
   };
 }
 
@@ -88,7 +96,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   const prevChapter = currentIdx > 0 ? textData.chapters[currentIdx - 1] : undefined;
   const nextChapter = currentIdx < textData.chapters.length - 1 ? textData.chapters[currentIdx + 1] : undefined;
 
-  const basePath = `/${lang}/${author}/${textSlug}`;
+  const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
 
   return (
     <div className="flex gap-8">

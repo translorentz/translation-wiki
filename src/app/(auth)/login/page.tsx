@@ -9,13 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
+import { localePath } from "@/lib/utils";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/";
   const errorParam = searchParams.get("error");
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const callbackUrl = searchParams.get("callbackUrl") ?? localePath("/", locale);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -101,7 +102,7 @@ function LoginForm() {
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
         {t("login.noAccount")}{" "}
-        <Link href="/register" className="text-primary hover:underline">
+        <Link href={localePath("/register", locale)} className="text-primary hover:underline">
           {t("login.register")}
         </Link>
       </p>

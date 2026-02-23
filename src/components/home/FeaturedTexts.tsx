@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useTranslation } from "@/i18n";
-import { cn, formatAuthorName, formatTextTitle } from "@/lib/utils";
+import { cn, formatAuthorName, formatTextTitle, localePath } from "@/lib/utils";
 
 interface FeaturedText {
   title: string;
@@ -123,7 +123,7 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                 {sortTexts(langGroup.texts).map((text) => (
                   <Link
                     key={text.slug}
-                    href={`/${text.language.code}/${text.author.slug}/${text.slug}`}
+                    href={localePath(`/${text.language.code}/${text.author.slug}/${text.slug}`, locale)}
                   >
                     <Card className="px-4 py-2.5 transition-colors hover:bg-muted/50">
                       {(() => {

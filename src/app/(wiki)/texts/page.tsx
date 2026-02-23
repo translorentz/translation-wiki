@@ -4,6 +4,7 @@ import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
 import { getServerTranslation } from "@/i18n/server";
 import { getGenreDisplayName } from "@/i18n/shared";
+import { localePath } from "@/lib/utils";
 import type { TranslationKey } from "@/i18n/locales/en";
 
 // Force dynamic rendering to ensure fresh data from database
@@ -187,7 +188,8 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     if (newLang) params.set("lang", newLang);
     if (newGenre) params.set("genre", newGenre);
     const qs = params.toString();
-    return qs ? `/texts?${qs}` : "/texts";
+    const path = qs ? `/texts?${qs}` : "/texts";
+    return localePath(path, locale);
   };
 
   // Display names for active filters
@@ -277,7 +279,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
             </>
           )}
           {" \u00B7 "}
-          <Link href="/texts" className="text-primary hover:underline">
+          <Link href={localePath("/texts", locale)} className="text-primary hover:underline">
             {t("browse.clearFilters")}
           </Link>
         </p>

@@ -1,11 +1,14 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/server/auth";
+import { getLocale } from "@/i18n/server";
+import { localePath } from "@/lib/utils";
 import { AdminUsersClient } from "./AdminUsersClient";
 
 export default async function AdminUsersPage() {
   const session = await auth();
   if (!session?.user || session.user.role !== "admin") {
-    redirect("/");
+    const locale = await getLocale();
+    redirect(localePath("/", locale));
   }
 
   return (

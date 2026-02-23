@@ -5,6 +5,7 @@ import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 import { HighlightCards } from "@/components/home/HighlightCards";
 import { getServerTranslation } from "@/i18n/server";
 import { getGenreDisplayName, type Locale } from "@/i18n/shared";
+import { localePath } from "@/lib/utils";
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();
@@ -98,10 +99,10 @@ export default async function HomePage() {
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Button asChild>
-            <Link href="/texts">{t("home.browseTexts")}</Link>
+            <Link href={localePath("/texts", locale)}>{t("home.browseTexts")}</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/search">{t("home.searchTexts")}</Link>
+            <Link href={localePath("/search", locale)}>{t("home.searchTexts")}</Link>
           </Button>
         </div>
       </div>
@@ -122,7 +123,7 @@ export default async function HomePage() {
             {localizedLanguageLinks.map((lang) => (
               <li key={lang.code}>
                 <Link
-                  href={`/texts?lang=${lang.code}`}
+                  href={localePath(`/texts?lang=${lang.code}`, locale)}
                   className="text-sm text-foreground transition-colors hover:text-primary"
                 >
                   {lang.label}{" "}
@@ -139,7 +140,7 @@ export default async function HomePage() {
             {genreLinks.map((genre) => (
               <li key={genre.code}>
                 <Link
-                  href={`/texts?genre=${genre.code}`}
+                  href={localePath(`/texts?genre=${genre.code}`, locale)}
                   className="text-sm text-foreground transition-colors hover:text-primary"
                 >
                   {genre.label}{" "}

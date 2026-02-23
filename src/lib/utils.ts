@@ -1,8 +1,19 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import type { Locale } from "@/i18n/shared"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+/**
+ * Prepend /zh/ to a path when locale is Chinese.
+ * English paths have no prefix. Guards against double-prefixing.
+ */
+export function localePath(path: string, locale: Locale | string): string {
+  if (locale !== "zh") return path;
+  if (path.startsWith("/zh")) return path;
+  return `/zh${path}`;
 }
 
 /**

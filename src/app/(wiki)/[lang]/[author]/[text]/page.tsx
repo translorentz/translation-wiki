@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { getServerTranslation } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
-import { formatChapterTitle, formatAuthorName, formatTextTitle } from "@/lib/utils";
+import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
 
 interface TextPageProps {
@@ -28,11 +28,19 @@ export async function generateMetadata({
 
   if (!textData) return { title: "Text Not Found" };
 
+  const canonicalPath = `/${lang}/${author}/${textSlug}`;
   return {
     title: `${textData.title} — Deltoi`,
     description:
       textData.description ??
       `Read and translate ${textData.title} by ${textData.author.name}`,
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        en: canonicalPath,
+        "zh-Hans": `/zh${canonicalPath}`,
+      },
+    },
   };
 }
 
@@ -52,7 +60,7 @@ export default async function TextPage({ params }: TextPageProps) {
     notFound();
   }
 
-  const basePath = `/${lang}/${author}/${textSlug}`;
+  const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
   const description = (locale === "zh" && textData.descriptionZh) || textData.description;
   const titleDisplay = formatTextTitle(textData, locale);
   const authorDisplay = formatAuthorName(textData.author, locale);

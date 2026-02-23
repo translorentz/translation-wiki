@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
-import { formatChapterTitle, formatTextTitle } from "@/lib/utils";
+import { formatChapterTitle, formatTextTitle, localePath } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -91,12 +91,13 @@ export default function SearchClient() {
       if (q) params.set("q", q);
       if (langs.length > 0) params.set("lang", langs.join(","));
       if (searchContent) params.set("content", "1");
+      const localePathname = localePath(pathname, locale);
       const newUrl = params.toString()
-        ? `${pathname}?${params.toString()}`
-        : pathname;
+        ? `${localePathname}?${params.toString()}`
+        : localePathname;
       router.replace(newUrl, { scroll: false });
     },
-    [pathname, router]
+    [pathname, router, locale]
   );
 
   // Debounced URL update for query changes
@@ -337,7 +338,7 @@ export default function SearchClient() {
                 return (
                   <Link
                     key={result.textId}
-                    href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}`}
+                    href={localePath(`/${result.langCode}/${result.authorSlug}/${result.textSlug}`, locale)}
                   >
                     <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                       <p className="font-medium">
@@ -370,7 +371,7 @@ export default function SearchClient() {
               {accumulatedChapters.map((result) => (
                 <Link
                   key={result.chapterId}
-                  href={`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`}
+                  href={localePath(`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`, locale)}
                 >
                   <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                     {(() => {

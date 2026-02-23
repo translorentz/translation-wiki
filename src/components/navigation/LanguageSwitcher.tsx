@@ -14,10 +14,14 @@ export function LanguageSwitcher() {
   const locale = useLocale();
 
   function switchLocale(newLocale: string) {
-    // Set cookie with 1-year expiry
-    document.cookie = `${LOCALE_COOKIE}=${newLocale};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
-    // Reload the page so server components pick up the new locale
-    window.location.reload();
+    const currentPath = window.location.pathname;
+    const search = window.location.search;
+    // Strip existing /zh prefix to get the base path
+    const basePath = currentPath.replace(/^\/zh/, "") || "/";
+    // Add /zh/ prefix for Chinese, bare path for English
+    const newPath = newLocale === "zh" ? `/zh${basePath}` : basePath;
+    // Full navigation so middleware runs and sets the correct cookie
+    window.location.href = `${newPath}${search}`;
   }
 
   const currentLabel = LOCALES.find((l) => l.code === locale)?.label ?? "English";

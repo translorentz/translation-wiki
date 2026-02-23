@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { getTranslator, type Locale } from "@/i18n/shared";
+import { localePath } from "@/lib/utils";
 
 type Highlight = {
   slug: string;
@@ -100,7 +101,7 @@ export function HighlightCards({ locale }: { locale: Locale }) {
         {highlights.map((h) => (
           <Link
             key={h.slug}
-            href={`/${h.langCode}/${h.authorSlug}/${h.slug}`}
+            href={localePath(`/${h.langCode}/${h.authorSlug}/${h.slug}`, locale)}
           >
             <Card className="h-full gap-0 px-2 py-1.5 transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-3 sm:py-2">
               <p className="text-sm leading-tight sm:text-base">{h.originalTitle}</p>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { cn, formatChapterTitle } from "@/lib/utils";
+import { cn, formatChapterTitle, localePath } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTranslation } from "@/i18n";
 
@@ -43,7 +43,7 @@ export function TableOfContents({
         <ul className="space-y-0.5 pr-4">
           {chapters.map((chapter) => {
             const isActive = chapter.chapterNumber === currentChapter;
-            const href = `/${langCode}/${authorSlug}/${textSlug}/${chapter.slug}`;
+            const href = localePath(`/${langCode}/${authorSlug}/${textSlug}/${chapter.slug}`, locale);
             const { primary, secondary } = formatChapterTitle(chapter, locale, langCode);
 
             return (

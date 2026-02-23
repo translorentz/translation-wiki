@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { formatChapterTitle } from "@/lib/utils";
+import { formatChapterTitle, localePath } from "@/lib/utils";
 import { getServerTranslation } from "@/i18n/server";
 import { Button } from "@/components/ui/button";
 import { DiscussionClient } from "./DiscussionClient";
@@ -42,7 +42,7 @@ export default async function DiscussionPage({ params }: DiscussionPageProps) {
     chapterId: chapter.id,
   });
 
-  const basePath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
+  const basePath = localePath(`/${lang}/${author}/${textSlug}/${chapterSlug}`, locale);
 
   return (
     <main className="mx-auto max-w-3xl">

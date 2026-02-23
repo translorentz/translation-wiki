@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { getLocale, getServerTranslation } from "@/i18n/server";
-import { formatChapterTitle } from "@/lib/utils";
+import { formatChapterTitle, localePath } from "@/lib/utils";
 import { SourceEditor } from "@/components/editor/SourceEditor";
 
 interface EditSourcePageProps {
@@ -19,15 +19,15 @@ export default async function EditSourcePage({ params }: EditSourcePageProps) {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
 
   const session = await auth();
+  const locale = await getLocale();
   if (!session?.user) {
-    redirect("/login");
+    redirect(localePath("/login", locale));
   }
   if (session.user.role !== "editor" && session.user.role !== "admin") {
-    redirect(`/${lang}/${author}/${textSlug}/${chapterSlug}`);
+    redirect(localePath(`/${lang}/${author}/${textSlug}/${chapterSlug}`, locale));
   }
 
   const trpc = await getServerTRPC();
-  const locale = await getLocale();
   const { t } = await getServerTranslation();
 
   const textData = await trpc.texts.getBySlug({

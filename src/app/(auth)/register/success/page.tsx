@@ -4,9 +4,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
+import { localePath } from "@/lib/utils";
 
 export default function RegisterSuccessPage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-4">
@@ -19,7 +20,7 @@ export default function RegisterSuccessPage() {
           {t("register.loginPrompt")}
         </p>
         <Button asChild className="w-full">
-          <Link href="/login">{t("register.logIn")}</Link>
+          <Link href={localePath("/login", locale)}>{t("register.logIn")}</Link>
         </Button>
       </Card>
     </div>

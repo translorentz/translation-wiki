@@ -9,11 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/i18n";
+import { localePath } from "@/lib/utils";
 
 export function ProfileClient() {
   const trpc = useTRPC();
   const profileQuery = useQuery(trpc.users.getMyProfile.queryOptions());
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -37,7 +38,7 @@ export function ProfileClient() {
   const deleteAccount = useMutation(
     trpc.users.deleteMyAccount.mutationOptions({
       onSuccess: () => {
-        signOut({ callbackUrl: "/" });
+        signOut({ callbackUrl: localePath("/", locale) });
       },
     })
   );

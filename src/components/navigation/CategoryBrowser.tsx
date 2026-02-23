@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useMemo } from "react";
 import { useTranslation } from "@/i18n";
-import { cn, formatAuthorName, formatTextTitle } from "@/lib/utils";
+import { cn, formatAuthorName, formatTextTitle, localePath } from "@/lib/utils";
 
 interface TextSummary {
   title: string;
@@ -105,7 +105,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                   return (
                     <Link
                       key={text.slug}
-                      href={`/${lang.code}/${author.slug}/${text.slug}`}
+                      href={localePath(`/${lang.code}/${author.slug}/${text.slug}`, locale)}
                     >
                       <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
                         <p className={cn(
@@ -179,7 +179,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                         return (
                           <Link
                             key={text.slug}
-                            href={`/${lang.code}/${author.slug}/${text.slug}`}
+                            href={localePath(`/${lang.code}/${author.slug}/${text.slug}`, locale)}
                           >
                             <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
                               <p className={cn(

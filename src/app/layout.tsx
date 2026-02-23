@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/client";
 import { UserNav } from "@/components/auth/UserNav";
 import { LanguageSwitcher } from "@/components/navigation/LanguageSwitcher";
 import { LocaleProvider } from "./LocaleProvider";
 import { getLocale } from "@/i18n/server";
 import { getTranslator } from "@/i18n/shared";
+import { localePath } from "@/lib/utils";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,9 +34,15 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const t = getTranslator(locale);
+  const headersList = await headers();
+  const effectivePath = headersList.get("x-locale-path") || "/";
 
   return (
     <html lang={locale === "zh" ? "zh-Hans" : "en"}>
+      <head>
+        <link rel="alternate" hrefLang="en" href={effectivePath} />
+        <link rel="alternate" hrefLang="zh-Hans" href={`/zh${effectivePath}`} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
@@ -44,18 +52,18 @@ export default async function RootLayout({
             <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
               <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-6">
-                  <Link href="/" className="text-lg font-semibold">
+                  <Link href={localePath("/", locale)} className="text-lg font-semibold">
                     Deltoi
                   </Link>
                   <nav className="hidden gap-4 sm:flex">
                     <Link
-                      href="/texts"
+                      href={localePath("/texts", locale)}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {t("nav.browse")}
                     </Link>
                     <Link
-                      href="/search"
+                      href={localePath("/search", locale)}
                       className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {t("nav.search")}

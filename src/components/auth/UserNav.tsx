@@ -4,10 +4,11 @@ import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
+import { localePath } from "@/lib/utils";
 
 export function UserNav() {
   const { data: session, status } = useSession();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   if (status === "loading") {
     return <div className="h-8 w-16" />;
@@ -16,7 +17,7 @@ export function UserNav() {
   if (!session?.user) {
     return (
       <Button variant="ghost" size="sm" asChild>
-        <Link href="/login">{t("nav.signIn")}</Link>
+        <Link href={localePath("/login", locale)}>{t("nav.signIn")}</Link>
       </Button>
     );
   }
@@ -24,14 +25,14 @@ export function UserNav() {
   return (
     <div className="flex items-center gap-2">
       <Link
-        href="/profile"
+        href={localePath("/profile", locale)}
         className="text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         {session.user.name}
       </Link>
       {session.user.role === "admin" && (
         <Link
-          href="/admin/users"
+          href={localePath("/admin/users", locale)}
           className="text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           {t("nav.admin")}
@@ -40,7 +41,7 @@ export function UserNav() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => signOut({ callbackUrl: "/" })}
+        onClick={() => signOut({ callbackUrl: localePath("/", locale) })}
       >
         {t("nav.signOut")}
       </Button>
