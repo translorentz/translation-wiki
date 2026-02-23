@@ -4,12 +4,42 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
+/**
+ * Known first path segments that indicate /zh/ is a UI locale prefix,
+ * NOT the source language code "zh" in /zh/{author}/{text}.
+ *
+ * Chinese source texts live at /zh/{author}/{text} where "zh" is the
+ * source language. These must NOT be intercepted by locale routing.
+ * The middleware distinguishes them by checking the segment after /zh/:
+ * - Static routes (texts, search, login, etc.) → locale prefix
+ * - Source language codes (grc, la, ta, etc.) → locale prefix
+ * - Anything else (author slugs like li-zhi) → Chinese source text
+ */
+const ZH_LOCALE_SEGMENTS = new Set([
+  // Static app routes
+  "texts", "search", "login", "register", "profile", "admin",
+  // Source language codes used in /[lang]/[author]/[text]
+  "grc", "la", "ta", "it", "pl", "cs", "sr", "ru", "fr", "hy",
+  "ms", "te", "ja", "fa", "el", "de", "xcl", "chg", "ko", "am",
+  "gez", "tr", "vi", "zh",
+]);
+
+/** Is this /zh/... path a UI locale prefix (true) or a Chinese source text URL (false)? */
+function isZhLocalePrefix(pathname: string): boolean {
+  if (pathname === "/zh") return true;
+  if (!pathname.startsWith("/zh/")) return false;
+  const firstSegment = pathname.slice(4).split("/")[0];
+  return ZH_LOCALE_SEGMENTS.has(firstSegment);
+}
+
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const { pathname } = req.nextUrl;
 
   // --- Locale routing ---
-  const isZh = pathname.startsWith("/zh/") || pathname === "/zh";
+  // Only treat /zh/... as locale prefix if the first segment is a known
+  // route or language code. Otherwise it's a Chinese source text URL.
+  const isZh = isZhLocalePrefix(pathname);
   const effectivePath = isZh ? (pathname.replace(/^\/zh/, "") || "/") : pathname;
   const localePrefix = isZh ? "/zh" : "";
 
