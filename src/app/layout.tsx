@@ -68,6 +68,12 @@ export default async function RootLayout({
                     >
                       {t("nav.search")}
                     </Link>
+                    <Link
+                      href={localePath("/about", locale)}
+                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {t("nav.about")}
+                    </Link>
                   </nav>
                 </div>
                 <div className="flex items-center gap-2">

@@ -94,9 +94,6 @@ export default async function HomePage() {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           {t("home.subtitle")}
         </p>
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          {t("home.description")}
-        </p>
         <div className="mt-8 flex justify-center gap-4">
           <Button asChild>
             <Link href={localePath("/texts", locale)}>{t("home.browseTexts")}</Link>

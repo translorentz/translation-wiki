@@ -17,7 +17,7 @@ const { auth } = NextAuth(authConfig);
  */
 const ZH_LOCALE_SEGMENTS = new Set([
   // Static app routes
-  "texts", "search", "login", "register", "profile", "admin",
+  "texts", "search", "about", "login", "register", "profile", "admin",
   // Source language codes used in /[lang]/[author]/[text]
   "grc", "la", "ta", "it", "pl", "cs", "sr", "ru", "fr", "hy",
   "ms", "te", "ja", "fa", "el", "de", "xcl", "chg", "ko", "am",
