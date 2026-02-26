@@ -129,7 +129,7 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                       {(() => {
                         const titleDisplay = formatTextTitle(text, locale);
                         const authorDisplay = formatAuthorName(text.author, locale);
-                        const isUntranslated = locale === "zh" && text.hasZhTranslation === false;
+                        const isUntranslated = locale === "cn" && text.hasZhTranslation === false;
                         return (
                           <>
                             <h3 className={cn(

@@ -7,18 +7,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Prepend /zh/ to a path when locale is Chinese.
+ * Prepend /cn/ to a path when locale is Chinese.
  * English paths have no prefix.
- *
- * NOTE: Paths starting with "/zh" are Chinese source texts (where "zh"
- * is the source language code, e.g. /zh/li-zhi/fenshu). These are NEVER
- * prefixed — Chinese source texts only appear on the English site.
- * The middleware uses segment analysis to distinguish locale from source.
  */
 export function localePath(path: string, locale: Locale | string): string {
-  if (locale !== "zh") return path;
-  if (path.startsWith("/zh")) return path;
-  return `/zh${path}`;
+  if (locale !== "cn") return path;
+  return `/cn${path}`;
+}
+
+/**
+ * Map a UI locale code to a DB target_language code.
+ * The UI uses "cn" for Chinese, but the DB stores target_language = "zh".
+ */
+export function localeToTargetLang(locale: Locale | string): string {
+  return locale === "cn" ? "zh" : locale;
 }
 
 /**
@@ -89,7 +91,7 @@ export function formatAuthorName(
   if (!author.nameOriginalScript) {
     return { primary: author.name, secondary: null };
   }
-  if (locale === "zh") {
+  if (locale === "cn") {
     return { primary: author.nameOriginalScript, secondary: author.name };
   }
   return { primary: author.name, secondary: author.nameOriginalScript };
@@ -104,7 +106,7 @@ export function formatTextTitle(
   text: { title: string; titleOriginalScript?: string | null; titleZh?: string | null },
   locale: string
 ): { primary: string; secondary: string | null } {
-  if (locale === "zh") {
+  if (locale === "cn") {
     // Chinese site: show Chinese title first, original language title in grey
     const zhTitle = text.titleZh ?? text.titleOriginalScript;
     if (zhTitle) {
@@ -137,7 +139,7 @@ export function formatChapterTitle(
 ): { primary: string; secondary: string | null } {
   const { original, english } = parseChapterTitle(chapter.title);
 
-  if (locale === "zh") {
+  if (locale === "cn") {
     // Chinese-source texts: original IS Chinese, no grey text needed
     if (sourceLangCode === "zh") {
       return { primary: original, secondary: null };

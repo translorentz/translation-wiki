@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { getLocale, getServerTranslation } from "@/i18n/server";
-import { formatChapterTitle, localePath } from "@/lib/utils";
+import { formatChapterTitle, localePath, localeToTargetLang } from "@/lib/utils";
 import { TextEditor } from "@/components/editor/TextEditor";
 
 interface EditPageProps {
@@ -43,7 +43,7 @@ export default async function EditPage({ params }: EditPageProps) {
   const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
     slug: chapterSlug,
-    targetLanguage: locale,
+    targetLanguage: localeToTargetLang(locale),
   });
 
   if (!chapter) {
@@ -95,7 +95,7 @@ export default async function EditPage({ params }: EditPageProps) {
         existingTranslation={existingContent}
         sourceLanguage={lang}
         returnPath={returnPath}
-        targetLanguage={locale}
+        targetLanguage={localeToTargetLang(locale)}
       />
     </main>
   );

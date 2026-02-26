@@ -1,6 +1,6 @@
 import type { Translations } from "./en";
 
-const zh: Translations = {
+const cn: Translations = {
   // Header
   "nav.browse": "\u6D4F\u89C8",
   "nav.search": "\u641C\u7D22",
@@ -11,7 +11,7 @@ const zh: Translations = {
   // Language switcher
   "lang.switch": "\u8BED\u8A00",
   "lang.en": "English",
-  "lang.zh": "\u4E2D\u6587 (Chinese)",
+  "lang.cn": "\u4E2D\u6587 (Chinese)",
 
   // Homepage hero
   "home.title": "Deltoi",
@@ -308,4 +308,4 @@ const zh: Translations = {
   "register.logIn": "登录",
 };
 
-export default zh;
+export default cn;

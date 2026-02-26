@@ -10,7 +10,7 @@ import { type Locale, LOCALE_COOKIE, getTranslator } from "./shared";
 export async function getLocale(): Promise<Locale> {
   const cookieStore = await cookies();
   const raw = cookieStore.get(LOCALE_COOKIE)?.value;
-  if (raw === "zh") return "zh";
+  if (raw === "cn") return "cn";
   return "en";
 }
 

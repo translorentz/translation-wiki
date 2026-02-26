@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
 import { getServerTranslation } from "@/i18n/server";
-import { parseChapterTitle, formatChapterTitle, localePath } from "@/lib/utils";
+import { parseChapterTitle, formatChapterTitle, localePath, localeToTargetLang } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ export async function generateMetadata({
       canonical: canonicalPath,
       languages: {
         en: canonicalPath,
-        "zh-Hans": `/zh${canonicalPath}`,
+        "zh-Hans": `/cn${canonicalPath}`,
       },
     },
   };
@@ -76,7 +76,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
   const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
     slug: chapterSlug,
-    targetLanguage: locale,
+    targetLanguage: localeToTargetLang(locale),
   });
 
   if (!chapter) {

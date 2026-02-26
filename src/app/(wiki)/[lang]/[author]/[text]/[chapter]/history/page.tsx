@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { getLocale, getServerTranslation } from "@/i18n/server";
-import { formatChapterTitle } from "@/lib/utils";
+import { formatChapterTitle, localeToTargetLang } from "@/lib/utils";
 import { HistoryTabs } from "@/components/history/HistoryTabs";
 
 interface HistoryPageProps {
@@ -34,7 +34,7 @@ export default async function HistoryPage({ params }: HistoryPageProps) {
   const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
     slug: chapterSlug,
-    targetLanguage: locale,
+    targetLanguage: localeToTargetLang(locale),
   });
 
   if (!chapter) {

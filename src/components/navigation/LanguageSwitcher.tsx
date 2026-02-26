@@ -18,11 +18,11 @@ export function LanguageSwitcher() {
     const search = window.location.search;
     // Only strip /zh prefix if current locale is zh (i.e., it's the locale prefix).
     // Do NOT strip when locale is en — a leading /zh is the source language code.
-    const basePath = locale === "zh"
-      ? (currentPath.replace(/^\/zh/, "") || "/")
+    const basePath = locale === "cn"
+      ? (currentPath.replace(/^\/cn/, "") || "/")
       : currentPath;
-    // Add /zh/ prefix for Chinese, bare path for English
-    const newPath = newLocale === "zh" ? `/zh${basePath}` : basePath;
+    // Add /cn/ prefix for Chinese, bare path for English
+    const newPath = newLocale === "cn" ? `/cn${basePath}` : basePath;
     // Full navigation so middleware runs and sets the correct cookie
     window.location.href = `${newPath}${search}`;
   }

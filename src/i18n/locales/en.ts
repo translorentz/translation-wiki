@@ -9,7 +9,7 @@ const en = {
   // Language switcher
   "lang.switch": "Language",
   "lang.en": "English",
-  "lang.zh": "中文 (Chinese)",
+  "lang.cn": "中文 (Chinese)",
 
   // Homepage hero
   "home.title": "Deltoi",

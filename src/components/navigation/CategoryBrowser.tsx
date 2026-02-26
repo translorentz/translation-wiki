@@ -101,7 +101,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {author.texts.map((text) => {
                   const titleDisplay = formatTextTitle(text, locale);
-                  const isUntranslated = locale === "zh" && text.hasZhTranslation === false;
+                  const isUntranslated = locale === "cn" && text.hasZhTranslation === false;
                   return (
                     <Link
                       key={text.slug}
@@ -175,7 +175,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                       {author.texts.map((text) => {
                         const titleDisplay = formatTextTitle(text, locale);
-                        const isUntranslated = locale === "zh" && text.hasZhTranslation === false;
+                        const isUntranslated = locale === "cn" && text.hasZhTranslation === false;
                         return (
                           <Link
                             key={text.slug}

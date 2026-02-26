@@ -90,7 +90,7 @@ const HIGHLIGHTS_ZH: Highlight[] = [
 
 export function HighlightCards({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
-  const highlights = locale === "zh" ? HIGHLIGHTS_ZH : HIGHLIGHTS_EN;
+  const highlights = locale === "cn" ? HIGHLIGHTS_ZH : HIGHLIGHTS_EN;
 
   return (
     <div>

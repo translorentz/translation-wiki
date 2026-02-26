@@ -38,7 +38,7 @@ export async function generateMetadata({
       canonical: canonicalPath,
       languages: {
         en: canonicalPath,
-        "zh-Hans": `/zh${canonicalPath}`,
+        "zh-Hans": `/cn${canonicalPath}`,
       },
     },
   };
@@ -61,7 +61,7 @@ export default async function TextPage({ params }: TextPageProps) {
   }
 
   const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
-  const description = (locale === "zh" && textData.descriptionZh) || textData.description;
+  const description = (locale === "cn" && textData.descriptionZh) || textData.description;
   const titleDisplay = formatTextTitle(textData, locale);
   const authorDisplay = formatAuthorName(textData.author, locale);
 
@@ -76,7 +76,7 @@ export default async function TextPage({ params }: TextPageProps) {
           </p>
         )}
         <p className="mt-2 text-muted-foreground">
-          {locale !== "zh" && <>{t("common.by")} </>}
+          {locale !== "cn" && <>{t("common.by")} </>}
           <span className="font-medium text-foreground">
             {authorDisplay.primary}
           </span>

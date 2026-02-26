@@ -13,12 +13,12 @@ export default async function HomePage() {
   const { t, locale } = await getServerTranslation();
 
   // Get text IDs with Chinese translations (only needed in zh locale)
-  const zhTranslatedIds = locale === "zh"
+  const zhTranslatedIds = locale === "cn"
     ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "zh" }))
     : null;
 
   // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
-  const allTexts = locale === "zh"
+  const allTexts = locale === "cn"
     ? allTextsRaw.filter((t) => t.language.code !== "zh")
     : allTextsRaw;
 
