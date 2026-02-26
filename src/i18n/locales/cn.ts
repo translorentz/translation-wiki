@@ -73,6 +73,7 @@ const cn: Translations = {
   "sourcelang.ja": "\u65E5\u8BED",
   "sourcelang.el": "现代希腊语",
   "sourcelang.am": "阿姆哈拉语",
+  "sourcelang.sq": "阿尔巴尼亚语",
 
   // Search page
   "search.title": "\u641C\u7D22",

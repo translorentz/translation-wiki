@@ -72,6 +72,7 @@ const en = {
   "sourcelang.ja": "Japanese",
   "sourcelang.el": "Modern Greek",
   "sourcelang.am": "Amharic",
+  "sourcelang.sq": "Albanian",
 
   // Search page
   "search.title": "Search",
