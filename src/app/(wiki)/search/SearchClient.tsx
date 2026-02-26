@@ -257,6 +257,7 @@ export default function SearchClient() {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="mb-4"
+        autoFocus
       />
 
       {/* Content search toggle */}
