@@ -12,6 +12,7 @@ const cn: Translations = {
   "lang.switch": "\u8BED\u8A00",
   "lang.en": "English",
   "lang.cn": "\u4E2D\u6587 (Chinese)",
+  "lang.hi": "\u0939\u093F\u0928\u094D\u0926\u0940 (Hindi)",
 
   // Homepage hero
   "home.title": "Deltoi",

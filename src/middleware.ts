@@ -10,10 +10,17 @@ export default auth((req) => {
 
   // --- Locale routing ---
   // /cn/... is always the Chinese UI locale prefix.
+  // /hi/... is always the Hindi UI locale prefix.
   // /zh/... is always a Chinese source language route (never locale).
   const isCn = pathname.startsWith("/cn/") || pathname === "/cn";
-  const effectivePath = isCn ? (pathname.replace(/^\/cn/, "") || "/") : pathname;
-  const localePrefix = isCn ? "/cn" : "";
+  const isHi = pathname.startsWith("/hi/") || pathname === "/hi";
+  const isLocalePrefix = isCn || isHi;
+  const effectivePath = isCn
+    ? (pathname.replace(/^\/cn/, "") || "/")
+    : isHi
+    ? (pathname.replace(/^\/hi/, "") || "/")
+    : pathname;
+  const localePrefix = isCn ? "/cn" : isHi ? "/hi" : "";
 
   // Protect edit routes — require authentication
   if (effectivePath.includes("/edit") && !isLoggedIn) {
@@ -29,11 +36,12 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // --- Rewrite /cn/ paths to unprefixed paths + set cn cookie ---
-  if (isCn) {
+  // --- Rewrite locale-prefixed paths to unprefixed paths + set cookie ---
+  if (isLocalePrefix) {
+    const localeCode = isCn ? "cn" : "hi";
     const url = new URL(effectivePath + req.nextUrl.search, req.nextUrl.origin);
     const response = NextResponse.rewrite(url);
-    response.cookies.set("NEXT_LOCALE", "cn", {
+    response.cookies.set("NEXT_LOCALE", localeCode, {
       path: "/",
       maxAge: 365 * 24 * 60 * 60,
       sameSite: "lax",
@@ -42,10 +50,10 @@ export default auth((req) => {
     return response;
   }
 
-  // --- Non-cn paths: reset stale cn cookie to en ---
+  // --- Non-prefixed paths: reset stale locale cookie to en ---
   const cookieLocale = req.cookies.get("NEXT_LOCALE")?.value;
   const response = NextResponse.next();
-  if (cookieLocale === "cn") {
+  if (cookieLocale === "cn" || cookieLocale === "hi") {
     response.cookies.set("NEXT_LOCALE", "en", {
       path: "/",
       maxAge: 365 * 24 * 60 * 60,

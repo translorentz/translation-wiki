@@ -23,6 +23,7 @@ interface FeaturedText {
   compositionYearDisplay: string | null;
   compositionEra: string | null;
   hasZhTranslation?: boolean;
+  hasHiTranslation?: boolean;
   author: {
     name: string;
     nameOriginalScript: string | null;
@@ -129,7 +130,8 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                       {(() => {
                         const titleDisplay = formatTextTitle(text, locale);
                         const authorDisplay = formatAuthorName(text.author, locale);
-                        const isUntranslated = locale === "cn" && text.hasZhTranslation === false;
+                        const isUntranslated = (locale === "cn" && text.hasZhTranslation === false)
+                          || (locale === "hi" && text.hasHiTranslation === false);
                         return (
                           <>
                             <h3 className={cn(

@@ -88,9 +88,44 @@ const HIGHLIGHTS_ZH: Highlight[] = [
   },
 ];
 
+const HIGHLIGHTS_HI: Highlight[] = [
+  {
+    slug: "zhuziyulei",
+    authorSlug: "zhu-xi",
+    langCode: "zh",
+    originalTitle: "\u6731\u5B50\u8A9E\u985E",
+    secondaryTitle: "Classified Conversations of Master Zhu",
+    teaserKey: "highlights.zhuziyulei",
+  },
+  {
+    slug: "cento-anni",
+    authorSlug: "giuseppe-rovani",
+    langCode: "it",
+    originalTitle: "Cent\u2019anni",
+    secondaryTitle: "A Hundred Years (Cento Anni)",
+    teaserKey: "highlights.centanni",
+  },
+  {
+    slug: "romaike-historia",
+    authorSlug: "nicephorus-gregoras",
+    langCode: "grc",
+    originalTitle: "\u03A1\u03C9\u03BC\u03B1\u03CA\u03BA\u1F74 \u1F39\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1",
+    secondaryTitle: "Roman History",
+    teaserKey: "highlights.romaike",
+  },
+  {
+    slug: "shahnameh",
+    authorSlug: "ferdowsi",
+    langCode: "fa",
+    originalTitle: "\u0634\u0627\u0647\u0646\u0627\u0645\u0647",
+    secondaryTitle: "Shahnameh",
+    teaserKey: "highlights.shahnameh",
+  },
+];
+
 export function HighlightCards({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
-  const highlights = locale === "cn" ? HIGHLIGHTS_ZH : HIGHLIGHTS_EN;
+  const highlights = locale === "cn" ? HIGHLIGHTS_ZH : locale === "hi" ? HIGHLIGHTS_HI : HIGHLIGHTS_EN;
 
   return (
     <div>

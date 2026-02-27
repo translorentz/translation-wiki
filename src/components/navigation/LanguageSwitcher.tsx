@@ -16,13 +16,16 @@ export function LanguageSwitcher() {
   function switchLocale(newLocale: string) {
     const currentPath = window.location.pathname;
     const search = window.location.search;
-    // Only strip /zh prefix if current locale is zh (i.e., it's the locale prefix).
-    // Do NOT strip when locale is en — a leading /zh is the source language code.
+    // Strip current locale prefix if present
     const basePath = locale === "cn"
       ? (currentPath.replace(/^\/cn/, "") || "/")
+      : locale === "hi"
+      ? (currentPath.replace(/^\/hi/, "") || "/")
       : currentPath;
-    // Add /cn/ prefix for Chinese, bare path for English
-    const newPath = newLocale === "cn" ? `/cn${basePath}` : basePath;
+    // Add locale prefix for non-English locales
+    const newPath = newLocale === "cn" ? `/cn${basePath}`
+      : newLocale === "hi" ? `/hi${basePath}`
+      : basePath;
     // Full navigation so middleware runs and sets the correct cookie
     window.location.href = `${newPath}${search}`;
   }

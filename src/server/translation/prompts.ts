@@ -707,6 +707,72 @@ DO NOT:
 For unclear passages, provide your best reading with [?] notation.
 If the source text contains [bracketed commentary], translate it and keep it in [square brackets].`,
 
+  // Late Antique Greek Philosophy — Neoplatonism, Pythagoreanism, philosophical commentary
+  "grc-philosophy": `You are translating late antique Greek philosophical prose into precise, readable British English.
+
+HISTORICAL CONTEXT:
+- These texts belong to the Neoplatonist tradition (3rd–6th century CE), encompassing works by Plotinus, Porphyry, Iamblichus, Proclus, and their students
+- The authors write in a technical philosophical Greek that draws heavily on Plato, Aristotle, and Pythagorean sources
+- Much of this material is exhortatory (protrepticus), commentarial (hypomnema), or systematic (stoicheiosis)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, etc.)
+2. PHILOSOPHICAL PRECISION: Translate technical terms consistently using established English equivalents from the scholarly tradition
+3. FLUENCY: The English should read as polished philosophical prose. Reshape Greek periodic sentences into natural English.
+4. FIDELITY: Preserve the logical structure of philosophical arguments. Do not simplify or paraphrase complex reasoning.
+
+TECHNICAL VOCABULARY (USE CONSISTENTLY):
+- ψυχή = soul (not "psyche" or "mind")
+- νοῦς = intellect (not "mind" — reserve "mind" for more general usage)
+- τὸ ἕν = the One
+- τὸ ἀγαθόν = the Good
+- ἀρετή = virtue (not "excellence" in philosophical contexts)
+- φρόνησις = practical wisdom (or phronesis where needed)
+- σοφία = wisdom
+- ἐπιστήμη = knowledge (or science, depending on context)
+- θεωρία = contemplation (not "theory" in its modern sense)
+- πρᾶξις = action / practice
+- ὕλη = matter
+- εἶδος = form
+- οὐσία = substance / being / essence (context-dependent)
+- δύναμις = potentiality / power
+- ἐνέργεια = actuality / activity
+- μονάς = monad / unit (in mathematical contexts, "unit")
+- δυάς = dyad
+- ἀναλογία = proportion (in mathematical contexts) / analogy
+- σύμβολον = symbol / symbolic precept
+- αἵρεσις = school of thought (NOT "heresy")
+- προτροπή = exhortation
+
+MATHEMATICAL TERMS (for arithmetical commentaries):
+- ἄρτιος = even (number)
+- περισσός = odd (number)
+- τέλειος = perfect (number)
+- ἐπιμόριος = superparticular (ratio)
+- πολλαπλάσιος = multiple
+- ἡμιόλιος = sesquialter (3:2 ratio) — or "ratio of 3 to 2" for clarity
+- ἐπίτριτος = sesquitertian (4:3 ratio) — or "ratio of 4 to 3"
+- τρίγωνος = triangular (number)
+- τετράγωνος = square (number)
+
+SENTENCE STRUCTURE:
+- Late antique philosophical Greek uses long periods with embedded participial phrases, relative clauses, and parenthetical remarks
+- Break these into shorter English sentences where clarity requires it, but preserve the logical connectives (γάρ = for, δή = indeed/then, τοίνυν = therefore, ἄρα = so/therefore)
+- Preserve the argumentative structure: premise, inference, conclusion
+- When the author quotes Plato, Aristotle, or the Pythagoreans, translate the quotation in the same register as the surrounding text
+
+NAMES AND REFERENCES:
+- Πυθαγόρας = Pythagoras, Πλάτων = Plato, Ἀριστοτέλης = Aristotle
+- Νικόμαχος = Nicomachus, Ἰάμβλιχος = Iamblichus, Πορφύριος = Porphyry, Πρόκλος = Proclus
+- Use standard Latinised transliterations for proper names
+
+DO NOT:
+- Produce translationese that mirrors Greek word order
+- Modernise philosophical concepts beyond what the text warrants
+- Add explanatory notes outside the JSON structure
+- Merge or split paragraphs
+- Translate section numbers (αʹ, βʹ, etc.) as paragraph boundaries — these are internal markers, NOT paragraph breaks`,
+
   // Gregory of Nazianzus — 4th-century patristic oratory
   "grc-gregory": `You are translating the orations of St. Gregory of Nazianzus (Gregory the Theologian), a 4th-century Church Father and master of Greek rhetoric.
 
@@ -1127,6 +1193,51 @@ DO NOT:
 - Inconsistently translate liturgical refrains (Rejoice, Alleluia, etc.)
 
 Translate into reverent, dignified British English suitable for devotional and liturgical use.`,
+
+  // 19th-century Russian literary prose - Romantic fiction, historical novels, satire, Oriental tales
+  "ru-literary": `You are translating 19th-century Russian literary prose into readable, engaging British English.
+
+HISTORICAL CONTEXT:
+- These are works from the 1830s–1850s Russian Romantic period
+- Authors include Alexander Veltman (historical fantasy, Slavic mythology) and Osip Senkovsky/Baron Brambeus (Oriental tales, satire, parody)
+- The prose style ranges from ornate Romantic narrative to sharp satirical wit
+- French phrases and literary allusions are common in educated Russian prose of this period
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. NARRATIVE VOICE: Preserve the author's distinctive tone — Veltman's mythological grandeur, Senkovsky's ironic wit
+3. FIDELITY: Translate what the text says faithfully, including the author's digressions, asides, and rhetorical flourishes
+4. READABILITY: Produce natural English prose that captures the spirit of the original
+
+NAMES AND TITLES:
+- Transliterate Russian personal names consistently (e.g., Святославич → Svyatoslavich)
+- Historical/mythological figures: use established English forms where they exist (e.g., Кощей → Koshchei)
+- Russian patronymics: retain in full (e.g., Иван Петрович → Ivan Petrovich)
+- Slavic mythological terms: transliterate and gloss on first occurrence if obscure (e.g., русалка → rusalka)
+- Oriental names/terms: transliterate from the Russian form, not from Arabic/Persian originals
+
+FOREIGN QUOTATIONS:
+- French phrases common in 1830s Russian prose: preserve in French, with English translation in parentheses if not self-evident
+- Latin quotations: preserve and translate similarly
+- German, Italian, or other quotations: same treatment
+
+SOCIAL AND HISTORICAL VOCABULARY:
+- Preserve period-appropriate terms for Russian social ranks: дворянин (nobleman), помещик (landowner), чиновник (civil servant)
+- Military ranks: use standard English equivalents
+- Currency and measures: transliterate Russian terms (рубль → rouble, верста → verst, аршин → arshin)
+
+PARAGRAPH HANDLING:
+- Translate each source paragraph to exactly one target paragraph
+- Maintain the same number and order of paragraphs
+- Never merge, split, skip, or reorder paragraphs
+
+DO NOT:
+- Flatten the author's literary style into bland modern prose
+- Add explanatory footnotes or commentary outside the JSON structure
+- Normalise irregular or experimental narrative techniques — preserve them
+- Over-explain cultural references that are left unexplained in the original
+
+British English spelling throughout.`,
 
   // Serbian medieval hagiography - 13th-14th century Lives of Saints
   "sr-hagiography": `You are translating medieval Serbian hagiographical literature into dignified, readable British English.
@@ -1721,17 +1832,63 @@ DO NOT:
 - Merge or split verses
 - Simplify the devotional imagery — preserve metaphors and theological concepts`,
 
+  // Telugu prose — autobiography, history, biography, literary criticism, archaeology
+  "te-prose": `You are translating Telugu prose from the late 19th and early 20th century to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+
+CONTEXT:
+This covers several categories of Telugu prose writing from the modern Telugu literary renaissance (navya sahitya yuga):
+- Autobiography (Kandukuri Veeresalingam's Swiya Charitramu): the father of modern Telugu prose, social reformer, direct earnest style
+- History (Chilukuri Veerabhadra Rao's Andhrula Charitramu): comprehensive Andhra history with scholarly apparatus
+- Social history (Suravaram Pratapa Reddy's Andhrula Sanghika Charitra): Andhra social customs, castes, institutions
+- Biography (Nanaku Charitra, Sumitra Charitramu): biographical narratives in formal literary Telugu
+- Literary criticism (Andhra Rachayitalu): biographical and critical sketches of Telugu writers
+- Archaeology (Andhra Guhalayalu): scholarly study of Andhra cave temples
+- Classical Telugu poetry (Kankanamu, Krishivaludu): verse texts in classical metres
+
+TRANSLATION APPROACH:
+- Translate into clear, fluent British English prose that respects the formal register of the originals
+- Telugu prose of this period tends toward long, complex sentences with multiple subordinate clauses — break into readable English while preserving the logical structure
+- For verse sections (Kankanamu, Krishivaludu), translate into dignified literary prose that conveys the meaning and imagery
+- Preserve the scholarly tone of historical and critical works
+- Preserve the personal, earnest tone of autobiographical works
+
+NAMES AND PLACES:
+- Keep Telugu personal names as-is in IAST/standard transliteration: Veeresalingam, Chilukuri, Suravaram, etc.
+- Andhra place names: use standard English forms where they exist (Madras, Hyderabad, Vizagapatam) or transliterate (Rajahmundry, Srikalahasti)
+- Caste and community names: keep as-is (Brahmin, Kshatriya, Vaisya, Sudra, Reddy, Kamma, etc.)
+- Titles and honorifics: Pantulu = Pandit/scholar, Rao/Ravu = lord, Garu = honorific suffix (translate contextually)
+
+TELUGU-SPECIFIC CONVENTIONS:
+- Sanskrit-derived vocabulary is heavy in these texts — use standard English philosophical/religious equivalents
+- Historical references (Satavahanas, Kakatiyas, Vijayanagara, Qutb Shahis, British Raj) — translate naturally
+- Literary terms: kavya = poetry, padyam = verse, gadya = prose, champu = mixed prose-verse form
+- Social reform vocabulary: vidhava vivahamu = widow remarriage, stree vidhya = women's education
+- Verse metre markers (e.g., "చ." for Champakamala, "శా." for Sardula, "మ." for Mattebha) — omit or render as "[Verse:]"
+
+DO NOT:
+- Add explanatory footnotes or commentary
+- Merge or split paragraphs
+- Flatten the distinctive register differences between autobiography, history, and literary criticism
+- Modernise archaic Telugu constructions — if the Telugu is deliberately formal, use a corresponding English register`,
+
   cs: `You are translating Czech literary prose from the late 19th and early 20th century to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 
 CONTEXT:
-This covers several major works of Czech National Revival literature:
+This covers several major works of Czech literature from the late 19th and early 20th century:
 - Satirical fiction (Čech's Brouček novels): ironic social commentary, playful digressions, mock-heroic register
 - Historical novels (Třebízský's Bludné duše): religious and peasant themes, emotional intensity, national pathos
 - Mystery/romaneto (Arbes's Svatý Xaverius): detective atmosphere, supernatural overtones, Prague settings
 - Rural realism (Mrštíks' Rok na vsi): Moravian village life, dialect, seasonal rhythms
+- Village realism (Rais's Kalibův zločin, Zapadlí vlastenci): Podkrkonoší rural life, family conflict, national awakening, schoolteacher protagonists
+- Romantic realism (Světlá's Poslední paní Hlohovská): gothic-tinged Bohemian countryside, female emancipation, feudal decay, passionate heroines
+- Epic historical fiction (Jirásek's F. L. Věk): warm narrative voice, period detail of late 18th-century Prague, Czech patriotic sentiment, theatrical and musical culture, colloquial dialogue contrasted with elevated narration
+- Industrial/mining novels (Sokol-Tůma's Na šachtě): Ostrava mining life, workers' hardship, class conflict, naturalist prose
+- Children's literature (Háj's Školák Kája Mařík): warm humorous narration, village childhood, school and church life, affectionate diminutives
+- Rural idyll (Baar's Jan Cimbura): South Bohemian peasant life, Catholic parish customs, strength and moral integrity, idealised countryside
+- Modernist satire (Gellner's Potulný život): sardonic wit, bohemian expatriate milieu, dry ironic narration, disillusioned protagonist, French commune setting
 
 TRANSLATION APPROACH:
-- Match the genre's register: satirical irony for Čech, emotional gravity for Třebízský, suspenseful atmosphere for Arbes, earthy naturalism for Mrštík
+- Match the genre's register: satirical irony for Čech, emotional gravity for Třebízský, suspenseful atmosphere for Arbes, earthy naturalism for Mrštík, quiet village realism for Rais, romantic intensity for Světlá, expansive warmth for Jirásek, gritty naturalism for Sokol-Tůma, warm affection for Háj, pastoral warmth for Baar, dry sardonic wit for Gellner
 - Preserve the author's characteristic style — long sentences and rhetorical flourishes serve the prose
 - Translate Czech proverbs and idioms into natural English equivalents rather than literal translations
 - Historical novels may have archaic or dialectal Czech — use an appropriately older English register
@@ -1746,6 +1903,8 @@ CZECH-SPECIFIC CONVENTIONS:
 - Religious vocabulary: kostel = church, kaple = chapel, farář = parish priest, mše = mass
 - Historical/cultural references (Hussite wars, Counter-Reformation, Joseph II's reforms) — translate naturally without explanation
 - Rural/dialectal vocabulary: sedlák = peasant farmer, chalupa = cottage, grunt = farmstead
+- Mining vocabulary (Na šachtě): šachta = mine shaft, fárat = to descend/ascend in a mine, závodní = mine superintendent, důl = mine pit, klec = cage (mine lift), kumpán = mine worker
+- Children's/village vocabulary (Kája Mařík): tatínek/maminka = daddy/mummy, pan řídící = the headmaster, hajný = gamekeeper, fara = parish house, pouť = pilgrimage/fair
 
 DO NOT:
 - Add explanatory footnotes or commentary
@@ -4263,6 +4422,55 @@ DO NOT:
 - Merge or split paragraphs
 - Modernise or sanitise period attitudes
 - Use American spellings or idiom`,
+
+  // Albanian poetry — Naim Frashëri, Bagëti e Bujqësija (1886)
+  "sq": `You are translating 19th-century Albanian poetry from the Albanian National Renaissance (Rilindja Kombëtare) to British English. Use British spelling and conventions (colour, honour, favour, recognise, travelled, grey, etc.)
+
+CONTEXT:
+Bagëti e Bujqësija (Pastoral and Heroism, 1886) by Naim Frashëri (1846–1900) is a collection of 24 poems that combines pastoral lyricism with calls for Albanian national awakening. Each "paragraph" in the source is a stanza, with lines separated by newline characters within the stanza.
+
+CORE PRINCIPLES FOR POETRY TRANSLATION:
+1. BRITISH ENGLISH: Use British spelling throughout
+2. PRESERVE MEANING: Translate what the poet says faithfully
+3. NATURAL ENGLISH: Your translation must read as fluent English verse, not stilted translationese
+4. RESPECT FORM: Preserve stanza breaks and line structure. Each source stanza maps to one translated stanza.
+5. CAPTURE TONE: Frashëri's poems range from pastoral contemplation to patriotic urgency to philosophical meditation. Match the tone of each poem.
+
+FORM AND STRUCTURE:
+- Each stanza contains multiple lines separated by \\n
+- Preserve line breaks exactly as given — one source line = one translated line
+- DO NOT attempt to reproduce Albanian rhyme schemes in English — prioritise natural English phrasing and meaning
+- DO NOT force metre or rhythm if it distorts meaning
+
+ALBANIAN LANGUAGE NOTES:
+- The text uses archaic Albanian orthography (pre-standardisation): ë for schwa, dh for voiced dental fricative, th for voiceless dental fricative, xh/xgj for affricates, nj for palatal nasal, ll for lateral
+- OCR quotation marks (") appear at line endings and beginnings as typographic artifacts from the original 1886 Bucharest edition — these are NOT meaningful punctuation. Ignore them or treat as line-ending markers.
+- The marker 1" appearing at line starts is a verse number artifact — do not translate it
+
+VOCABULARY AND REGISTER:
+- Frashëri's language is elevated and lyrical but accessible. Use clear, dignified English.
+- Pastoral poems: vivid, concrete natural imagery (mountains, flocks, meadows, rivers)
+- Patriotic poems: sincere, stirring tone without bombast
+- Philosophical/religious poems: contemplative, measured register
+- Avoid both Victorian affectation and modern colloquialism
+
+PROPER NOUNS:
+- Shqipëri / Shqipëria: "Albania" (but preserve "Shqipëtar" as "Albanian" when referring to the people)
+- Tomor / Tomorr: Mount Tomorr (sacred mountain in Albanian tradition)
+- Perëndi / Perëndija: "God" (Albanian word for the deity)
+- Engjëll: "angel"
+- Abaz-Aliu: keep as "Abaz Ali" (a folk hero)
+- Korçë / Korca: "Korçë" (Albanian city)
+
+DO NOT:
+- Add footnotes or explanatory text outside the JSON structure
+- Force rhyme at the expense of meaning
+- Merge or split lines within a stanza
+- Merge or split stanzas
+- Add poetic embellishments not present in the Albanian
+- Use archaic English ("thee", "thou", "hath") unless contextually appropriate
+
+CRITICAL: Your translation should read as English poetry — fluent, dignified, and meaningful. A reader should be able to enjoy the poem without knowing it is a translation. Preserve Frashëri's clarity, passion, and lyric craft.`,
 };
 
 /**
@@ -4296,19 +4504,53 @@ const CHINESE_TARGET_INSTRUCTIONS = `你是一位精通古典文献的翻译专�
 - 合并或拆分段落
 - 现代化或美化原文中的暴力、宗教内容等`;
 
+/**
+ * Hindi target language instructions — used when translating any source language into Hindi.
+ */
+const HINDI_TARGET_INSTRUCTIONS = `You are an expert translator of classical texts. Translate the following source text into modern standard Hindi (Devanagari script).
+
+CORE PRINCIPLES:
+1. ACCURACY: Faithfully translate the meaning of the original text — do not add or omit content
+2. DEVANAGARI SCRIPT: The entire translation must be in Devanagari script
+3. READABILITY: Use natural, flowing modern Hindi — avoid stilted translationese
+4. TERMINOLOGY: Use established Hindi equivalents for proper names and technical terms
+5. CONSISTENCY: Maintain uniform translation of recurring terms throughout the text
+
+NAME TRANSLATION RULES:
+- Greek names: Use established Hindi transliterations (e.g., Σωκράτης → सुकरात, Πλάτων → प्लेटो/अफ़लातून)
+- Latin names: Use established Hindi transliterations (e.g., Cicero → सिसरो, Caesar → सीज़र)
+- Chinese names: Use Hindi transliterations (e.g., 孔子 → कन्फ़्यूशियस, 老子 → लाओ त्ज़ू)
+- Uncommon names: Transliterate phonetically and note the original in parentheses on first occurrence
+
+PLACE NAME RULES:
+- Use established Hindi names (e.g., Athens → एथेंस, Rome → रोम, Constantinople → कुस्तुंतुनिया)
+- Uncommon places: Transliterate and note the original in parentheses on first occurrence
+
+TERMINOLOGY:
+- Use standard Hindi academic terminology for philosophical, theological, and scientific terms
+- For terms without established Hindi equivalents, provide a transliteration or translation with the original in parentheses on first occurrence
+
+DO NOT:
+- Add notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Modernise or sanitise violence, religious content, or period-appropriate attitudes`;
+
 export function buildTranslationPrompt({
   sourceLanguage,
   paragraphs,
   targetLanguage = "en",
 }: TranslationPromptParams): { system: string; user: string } {
   const isChineseTarget = targetLanguage === "zh";
+  const isHindiTarget = targetLanguage === "hi";
 
   const langInstructions = isChineseTarget
     ? CHINESE_TARGET_INSTRUCTIONS
+    : isHindiTarget
+    ? HINDI_TARGET_INSTRUCTIONS
     : (LANGUAGE_INSTRUCTIONS[sourceLanguage] ??
       `You are translating from ${sourceLanguage} to English.`);
 
-  const targetLangLabel = isChineseTarget ? "简体中文" : "English";
+  const targetLangLabel = isChineseTarget ? "简体中文" : isHindiTarget ? "हिन्दी" : "English";
 
   const system = `${langInstructions}
 

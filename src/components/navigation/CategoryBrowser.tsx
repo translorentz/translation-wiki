@@ -15,6 +15,7 @@ interface TextSummary {
   genre?: string;
   compositionYearDisplay?: string | null;
   hasZhTranslation?: boolean;
+  hasHiTranslation?: boolean;
 }
 
 interface AuthorSummary {
@@ -101,7 +102,8 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {author.texts.map((text) => {
                   const titleDisplay = formatTextTitle(text, locale);
-                  const isUntranslated = locale === "cn" && text.hasZhTranslation === false;
+                  const isUntranslated = (locale === "cn" && text.hasZhTranslation === false)
+                    || (locale === "hi" && text.hasHiTranslation === false);
                   return (
                     <Link
                       key={text.slug}
@@ -175,7 +177,8 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                       {author.texts.map((text) => {
                         const titleDisplay = formatTextTitle(text, locale);
-                        const isUntranslated = locale === "cn" && text.hasZhTranslation === false;
+                        const isUntranslated = (locale === "cn" && text.hasZhTranslation === false)
+                    || (locale === "hi" && text.hasHiTranslation === false);
                         return (
                           <Link
                             key={text.slug}

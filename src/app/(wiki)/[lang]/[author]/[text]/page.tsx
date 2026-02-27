@@ -39,6 +39,7 @@ export async function generateMetadata({
       languages: {
         en: canonicalPath,
         "zh-Hans": `/cn${canonicalPath}`,
+        hi: `/hi${canonicalPath}`,
       },
     },
   };
@@ -61,7 +62,9 @@ export default async function TextPage({ params }: TextPageProps) {
   }
 
   const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
-  const description = (locale === "cn" && textData.descriptionZh) || textData.description;
+  const description = (locale === "cn" && textData.descriptionZh)
+    || (locale === "hi" && textData.descriptionHi)
+    || textData.description;
   const titleDisplay = formatTextTitle(textData, locale);
   const authorDisplay = formatAuthorName(textData.author, locale);
 

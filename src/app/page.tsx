@@ -12,9 +12,12 @@ export default async function HomePage() {
   const allTextsRaw = await trpc.texts.list();
   const { t, locale } = await getServerTranslation();
 
-  // Get text IDs with Chinese translations (only needed in zh locale)
+  // Get text IDs with translations for the current locale (only needed for non-en)
   const zhTranslatedIds = locale === "cn"
     ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "zh" }))
+    : null;
+  const hiTranslatedIds = locale === "hi"
+    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
     : null;
 
   // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
@@ -72,6 +75,7 @@ export default async function HomePage() {
       displayName: text.language.displayName,
     },
     hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
+    hasHiTranslation: hiTranslatedIds ? hiTranslatedIds.has(text.id) : undefined,
   }));
 
   // Localise language labels for the sidebar

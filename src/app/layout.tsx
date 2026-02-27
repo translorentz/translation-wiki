@@ -43,10 +43,11 @@ export default async function RootLayout({
   const effectivePath = headersList.get("x-locale-path") || "/";
 
   return (
-    <html lang={locale === "cn" ? "zh-Hans" : "en"}>
+    <html lang={locale === "cn" ? "zh-Hans" : locale === "hi" ? "hi" : "en"}>
       <head>
         <link rel="alternate" hrefLang="en" href={effectivePath} />
         <link rel="alternate" hrefLang="zh-Hans" href={`/cn${effectivePath}`} />
+        <link rel="alternate" hrefLang="hi" href={`/hi${effectivePath}`} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} min-h-screen antialiased`}

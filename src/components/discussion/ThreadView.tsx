@@ -45,7 +45,7 @@ export function ThreadView({
   const { t, locale } = useTranslation();
 
   function formatDate(date: Date): string {
-    return new Date(date).toLocaleDateString(locale === "cn" ? "zh-CN" : "en-US", {
+    return new Date(date).toLocaleDateString(locale === "cn" ? "zh-CN" : locale === "hi" ? "hi-IN" : "en-US", {
       year: "numeric",
       month: "short",
       day: "numeric",

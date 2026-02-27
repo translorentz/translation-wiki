@@ -11,8 +11,9 @@ export function cn(...inputs: ClassValue[]) {
  * English paths have no prefix.
  */
 export function localePath(path: string, locale: Locale | string): string {
-  if (locale !== "cn") return path;
-  return `/cn${path}`;
+  if (locale === "cn") return `/cn${path}`;
+  if (locale === "hi") return `/hi${path}`;
+  return path;
 }
 
 /**
@@ -85,7 +86,7 @@ export function parseChapterTitle(title: string | null): {
  * For en locale: shows English name first, original script in parens.
  */
 export function formatAuthorName(
-  author: { name: string; nameOriginalScript?: string | null },
+  author: { name: string; nameOriginalScript?: string | null; nameHi?: string | null },
   locale: string
 ): { primary: string; secondary: string | null } {
   if (!author.nameOriginalScript) {
@@ -93,6 +94,9 @@ export function formatAuthorName(
   }
   if (locale === "cn") {
     return { primary: author.nameOriginalScript, secondary: author.name };
+  }
+  if (locale === "hi" && author.nameHi) {
+    return { primary: author.nameHi, secondary: author.nameOriginalScript || author.name };
   }
   return { primary: author.name, secondary: author.nameOriginalScript };
 }
@@ -103,7 +107,7 @@ export function formatAuthorName(
  * For en locale: shows English title first, original script in parens.
  */
 export function formatTextTitle(
-  text: { title: string; titleOriginalScript?: string | null; titleZh?: string | null },
+  text: { title: string; titleOriginalScript?: string | null; titleZh?: string | null; titleHi?: string | null },
   locale: string
 ): { primary: string; secondary: string | null } {
   if (locale === "cn") {
@@ -120,6 +124,16 @@ export function formatTextTitle(
     }
     return { primary: text.title, secondary: null };
   }
+  if (locale === "hi") {
+    const hiTitle = text.titleHi ?? text.titleOriginalScript;
+    if (hiTitle) {
+      const secondary = text.titleHi
+        ? (text.titleOriginalScript ?? text.title)
+        : text.title;
+      return { primary: hiTitle, secondary: hiTitle === secondary ? null : secondary };
+    }
+    return { primary: text.title, secondary: null };
+  }
   if (!text.titleOriginalScript) {
     return { primary: text.title, secondary: null };
   }
@@ -133,7 +147,7 @@ export function formatTextTitle(
  * For en locale: shows English translation (current behaviour).
  */
 export function formatChapterTitle(
-  chapter: { title: string | null; titleZh?: string | null },
+  chapter: { title: string | null; titleZh?: string | null; titleHi?: string | null },
   locale: string,
   sourceLangCode?: string
 ): { primary: string; secondary: string | null } {
@@ -146,6 +160,14 @@ export function formatChapterTitle(
     }
     // Non-Chinese texts: show Chinese title if available, else English fallback
     return { primary: original, secondary: chapter.titleZh || english };
+  }
+
+  if (locale === "hi") {
+    // Hindi/Sanskrit-source texts: no grey text needed
+    if (sourceLangCode === "sa" || sourceLangCode === "hi") {
+      return { primary: original, secondary: null };
+    }
+    return { primary: original, secondary: chapter.titleHi || english };
   }
 
   return { primary: original, secondary: english };

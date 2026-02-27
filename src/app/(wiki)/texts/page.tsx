@@ -29,6 +29,7 @@ interface LanguageGroup {
       sortOrder: number | null;
       compositionYearDisplay: string | null;
       hasZhTranslation?: boolean;
+      hasHiTranslation?: boolean;
     }[];
   }[];
 }
@@ -43,9 +44,12 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const allTextsRaw = await trpc.texts.list();
   const { t, locale } = await getServerTranslation();
 
-  // Get text IDs with Chinese translations (only needed in zh locale)
+  // Get text IDs with translations for the current locale (only needed for non-en)
   const zhTranslatedIds = locale === "cn"
     ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "zh" }))
+    : null;
+  const hiTranslatedIds = locale === "hi"
+    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
     : null;
 
   // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
@@ -132,6 +136,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       sortOrder: text.sortOrder ?? null,
       compositionYearDisplay: text.compositionYearDisplay ?? null,
       hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
+      hasHiTranslation: hiTranslatedIds ? hiTranslatedIds.has(text.id) : undefined,
     });
   }
 

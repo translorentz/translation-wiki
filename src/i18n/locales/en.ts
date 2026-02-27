@@ -10,6 +10,7 @@ const en = {
   "lang.switch": "Language",
   "lang.en": "English",
   "lang.cn": "中文 (Chinese)",
+  "lang.hi": "हिंदी (Hindi)",
 
   // Homepage hero
   "home.title": "Deltoi",
