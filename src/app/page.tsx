@@ -5,7 +5,7 @@ import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 import { HighlightCards } from "@/components/home/HighlightCards";
 import { getServerTranslation } from "@/i18n/server";
 import { getGenreDisplayName, type Locale } from "@/i18n/shared";
-import { localePath } from "@/lib/utils";
+import { localePath, localeToTargetLang } from "@/lib/utils";
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();
@@ -20,10 +20,9 @@ export default async function HomePage() {
     ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
     : null;
 
-  // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
-  const allTexts = locale === "cn"
-    ? allTextsRaw.filter((t) => t.language.code !== "zh")
-    : allTextsRaw;
+  // Hide texts whose source language matches the viewer's native language
+  const nativeLang = localeToTargetLang(locale);
+  const allTexts = allTextsRaw.filter((t) => t.language.code !== nativeLang);
 
   // Derive language links dynamically from the texts in the database
   // Count texts per language and sort by descending count (most prolific first)

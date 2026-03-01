@@ -4,7 +4,7 @@ import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
 import { getServerTranslation } from "@/i18n/server";
 import { getGenreDisplayName } from "@/i18n/shared";
-import { localePath } from "@/lib/utils";
+import { localePath, localeToTargetLang } from "@/lib/utils";
 import type { TranslationKey } from "@/i18n/locales/en";
 
 // Force dynamic rendering to ensure fresh data from database
@@ -52,10 +52,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
     : null;
 
-  // When viewing in Chinese, exclude Chinese-source texts (they don't need Chinese translation)
-  const allTexts = locale === "cn"
-    ? allTextsRaw.filter((t) => t.language.code !== "zh")
-    : allTextsRaw;
+  // Hide texts whose source language matches the viewer's native language
+  const nativeLang = localeToTargetLang(locale);
+  const allTexts = allTextsRaw.filter((t) => t.language.code !== nativeLang);
 
   // Apply both filters independently
   let filteredTexts = allTexts;

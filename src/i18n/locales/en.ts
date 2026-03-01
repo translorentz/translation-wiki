@@ -74,6 +74,7 @@ const en = {
   "sourcelang.el": "Modern Greek",
   "sourcelang.am": "Amharic",
   "sourcelang.sq": "Albanian",
+  "sourcelang.en": "English",
 
   // Search page
   "search.title": "Search",
