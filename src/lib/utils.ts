@@ -7,13 +7,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Prepend /cn/ to a path when locale is Chinese.
+ * Prepend /cn/ or /hi/ to a path when locale is non-English.
  * English paths have no prefix.
+ * Idempotent: strips any existing locale prefix before prepending.
  */
 export function localePath(path: string, locale: Locale | string): string {
-  if (locale === "cn") return `/cn${path}`;
-  if (locale === "hi") return `/hi${path}`;
-  return path;
+  const basePath = path.replace(/^\/(cn|hi)/, "") || "/";
+  if (locale === "cn") return `/cn${basePath}`;
+  if (locale === "hi") return `/hi${basePath}`;
+  return basePath;
 }
 
 /**
