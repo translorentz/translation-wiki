@@ -76,6 +76,7 @@ const hi: Translations = {
   "sourcelang.am": "अम्हारिक",
   "sourcelang.sq": "अल्बानियाई",
   "sourcelang.en": "अंग्रेज़ी",
+  "sourcelang.hu": "हंगेरियाई",
 
   // Search page
   "search.title": "खोजें",
