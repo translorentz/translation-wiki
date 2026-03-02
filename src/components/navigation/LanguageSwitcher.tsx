@@ -32,11 +32,19 @@ export function LanguageSwitcher() {
 
   const currentLabel = LOCALES.find((l) => l.code === locale)?.label ?? "English";
 
+  const SHORT_LABELS: Record<string, string> = {
+    en: "En",
+    cn: "\u4E2D",
+    hi: "\u0939\u093F",
+  };
+  const shortLabel = SHORT_LABELS[locale] ?? "En";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-1.5">
           <Globe className="size-4" />
+          <span className="sm:hidden text-sm">{shortLabel}</span>
           <span className="hidden sm:inline text-sm">{currentLabel}</span>
         </Button>
       </DropdownMenuTrigger>
