@@ -41,6 +41,28 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 **PERMISSIONS for all subagents:**
 10. **Autonomous bash execution** — All subagents are pre-authorized to run bash commands for programs (translation scripts, seeding scripts, processing scripts, quality checks, database queries) without prompting the User for confirmation. This enables efficient parallel processing of large translation pipelines.
 
+**BASH PERMISSION FAILURE — Detection and Recovery (2026-02-25):**
+
+**INCIDENT RECORD:** When launching 4+ subagents simultaneously (Russian Batch 3 pipeline), some agents had their Bash commands denied by the permission system while others proceeded normally. The denied agents completed almost instantly (< 30 seconds, < 100K tokens) with ZERO useful work, while successful agents used 20-30+ Bash calls and ran for minutes.
+
+**Root Cause:** The Claude Code permission system may deny Bash for individual subagents when many are launched concurrently. This appears to be a race condition in the permission approval flow — the User approves some agents' Bash requests but others are denied before approval propagates.
+
+**Detection (MANDATORY after launching parallel agents):**
+- Check `TaskOutput` with `block: false` within 60 seconds of launch
+- If an agent shows `status: completed` with 0 Bash tool calls and < 100K tokens, it FAILED due to permission denial
+- Compare against working agents: successful pipeline workers use 20+ Bash calls and take 5+ minutes
+
+**Recovery:**
+1. Note the failed agent ID and update ACTIVE_AGENTS.md
+2. Relaunch the agent with identical task description
+3. If the relaunch also fails, wait for other agents to complete before launching (reduce concurrency)
+4. Maximum 3 relaunch attempts before escalating to User
+
+**Prevention:**
+- When launching 4+ agents, stagger launches by 5-10 seconds rather than all at once
+- Check agent progress within 2 minutes of launch to catch failures early
+- Do NOT launch more than 5 background agents simultaneously
+
 **AUTONOMY requirements (User directive 2026-02-03):**
 11. **Self-reporting completion** — Subagents must report their completion status autonomously without requiring manual checking or User intervention. The User should not have to ask "is this done?" — subagents should proactively report their progress and completion.
 
@@ -50,41 +72,6 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 14. **Document all workflows** — Any multi-step workflow (feature implementation, pipeline, cleaning iteration) must have a `.md` file in `docs/` describing what was done, what files were changed, and current status. This applies to code changes, schema changes, and data operations.
 15. **Keep ACTIVE_AGENTS.md current** — Agents shown as "RUNNING" that have completed MUST be updated to "COMPLETE". This file is the primary coordination mechanism across context boundaries. Stale data here causes the User to lose track of what agents were supposed to do.
 16. **Unpushed commits MUST be documented** — Any commits that exist locally but haven't been pushed to remote must be listed in ACTIVE_AGENTS.md with their commit hashes and descriptions.
-
----
-
-## ⚠️ TAMIL CLEANING FAILURE RECORD (2026-02-08) ⚠️
-
-**INCIDENT RECORD:** After SEVEN rounds of audits and false completion claims, the User found 7 egregious errors still present in Tamil texts. This represents a SYSTEMATIC FAILURE of verification methodology.
-
-### Failure Patterns Identified
-
-| Pattern | Description | Example |
-|---------|-------------|---------|
-| Count-Based Verification | Checked paragraph COUNTS only, not CONTENT quality | kurukuturai-kalambakam 240=240 but last 10 paras were OTHER WORK TITLES |
-| Front/Back Sampling Only | Checked first 3 and last 3 paras, missed middle | veeramaamunivar para[23] placeholder missed |
-| Bracket Notation Blindness | `[Bracketed terms]` not flagged as incomplete | angayarkanni-malai para[0] = `[Taravu (Kochchaka Kalippa)]` |
-| TOC/Glossary Detection Failure | Table of contents and glossary content not recognized | meenakshi-pillaitamil para[0] is TOC |
-| Extraneous Appended Content | Publisher additions at END not detected | kurukuturai ends with list of OTHER WORKS |
-| Subagent Abandonment | Marked "to verify" then never returned | kandimathiyammai-pillaitamil |
-| False Completion Claims | "ALL CLEAN" stated without exhaustive verification | 7 rounds of false assurances |
-
-### MANDATORY Guardrails for Tamil Audits
-
-1. **NEVER claim "complete"** until User explicitly verifies
-2. **Read EVERY paragraph** — no sampling, no "front and back only"
-3. **Check content quality** — not just count matching
-4. **Detect ALL contamination types:**
-   - Bracket notation: `[Term]` as primary content
-   - TOC structure: `"1. Section 2. Section..."`
-   - Glossary: `"N. Word - meaning"` patterns
-   - Works lists: `"5. OtherWorkTitle..."`
-   - Trailing markers: `===`, `---`, `***`
-5. **Use DeepSeek-reasoner** for independent review (User directive)
-6. **Document with paragraph indices** — never vague claims
-
-### Full Analysis
-See `docs/tamil-seven-rounds-failure-analysis.md` for complete failure record and remediation plan.
 
 ---
 
@@ -141,26 +128,6 @@ if (newTransCount < before.transCount * 0.5) {
 ### Active Fault Tracker
 See `docs/tamil-fault-tracker.md` for live tracking of all issues and their resolution status.
 
----
-
-## ⚠️ OCR/TEXT PROCESSING CATASTROPHE (2026-02-11) ⚠️
-
-**INCIDENT RECORD:** The Schelling Urfassung (83 chapters, ~6,675 paragraphs) was processed with CATASTROPHIC text loss at page/chapter boundaries. **58% of chapters (48/83) end with incomplete sentences.** At least 12 chapters start mid-sentence. The processing script used page headers as chapter boundaries instead of stripping them, causing text to be dropped at every page break.
-
-**Impact:** 81 chapters were translated before User manually discovered the error. ALL translations may be invalid.
-
-**Full documentation:** `docs/schelling-urfassung-ocr-catastrophe.md`
-
-### OCR Verification Failures
-
-| Failure | Description | Prevention |
-|---------|-------------|------------|
-| Page headers as boundaries | Script interpreted "Achtundzwanzigste Vorlesung" as chapter boundary | Identify TRUE lecture markers (e.g., "28." + "M. H.") |
-| Text dropped at page breaks | Content spanning pages was lost | Join text across page breaks before splitting |
-| Line numbers not stripped | Left-margin numbers (5, 10, 15...) left in content | Strip line numbers during processing |
-| Independent review approved | Review agent didn't check boundaries | MANDATORY boundary audit for every text |
-| 81 chapters translated before discovery | User found error by reading website | Check BEFORE translation, not after |
-
 ### MANDATORY OCR/Processing Guardrails
 
 **BEFORE SEEDING ANY TEXT, verify EVERY chapter:**
@@ -211,6 +178,50 @@ See `docs/tamil-fault-tracker.md` for live tracking of all issues and their reso
 | Embedded "Page N" or "Chapter Title N" | Page headers not stripped |
 | Numbers at line start (5, 10, 15, 20...) | Line numbers not stripped |
 | Garbled characters (r7, 1n, usw.) | OCR errors not cleaned |
+| Words fused together (no spaces) | OCR failed to segment words |
+| Systematic character substitutions (f for s) | OCR font confusion (e.g., long-s) |
+
+### MANDATORY: Verify Source File Inventory Before Pipeline Documentation
+
+**INCIDENT RECORD (2026-03-07):** Cantacuzenus Book IV raw file (`vol3-book4-raw.txt`) existed in `data/raw/cantacuzenus/` from session 124. The file was scraped, Book IV was cleaned (50 chapters, agent a79d4f765cf49c932), and independently evaluated (grade C, agent a41a9a3aa13cdd867). Despite all this work completing successfully, Claude wrote in the pipeline documentation: "Book IV is not yet available (would be in a separate volume). This pipeline covers Books I-III only."
+
+**What Claude did wrong — root cause chain:**
+
+1. **Documentation written from assumption, not verification.** When writing `docs/cantacuzenus-pipeline.md`, Claude assumed the Bonn edition volumes mapped 1:1 to raw files (Vol I = vol1-raw.txt, Vol III = vol3-raw.txt) and concluded Book IV must be in a separate volume not yet acquired. Claude never ran `ls data/raw/cantacuzenus/` to check what files actually existed. The file `vol3-book4-raw.txt` was right there.
+
+2. **Pipeline doc not updated after Book IV was processed.** A cleaning agent (a79d4f765cf49c932) successfully processed Book IV into 50 chapters. An evaluator (a41a9a3aa13cdd867) reviewed it and graded it C. Neither of these events triggered an update to the pipeline doc. Claude failed to maintain documentation-reality synchronisation — the doc said "not available" while the agent tracker showed Book IV as COMPLETE.
+
+3. **Documentation treated as source of truth over filesystem.** When planning v3 resegmentation, Claude read the pipeline doc's claim that Book IV wasn't available and accepted it without question. When planning v4, the same thing happened. At no point did Claude think to verify the claim with `ls`. The pipeline doc became a self-reinforcing false authority.
+
+4. **Subagent prompts propagated the error.** Claude wrote subagent prompts that said "Book IV is NOT yet available — skip it" or "This pipeline covers Books I-III only." These instructions were copy-derived from the pipeline doc. Each subagent obediently excluded Book IV. The error was amplified through the agent chain.
+
+5. **No cross-check between ACTIVE_AGENTS and pipeline doc.** ACTIVE_AGENTS.md clearly showed Book IV cleaner and evaluator as COMPLETE. The pipeline doc said Book IV wasn't available. This contradiction was never noticed because Claude read each document in isolation without cross-referencing.
+
+**Impact:** Book IV was excluded from 2 resegmentation attempts (v3, v4) and 4 independent evaluations. When improvements were made to the cleaning approach, Book IV never benefited from them. An entire book of 50 chapters was left at v1 quality (grade C/D+) while Books I-III were iteratively improved.
+
+**MANDATORY before writing any pipeline documentation:**
+1. **`ls data/raw/<text>/`** — list ALL files in the raw directory. Do this EVERY time, not just the first time.
+2. **Document every file** — filename, size, content description
+3. **Never state a file doesn't exist without `ls` verification**
+4. **When launching processing agents, list the actual files** in the prompt — do not reference the pipeline doc's file list without rechecking
+5. **Cross-check ACTIVE_AGENTS.md against pipeline docs** — if agents processed something, the pipeline doc must reflect it
+
+**MANDATORY for iterative cleaning pipelines:**
+6. **All volumes/books must be processed in every iteration** — never exclude a volume because a doc says "it's not available" without filesystem verification
+7. **Pipeline docs must be updated when agents complete work** — if a cleaning agent processes Book IV, update the pipeline doc immediately, in the same response
+8. **When re-reading a pipeline doc across sessions, verify its claims** — stale docs are worse than no docs because they create false confidence
+
+### MANDATORY: OCR Readability Gate (Pre-Seeding)
+
+**INCIDENT RECORD (2026-03-06):** De Causa Dei (1618 folio OCR) was seeded and 38 chapters translated before the User discovered the source text was unreadably garbled. Words were fused (`pofsibilitatiscuiuflibetprimaratioeftinDeo`), long-s rendered as f throughout, 28/135 chapters missing initial capitals. Boundary fixes made the structure look clean but the content was still unintelligible. **38 translations wasted.** Full report: `docs/de-causa-dei-seeding-failure.md`
+
+**BEFORE seeding any OCR-sourced text, MANDATORY readability check:**
+
+1. **Sample 5 random paragraphs** from processed output
+2. **Human-readability test:** Can the text be understood without reference to the original? If >10% of words are garbled/fused, the text is NOT ready
+3. **Trial translation:** Translate 1-2 paragraphs and verify the output makes sense. If the LLM produces gibberish or "translates" garbled words literally, STOP
+4. **Reviewer grade gate:** A grade of **C+ or below from an independent reviewer means STOP**. Do NOT proceed to seeding. Do NOT attempt to patch structural issues and call it ready. A C+ means the text has fundamental problems.
+5. **Structural correctness ≠ readability.** Perfect paragraph boundaries, correct encoding, and clean margins mean NOTHING if the text itself is garbled OCR. Never conflate structure quality with content quality.
 
 ---
 
@@ -490,6 +501,11 @@ All text descriptions should be **thoughtful** — not generic or boilerplate.
 ### Truncation Error Resolution Order
 **Stipulation (2026-02-18):** All truncation retries MUST begin with paragraph splitting. This is the FIRST step — not simple retry. Split the problematic paragraph(s) at sentence boundaries in the database, re-index, then retranslate. Simple retry is only appropriate when the paragraph is too short (<100 chars) to split.
 
+### Dual-Target Translation (English + Chinese ONLY)
+**Stipulation (2026-02-19):** ALL texts MUST be translated into both English AND Chinese as part of the standard workflow. This applies to all new texts going forward. Chinese source texts are exempt from Chinese translation (only translate to English). Use `--target-language zh` flag with `translate-batch.ts` for Chinese translation.
+
+**Stipulation (2026-02-27):** Do NOT translate into Hindi (or any other language) unless the User explicitly and clearly instructs so for specific texts. Hindi translations are NOT part of the standard workflow. The established workflow produces English and Chinese translations ONLY. Launching Hindi translation workers without explicit User instruction is prohibited.
+
 ---
 
 ## ⚠️ DEPLOYMENT & SCHEMA LESSONS ⚠️
@@ -535,40 +551,6 @@ The `sortOrder` column enables canonical ordering within author collections:
 
 ---
 
-## Kimi K2 for Difficult Tasks
-
-**Available:** The `KIMI_SUBAGENT_KEY` in `.env.local` provides access to Moonshot AI's Kimi K2 model.
-
-**When to use:** For especially difficult tasks that require:
-- Deep multi-step reasoning
-- Complex planning and analysis
-- Extended thinking chains (200-300+ sequential steps)
-- Cross-checking Claude's analysis on hard problems
-
-**Script:** `scripts/kimi-k2-helper.ts`
-
-```bash
-# Basic query
-pnpm tsx scripts/kimi-k2-helper.ts --prompt "Your question here"
-
-# From file with output
-pnpm tsx scripts/kimi-k2-helper.ts --file prompt.txt --output response.md
-
-# Options
---model thinking   # kimi-k2-thinking-turbo (default, best for reasoning)
---model turbo      # kimi-k2-turbo-preview
---model preview    # kimi-k2-0905-preview
---temperature 0.6  # default
---max-tokens 4096  # default
-```
-
-**API Details:**
-- Base URL: `https://api.moonshot.ai/v1`
-- Context window: 256K tokens
-- OpenAI-compatible API format
-
----
-
 ## Session Files (READ AT START)
 
 | File | Purpose |
@@ -584,77 +566,26 @@ pnpm tsx scripts/kimi-k2-helper.ts --file prompt.txt --output response.md
 
 ---
 
-## Active Tasks (2026-02-06, Session 45)
+## Active Tasks (2026-02-20)
 
-### IN PROGRESS — Twenty-Four Histories (二十四史) Pipeline
-- **Phase 6 (Translation):** Song Shi W4 (abe6096) running — ~21 chapters remaining
-- **Status:** 7 texts COMPLETE, 1 in progress
-  - ✓ Shiji 130/130, Hanshu 110/110, Hou Hanshu 192/192, San Guo Zhi 65/65
-  - ✓ Xin Tangshu 248/248, Sui Shu 85/85, Song Shu 100/100
-  - 🔄 Song Shi ~574/599 (95.8%)
-- See `ACTIVE_AGENTS.md` for full agent tracking
+### IN PROGRESS — Persian (fa) Pipeline
+- **Phase 6 (Translation):** 20 divan/epic texts from ganjoor.net, 211 total chapters
+- **English:** 4 workers running (EN W1-W5), ~18% complete
+- **Chinese:** 3 workers running (ZH W2, W3, W7), ~74% complete
+- All using `deepseek-reasoner` (poetry texts — slow)
+- See `ACTIVE_AGENTS.md` for agent IDs
 
-### SESSION 45 COMPLETED
-- **Hou Hanshu (後漢書):** 192/192 chapters translated ✓
-  - Workers W1-W3 completed 190 chapters via DeepSeek
-  - Chapters 402, 580 retried via Gemini (paragraph splitting, JSON repair)
-  - Created `scripts/retry-hou-hanshu-gemini.ts` for failed chapter retry
-  - Fixed chapter slugs and ordering column
-- **Pan Walery (Polish):** 24/24 chapters translated ✓ (full pipeline: scrape, process, review, translate)
-- Search optimization: trigram indexes + removed count query (7-16ms vs 500ms-2s) ✓
-- Search pagination: offset-based with prev/next buttons ✓
-- Qingshi data fix: re-scraped from correct URLs (/wiki/情史/N not /wiki/情史/卷N) ✓
-- Qingshi retranslation: 9/24 chapters (API timeout issues on ch 10-24)
-- Song Shu chapter 64 fix: 46 paragraphs translated ✓
-- San Guo Zhi translation: 64/65 chapters (ch 56 API mismatch issue)
-
-### SESSION 44 COMPLETED
-- Latin Batch 3: 9 texts, 25 chapters translated ✓
-- Analecta Laertiana reprocessed: 1ch → 5ch (proper section boundaries) ✓
-- Latin B3 description review: 7 descriptions improved ✓
-- De vita et moribus: DEFERRED (tri-lingual OCR issue in 1886 edition)
-- Tamil Batch: 6 texts, 21/21 chapters translated via Gemini ✓
-  - Nalavenba (4ch), Moovarul (3ch), Takka Yaaga Parani (9ch), Nanneri (1ch), Dandi Alankaram (3ch), Bharata Senapathiyam (1ch)
-
-### SESSION 43 COMPLETED
-- Kimi K2 helper script created (`scripts/kimi-k2-helper.ts`) ✓
-- Documentation added for Kimi K2 API usage ✓
-
-### SESSION 42 COMPLETED
-- Latin Batch 2: 14 texts, 102 chapters translated ✓
-- Russian: 8 texts, 235/235 chapters translated ✓
-- Modern Greek: 3 texts (15ch) translated ✓
-- Byzantine Greek: 4 texts (5ch) translated ✓
-- De' sorbetti: 1 text translated ✓
-
-### SESSION 41 COMPLETED
-- Latin: 2 texts (16ch) translated ✓
-- Greek: 2 texts (2ch) translated ✓
-- Czech: 1 text (14ch) seeded + translated ✓
-- Telugu: 116 verses merged → 1 chapter, translated ✓
-- Italian W1 (32ch), W3b (25ch), W4 (29ch) complete ✓
-- De Sorbetti: ABANDONED
-- Polish: 231/231 COMPLETE ✓
-- Homepage highlights section ✓
-
-### SESSION 40 COMPLETED
-- Polish W3-W7: all 11 texts, 231/231 translated ✓
-- Italian verification: 8/15 viable ✓
-- Italian Processor A+B: 8 texts, 153 chapters, 6,466 paragraphs ✓
-- Italian Quality Review + Cleanup: all 7 viable texts grade A ✓
-- Documented Standard Multi-Language Pipeline workflow in CLAUDE.md ✓
-
-### SESSION 39 COMPLETED
-- Polish pipeline Phases 0-6: language setup, verification, processing, review, seeding ✓
-- Polish W1+W2: dzieje-grzechu 65/65 chapters translated ✓
-- Armenian pipeline: verified 18 candidates, processed + translated Payqar (18ch) ✓
-- Blurb agent: ~138 descriptions rewritten ✓
-- Title agent: ~2,087 chapter titles updated ✓
-- Greek added to pipeline queue (priority 10, 12 works from curated list) ✓
+### IN PROGRESS — Modern Greek (el) Pipeline
+- **Phase 6a (English Translation):** 10 texts, 112 chapters from Gutenberg
+- **Workers:** W1-W5 running; Gerostathis 62/62 COMPLETE ✓, others in progress
+- **Phase 6b (Chinese):** Not yet started — launch after English completes
+- Pipeline agent: processed, reviewed (B+), seeded all 10 texts
+- See `docs/modern-greek-pipeline.md` for details
 
 ### EARLIER COMPLETED
+- All previous sessions (39-45+) — see git log for details
 - Chinese mass pipeline: ~3,356/3,358 chapters (99.94%) ✓
-- All previous texts (see text-inventory.md for full list) ✓
+- See `docs/text-inventory.md` for full text list
 
 ---
 
@@ -680,7 +611,7 @@ pnpm tsx scripts/seed-chapters-only.ts --text <slug>  # Fast: seed chapters for 
 pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 ```
 
-**⚠️ NEVER use `text-catalogue.ts` as a seeder** — The full catalogue iterates ~4,300+ chapters and is too slow for this project. Instead, write a targeted script (e.g., `scripts/seed-latin-batch2.ts`) that inserts only the new authors/texts, then use `seed-chapters-only.ts` for chapters.
+**⚠️ NEVER RUN `text-catalogue.ts`** — This file is a REFERENCE REGISTRY ONLY. It contains hundreds of authors and texts (~4,300+ chapters). Running it as a seeder causes Neon connection timeouts, wastes minutes of DB time doing redundant insert-or-skip on every existing entry, and is guaranteed to fail for subagents. **Instead:** Write a small targeted seeding script (e.g., `scripts/seed-musahedat.ts`) that inserts ONLY the new author/text, then use `seed-chapters-only.ts` for chapters. Add entries to `text-catalogue.ts` for the permanent record, but NEVER execute it.
 
 ---
 
@@ -697,17 +628,27 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
    - For Western texts with exact dates, use the plain year: `"1884"`
    - For approximate dates, use `"c. 540"` or `"c. 4th century"`
 4. **Seeding (two-step):**
-   - `pnpm tsx scripts/text-catalogue.ts` — Run ONCE to insert the new language/author/text rows. This iterates the full catalogue (~4,300+ chapters) doing insert-or-skip, so it is slow (~minutes). Only needed when adding new author or text metadata.
-   - `pnpm tsx scripts/seed-chapters-only.ts --text <slug>` — Run this to insert chapters for specific texts. Fast (~seconds). Safe to re-run (idempotent). **This is the preferred method for incremental seeding.**
+   - **Step A — Author/text metadata:** Write a small targeted seeding script (e.g., `scripts/seed-musahedat.ts`) that inserts ONLY the new author(s) and text(s) you need. Do NOT run `text-catalogue.ts` — it iterates hundreds of entries, causes Neon connection timeouts, and is guaranteed to fail. Add entries to `text-catalogue.ts` for the permanent record, but NEVER execute it.
+   - **Step B — Chapters:** `pnpm tsx scripts/seed-chapters-only.ts --text <slug>` — inserts chapters from processed JSON files. Fast (~seconds). Safe to re-run (idempotent). **This is the preferred method for incremental seeding.**
    - **MANDATORY: Update chapter count** — `seed-chapters-only.ts` automatically updates `texts.totalChapters`. Custom batch seeding scripts MUST also update this field after inserting chapters:
      ```typescript
      await db.update(schema.texts)
        .set({ totalChapters: files.length })
        .where(eq(schema.texts.id, text.id));
      ```
-   - **NEVER run text-catalogue.ts from a subagent** — it wastes tokens and time. Use seed-chapters-only.ts instead.
+   - **⚠️ NEVER run `text-catalogue.ts`** — not from a subagent, not manually, not for any reason. It seeds hundreds of texts and will timeout or waste minutes. Always write targeted scripts.
 5. **CHECK TRANSLATION PROMPT** (see below) — ensure `src/server/translation/prompts.ts` has a suitable prompt for this text's language, period, and genre
-6. `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil workflow below)
+6. **English translation:** `pnpm tsx scripts/translate-batch.ts --text <slug>` (or Tamil/Armenian workflow below)
+7. **Chinese translation (MANDATORY for non-Chinese source texts):** `pnpm tsx scripts/translate-batch.ts --text <slug> --target-language zh` — User directive (2026-02-19): all texts must be translated into both English AND Chinese.
+8. **Chinese metadata (MANDATORY):** After seeding, ensure all Chinese metadata is set:
+   - **Text `title_zh`:** Chinese translation of the text title (set in `text-catalogue.ts` or via SQL)
+   - **Text `description_zh`:** Chinese translation of the text description
+   - **Chapter `title_zh`:** Chinese translation of every chapter title
+   - **Author `name_zh`:** Chinese translation of the author name (set in `text-catalogue.ts`)
+   - For Chinese source texts: `title_zh` = `title` (already Chinese)
+   - For non-Chinese texts: Use DeepSeek to translate titles/descriptions. Batch script: `scripts/_fix-zh-metadata.ts`
+9. **Original-script title (MANDATORY for non-Latin-script texts):** Set `title_original_script` to the title in its original writing system (e.g., 搜神記 for Chinese, Ῥωμαϊκὴ Ἱστορία for Greek, Շdelays for Armenian). This field controls the **grey secondary title** shown on both the Front Page and Browse Page via `formatTextTitle()`. Without it, no grey original-script title appears. For Chinese source texts: `title_original_script` = the Chinese title.
+   - **Anonymous author consolidation:** All anonymous Chinese texts outside the Daoist Canon MUST use `Anonymous (Chinese)` (ID 294, slug `anonymous-chinese`). Do NOT create new anonymous entries like `anonymous-zh`.
 
 **Title convention:** "English Name (Transliteration)" — e.g., "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
 
@@ -715,13 +656,31 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 ## Translation Pipeline
 
+**DUAL-TARGET (User directive 2026-02-19):** All texts MUST be translated into **both English and Chinese**. This is now part of the standard workflow. After English translation completes, Chinese translation follows using the same script with `--target-language zh`.
+
 - **Engine (Prose):** DeepSeek V3 (`deepseek-chat`)
-- **Engine (Poetry):** DeepSeek Reasoner (`deepseek-reasoner`) — **REQUIRED for verse texts**
-- **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
+- **Engine (Poetry):** DeepSeek V3 (`deepseek-chat`) by default. Use DeepSeek Reasoner (`deepseek-reasoner`) only for texts in `REASONER_SLUGS` (User directive 2026-03-06)
+- **Engine (Hindi target):** DeepSeek V3 (`deepseek-chat`) — **ALWAYS, even for poetry** (User directive 2026-02-26). `translate-batch.ts` enforces this automatically.
+- **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N] [--target-language zh]`
 - **Batching:** zh=1500 chars, grc/la=2500 chars per API call (reduced 2026-02-05 to prevent truncation)
 - **Solo paragraphs:** Paragraphs >1500 chars get their own batch to prevent re-segmentation
 - **Parallelization:** Split ranges across background workers
 - **Skip logic:** Already-translated chapters skipped automatically (but does NOT prevent concurrent duplicate work — see rule below)
+
+### Dual-Target Translation Workflow (English + Chinese ONLY)
+
+**⚠️ Hindi and other languages are NOT part of the standard workflow.** Do NOT launch Hindi translation workers unless the User explicitly and clearly instructs so for specific texts. This directive (2026-02-27) supersedes any assumption that Hindi is a standard target.
+
+For every text, translation proceeds in two phases:
+1. **English translation:** `pnpm tsx scripts/translate-batch.ts --text <slug>`
+2. **Chinese translation:** `pnpm tsx scripts/translate-batch.ts --text <slug> --target-language zh`
+
+Both phases use the same script, same DeepSeek engine, same batching logic. The `--target-language zh` flag selects the Chinese translation prompt and inserts with `target_language = 'zh'`.
+
+**Special cases for Chinese translation:**
+- **Poetry texts (e.g., Shahnameh):** Use dedicated scripts with `deepseek-reasoner` and language-specific prompts (e.g., `/tmp/translate-shahnameh-zh.ts`)
+- **Chinese source texts:** Only translate to English (source language = target language makes no sense)
+- **Prompt selection:** `translate-batch.ts` auto-selects Chinese prompts. If no suitable Chinese prompt exists, create one in `prompts.ts` before translating.
 
 ### Poetry Translation (deepseek-reasoner)
 
@@ -954,39 +913,6 @@ When DeepSeek consistently fails on specific chapters even after splitting, swit
 
 ---
 
-## Tamil Workflow (3-Agent Pipeline)
-
-**UPDATE (2026-02-07):** Tamil A/B comparison concluded that **DeepSeek V3 outperforms Gemini** for Tamil texts. DeepSeek correctly explains chitirakavi (pattern poetry) forms, preserves wordplay with glosses, and handles Shaiva Siddhanta terms accurately. See `docs/tamil-ab-comparison-report.md`.
-
-**NEW Tamil texts:** Use `scripts/translate-batch.ts --text <slug>` with the `ta` prompt (DeepSeek).
-
-**LEGACY:** Previous Tamil texts used `@google/genai` SDK (Gemini) via `scripts/translate-tamil.ts`.
-
-**Agent 1 (Translator):**
-1. Process raw text → JSON, seed into DB
-2. Create progress file: `docs/tamil-translation-notes/<slug>-pipeline-progress.md`
-3. Run `scripts/translate-tamil.ts --text <slug> --delay 5000`
-4. Update progress file every ~20-30 poems
-5. Mark "STAGE 1 COMPLETE" when done
-
-**Agent 2 (Reviewer):** Launch when ≥20 poems translated
-1. Review poems in batches of 15-20
-2. Write `<slug>-reviewer-notes.md` and `<slug>-retranslation-requests.md`
-3. Mark "STAGE 2 COMPLETE" in progress file
-
-**Agent 3 (Retranslator):** Launch ONLY after BOTH Stage 1 AND Stage 2 COMPLETE
-1. Read all reviewer notes — identify systemic prompt improvements
-2. Update Tamil prompt in `prompts.ts` if needed
-3. Run `scripts/translate-tamil.ts --text <slug> --retranslate --delay 5000`
-4. **Editorial clarification pass (MANDATORY):** Translate Tamil terms to English with [transliteration] on first use only (e.g., "war-bard [porunar]"). After first use, English only.
-5. Write `<slug>-retranslation-report.md`
-
-**Key constraint:** Agent 3 waits for Agent 2's FULL assessment because prompt improvements are *systemic*.
-
-**Coordination:** All agents read/write the shared progress file. Full docs: `docs/tamil-translation-orchestration.md`
-
----
-
 ## Dual-Agent Quality Pipeline
 
 For texts requiring verification:
@@ -1052,12 +978,12 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 
 ### Phase 4 — Seeding
 - **⚠️ PREREQUISITE:** Phase 3 quality review MUST be complete with all texts at B+ grade. Do not seed unreviewed texts.
-- **⚠️ NEVER use `text-catalogue.ts` as a seeder** — too slow (~4,300+ chapters). Write a targeted script instead.
-- **Create a batch-specific script** (e.g., `scripts/seed-latin-batch2.ts`) that:
-  1. Defines only the new authors and texts
+- **⚠️ NEVER RUN `text-catalogue.ts`** — it iterates hundreds of authors/texts (~4,300+ chapters), causes Neon connection timeouts, and wastes minutes of DB time on redundant insert-or-skip. It is a REFERENCE REGISTRY, not a seeder.
+- **Create a batch-specific script** (e.g., `scripts/seed-musahedat.ts`, `scripts/seed-latin-batch2.ts`) that:
+  1. Defines ONLY the new authors and texts needed
   2. Inserts them with insert-or-skip logic
   3. Then call `seed-chapters-only.ts` for the chapters
-- **Still add entries to `text-catalogue.ts`** for reference (the canonical list of all texts), but don't run it.
+- **Still add entries to `text-catalogue.ts`** for the permanent record (canonical list of all texts), but NEVER execute it.
 - **MANDATORY:** Set `genre` field (philosophy, commentary, literature, history, science, ritual)
 - **MANDATORY:** Set `compositionYearDisplay` field — the browse page only shows this string, not the raw integer year. NULL = no year shown.
 - **Chapter seeding:** `pnpm tsx scripts/seed-chapters-only.ts --text <slug1> --text <slug2> ...` — FAST (~seconds)
@@ -1078,17 +1004,59 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 - **If no suitable prompt:** Create one before translating. Include period, genre, terminology conventions, stylistic guidance.
 - **Language-specific scripts:** Armenian uses `translate-armenian.ts`, Tamil uses `translate-tamil.ts`, all others use `translate-batch.ts`
 
-### Phase 6 — Translation
+### Phase 6 — Translation (English + Chinese)
+
+**DUAL-TARGET (User directive 2026-02-19):** Every text MUST be translated into both English AND Chinese. This is mandatory for all new texts.
+
+**Phase 6a — English Translation:**
 - **Split** texts across multiple background workers by chapter range
 - **Script:** `pnpm tsx scripts/translate-batch.ts --text <slug> [--start N] [--end N]`
 - **Monitor:** Track workers in ACTIVE_AGENTS.md with agent IDs, chapter ranges, status
 - **Skip logic:** Already-translated chapters are automatically skipped
+
+**Phase 6b — Chinese Translation:**
+- **Can run in parallel with English translation** (User directive 2026-03-06). No need to wait for English to complete first. EN and ZH workers operate on independent translation records and do not conflict.
+- **Script:** `pnpm tsx scripts/translate-batch.ts --text <slug> [--start N] [--end N] --target-language zh`
+- Same worker partitioning, monitoring, and skip logic as English
+- **Chinese source texts:** Skip this phase (only translate to English)
+- **Poetry texts:** Use `deepseek-chat` by default (same as prose). Only use `deepseek-reasoner` for texts explicitly in `REASONER_SLUGS`.
+
+**Both phases:**
 - **Gap check:** After ALL workers complete (not during), verify no chapters were missed. Gap-filling agents should ONLY be launched for texts where translation is fully complete.
 - **Truncation errors:** When workers report `[TRUNCATION ERROR]`, the chapter is NOT saved. **Immediately split the problematic source paragraph(s) at a sentence boundary** (User directive 2026-02-18: splitting is always the first step, not simple retry). Then retranslate. See "Truncation Error Resolution" section above for the full step-by-step workflow.
 - **Monitoring cadence:** Check agent progress at most every 10 minutes. Agents self-report completion. Do not poll constantly.
 
+### Phase 6c — Chinese Metadata (MANDATORY)
+
+After seeding and before declaring a text complete, ensure all Chinese metadata is populated:
+
+1. **Text `title_zh`:** Chinese translation of the text title
+2. **Text `description_zh`:** Chinese translation of the text description
+3. **Chapter `title_zh`:** Chinese translation of every chapter title
+4. **Author `name_zh`:** Chinese name for the author (set in text-catalogue.ts)
+
+**For Chinese source texts:** `title_zh` = `title` (already Chinese), `description_zh` must still be written.
+
+**For non-Chinese texts:** Use DeepSeek to batch-translate:
+- Titles: Extract English portion from "Original (English)" format, translate to Chinese
+- Descriptions: Translate full description to Chinese
+- Batch script: `scripts/_fix-zh-metadata.ts` handles all three
+
+**Verification query:**
+```sql
+-- Check for missing Chinese metadata
+SELECT t.slug,
+  CASE WHEN t.title_zh IS NULL OR t.title_zh = '' THEN 'MISSING' ELSE 'OK' END as title_zh,
+  CASE WHEN t.description_zh IS NULL OR t.description_zh = '' THEN 'MISSING' ELSE 'OK' END as desc_zh,
+  COUNT(*) FILTER (WHERE c.title_zh IS NULL OR c.title_zh = '') as ch_titles_missing
+FROM texts t
+JOIN chapters c ON c.text_id = t.id
+WHERE t.slug = '<your-slug>'
+GROUP BY t.id, t.slug, t.title_zh, t.description_zh;
+```
+
 ### Phase 7 — Post-Translation Review (MANDATORY)
-After all translation workers complete, run the comprehensive review:
+After all translation workers complete **for BOTH English and Chinese**, run the comprehensive review for each target language:
 
 1. **Chapter count verification:**
    - Verify `texts.total_chapters` matches actual chapter count in DB
@@ -1148,20 +1116,25 @@ ORDER BY ratio;
 | `data/<lang>-pipeline/verified-texts.json` | Verification results |
 | `data/processed/<slug>/chapter-NNN.json` | Processed chapter files |
 
-### Completed Pipelines
+### Pipelines
 | Language | Texts | Chapters | Status |
 |----------|-------|----------|--------|
-| Chinese (zh) | ~50 | ~3,358 | COMPLETE (99.94%) |
-| Greek (grc) | ~14 | ~500+ | COMPLETE (clean texts; Pisidia inaccessible) |
-| Latin (la) | ~30 | ~385+ | COMPLETE (Batch 1 + 2 + 3; 3 OCR texts deferred) |
-| Tamil (ta) | ~11 | ~520+ | COMPLETE (5 original + 6 new batch) |
+| Chinese (zh) | ~50 | ~3,358 | COMPLETE |
+| Ancient Greek (grc) | ~14 | ~500+ | COMPLETE |
+| Latin (la) | ~30 | ~385+ | COMPLETE |
+| Tamil (ta) | ~11 | ~520+ | COMPLETE |
 | Armenian (hy) | 7 | ~213 | COMPLETE |
-| Italian (it) | 9 | ~147 | ~92% (W2+W3a finishing) |
+| Italian (it) | 9 | ~147 | COMPLETE |
 | Polish (pl) | 11 | 231 | COMPLETE |
 | Malay (ms) | 1 | 19 | COMPLETE |
 | Czech (cs) | 1 | 14 | COMPLETE |
 | Telugu (te) | 1 | 1 (116 verses) | COMPLETE |
 | Russian (ru) | 8 | 235 | COMPLETE |
+| French (fr) | ~15 | ~120+ | COMPLETE |
+| Serbian (sr) | ~15 | ~100+ | COMPLETE |
+| Japanese (ja) | 3 | ~80+ | COMPLETE |
+| Persian (fa) | 21 | ~988 | IN PROGRESS — EN ~18%, ZH ~74% |
+| Modern Greek (el) | 10 | 112 | IN PROGRESS — EN translating |
 
 ---
 
@@ -1262,6 +1235,35 @@ ORDER BY ratio;
 
 ---
 
+## ⚠️ WEBPAGE ACCESS — USE CURL, NOT WEBFETCH ⚠️
+
+**INCIDENT RECORD (2026-02-23):** WebFetch returns 403 Forbidden on Wikisource (both `zh.wikisource.org` and `zh.m.wikisource.org`). WebSearch also cannot retrieve full page content — only search snippets.
+
+**MANDATORY for scraping web pages:**
+
+Use `curl` via Bash with a browser User-Agent header. This works reliably on Wikisource, Gutenberg, and Archive.org:
+
+```bash
+curl -sL -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "URL"
+```
+
+**Why WebFetch fails:**
+- Wikisource blocks requests without a proper User-Agent header
+- WebFetch's internal UA string is rejected by MediaWiki sites
+- The mobile site (`zh.m.wikisource.org`) also rejects WebFetch
+
+**For HTML parsing after curl:**
+- Use Python inline scripts for extracting links, sections, or text content
+- Use `python3 -c "..."` or write a processing script in `scripts/`
+- For quick link extraction: pipe through `grep` or `python3` regex
+
+**For subagent scraping tasks:**
+- Include the curl command with UA header in the agent prompt
+- Never rely on WebFetch for Wikisource, Gutenberg, or similar wiki sites
+- Processing scripts (Python) should use `urllib.request.Request` with the same UA header
+
+---
+
 ## External Resources
 
 | Resource | URL |
@@ -1280,7 +1282,7 @@ ORDER BY ratio;
 
 **Languages:** zh (Chinese), grc (Greek), la (Latin), ta (Tamil), hy (Armenian), it (Italian), ms (Malay)
 
-**Target Language:** The target language is English (UK) with British spelling and conventions.
+**Target Languages:** All texts are translated into **both English (UK)** with British spelling and conventions **and Chinese (简体中文)**. This dual-target requirement applies to all new and existing texts (User directive 2026-02-19).
 
 **~100 texts, ~4,300+ chapters** — See `docs/text-inventory.md` for complete list with slugs, chapter counts, and types.
 

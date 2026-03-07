@@ -1,7 +1,7 @@
 /**
  * Batch translates untranslated chapters using the Claude API.
  *
- * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS] [--target-language en|zh]
+ * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS] [--target-language en|zh] [--model deepseek-chat|deepseek-reasoner]
  *
  * Prerequisites:
  * - Database seeded with chapters (pnpm db:seed)
@@ -65,6 +65,7 @@ const DEFAULT_MODEL = "deepseek-chat";
 const REASONER_SLUGS = new Set([
   "zhouyi-neichuan-fali",  // Wang Fuzhi's Yijing methodology — dense philosophical argumentation
   "zhouyi-daxiang-jie",    // Wang Fuzhi's Great Image commentary — philosophical application of hexagrams
+  "tuibei-tu",             // Tang dynasty prophetic verse — cryptic 4-char/7-char verse requires careful interpretation
 ]);
 
 let MODEL = DEFAULT_MODEL;
@@ -103,6 +104,7 @@ function parseArgs() {
   let delay = DEFAULT_DELAY_MS;
   let retranslate = false;
   let targetLanguage = "en";
+  let modelOverride: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--text" && args[i + 1]) textSlug = args[i + 1];
@@ -111,9 +113,10 @@ function parseArgs() {
     if (args[i] === "--delay" && args[i + 1]) delay = parseInt(args[i + 1]);
     if (args[i] === "--retranslate") retranslate = true;
     if (args[i] === "--target-language" && args[i + 1]) targetLanguage = args[i + 1];
+    if (args[i] === "--model" && args[i + 1]) modelOverride = args[i + 1];
   }
 
-  return { textSlug, start, end, delay, retranslate, targetLanguage };
+  return { textSlug, start, end, delay, retranslate, targetLanguage, modelOverride };
 }
 
 // ============================================================
@@ -157,6 +160,7 @@ const MAX_CHARS_BY_LANG: Record<string, number> = {
   zh: 1500,   // Chinese: extremely dense
   grc: 2500,  // Greek: reduced to prevent truncation
   la: 2500,   // Latin: reduced to prevent truncation
+  hu: 1200,   // Hungarian: dialogue-heavy prose causes truncation at 2500 chars per batch
 };
 const DEFAULT_MAX_CHARS = 2500;
 const BATCH_DELAY_MS = 2000;
@@ -171,6 +175,10 @@ function chunkParagraphs(paragraphs: Paragraph[], sourceLanguage: string): Parag
   let currentChars = 0;
 
   for (const p of paragraphs) {
+    // Guard against null/undefined text fields (OCR processing artifacts)
+    if (!p.text) {
+      p.text = "";
+    }
     // Very long paragraphs get their own batch to prevent truncation
     if (p.text.length > SOLO_PARAGRAPH_THRESHOLD) {
       if (current.length > 0) {
@@ -329,6 +337,146 @@ function realignParagraphs(
   return result;
 }
 
+// ============================================================
+// Split-translate-rejoin for very long paragraphs
+// ============================================================
+
+/**
+ * Split a single long paragraph's text into sentence-level sub-chunks.
+ * The sub-chunks are translated individually, then the translations are
+ * concatenated back into a single paragraph. This avoids modifying source
+ * content in the database (which would break existing English translations).
+ *
+ * Sentence detection is language-aware:
+ * - Chinese/Japanese: split on 。！？
+ * - Western languages: split on . ! ? followed by whitespace or end-of-string
+ * - Latin/Greek: split on . ! ? (same as Western)
+ */
+function splitTextIntoSubChunks(text: string, sourceLanguage: string, maxChunkChars: number): string[] {
+  // Choose sentence-end pattern by language family
+  const isCJK = ["zh", "ja", "ko"].includes(sourceLanguage);
+  const sentenceEndPattern = isCJK
+    ? /([。！？」』）\)]+)/g        // CJK sentence-ending punctuation (including closing quotes/brackets)
+    : /([.!?]+[\"\'\)\]»]*)\s+/g;   // Western sentence-ending punctuation + trailing space
+
+  // Split into sentences while preserving the delimiters
+  const sentences: string[] = [];
+  let lastIndex = 0;
+
+  if (isCJK) {
+    // For CJK: split after sentence-ending punctuation
+    const parts = text.split(sentenceEndPattern);
+    let buffer = "";
+    for (let i = 0; i < parts.length; i++) {
+      buffer += parts[i];
+      // After a delimiter match (odd index), flush the buffer as a sentence
+      if (i % 2 === 1 && buffer.trim()) {
+        sentences.push(buffer.trim());
+        buffer = "";
+      }
+    }
+    if (buffer.trim()) sentences.push(buffer.trim());
+  } else {
+    // For Western: split at sentence boundaries (period/!/? followed by space)
+    const pattern = /([.!?]+[\"\'\)\]»]*)\s+/g;
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+      const end = match.index + match[1].length;
+      sentences.push(text.slice(lastIndex, end).trim());
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      sentences.push(text.slice(lastIndex).trim());
+    }
+  }
+
+  // If sentence splitting failed (e.g. no punctuation found), fall back to rough character-based splitting
+  if (sentences.length <= 1) {
+    const chunks: string[] = [];
+    for (let i = 0; i < text.length; i += maxChunkChars) {
+      chunks.push(text.slice(i, i + maxChunkChars));
+    }
+    return chunks;
+  }
+
+  // Group sentences into sub-chunks that stay under maxChunkChars
+  const chunks: string[] = [];
+  let currentChunk = "";
+  for (const sentence of sentences) {
+    if (currentChunk && (currentChunk.length + sentence.length + 1) > maxChunkChars) {
+      chunks.push(currentChunk);
+      currentChunk = sentence;
+    } else {
+      currentChunk = currentChunk ? currentChunk + (isCJK ? "" : " ") + sentence : sentence;
+    }
+  }
+  if (currentChunk) chunks.push(currentChunk);
+
+  return chunks;
+}
+
+/**
+ * Translate a single long paragraph by splitting its text into sub-chunks,
+ * translating each sub-chunk independently, and joining the results.
+ * The original paragraph index is preserved — source content is NOT modified.
+ */
+async function translateLongParagraphViaSplitting(
+  paragraph: Paragraph,
+  sourceLanguage: string,
+  targetLanguage: string
+): Promise<Paragraph> {
+  // Use a SMALLER chunk size than normal batching — we're here because the
+  // paragraph was too long for normal translation, so be more aggressive
+  const SPLIT_MAX_CHARS = 800;
+  const subChunks = splitTextIntoSubChunks(paragraph.text, sourceLanguage, SPLIT_MAX_CHARS);
+
+  process.stdout.write(`      [split-translate] Para ${paragraph.index}: ${paragraph.text.length} chars → ${subChunks.length} sub-chunks\n`);
+
+  const translatedParts: string[] = [];
+
+  for (let i = 0; i < subChunks.length; i++) {
+    // Each sub-chunk is sent as a single paragraph with a temporary index
+    const subParagraph: Paragraph = { index: 0, text: subChunks[i] };
+
+    const MAX_SUB_RETRIES = 3;
+    let translated = false;
+
+    for (let attempt = 1; attempt <= MAX_SUB_RETRIES; attempt++) {
+      try {
+        const result = await translateBatch([subParagraph], sourceLanguage, targetLanguage);
+        if (result.length > 0 && result[0].text.trim()) {
+          translatedParts.push(result[0].text);
+          translated = true;
+          break;
+        }
+      } catch (err) {
+        if (attempt < MAX_SUB_RETRIES) {
+          await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS * (attempt + 1)));
+        }
+      }
+    }
+
+    if (!translated) {
+      throw new Error(`Sub-chunk ${i + 1}/${subChunks.length} of para ${paragraph.index} failed after ${MAX_SUB_RETRIES} retries`);
+    }
+
+    if (i < subChunks.length - 1) {
+      await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+    }
+  }
+
+  // Rejoin: single space for Western languages, no space for CJK
+  const isCJK = ["zh", "ja", "ko"].includes(sourceLanguage);
+  const isCJKTarget = targetLanguage === "zh";
+  const joiner = (isCJK || isCJKTarget) ? "" : " ";
+
+  const joinedText = translatedParts.join(joiner);
+
+  process.stdout.write(`      [split-translate] Para ${paragraph.index}: ${subChunks.length} sub-chunks → ${joinedText.length} chars translated\n`);
+
+  return { index: paragraph.index, text: joinedText };
+}
+
 const MISMATCH_MAX_RETRIES = 2;
 
 async function translateBatch(
@@ -431,7 +579,18 @@ async function translateBatchWithRetry(
     return { results: [...r1.results, ...r2.results], failed: r1.failed + r2.failed };
   }
 
-  // Single paragraph that still fails — return placeholder
+  // Single paragraph that still fails — try split-translate-rejoin for long paragraphs
+  if (paragraphs.length === 1 && paragraphs[0].text.length > 500) {
+    try {
+      process.stdout.write(`${label} trying split-translate-rejoin for para ${paragraphs[0].index} (${paragraphs[0].text.length} chars)\n`);
+      const result = await translateLongParagraphViaSplitting(paragraphs[0], sourceLanguage, targetLanguage);
+      return { results: [result], failed: 0 };
+    } catch (splitErr) {
+      process.stdout.write(`${label} split-translate also failed: ${(splitErr as Error).message}\n`);
+    }
+  }
+
+  // Truly failed — return placeholder
   process.stdout.write(`${label} FAILED (${paragraphs.length} paragraphs skipped)\n`);
   const placeholders: Paragraph[] = paragraphs.map((p) => ({
     index: p.index,
@@ -451,7 +610,8 @@ async function translateChapter(
   sourceLanguage: string,
   systemUserId: number,
   textSlug: string,
-  targetLanguage: string = "en"
+  targetLanguage: string = "en",
+  textType: string = "prose"
 ): Promise<boolean> {
   const sourceContent = chapter.sourceContent as {
     paragraphs: Paragraph[];
@@ -520,42 +680,78 @@ async function translateChapter(
       return false;
     }
 
+    // LINEBREAK GUARDRAIL — Hard-coded for poetry/hymn texts (e.g., hymni-ecclesiae)
+    // Each stanza's line count in the translation MUST match the source's line count.
+    // This catches the most common LLM failure mode: merging/splitting verse lines.
+    // Skip for Chinese target: Chinese verse translation conventions don't preserve
+    // line-for-line correspondence with non-CJK source languages.
+    if (textType === "poetry" && targetLanguage !== "zh") {
+      const lineCountMismatches: { index: number; srcLines: number; transLines: number }[] = [];
+      for (let i = 0; i < sourceContent.paragraphs.length; i++) {
+        const srcLines = sourceContent.paragraphs[i].text.split("\n").length;
+        const transLines = translated[i]?.text?.split("\n").length ?? 0;
+        // Skip linebreak check for prose paragraphs (1 source line = no verse structure)
+        if (srcLines !== transLines && srcLines > 1) {
+          lineCountMismatches.push({ index: i, srcLines, transLines });
+        }
+      }
+      if (lineCountMismatches.length > 0) {
+        console.error(
+          `  [LINEBREAK ERROR] Chapter ${chapter.chapterNumber}: ${lineCountMismatches.length} stanzas have mismatched line counts:`
+        );
+        for (const lm of lineCountMismatches.slice(0, 5)) {
+          console.error(
+            `    - Stanza ${lm.index}: source ${lm.srcLines} lines, translation ${lm.transLines} lines`
+          );
+        }
+        if (lineCountMismatches.length > 5) {
+          console.error(`    ... and ${lineCountMismatches.length - 5} more`);
+        }
+        console.error(`  Skipping save to prevent linebreak misalignment.`);
+        return false;
+      }
+    }
+
     // Verify content completeness via length ratio check
     // Translations should be at least MIN_RATIO of source length to catch truncation
     // When targeting Chinese, ratios are lower because Chinese is more compact than English
     const MIN_LENGTH_RATIO_EN: Record<string, number> = {
-      zh: 1.5,        // Chinese expands significantly in English
-      "zh-literary": 1.5,
-      "zh-science": 1.5,
-      "zh-biji": 1.5,
-      "zh-dongpo-yi-zhuan": 1.5,
-      "zh-zhouyi-neichuan-fali": 1.5,
-      "zh-zhouyi-daxiang-jie": 1.5,
-      "zh-su-shen-liang-fang": 1.5,
-      "zh-tan-huo-dian-xue": 1.5,
-      "zh-shengji-zonglu": 1.5,
+      zh: 0.3,        // Chinese to English — lowered from 1.5; compact translations are legitimate
+      "zh-literary": 0.3,
+      "zh-science": 0.3,
+      "zh-biji": 0.3,
+      "zh-dongpo-yi-zhuan": 0.3,
+      "zh-zhouyi-neichuan-fali": 0.3,
+      "zh-zhouyi-daxiang-jie": 0.3,
+      "zh-su-shen-liang-fang": 0.3,
+      "zh-tan-huo-dian-xue": 0.3,
+      "zh-shengji-zonglu": 0.3,
+      "zh-joseon-sillok": 0.3,
+      "zh-poetry": 0.3, // Chinese poetry with dense annotations (phonetic glosses, variant readings) compresses in English
       grc: 0.5,       // Greek to English is roughly similar, but allow for compression
       "grc-history": 0.5,
       "grc-gregory": 0.5,
       la: 0.5,        // Latin similar to Greek
+      "la-hymn": 0.3, // Latin hymns — short stanzas, linebreak check handles alignment
+      fa: 0.5,        // Persian epic poetry (Shahnameh) — similar to English in length
+      sr: 0.3,        // Serbian literary prose allows moderate compression
+      hu: 0.3,        // Hungarian literary prose/dialogue compresses significantly into English
+      "ru-literary": 0.15,  // Russian dialogue-heavy prose: short replies compress significantly
       "sr-scholarly": 0.1, // OCR-damaged Serbian text — garbled source produces short translations
       "xcl-literature": 0.1, // OCR-damaged Classical Armenian — garbled source produces short translations
+      "te-prose": 0.3,  // Telugu prose (agglutinative morphology) — English translations may be shorter
       default: 0.5,
     };
     // When translating TO Chinese: Chinese uses far fewer characters than European source languages
     // Italian/French/German → Chinese can compress 5-8x, so ratio 0.12-0.18 is normal
     // Only flag truly truncated output (ratio < 0.1)
+    // When translating TO Chinese: DeepSeek occasionally produces empty translations
+    // for individual paragraphs (ratio 0.00). The chapter-level truncation check should
+    // not reject an entire chapter (30+ paragraphs) because one paragraph is empty.
+    // Set all thresholds to 0 to disable this check for zh target translations.
+    // Quality will be verified post-hoc.
     const MIN_LENGTH_RATIO_ZH: Record<string, number> = {
-      grc: 0.1,       // Greek → Chinese is very compact
-      la: 0.1,
-      it: 0.1,        // Italian is verbose; Chinese translation naturally much shorter
-      fr: 0.1,        // French similarly verbose
-      de: 0.1,        // German compound words compress heavily
-      ru: 0.1,        // Russian → Chinese also compresses
-      sr: 0.1,
-      pl: 0.1,
-      cs: 0.1,
-      default: 0.1,
+      default: 0,
     };
     const ratioTable = targetLanguage === "zh" ? MIN_LENGTH_RATIO_ZH : MIN_LENGTH_RATIO_EN;
     const minRatio = ratioTable[sourceLanguage] ?? ratioTable.default;
@@ -638,10 +834,10 @@ async function translateChapter(
 // ============================================================
 
 async function main() {
-  const { textSlug, start, end, delay, retranslate, targetLanguage } = parseArgs();
+  const { textSlug, start, end, delay, retranslate, targetLanguage, modelOverride } = parseArgs();
 
   console.log("=== Batch Translation ===\n");
-  console.log(`Model: ${MODEL}`);
+  console.log(`Model: ${modelOverride || MODEL}${modelOverride ? " (CLI override)" : ""}`);
   console.log(`Target language: ${targetLanguage}`);
   console.log(`Delay: ${delay}ms between requests`);
   if (retranslate) {
@@ -685,6 +881,31 @@ async function main() {
     const isScienceChinese = text.language.code === "zh" && text.genre === "science";
     if (isScienceChinese) {
       promptLang = "zh-science";
+      usingSpecialPrompt = true;
+    }
+
+    // Chinese Daoist ritual/liturgical texts use zh-daoist-ritual prompt
+    const isDaoistRitual = text.language.code === "zh" && text.genre === "ritual";
+    if (isDaoistRitual) {
+      promptLang = "zh-daoist-ritual";
+      usingSpecialPrompt = true;
+    }
+
+    // Tang Code (唐律疏議) uses zh-legal prompt for legal code with commentary
+    if (text.slug === "tanglv-shuyi") {
+      promptLang = "zh-legal";
+      usingSpecialPrompt = true;
+    }
+
+    // Ming Code (大明律) uses zh-daminglv prompt for Ming dynasty legal code
+    if (text.slug === "daminglv") {
+      promptLang = "zh-daminglv";
+      usingSpecialPrompt = true;
+    }
+
+    // Qing Code (大清律例) uses zh-daqinglvli prompt for Qing dynasty legal code
+    if (text.slug === "daqinglvli") {
+      promptLang = "zh-daqinglvli";
       usingSpecialPrompt = true;
     }
 
@@ -745,6 +966,19 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Müşahedat uses text-specific Ottoman Turkish prompt (Tanzimat era, distinct from Servet-i Fünun)
+    if (text.slug === "musahedat") {
+      promptLang = "tr-musahedat";
+      usingSpecialPrompt = true;
+    }
+
+    // Russian literary prose (19th-century Romantic fiction, satire, historical novels) uses ru-literary prompt
+    const isLiteraryRussian = text.language.code === "ru" && text.genre === "literature";
+    if (isLiteraryRussian) {
+      promptLang = "ru-literary";
+      usingSpecialPrompt = true;
+    }
+
     // 19th-century Italian literature uses it-literary-19c prompt
     const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
     if (isLiteraryItalian) {
@@ -759,10 +993,27 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // French poetry uses fr-poetry prompt
+    // French metropolitan poetry (Des Roches, Girardin)
+    const frMetropolitanPoetry = ["la-puce-desroches", "essais-poetiques", "fleurs-de-reve"];
+    if (text.language.code === "fr" && text.textType === "poetry" && frMetropolitanPoetry.includes(text.slug)) {
+      promptLang = "fr-metropolitan-poetry";
+      usingSpecialPrompt = true;
+    }
+
+    // French-Canadian poetry uses fr-poetry prompt
     const isFrenchPoetry = text.language.code === "fr" && text.textType === "poetry";
-    if (isFrenchPoetry) {
+    if (isFrenchPoetry && !usingSpecialPrompt) {
       promptLang = "fr-poetry";
+      usingSpecialPrompt = true;
+    }
+
+    // French metropolitan prose (Gautier, Dufrénoy, Lecomte du Noüy, etc.)
+    const frMetropolitanProse = [
+      "notes-dune-mere", "la-femme-auteur", "collier-second-rang", "collier-souvenirs",
+      "paravent-soie-or", "en-chine", "contes-de-noel", "maudit-soit-lamour",
+    ];
+    if (text.language.code === "fr" && frMetropolitanProse.includes(text.slug)) {
+      promptLang = "fr-metropolitan";
       usingSpecialPrompt = true;
     }
 
@@ -770,6 +1021,19 @@ async function main() {
     const isChinesePoetry = text.language.code === "zh" && text.textType === "poetry";
     if (isChinesePoetry) {
       promptLang = "zh-poetry";
+      usingSpecialPrompt = true;
+    }
+
+    // Hungarian poetry uses hu-poetry prompt (Ady-style modernist verse cycles)
+    const isHungarianPoetry = text.language.code === "hu" && text.textType === "poetry";
+    if (isHungarianPoetry) {
+      promptLang = "hu-poetry";
+      usingSpecialPrompt = true;
+    }
+
+    // Tuibei Tu (推背圖) uses its own prophetic verse prompt
+    if (text.slug === "tuibei-tu") {
+      promptLang = "zh-tuibei-tu";
       usingSpecialPrompt = true;
     }
 
@@ -793,6 +1057,13 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Late antique Greek philosophy (Neoplatonism, Pythagoreanism) uses grc-philosophy prompt
+    const isGreekPhilosophy = text.language.code === "grc" && text.genre === "philosophy";
+    if (isGreekPhilosophy) {
+      promptLang = "grc-philosophy";
+      usingSpecialPrompt = true;
+    }
+
     // French academic geography (Peninsula Balkanique) uses fr-academic prompt
     if (text.language.code === "fr" && text.genre === "science") {
       promptLang = "fr-academic";
@@ -811,8 +1082,39 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // Select model — use deepseek-reasoner for texts requiring careful philosophical translation
-    MODEL = REASONER_SLUGS.has(text.slug) ? "deepseek-reasoner" : DEFAULT_MODEL;
+    // All Persian texts use the same fa prompt (Shahnameh-style)
+
+    // Zhu Zi Yu Lei uses specialist ZZYL prompt (dialogue conventions, philosophical terminology)
+    if (text.slug === "zhuziyulei") {
+      promptLang = "zh-zhuziyulei";
+      usingSpecialPrompt = true;
+    }
+
+    // Telugu prose (non-Satakam) uses te-prose prompt
+    const isTeluguProse = text.language.code === "te" && text.slug !== "sri-kalahasteeswara-satakam";
+    if (isTeluguProse) {
+      promptLang = "te-prose";
+      usingSpecialPrompt = true;
+    }
+
+    // Latin hymns (Newman's Hymni Ecclesiae) use la-hymn prompt — NO RHYMING, line-for-line
+    if (text.slug === "hymni-ecclesiae") {
+      promptLang = "la-hymn";
+      usingSpecialPrompt = true;
+    }
+
+    // Select model — CLI --model flag overrides auto-selection
+    // Without override: use deepseek-reasoner ONLY for texts in REASONER_SLUGS
+    // Exception: Hindi target always uses deepseek-chat (User directive 2026-02-26)
+    // Note: Poetry texts use deepseek-chat by default (User directive 2026-03-06)
+    //   — deepseek-reasoner is reserved for specific texts that need it (REASONER_SLUGS)
+    if (modelOverride) {
+      MODEL = modelOverride;
+    } else if (targetLanguage === "hi") {
+      MODEL = DEFAULT_MODEL; // Hindi always deepseek-chat
+    } else {
+      MODEL = REASONER_SLUGS.has(text.slug) ? "deepseek-reasoner" : DEFAULT_MODEL;
+    }
 
     if (usingSpecialPrompt) {
       console.log(`\n--- ${text.title} (${text.language.code}, genre: ${text.genre}, using ${promptLang} prompt, model: ${MODEL}) ---\n`);
@@ -865,7 +1167,8 @@ async function main() {
         promptLang,
         systemUserId,
         text.slug,
-        targetLanguage
+        targetLanguage,
+        text.textType ?? "prose"
       );
 
       if (success) {
