@@ -307,6 +307,52 @@ const cn: Translations = {
     "发布到 Deltoi 的所有译文均以",
   "about.licenseSuffix": "许可协议发布。",
 
+  // Contribute page
+  "nav.contribute": "贡献",
+  "contribute.title": "贡献文本",
+  "contribute.description":
+    "以 JSON 格式上传原文和译文。上传前请先验证 JSON 以检查错误。",
+  "contribute.sourceTab": "上传原文",
+  "contribute.translationTab": "上传译文",
+  "contribute.formatTitle": "JSON 格式",
+  "contribute.sourceFormatDesc":
+    "上传一篇新的原文及其所有章节。JSON 须遵循以下结构。",
+  "contribute.translationFormatDesc":
+    "为已有文本上传译文。每章的段落数必须与原文完全一致。",
+  "contribute.validLanguages": "有效的语言代码：",
+  "contribute.langFieldDesc":
+    "语料库中已有的语言代码（见上方有效代码列表）。",
+  "contribute.authorNameDesc":
+    "作者的显示名称（如 \"Marcus Tullius Cicero\"）。",
+  "contribute.authorSlugDesc":
+    "作者的 URL 标识符，小写字母加连字符（如 \"cicero\"）。如已存在则使用现有记录。",
+  "contribute.titleFieldDesc":
+    "文本的完整标题。",
+  "contribute.slugFieldDesc":
+    "文本的 URL 标识符，小写字母加连字符（如 \"de-amicitia\"）。在同一语言内须唯一。",
+  "contribute.genreFieldDesc":
+    "可选值：philosophy, theology, devotional, commentary, literature, poetry, history, science, ritual, uncategorized。",
+  "contribute.yearFieldDesc":
+    "创作年份（整数，公元前为负数）。可选。",
+  "contribute.chaptersFieldDesc":
+    "章节对象数组，每个包含 title 和 paragraphs 数组。",
+  "contribute.paragraphsFieldDesc":
+    "对象数组，包含从 0 开始的连续 index 和 text 字段。",
+  "contribute.textSlugDesc":
+    "数据库中已有文本的 slug。",
+  "contribute.targetLangDesc":
+    "目标语言代码（如 \"en\" 表示英语，\"zh\" 表示中文）。",
+  "contribute.chapterNumDesc":
+    "章节编号（须与文本中已有章节对应）。",
+  "contribute.transParagraphsDesc":
+    "译文段落。数量须与该章原文段落数一致。",
+  "contribute.jsonInput": "JSON 输入",
+  "contribute.jsonPlaceholder": "在此粘贴 JSON……",
+  "contribute.validate": "验证",
+  "contribute.upload": "上传",
+  "contribute.validationPassed": "验证通过。",
+  "contribute.validationFailed": "验证失败：",
+
   // Register success
   "register.accountCreated": "账户已创建",
   "register.accountCreatedDesc": "您的账户已成功创建！",

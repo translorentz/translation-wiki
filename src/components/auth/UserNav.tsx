@@ -30,6 +30,14 @@ export function UserNav() {
       >
         {session.user.name}
       </Link>
+      {(session.user.role === "editor" || session.user.role === "admin") && (
+        <Link
+          href={localePath("/contribute", locale)}
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {t("nav.contribute")}
+        </Link>
+      )}
       {session.user.role === "admin" && (
         <Link
           href={localePath("/admin/users", locale)}

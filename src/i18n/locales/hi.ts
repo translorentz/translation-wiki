@@ -308,6 +308,52 @@ const hi: Translations = {
     "Deltoi पर प्रकाशित सभी अनुवाद",
   "about.licenseSuffix": " लाइसेंस के तहत जारी किए जाते हैं।",
 
+  // Contribute page
+  "nav.contribute": "योगदान",
+  "contribute.title": "ग्रंथ का योगदान करें",
+  "contribute.description":
+    "JSON प्रारूप में मूल ग्रंथ और अनुवाद अपलोड करें। त्रुटियों की जाँच के लिए अपलोड से पहले JSON को मान्य करें।",
+  "contribute.sourceTab": "मूल ग्रंथ अपलोड करें",
+  "contribute.translationTab": "अनुवाद अपलोड करें",
+  "contribute.formatTitle": "JSON प्रारूप",
+  "contribute.sourceFormatDesc":
+    "सभी अध्यायों के साथ एक नया मूल ग्रंथ अपलोड करें। JSON को नीचे दी गई संरचना का पालन करना होगा।",
+  "contribute.translationFormatDesc":
+    "किसी मौजूदा ग्रंथ के लिए अनुवाद अपलोड करें। प्रत्येक अध्याय में पैराग्राफ़ की संख्या मूल ग्रंथ से बिल्कुल मेल खानी चाहिए।",
+  "contribute.validLanguages": "मान्य भाषा कोड:",
+  "contribute.langFieldDesc":
+    "कोष में पहले से मौजूद भाषा कोड (ऊपर मान्य कोड देखें)।",
+  "contribute.authorNameDesc":
+    "लेखक का प्रदर्शन नाम (जैसे \"Marcus Tullius Cicero\")।",
+  "contribute.authorSlugDesc":
+    "लेखक का URL पहचानकर्ता, लोअरकेस और हाइफ़न (जैसे \"cicero\")। यदि पहले से मौजूद है तो मौजूदा रिकॉर्ड का उपयोग किया जाएगा।",
+  "contribute.titleFieldDesc":
+    "ग्रंथ का पूरा शीर्षक।",
+  "contribute.slugFieldDesc":
+    "ग्रंथ का URL पहचानकर्ता, लोअरकेस और हाइफ़न (जैसे \"de-amicitia\")। भाषा के भीतर अद्वितीय होना चाहिए।",
+  "contribute.genreFieldDesc":
+    "विकल्प: philosophy, theology, devotional, commentary, literature, poetry, history, science, ritual, uncategorized।",
+  "contribute.yearFieldDesc":
+    "रचना वर्ष (पूर्णांक, ईसा पूर्व के लिए ऋणात्मक)। वैकल्पिक।",
+  "contribute.chaptersFieldDesc":
+    "अध्याय वस्तुओं की सरणी, प्रत्येक में title और paragraphs सरणी।",
+  "contribute.paragraphsFieldDesc":
+    "वस्तुओं की सरणी जिसमें 0 से शुरू होने वाला क्रमिक index और text फ़ील्ड।",
+  "contribute.textSlugDesc":
+    "डेटाबेस में मौजूद ग्रंथ का slug।",
+  "contribute.targetLangDesc":
+    "लक्ष्य भाषा कोड (जैसे \"en\" अंग्रेजी के लिए, \"zh\" चीनी के लिए)।",
+  "contribute.chapterNumDesc":
+    "अध्याय संख्या (ग्रंथ में मौजूद अध्याय से मेल खाना चाहिए)।",
+  "contribute.transParagraphsDesc":
+    "अनुवादित पैराग्राफ़। संख्या उस अध्याय के मूल ग्रंथ के पैराग्राफ़ संख्या से मेल खानी चाहिए।",
+  "contribute.jsonInput": "JSON इनपुट",
+  "contribute.jsonPlaceholder": "अपना JSON यहाँ चिपकाएँ...",
+  "contribute.validate": "मान्य करें",
+  "contribute.upload": "अपलोड करें",
+  "contribute.validationPassed": "मान्यता सफल।",
+  "contribute.validationFailed": "मान्यता विफल:",
+
   // Register success
   "register.accountCreated": "खाता बनाया गया",
   "register.accountCreatedDesc": "आपका खाता सफलतापूर्वक बनाया गया है!",

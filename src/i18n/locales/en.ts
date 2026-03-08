@@ -312,6 +312,52 @@ const en = {
     "All translations published on Deltoi are released under the",
   "about.licenseSuffix": "licence.",
 
+  // Contribute page
+  "nav.contribute": "Contribute",
+  "contribute.title": "Contribute a Text",
+  "contribute.description":
+    "Upload original texts and translations in JSON format. Use the Validate button to check your JSON for errors before uploading.",
+  "contribute.sourceTab": "Upload Source Text",
+  "contribute.translationTab": "Upload Translation",
+  "contribute.formatTitle": "JSON Format",
+  "contribute.sourceFormatDesc":
+    "Upload a new source text with all its chapters. The JSON must follow the structure below.",
+  "contribute.translationFormatDesc":
+    "Upload a translation for an existing text. The paragraph count in each chapter must match the source text exactly.",
+  "contribute.validLanguages": "Valid language codes:",
+  "contribute.langFieldDesc":
+    "A language code from the corpus (see valid codes above).",
+  "contribute.authorNameDesc":
+    "Display name of the author (e.g. \"Marcus Tullius Cicero\").",
+  "contribute.authorSlugDesc":
+    "URL-safe identifier for the author, lowercase with hyphens (e.g. \"cicero\"). If this slug already exists, the existing author record is used.",
+  "contribute.titleFieldDesc":
+    "Full title of the text.",
+  "contribute.slugFieldDesc":
+    "URL-safe identifier for the text, lowercase with hyphens (e.g. \"de-amicitia\"). Must be unique within the language.",
+  "contribute.genreFieldDesc":
+    "One of: philosophy, theology, devotional, commentary, literature, poetry, history, science, ritual, uncategorized.",
+  "contribute.yearFieldDesc":
+    "Integer year of composition (negative for BCE). Optional.",
+  "contribute.chaptersFieldDesc":
+    "An array of chapter objects, each with a title and paragraphs array.",
+  "contribute.paragraphsFieldDesc":
+    "An array of objects with sequential index (starting from 0) and text fields.",
+  "contribute.textSlugDesc":
+    "The slug of an existing text in the database.",
+  "contribute.targetLangDesc":
+    "Target language code (e.g. \"en\" for English, \"zh\" for Chinese).",
+  "contribute.chapterNumDesc":
+    "The chapter number (must match an existing chapter in the text).",
+  "contribute.transParagraphsDesc":
+    "Translated paragraphs. Count must match the source text's paragraph count for that chapter.",
+  "contribute.jsonInput": "JSON Input",
+  "contribute.jsonPlaceholder": "Paste your JSON here...",
+  "contribute.validate": "Validate",
+  "contribute.upload": "Upload",
+  "contribute.validationPassed": "Validation passed.",
+  "contribute.validationFailed": "Validation failed:",
+
   // Register success
   "register.accountCreated": "Account Created",
   "register.accountCreatedDesc": "Your account has been created successfully!",
