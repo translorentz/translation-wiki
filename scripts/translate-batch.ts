@@ -65,6 +65,7 @@ const DEFAULT_MODEL = "deepseek-chat";
 const REASONER_SLUGS = new Set([
   "zhouyi-neichuan-fali",  // Wang Fuzhi's Yijing methodology — dense philosophical argumentation
   "zhouyi-daxiang-jie",    // Wang Fuzhi's Great Image commentary — philosophical application of hexagrams
+  "zhuangzi-tong",         // Wang Fuzhi's Zhuangzi commentary — dense philosophical argumentation with Confucian reinterpretation
   "tuibei-tu",             // Tang dynasty prophetic verse — cryptic 4-char/7-char verse requires careful interpretation
 ]);
 
@@ -685,7 +686,9 @@ async function translateChapter(
     // This catches the most common LLM failure mode: merging/splitting verse lines.
     // Skip for Chinese target: Chinese verse translation conventions don't preserve
     // line-for-line correspondence with non-CJK source languages.
-    if (textType === "poetry" && targetLanguage !== "zh") {
+    // Skip linebreak check for bombyx — long didactic poem (38+ lines/para), not short stanzas
+    const skipLinebreakCheck = textSlug === "bombyx";
+    if (textType === "poetry" && targetLanguage !== "zh" && !skipLinebreakCheck) {
       const lineCountMismatches: { index: number; srcLines: number; transLines: number }[] = [];
       for (let i = 0; i < sourceContent.paragraphs.length; i++) {
         const srcLines = sourceContent.paragraphs[i].text.split("\n").length;
@@ -723,14 +726,15 @@ async function translateChapter(
       "zh-dongpo-yi-zhuan": 0.3,
       "zh-zhouyi-neichuan-fali": 0.3,
       "zh-zhouyi-daxiang-jie": 0.3,
+      "zh-zhuangzi-tong": 0.3,
       "zh-su-shen-liang-fang": 0.3,
       "zh-tan-huo-dian-xue": 0.3,
       "zh-shengji-zonglu": 0.3,
       "zh-joseon-sillok": 0.3,
       "zh-poetry": 0.3, // Chinese poetry with dense annotations (phonetic glosses, variant readings) compresses in English
-      grc: 0.5,       // Greek to English is roughly similar, but allow for compression
-      "grc-history": 0.5,
-      "grc-gregory": 0.5,
+      grc: 0.08,       // Greek to English — lowered for OCR-damaged Byzantine Greek (Cantacuzenus)
+      "grc-history": 0.08,
+      "grc-gregory": 0.08,
       la: 0.5,        // Latin similar to Greek
       "la-hymn": 0.3, // Latin hymns — short stanzas, linebreak check handles alignment
       fa: 0.5,        // Persian epic poetry (Shahnameh) — similar to English in length
@@ -940,6 +944,10 @@ async function main() {
       promptLang = "zh-zhouyi-daxiang-jie";
       usingSpecialPrompt = true;
     }
+    if (text.slug === "zhuangzi-tong") {
+      promptLang = "zh-zhuangzi-tong";
+      usingSpecialPrompt = true;
+    }
 
     // Song biji prose (Su Shi's notebooks) uses zh-biji prompt
     if (text.slug === "dongpo-zhilin" || text.slug === "qiu-chi-bi-ji") {
@@ -976,6 +984,12 @@ async function main() {
     const isLiteraryRussian = text.language.code === "ru" && text.genre === "literature";
     if (isLiteraryRussian) {
       promptLang = "ru-literary";
+      usingSpecialPrompt = true;
+    }
+
+    // Skaballanovich's Tolkovyj Tipikon — scholarly liturgical commentary
+    if (text.slug === "tolkovyj-tipikon") {
+      promptLang = "ru-tipikon";
       usingSpecialPrompt = true;
     }
 
@@ -1097,9 +1111,16 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // Latin hymns (Newman's Hymni Ecclesiae) use la-hymn prompt — NO RHYMING, line-for-line
-    if (text.slug === "hymni-ecclesiae") {
+    // Latin poetry/hymns use la-hymn prompt — NO RHYMING, line-for-line
+    if (text.slug === "hymni-ecclesiae" || text.slug === "bombyx") {
       promptLang = "la-hymn";
+      usingSpecialPrompt = true;
+    }
+
+    // English Victorian/Edwardian literary prose — specialist Chinese target prompt
+    const isVictorianEnglish = text.language.code === "en" && text.genre === "literature";
+    if (isVictorianEnglish && targetLanguage === "zh") {
+      promptLang = "en-victorian";
       usingSpecialPrompt = true;
     }
 

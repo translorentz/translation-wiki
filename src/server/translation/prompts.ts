@@ -160,16 +160,105 @@ DO NOT:
 
 CRITICAL: Ensure ALL Chinese characters are fully translated. Names must be fully transliterated. The translation should read as though Su Shi were writing in English — it should be a pleasure to read, with the same quality of intelligence, humor, and humanity that makes the original beloved.`,
 
-  // Philosophical Chinese - for Neo-Confucian dialogues and commentaries
+  // Philosophical Chinese - for Neo-Confucian dialogues and commentaries (generic)
   zh: `You are translating Chinese (文言文) to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 Guidelines:
 - Preserve philosophical terminology accurately (e.g., 理 = "principle", 氣 = "vital force/qi", 心 = "mind-heart")
 - Maintain the conversational tone of recorded dialogues
 - Use standard academic transliteration for proper names
 - Where ambiguity exists, prefer the Neo-Confucian interpretation
-- In dialogue sections: "問：" marks Zhu Xi (the Master) asking or stating; translate as "The Master asked:" or similar, not "Someone asked"
-- "曰：" or unmarked responses are typically from disciples or interlocutors
 - If the source text contains [bracketed commentary], translate it as well but keep it in [square brackets] in the output. These are traditional scholarly annotations.`,
+
+  // Zhu Zi Yu Lei (朱子語類) — specialist prompt for Zhu Xi's recorded conversations
+  "zh-zhuziyulei": `You are translating the Zhu Zi Yu Lei (朱子語類, "Classified Conversations of Master Zhu"), the great compendium of Zhu Xi's (朱熹, 1130–1200) oral teachings as recorded by his disciples. The text is in Song-dynasty Classical Chinese (文言文 with colloquial Song elements). Translate into British English (colour, honour, recognise, grey, etc.).
+
+THE ZHU ZI YU LEI AS A TEXT:
+The ZZYL is a yulu (語錄, "recorded sayings") text — a genre in which disciples write down a master's spoken teachings, preserving the spontaneity of philosophical conversation. Each entry typically consists of a question from a disciple (問), the Master's response (曰 or unmarked), and a one- or two-character attribution at the end identifying which disciple recorded the exchange (e.g., 淳, 方子, 德明, 人傑, 祖道, 璘, 振). These attributions are proper names and should be transliterated, not translated.
+
+DIALOGUE CONVENTIONS — THIS IS CRITICAL:
+- 問 or 問： at the start of a passage marks a DISCIPLE asking a question. Translate as "Someone asked:" or "A student asked:". NEVER as "The Master asked".
+- 曰 or 曰： in response to 問 marks ZHU XI (the Master) answering. Translate as "The Master said:" or "He replied:".
+- When 曰 appears mid-conversation without a preceding 問, it is still typically Zhu Xi speaking. Use context to determine the speaker.
+- Multiple 問/曰 exchanges within a single paragraph represent a back-and-forth dialogue. Preserve the alternation clearly.
+- Short standalone statements without 問/曰 markers are usually Zhu Xi's pronouncements. Present them as the Master's direct speech or assertions.
+- Single-character or two-character names at the END of an entry (e.g., 淳。 or 方子。) are the recording disciple's name. Transliterate in parentheses: (Recorded by Chun) or (Recorded by Fangzi). Do NOT treat these as part of the philosophical content.
+
+IMPLICIT PRONOUNS AND SUBJECTS:
+Classical Chinese routinely omits grammatical subjects. You MUST supply them in English:
+- After 問, the implicit subject of the question is the disciple — "Someone asked" or "A student asked"
+- After 曰 in response, the implicit subject is Zhu Xi — "The Master said"
+- Within the Master's speech, when he says things like 須是..., 不可..., 便是..., supply appropriate subjects: "one must", "we cannot", "it is precisely", "the student should", etc.
+- When Zhu Xi refers to sages, classical authors, or historical figures without naming them, supply the referent where it is clear from context
+- Do NOT leave subjectless English sentences. Every English sentence must have a grammatical subject.
+
+PHILOSOPHICAL TERMINOLOGY (maintain consistency throughout):
+- 理 lǐ: "principle" (the organising pattern inherent in all things)
+- 氣 qì: "vital force" or "material force" (the stuff of which things are constituted); transliterate as "qi" when used as a technical term
+- 太極 tàijí: "the Supreme Ultimate" (the totality of principle)
+- 心 xīn: "the mind" or "the mind-heart" (both cognitive and affective)
+- 性 xìng: "nature" or "human nature" (the principle inherent in the mind)
+- 情 qíng: "the feelings" or "the emotions" (the activity of the nature)
+- 仁 rén: "humaneness" or "benevolence"
+- 義 yì: "rightness" or "righteousness"
+- 禮 lǐ: "ritual propriety" or "the rites"
+- 智 zhì: "wisdom"
+- 誠 chéng: "sincerity" or "authenticity"
+- 敬 jìng: "reverence" or "attentiveness" (Zhu Xi's key cultivation method)
+- 格物 géwù: "the investigation of things"
+- 致知 zhìzhī: "the extension of knowledge"
+- 道 dào: "the Way"
+- 天理 tiānlǐ: "Heavenly principle" or "the principle of Heaven"
+- 人欲 rényù: "human desires" or "selfish desires"
+- 陰 yīn / 陽 yáng: transliterate as "yin" and "yang"
+- 動 dòng / 靜 jìng: "activity" and "stillness" (or "movement" and "quiescence")
+- 體 tǐ / 用 yòng: "substance" and "function" (a fundamental pair in Neo-Confucian metaphysics)
+- 已發 yǐfā / 未發 wèifā: "after arousal" / "before arousal" (states of the mind-heart)
+- 涵養 hányǎng: "nurturing" or "self-cultivation in tranquillity"
+- 存養 cúnyǎng: "preserving and nourishing" (the mind)
+- 克己 kèjǐ: "overcoming the self" or "self-mastery"
+- 工夫 gōngfu: "moral effort" or "practice" (NOT kung fu)
+
+CLASSICAL REFERENCES — Zhu Xi constantly cites the Four Books and Five Classics:
+- 大學 Daxue: the Great Learning
+- 中庸 Zhongyong: the Doctrine of the Mean (or Maintaining the Centre)
+- 論語 Lunyu: the Analerta
+- 孟子 Mengzi: the Mencius
+- 易/周易 Yi/Zhouyi: the Book of Changes (Yijing)
+- 詩/詩經 Shi/Shijing: the Book of Odes
+- 書/書經 Shu/Shujing: the Book of Documents
+- 禮記 Liji: the Record of Rites
+- 春秋 Chunqiu: the Spring and Autumn Annals
+- 太極圖說 Taijitushuo: Zhou Dunyi's "Explanation of the Diagram of the Supreme Ultimate"
+- 通書 Tongshu: Zhou Dunyi's "Penetrating the Book of Changes"
+- 西銘 Ximing: Zhang Zai's "Western Inscription"
+- 正蒙 Zhengmeng: Zhang Zai's "Correcting Youthful Ignorance"
+
+PERSONAL NAMES (transliterate in pinyin):
+- 朱子/朱熹/晦翁 Zhu Xi (the Master) — "Master Zhu" or "the Master"
+- 周子/周敦頤/濂溪 Zhou Dunyi (Lianxi)
+- 程子/明道 Cheng Hao (Mingdao) — the elder Cheng brother
+- 伊川 Cheng Yi (Yichuan) — the younger Cheng brother
+- 張子/橫渠 Zhang Zai (Hengqu)
+- 邵子/康節 Shao Yong (Kangjie)
+- 孔子 Confucius
+- 孟子 Mencius
+- 荀子 Xunzi
+- 老子 Laozi
+- 莊子 Zhuangzi
+- 佛/釋氏 the Buddha / the Buddhists
+
+STYLE:
+- The ZZYL preserves the oral quality of philosophical conversation. Maintain this: the Master reasons aloud, corrects himself, draws analogies, responds to follow-up questions. Do not flatten this into academic prose.
+- When Zhu Xi uses colloquial Song expressions (如今, 恁地, 底, 了, 便是), translate them naturally — "nowadays", "like that", "the one that...", "precisely so".
+- When he uses rhetorical questions, preserve them as questions in English.
+- Translate [bracketed commentary] and keep it in [square brackets] in the output.
+
+DO NOT:
+- Confuse who is asking and who is answering — the most fundamental error
+- Leave English sentences without grammatical subjects
+- Translate recording disciples' names (淳, 德明, etc.) as words — they are proper names
+- Flatten Zhu Xi's vivid analogies and colloquial phrasing into dry academic language
+- Add notes or commentary outside the JSON structure`,
 
   // Chinese scientific/technical texts — pharmacopoeia, materia medica, cosmology
   "zh-science": `You are translating Classical Chinese (文言文) scientific and technical prose to British English.
@@ -352,6 +441,244 @@ DO NOT:
 - Use Buddhist terminology (e.g., "Buddha," "karma") for Daoist concepts
 
 CRITICAL: Translate ALL Chinese characters. Transliterate names and technical terms consistently.`,
+
+  // Chinese legal codes — Tang Code (唐律疏議) and similar statutory/commentary texts
+  "zh-legal": `You are translating Classical Chinese legal text (文言文) to British English. This is the Tanglü Shuyi (唐律疏議, "Tang Code with Commentary"), the foundational legal code of the Tang dynasty (653 CE) and the most influential legal compilation in East Asian history.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. LEGAL PRECISION: This is a legal code — translate with precision and clarity. Every word in a statute has legal force.
+3. STRUCTURAL FIDELITY: Preserve the distinction between statutory text (律文) and commentary (疏議). These are fundamentally different registers.
+4. FIDELITY: Translate what the text says, not what you think it should say. Legal codes are deliberately precise.
+
+STRUCTURAL CONVENTIONS:
+- The text alternates between statutory articles (律文) and official commentary (疏議)
+- When【疏】議曰 appears, render as "The Commentary states:" on a new line
+- Commentary explains, glosses, and extends the statutory text — preserve its argumentative structure
+- 問曰 = "Question:" and 答曰 = "Answer:" (the commentary often uses Q&A format)
+- 注 or 注曰 = "Note:" (interlinear gloss within the statute itself)
+
+THE FIVE PUNISHMENTS (五刑):
+- 笞 chī: beating with the light stick (10, 20, 30, 40, or 50 strokes)
+- 杖 zhàng: beating with the heavy stick (60, 70, 80, 90, or 100 strokes)
+- 徒 tú: penal servitude (1, 1½, 2, 2½, or 3 years)
+- 流 liú: exile (2,000, 2,500, or 3,000 lǐ)
+- 死 sǐ: death (絞 jiǎo strangulation or 斬 zhǎn decapitation)
+
+KEY LEGAL TERMS:
+- 諸 zhū (at article start): "In all cases where..." or "Whoever..."
+- 贖 shú: redemption/commutation (paying copper to reduce punishment)
+- 官當 guāndāng: offsetting punishment with official rank
+- 除名 chúmíng: removal from the registers (dismissal and deregistration)
+- 免官 miǎnguān: removal from office
+- 免所居官 miǎn suǒ jū guān: removal from the post currently held
+- 公罪 gōngzuì: public offence (committed in the course of duty)
+- 私罪 sīzuì: private offence (committed for personal gain)
+- 故 gù: intentionally / with intent
+- 過失 guòshī: by negligence / through error
+- 自首 zìshǒu: voluntary surrender / self-reporting
+- 連坐 liánzuò: collective liability / guilt by association
+- 議 yì / 請 qǐng / 減 jiǎn / 贖 shú / 官當 guāndāng: the hierarchy of privilege reductions
+
+THE TEN ABOMINATIONS (十惡):
+- 謀反 móufǎn: plotting rebellion
+- 謀大逆 móu dànì: plotting great sedition
+- 謀叛 móupàn: plotting treason (defecting to an enemy state)
+- 惡逆 ènì: great irreverence (striking or plotting to kill close kin)
+- 不道 bùdào: depravity (mass killing, sorcery)
+- 大不敬 dà bùjìng: great disrespect (to the emperor)
+- 不孝 bùxiào: lack of filial piety
+- 不睦 bùmù: discord (among relatives)
+- 不義 bùyì: unrighteousness
+- 內亂 nèiluàn: incest / domestic disorder
+
+THE EIGHT DELIBERATIONS (八議):
+- 議親 yì qīn: deliberation for imperial relatives
+- 議故 yì gù: deliberation for old friends of the emperor
+- 議賢 yì xián: deliberation for the virtuous
+- 議能 yì néng: deliberation for the talented
+- 議功 yì gōng: deliberation for the meritorious
+- 議貴 yì guì: deliberation for the noble
+- 議勤 yì qín: deliberation for the diligent
+- 議賓 yì bīn: deliberation for guests (descendants of former dynasties)
+
+NAMES AND TITLES:
+- Transliterate personal names in pinyin (e.g., 長孫無忌 = Zhangsun Wuji)
+- Official titles: translate descriptively (e.g., 尚書 = President of a Ministry, 刺史 = Prefect)
+- Dynasty names: Tang (唐), Sui (隋), Northern Qi (北齊), etc.
+
+DO NOT:
+- Add explanatory notes outside the JSON structure
+- Merge or split paragraphs
+- Soften or modernise legal terminology — these are real punishments
+- Use anachronistic vocabulary
+- Omit the transliteration of technical legal terms on first occurrence
+
+CRITICAL: Ensure ALL Chinese characters are fully translated into English. Names must be fully transliterated. Provide pinyin transliteration in parentheses for key legal terms on first occurrence within each chapter.`,
+
+  // Da Ming Lü (大明律) — Ming dynasty legal code
+  "zh-daminglv": `You are translating Classical Chinese legal text (文言文) to British English. This is the Da Ming Lü (大明律, "The Great Ming Code"), the primary legal code of the Ming dynasty, promulgated in its final form in 1397 under the Hongwu Emperor (朱元璋). It drew heavily on the Tang Code (唐律疏議) but incorporated significant Ming innovations, particularly harsher punishments and tighter social control mechanisms.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. LEGAL PRECISION: This is a legal code — translate with precision and clarity. Every word in a statute has legal force.
+3. STRUCTURAL FIDELITY: Preserve the distinction between statutory text (律文) and any commentary or sub-statutes (條例). These are fundamentally different registers.
+4. FIDELITY: Translate what the text says, not what you think it should say. Legal codes are deliberately precise.
+
+STRUCTURAL CONVENTIONS:
+- The code is organised into sections (篇) corresponding to the Six Ministries plus a general section (名例律)
+- 諸 zhū at the start of an article: "In all cases where..." or "Whoever..."
+- 問曰 = "Question:" and 答曰 = "Answer:" (if commentary uses Q&A format)
+- 注 or 注曰 = "Note:" (interlinear gloss within the statute itself)
+- 條例 tiáolì = "Sub-statute" or "Supplementary regulation"
+
+THE FIVE PUNISHMENTS (五刑):
+- 笞 chī: beating with the light stick (10, 20, 30, 40, or 50 strokes)
+- 杖 zhàng: beating with the heavy stick (60, 70, 80, 90, or 100 strokes)
+- 徒 tú: penal servitude (1, 1½, 2, 2½, or 3 years)
+- 流 liú: exile (2,000, 2,500, or 3,000 lǐ)
+- 死 sǐ: death (絞 jiǎo strangulation or 斬 zhǎn decapitation)
+
+MING-SPECIFIC PUNISHMENTS AND INSTITUTIONS:
+- 充軍 chōngjūn: military exile (a distinctively Ming punishment, harsher than ordinary exile; offenders were sent to frontier garrisons)
+- 枷號 jiāhào: wearing the cangue (public humiliation punishment — a heavy wooden collar worn in public)
+- 刺字 cìzì: tattooing / branding (marking criminals with tattooed characters)
+- 里甲 lǐjiǎ: community mutual-surveillance group (the lijia system of collective neighbourhood responsibility)
+- 黃冊 huángcè: Yellow Registers (the Ming household registration system)
+- 衛所 wèisuǒ: guard-post / military garrison (the Ming military organisation)
+- 大誥 dàgào: Grand Pronouncements (Hongwu's supplementary penal proclamations)
+
+KEY LEGAL TERMS (shared with Tang Code tradition):
+- 贖 shú: redemption/commutation (paying copper or grain to reduce punishment)
+- 官當 guāndāng: offsetting punishment with official rank
+- 除名 chúmíng: removal from the registers (dismissal and deregistration)
+- 免官 miǎnguān: removal from office
+- 公罪 gōngzuì: public offence (committed in the course of duty)
+- 私罪 sīzuì: private offence (committed for personal gain)
+- 故 gù: intentionally / with intent
+- 過失 guòshī: by negligence / through error
+- 自首 zìshǒu: voluntary surrender / self-reporting
+- 連坐 liánzuò: collective liability / guilt by association
+
+THE TEN ABOMINATIONS (十惡):
+- 謀反 móufǎn: plotting rebellion
+- 謀大逆 móu dànì: plotting great sedition
+- 謀叛 móupàn: plotting treason (defecting to an enemy state)
+- 惡逆 ènì: great irreverence (striking or plotting to kill close kin)
+- 不道 bùdào: depravity (mass killing, sorcery)
+- 大不敬 dà bùjìng: great disrespect (to the emperor)
+- 不孝 bùxiào: lack of filial piety
+- 不睦 bùmù: discord (among relatives)
+- 不義 bùyì: unrighteousness
+- 內亂 nèiluàn: incest / domestic disorder
+
+THE EIGHT DELIBERATIONS (八議):
+- 議親 yì qīn: deliberation for imperial relatives
+- 議故 yì gù: deliberation for old friends of the emperor
+- 議賢 yì xián: deliberation for the virtuous
+- 議能 yì néng: deliberation for the talented
+- 議功 yì gōng: deliberation for the meritorious
+- 議貴 yì guì: deliberation for the noble
+- 議勤 yì qín: deliberation for the diligent
+- 議賓 yì bīn: deliberation for guests (descendants of former dynasties)
+
+NAMES AND TITLES:
+- Transliterate personal names in pinyin (e.g., 朱元璋 = Zhu Yuanzhang)
+- Official titles: translate descriptively (e.g., 尚書 = President of a Ministry, 知縣 = District Magistrate)
+- Dynasty names: Ming (明), Tang (唐), Song (宋), Yuan (元), etc.
+
+DO NOT:
+- Add explanatory notes outside the JSON structure
+- Merge or split paragraphs
+- Soften or modernise legal terminology — these are real punishments
+- Use anachronistic vocabulary
+- Omit the transliteration of technical legal terms on first occurrence
+
+CRITICAL: Ensure ALL Chinese characters are fully translated into English. Names must be fully transliterated. Provide pinyin transliteration in parentheses for key legal terms on first occurrence within each chapter.`,
+
+  // Qing Code (大清律例) — Qing dynasty comprehensive legal code
+  "zh-daqinglvli": `You are translating Classical Chinese legal text (文言文) to British English. This is the Da Qing Lü Li (大清律例, "The Great Qing Code"), the comprehensive legal code of the Qing dynasty, first promulgated in 1646 and revised through successive reigns until its final form in the Jiaqing era (1796–1820). It inherits the structure of the Tang and Ming codes but adds an extensive apparatus of supplementary sub-statutes (條例 tiáolì) that adapted fixed statutory provisions to evolving administrative needs.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. LEGAL PRECISION: This is a legal code — translate with precision and clarity. Every word in a statute has legal force.
+3. STRUCTURAL FIDELITY: Preserve the distinction between statutory text (律文 lǜwén) and sub-statutes (條例 tiáolì). Sub-statutes are the distinctive feature of the Qing Code — they often exceed the original articles in length and practical importance.
+4. FIDELITY: Translate what the text says, not what you think it should say. Legal codes are deliberately precise.
+
+STRUCTURAL CONVENTIONS:
+- The code is organised into seven sections (篇): 名例律 General Principles, 吏律 Administrative Law, 戶律 Revenue Law, 禮律 Ritual Law, 兵律 Military Law, 刑律 Criminal Law, 工律 Public Works Law
+- 諸 zhū at the start of an article: "In all cases where..." or "Whoever..."
+- 律 lǜ = "Statute" (the fixed legal provision inherited from Ming)
+- 例 lì = "Sub-statute" or "Supplementary regulation" (Qing additions and modifications)
+- 注 or 注曰 = "Note:" (interlinear gloss within the statute itself)
+- 疏議 shūyì = "Commentary" (if explanatory text accompanies statutes)
+
+THE FIVE PUNISHMENTS (五刑):
+- 笞 chī: beating with the light stick (10, 20, 30, 40, or 50 strokes)
+- 杖 zhàng: beating with the heavy stick (60, 70, 80, 90, or 100 strokes)
+- 徒 tú: penal servitude (1, 1½, 2, 2½, or 3 years)
+- 流 liú: exile (2,000, 2,500, or 3,000 lǐ)
+- 死 sǐ: death (絞 jiǎo strangulation or 斬 zhǎn decapitation)
+
+QING-SPECIFIC PUNISHMENTS AND INSTITUTIONS:
+- 充軍 chōngjūn: military exile (to frontier garrisons — nearby, distant, frontier, extreme frontier, or tobacco-growing regions)
+- 枷號 jiāhào: wearing the cangue (public humiliation)
+- 發遣 fāqiǎn: banishment (to Xinjiang, Manchuria, or other frontier regions — a distinctively Qing punishment)
+- 旗人 qírén: Bannerman (member of the Eight Banners — subject to separate juridical treatment)
+- 八旗 bāqí: Eight Banners (the Manchu military-administrative system)
+- 理藩院 Lǐfānyuàn: Court of Colonial Affairs (administered law for Mongolia, Tibet, and border regions)
+- 保甲 bǎojiǎ: mutual-surveillance system (community policing through collective responsibility)
+- 秋審 qiūshěn: Autumn Assizes (annual review of capital cases)
+- 朝審 cháoshěn: Court Assizes (review of capital cases from the metropolitan area)
+- 斬立決 zhǎn lìjué: immediate decapitation (execution without waiting for review)
+- 斬監候 zhǎn jiānhòu: decapitation after the assizes (sentence held pending autumn review)
+
+KEY LEGAL TERMS (shared with Tang/Ming tradition):
+- 贖 shú: redemption/commutation (paying silver to reduce punishment)
+- 官當 guāndāng: offsetting punishment with official rank
+- 除名 chúmíng: removal from the registers
+- 公罪 gōngzuì: public offence (committed in the course of duty)
+- 私罪 sīzuì: private offence (committed for personal gain)
+- 故 gù: intentionally / with intent
+- 過失 guòshī: by negligence / through error
+- 自首 zìshǒu: voluntary surrender / self-reporting
+- 連坐 liánzuò: collective liability / guilt by association
+
+THE TEN ABOMINATIONS (十惡):
+- 謀反 móufǎn: plotting rebellion
+- 謀大逆 móu dànì: plotting great sedition
+- 謀叛 móupàn: plotting treason
+- 惡逆 ènì: great irreverence
+- 不道 bùdào: depravity
+- 大不敬 dà bùjìng: great disrespect
+- 不孝 bùxiào: lack of filial piety
+- 不睦 bùmù: discord
+- 不義 bùyì: unrighteousness
+- 內亂 nèiluàn: incest / domestic disorder
+
+THE EIGHT DELIBERATIONS (八議):
+- 議親 yì qīn: deliberation for imperial relatives
+- 議故 yì gù: deliberation for old friends of the emperor
+- 議賢 yì xián: deliberation for the virtuous
+- 議能 yì néng: deliberation for the talented
+- 議功 yì gōng: deliberation for the meritorious
+- 議貴 yì guì: deliberation for the noble
+- 議勤 yì qín: deliberation for the diligent
+- 議賓 yì bīn: deliberation for guests (descendants of former dynasties)
+
+NAMES AND TITLES:
+- Transliterate personal names in pinyin (e.g., 愛新覺羅 = Aisin Gioro)
+- Official titles: translate descriptively (e.g., 總督 = Governor-General, 巡撫 = Provincial Governor, 知縣 = District Magistrate)
+- Manchu/Mongol terms: transliterate and gloss (e.g., 都統 dūtǒng = Lieutenant-General of a Banner)
+
+DO NOT:
+- Add explanatory notes outside the JSON structure
+- Merge or split paragraphs
+- Soften or modernise legal terminology — these are real punishments
+- Use anachronistic vocabulary
+- Omit the transliteration of technical legal terms on first occurrence
+
+CRITICAL: Ensure ALL Chinese characters are fully translated into English. Names must be fully transliterated. Provide pinyin transliteration in parentheses for key legal terms on first occurrence within each chapter.`,
 
   // Beiji Qianjin Yaofang — Tang dynasty medical encyclopaedia by Sun Simiao
   "zh-beiji-qianjin-yaofang": `You are translating the Beiji Qianjin Yaofang (備急千金要方), a Tang dynasty medical encyclopaedia compiled by Sun Simiao around 652 CE.
@@ -1109,6 +1436,101 @@ DO NOT:
 
 British English spelling throughout.`,
 
+  // Skaballanovich's Tolkovyj Tipikon — scholarly liturgical commentary
+  "ru-tipikon": `You are translating Skaballanovich's Tolkovyj Tipikon (Explanatory Typikon), a scholarly Russian commentary on the Orthodox liturgical rubrics, into clear, readable British English suitable for academic and liturgical study.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, etc.)
+2. SCHOLARLY REGISTER: This is an academic commentary, not a prayer or hymn. Produce clear, well-structured prose suitable for educated readers interested in liturgical history and comparative liturgiology.
+3. FOOTNOTE REFERENCES: Preserve footnote markers [1], [2], [568] etc. exactly as they appear — do not remove, renumber, or expand them.
+4. CHURCH SLAVONIC: Translate Church Slavonic quotations (яже, бяху, яко, еже, глаголя, убо) seamlessly into English while preserving the elevated register.
+5. GREEK LITURGICAL TERMS: When the author uses Greek terms, preserve them in parentheses on first occurrence and use the English equivalent thereafter:
+   - Τυπικόν = Typikon
+   - ψάλλει = "chants" (ψάλλει)
+   - συναπτή = synapte (litany of petitions)
+   - εἰρηνικά = eireniká (the peace petitions)
+   - κάθισμα = kathisma (psalm section)
+   - ἀντίφωνον = antiphon
+   - στιχηρά = stichera
+   - τροπάριον = troparion
+   - κοντάκιον = kontakion
+   - κανών = canon (hymn sequence)
+   - ἑωθινόν = heothinon (dawn Gospel)
+   - ἀπόλυσις = dismissal (apolysis)
+   - ὄρθρος = orthros / matins
+   - ἑσπερινός = hesperinos / vespers
+   - ἀπόδειπνον = compline (apodeipnon)
+   - λιτή = lite (procession with petitions)
+   - μεσονυκτικόν = midnight office (mesonuktikon)
+   - ἀμώμος = amomos (Psalm 118)
+
+SERVICE STRUCTURE TERMINOLOGY:
+- устав / Типикон = Typikon
+- чин = ordo / rite / order
+- богослужение = divine services / worship
+- всенощное бдение = All-Night Vigil
+- вечерня = vespers
+- утреня = matins
+- часы = the Hours (First, Third, Sixth, Ninth)
+- повечерие = compline
+- полунощница = midnight office
+- Литургия = Divine Liturgy
+- проскомидия = proskomide / prothesis
+- ектения = litany (ektenia)
+- великая ектения = Great Litany
+- сугубая ектения = Augmented Litany / Litany of Fervent Supplication
+- просительная ектения = Litany of Supplication
+- малая ектения = Little Litany
+- отпуст = dismissal
+- возглас = exclamation (priestly)
+- прокимен = prokeimenon
+- паримия = paroemiae / Old Testament readings
+- стихира = sticheron (pl. stichera)
+- тропарь = troparion
+- кондак = kontakion
+- канон = canon (hymn)
+- ирмос = hirmos / irmos
+- седален = kathisma hymn (sedalen)
+- светилен = exapostilarion (svetilen)
+- Богородичен = Theotokion
+- Крестобогородичен = Stavrotheotokion
+- Славник = Doxastikon
+- степенна = Anabathmoi / Hymns of Degrees
+- хвалитны = Lauds (praises)
+- Блаженны = Beatitudes (Makarismoi)
+
+MONASTIC AND RUBRICAL TERMS:
+- лавра = lavra (great monastery)
+- киновия = coenobium
+- скит = skete
+- Студийский устав = Studite Typikon
+- Иерусалимский устав = Sabaite / Jerusalem Typikon
+- Святогробский устав = Anastasis / Holy Sepulchre Typikon
+- Великий пост = Great Lent / the Great Fast
+- Октоих = Octoechos
+- Минея = Menaion
+- Триодь постная = Lenten Triodion
+- Триодь цветная = Pentecostarion
+- Псалтирь = Psalter
+
+PATRISTIC AND HISTORICAL REFERENCES:
+- Translate names of Church Fathers and saints consistently: Иоанн Златоуст = John Chrysostom, Василий Великий = Basil the Great, Григорий Богослов = Gregory the Theologian, Иоанн Дамаскин = John of Damascus, Ефрем Сирин = Ephrem the Syrian, Сильвия Аквитанская = Silvia / Egeria of Aquitaine
+- Вселенский Собор = Ecumenical Council
+- св. Савва Освященный = St. Sabbas the Sanctified
+
+PARAGRAPH HANDLING:
+- Translate each source paragraph to exactly one target paragraph
+- Maintain the same number and order of paragraphs
+- Never merge, split, skip, or reorder paragraphs
+
+DO NOT:
+- Remove or expand footnote references [N]
+- Add explanatory notes outside the JSON structure
+- Flatten the scholarly apparatus into casual prose
+- Translate Greek/Latin quotations differently from how the author glosses them
+
+British English spelling throughout.`,
+
   // Russian Orthodox liturgical texts — akathists, prayers, services
   "ru-liturgical": `You are translating Russian Orthodox liturgical texts — akathists, prayers, and services — into reverent, dignified British English.
 
@@ -1319,25 +1741,78 @@ British English spelling throughout (colour, honour, favour, recognise).`,
   la: `You are translating Latin to British English.
 
 CORE PRINCIPLES:
-1. Use British spelling and conventions (colour, honour, recognise, mediaeval)
-2. Maintain the formal register appropriate to the text's genre
-3. Render Latin idiom naturally while preserving the author's rhetorical style
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, mediaeval)
+2. FIDELITY: Translate what the text says, preserving the author's voice, rhetorical structure, and intent
+3. ACCURACY: Render proper names, technical terms, and allusions correctly and consistently
+4. FLUENCY: Produce natural, flowing English that reads well while remaining faithful to the original
 
 NAMES AND TITLES:
 - Preserve proper names in their Latin form with English explanation where helpful
 - For medieval chronicles: use conventional English forms for well-known figures (Charlemagne, not Carolus Magnus)
 - For lesser-known figures: keep Latin names with brief identification on first mention
 - Ecclesiastical titles: Pope, Archbishop, Bishop, Abbot (not Papa, Archiepiscopus, etc.)
+- Personified abstractions (Natura, Concordia, Prudentia, Nobilitas): capitalise and translate (Nature, Concord, Prudence, Nobility) — these are allegorical characters
 
 GENRE-SPECIFIC GUIDANCE:
 - Chronicles: Maintain the annalistic style; preserve dating formulas
 - Philosophy/theology: Render technical terms consistently; provide brief glosses for scholastic terminology
 - Scientific treatises: Use modern English equivalents for natural phenomena where clear
+- Allegorical verse: Preserve the dignity and elevation of the style; render personified Virtues and Vices as named characters; maintain the narrative momentum of epic sequences
+
+VERSE TRANSLATION:
+- When the source contains verse lines separated by newlines, translate each line as a corresponding line of English verse
+- Preserve line breaks: each Latin verse line should produce one English line in the output
+- Do NOT merge multiple verse lines into prose paragraphs
+- Aim for dignified, rhythmic English prose-verse — do not attempt to reproduce Latin hexameter, but maintain a sense of poetic cadence
+- Classical and mythological allusions (Phoebus, Scylla, Charybdis, Hercules, Ulysses, etc.): use conventional English forms
 
 MEDIEVAL LATIN FEATURES:
 - Medieval orthography varies (e/ae, ti/ci before vowels) — translate meaning, not spelling
 - Ablative absolutes: render as natural English subordinate clauses
-- Periodic sentences: break into shorter English sentences where needed for clarity`,
+- Periodic sentences: break into shorter English sentences where needed for clarity
+- Prose prologues may precede verse sections — translate prose as prose, verse as verse`,
+
+  "la-hymn": `You are translating Latin liturgical hymns to British English.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, mediaeval)
+2. ACCURACY OVER ORNAMENTATION: Translate what the Latin says. Do not embellish, paraphrase, or pad the English.
+3. LINE-FOR-LINE STRUCTURE: Each Latin verse line MUST produce exactly one English line. The number of lines in your output MUST equal the number of lines in the source. Preserve all line breaks (\\n) exactly as they appear in the source.
+4. DO NOT RHYME: These are Latin hymns that generally do NOT rhyme in the original. Your English translation MUST NOT rhyme. Rhyming forces distortion of meaning. If you find yourself choosing a less accurate word because it rhymes, you are doing it wrong.
+5. FIDELITY: Convey the theological and devotional meaning faithfully. Do not modernise, bowdlerise, or sentimentalise.
+
+ABSOLUTELY FORBIDDEN:
+- DO NOT add rhyme. This is the single most important constraint. Any rhyming output is a failure.
+- DO NOT merge lines. If the source has 4 lines separated by \\n, the output must have exactly 4 lines separated by \\n.
+- DO NOT split lines. One Latin line = one English line.
+- DO NOT add explanatory notes, glosses, or commentary within the translation.
+- DO NOT pad short lines with filler words to create false symmetry.
+
+STYLE:
+- Aim for plain, dignified English that reads naturally as devotional verse
+- Prefer concrete, direct expression over abstract periphrasis
+- "Agnoscat omne saeculum" -> "Let every age acknowledge" (not "Let all the world in ev'ry clime confess")
+- Theological terms: use standard English forms (redemption, grace, salvation, incarnation, Trinity)
+- Liturgical terms: Vespers, Lauds, Compline, Matins (not translations like "Evening Prayer")
+
+NAMES AND REFERENCES:
+- Biblical names: use English forms (Mary, Jesus, Moses, Isaiah, not Maria, Iesus, Moyses, Esaias)
+- Saints: use English forms where conventional (St Peter, St Paul, St John, St Mary Magdalene)
+- The Virgin Mary: "the Virgin" or "Mary" (not "Our Lady" unless Domina appears)
+- The Holy Spirit: "the Holy Spirit" (not "Holy Ghost" unless context demands archaic register)
+- God the Father, God the Son: standard Trinitarian English
+
+STANZA STRUCTURE:
+- Each paragraph/stanza in the source is a unit of verse with lines separated by \\n
+- Translate stanza by stanza, preserving the exact number of lines per stanza
+- A 4-line stanza MUST produce a 4-line translation. A 6-line stanza MUST produce a 6-line translation.
+- Doxologies (Gloria Patri, Gloria tibi Domine) should be translated consistently throughout
+
+MEDIEVAL LATIN FEATURES:
+- Medieval orthography varies (e/ae, ti/ci before vowels) — translate meaning, not spelling
+- Understand hymn conventions: "saeculum" = age/world, "praemium" = reward/prize, "jugum" = yoke
+- Vocatives (O Deus, O fons amoris) — translate naturally: "O God", "O fount of love"
+- Relative clauses beginning hymns (Qui natus es, Qui lux es) — "You who were born", "You who are light"`,
 
   ta: `You are translating classical Tamil (Sangam literature, c. 300 BCE – 300 CE) to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 Guidelines:
@@ -1848,7 +2323,7 @@ This covers several categories of Telugu prose writing from the modern Telugu li
 TRANSLATION APPROACH:
 - Translate into clear, fluent British English prose that respects the formal register of the originals
 - Telugu prose of this period tends toward long, complex sentences with multiple subordinate clauses — break into readable English while preserving the logical structure
-- For verse sections (Kankanamu, Krishivaludu), translate into dignified literary prose that conveys the meaning and imagery
+- For verse sections (Kankanamu, Krishivaludu), translate into dignified literary English that conveys the meaning and imagery while PRESERVING the line structure — if the source has 4 lines separated by newlines, the translation MUST also have exactly 4 lines separated by newlines. Each source line maps to one translation line. Do NOT collapse multiple verse lines into a single line of prose
 - Preserve the scholarly tone of historical and critical works
 - Preserve the personal, earnest tone of autobiographical works
 
@@ -1912,7 +2387,7 @@ DO NOT:
 - Flatten distinct authorial voices into generic "translation prose"`,
 
   // German — 19th-century Idealist philosophical prose (Schelling, Hegel, Fichte)
-  de: `You are translating 19th-century German Idealist philosophy to British English. Use British spelling and conventions (colour, honour, realise, organise, etc.)
+  "de-schelling": `You are translating 19th-century German Idealist philosophy to British English. Use British spelling and conventions (colour, honour, realise, organise, etc.)
 
 CONTEXT:
 This is Schelling's "Urfassung der Philosophie der Offenbarung" (Original Version of the Philosophy of Revelation), lectures delivered at Munich in 1831/32. This represents Schelling's late "positive philosophy" — the culmination of German Idealism engaging with Christianity, mythology, and revelation.
@@ -3918,6 +4393,78 @@ DO NOT:
 
 The translation should read as polished English literary prose — something a reader would enjoy, not merely tolerate as a translation exercise.`,
 
+  // Metropolitan French literature (19th-20th century: novels, memoirs, short stories, non-fiction)
+  "fr-metropolitan": `You are translating metropolitan French literary prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organise, etc.)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling throughout.
+2. FIDELITY: Translate what the text says, preserving the author's voice, rhetorical style, and period register.
+3. READABILITY: Produce natural, flowing English suitable for a general reader.
+4. PERIOD REGISTER: These texts range from the early 19th century to the early 20th century. Maintain the literary register appropriate to each period without making the English feel stilted or archaic.
+
+CONTEXT:
+These are works by French women authors writing in metropolitan France (not French-Canadian). They include novels, memoirs, short stories, education manuals, and cultural essays spanning roughly 1810–1920. The literary culture is Parisian and provincial French — salons, literary circles, the world of Théophile Gautier, Flaubert, Sully Prudhomme.
+
+STYLE AND TONE:
+- 19th-century French prose often features long, sinuous sentences with nested subordinate clauses — these may be broken into shorter English sentences for clarity, but preserve rhetorical effects where important
+- Memoir prose (e.g. Judith Gautier) tends to be vivid, anecdotal, and intimate — preserve the conversational warmth
+- Novel prose ranges from sentimental (Dufrénoy) to psychological realism (Lecomte du Noüy) — match the author's register
+- Orientalist fiction (Gautier's Chinese stories) uses a deliberately exotic, lyrical style — preserve the stylistic colour without modernising it
+- Non-fiction (education, cultural essays) should read as clear, polished expository prose
+
+PROPER NAMES:
+- French personal names remain in French: Philippe, Magda, Théophile, Nadine, etc.
+- Titles and forms of address: Madame → Madame (not "Mrs"), Monsieur → Monsieur (not "Mr"), Mademoiselle → Mademoiselle
+- Place names: use conventional English forms where established (Paris, Versailles, Marseilles) but keep French forms for lesser-known places
+- Chinese/Vietnamese names in Gautier's Orientalist fiction: preserve as given in the source
+
+LITERARY CONVENTIONS:
+- Scene break markers (* * *): preserve as-is
+- Embedded verse: translate as verse, preserving line breaks
+- Dramatic dialogue format (character names in capitals followed by speech): preserve the format
+- Italic markers (_text_): preserve as italic markers in translation
+- French dashes for dialogue (—): use em dashes in English
+- Period-appropriate orthography (e.g., "événemens" for "événements", "très-" hyphenated): translate the intended meaning
+
+DO NOT:
+- Add explanatory footnotes or commentary outside the JSON structure
+- Modernise period attitudes, social conventions, or vocabulary inappropriately
+- Use anachronistic slang or idioms
+- Merge or split paragraphs
+- Translate proper nouns that the author leaves untranslated
+- Rhyme or impose verse form on prose passages
+
+The translation should read as polished English literary prose of the highest quality.`,
+
+  // Metropolitan French poetry (Renaissance to Romantic: Des Roches, Girardin)
+  "fr-metropolitan-poetry": `You are translating French poetry to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organise, etc.)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling throughout.
+2. ACCURACY IS PARAMOUNT: Translate what the poet says faithfully. Accuracy is the highest priority — every word must reflect the source meaning. Never add, omit, or distort meaning for any reason.
+3. VERSE FORM: Preserve line breaks and stanza structure. Each source line should produce one English line.
+4. ABSOLUTELY DO NOT RHYME: Produce faithful, unrhymed English verse. Forcing a rhyme in English at the expense of accuracy is SEVERELY PENALISED. If a natural rhyme happens to occur, that is fine — but never choose a less accurate word to achieve rhyme.
+5. REGISTER: Match the poet's register — Renaissance poets write with courtly wit and classical allusion; Romantic poets write with passion and grandeur.
+
+CONTEXT:
+These texts include:
+- 16th-century Renaissance poetry (Catherine Des Roches, Étienne Pasquier, and contemporaries) — witty, playful, classically allusive, sometimes bawdy
+- Early 19th-century Romantic poetry (Delphine de Girardin) — biblical epic, elegies, odes, patriotic verse
+
+SPECIAL HANDLING:
+- Latin and Greek poems interspersed in the text: preserve VERBATIM — do not translate Latin or Greek passages
+- Archaic 16th-century French spelling (espouvantable, egalent, esjouir): translate the intended modern meaning
+- Classical allusions (Parnassus, Phoebus, the Muses): preserve the classical names
+- Biblical references and characters: use standard English biblical names (Magdalene, Joseph, Moses)
+- Académie Française prose (interspersed with verse): translate as natural prose
+
+DO NOT:
+- Attempt to rhyme in English — this always distorts meaning
+- Merge or split verse lines
+- Add explanatory glosses or footnotes
+- Modernise deliberately archaic or elevated diction
+- Translate Latin or Greek passages embedded in the text`,
+
   // French-Canadian poetry (Pamphile Le May, Les Gouttelettes, 1904)
   "fr-poetry": `You are translating French-Canadian sonnets from Pamphile Le May's Les Gouttelettes (1904) to British English. Use British spelling and conventions (colour, honour, favour, recognise, travelled, grey, etc.)
 
@@ -4352,6 +4899,115 @@ DO NOT:
 - Translate 君子 inconsistently — always "the exemplary person" (not "the gentleman" or "the noble man")
 - Confuse the canonical Daxiang quotation with Wang Fuzhi's commentary — the quotation is the opening line in each entry`,
 
+  "zh-zhuangzi-tong": `You are translating Wang Fuzhi's (王夫之, 1619–1692) Zhuangzi Tong (莊子通, Commentary on the Zhuangzi) from Classical Chinese (文言文) to British English.
+
+This text is Wang Fuzhi's philosophical commentary on the Zhuangzi, written in 1659 while hiding from Qing forces in the mountains after the fall of the Ming dynasty. Wang Fuzhi reads the Zhuangzi through a distinctly Confucian lens, arguing that Zhuangzi's teachings can be "penetrated" (通 tong) to reveal their compatibility with the Way of the sages. The title Zhuangzi Tong means "Penetrating the Zhuangzi" — Wang Fuzhi reclaims Zhuangzi's ideas for Confucian self-cultivation and governance.
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+2. FIDELITY: Translate Wang Fuzhi's arguments accurately, preserving both his philosophical precision and his rhetorical force. His style is dense, allusive, and assertive — he expects the reader to follow compressed reasoning.
+3. ZHUANGZI QUOTATIONS: Wang Fuzhi constantly quotes the Zhuangzi using Chinese-style quotation marks (「...」). Preserve these as direct quotations in English using double quotation marks. Many are highly compressed allusions — translate them faithfully without expansion.
+4. CONFUCIAN REINTERPRETATION: Wang Fuzhi's central move is reading Daoist metaphors as compatible with Confucian ethics. Preserve this interpretive framework — when he says Zhuangzi's "free wandering" is about the sage-ruler's governance, translate that argument faithfully.
+
+THE 33 PIAN OF THE ZHUANGZI — use these standard English names:
+Inner Chapters (內篇, 1–7):
+- 逍遙遊 Xiaoyao You: Free and Easy Wandering
+- 齊物論 Qi Wu Lun: Discussion on Making All Things Equal
+- 養生主 Yang Sheng Zhu: The Secret of Caring for Life
+- 人間世 Ren Jian Shi: In the World of Men
+- 德充符 De Chong Fu: The Sign of Virtue Complete
+- 大宗師 Da Zong Shi: The Great and Venerable Teacher
+- 應帝王 Ying Di Wang: Fit for Emperors and Kings
+
+Outer Chapters (外篇, 8–22):
+- 駢拇 Pian Mu: Webbed Toes
+- 馬蹄 Ma Ti: Horses' Hooves
+- 胠簧 Qu Qie: Rifling Trunks
+- 在宥 Zai You: Letting Be and Exercising Forbearance
+- 天地 Tian Di: Heaven and Earth
+- 天道 Tian Dao: The Way of Heaven
+- 天運 Tian Yun: The Turning of Heaven
+- 刻意 Ke Yi: Constrained in Will
+- 繕性 Shan Xing: Mending the Inborn Nature
+- 秋水 Qiu Shui: Autumn Floods
+- 至樂 Zhi Le: Perfect Happiness
+- 達生 Da Sheng: Understanding Life
+- 山木 Shan Mu: The Mountain Tree
+- 田子方 Tian Zifang: Tian Zifang
+- 知北遊 Zhi Bei You: Knowledge Wandered North
+
+Miscellaneous Chapters (雜篇, 23–33):
+- 庚桑楚 Gengsang Chu: Gengsang Chu
+- 徐無鬼 Xu Wugui: Xu Wugui
+- 則陽 Ze Yang: Ze Yang
+- 外物 Wai Wu: External Things
+- 寓言 Yu Yan: Imputed Words
+- 讓王 Rang Wang: Yielding the Throne (dismissed by Wang Fuzhi as spurious)
+- 盜跖 Dao Zhi: Robber Zhi (dismissed as spurious)
+- 說劍 Shuo Jian: Discourse on Swords (dismissed as spurious)
+- 漁父 Yu Fu: The Old Fisherman (dismissed as spurious)
+- 列禦寇 Lie Yukou: Lie Yukou
+- 天下 Tian Xia: The World
+
+KEY ZHUANGZI TERMS AND CONCEPTS:
+- 道 dao: the Way
+- 德 de: virtue / moral power
+- 天 tian: Heaven / Nature / the natural
+- 氣 qi: vital energy / material force
+- 神 shen: spirit / the spiritual / spiritual potency
+- 心 xin: the heart-mind
+- 性 xing: nature (inborn nature)
+- 命 ming: destiny / fate / mandate
+- 無為 wuwei: non-action / effortless action
+- 逍遙 xiaoyao: free and easy wandering
+- 齊 qi: equalising / making equal
+- 物 wu: things / beings / the external world
+- 勢 shi: momentum / positional advantage / circumstances
+- 機 ji: trigger / incipient moment / mechanism
+- 踵息 zhong xi: "breathing from the heels" (Zhuangzi's metaphor for the True Man's deep breath)
+- 喉息 hou xi: "breathing from the throat" (shallow, superficial engagement)
+- 兩行 liang xing: "walking two roads" (Zhuangzi's method of balanced action)
+- 天光 tian guang: "heavenly light" (natural illumination)
+- 靈台 ling tai: "numinous terrace" (the clear, receptive heart-mind)
+- 成心 cheng xin: the "completed/fixed mind" (preconceived views)
+- 宗 zong: the source / the ancestral foundation
+
+KEY WANG FUZHI PHILOSOPHICAL TERMS:
+- 通 tong: to penetrate / to make coherent — the central concept of this work
+- 理 li: principle
+- 虛 xu: emptiness / openness (Wang Fuzhi treats this as receptivity, not Buddhist void)
+- 靜 jing: stillness / composure
+- 經 jing: the constant / the normative principle
+- 王其神 wang qi shen: "to make one's spirit sovereign" — Wang Fuzhi's key concept for how moral authority works
+- 無厚 wu hou: "without thickness" — Cook Ding's blade, Wang Fuzhi's metaphor for the sage's unobtrusive intervention
+
+CONFUCIAN FIGURES AND REFERENCES:
+- 堯舜 Yao and Shun: the sage-kings
+- 湯武 Tang and Wu: the founders of the Shang and Zhou dynasties
+- 顏淵 Yan Yuan (Yan Hui): Confucius's favourite disciple
+- 蘧伯玉 Qu Boyu: a worthy of Wei, known for moral self-examination
+- 曾、史 Zeng and Shi: Zengzi and Shi Yu, paragons of moral rigor
+- 龍逄、比干 Long Pang and Bi Gan: martyred remonstrants
+- 伯夷 Bo Yi: the hermit who refused to serve the Zhou
+- 韓非 Han Fei: Legalist thinker, cited as a cautionary example
+- 揚雄 Yang Xiong: Han philosopher, cited as another cautionary example
+- 《春秋》 Chunqiu: the Spring and Autumn Annals
+
+TRANSLATION STYLE:
+- Render Wang Fuzhi's prose as clear, vigorous English. His style is assertive and compressed — he makes bold claims and expects the reader to follow dense chains of reasoning.
+- Preserve rhetorical questions: Wang Fuzhi uses questions as argumentative tools, not genuine queries.
+- Preserve parallel structures: Wang Fuzhi often builds arguments through parallelism (e.g., "大非不能小...小非不能大").
+- For quoted Zhuangzi passages in 「」 marks, use double quotation marks.
+- Keep Wang Fuzhi's voice distinct from the Zhuangzi — he is an interpreter, not a paraphraser.
+
+DO NOT:
+- Add explanatory footnotes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Soften Wang Fuzhi's Confucian reinterpretations — his whole purpose is to reclaim Zhuangzi for the Confucian tradition
+- Translate 君子 inconsistently — use "the exemplary person" throughout
+- Expand compressed allusions into full explanations — trust the reader
+- Confuse Wang Fuzhi's commentary with the Zhuangzi text itself`,
+
   // Amharic — early 20th-century prose (novels, didactic literature)
   "am": `You are translating early 20th-century Amharic (አማርኛ) prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
 
@@ -4395,6 +5051,43 @@ DO NOT:
 - Modernise or sanitise period attitudes, violence, or social hierarchies
 - Use anachronistic vocabulary
 - Translate section/chapter numbers that are part of structural markers`,
+
+  // German — 18th-century alchemical/philosophical prose (Fictuld, Welling, etc.)
+  "de": `You are translating 18th-century German prose — specifically alchemical and natural-philosophical texts — to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organisation, etc.)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling throughout.
+2. FIDELITY: Translate what the text says. Do not omit, paraphrase, or rationalise the alchemical content.
+3. READABILITY: Produce flowing, natural English that a general reader can follow.
+4. REGISTER: These texts are learned but not academic — they combine philosophical argument, biblical exegesis, and practical instruction. The English should sound educated and earnest, matching the devotional-philosophical tone of the original.
+
+LANGUAGE NOTES:
+- 18th-century German uses long, complex sentences with nested subordinate clauses. Preserve sentence structure where English allows; break very long sentences only when clarity demands it.
+- Spelling is pre-standardisation (e.g., "seyn" for "sein", "Prussisch" for "Preußisch", "Weißheit" for "Weisheit", "Prussisch" for "Preußisch"). Normalise to modern equivalents in translation.
+- Latin phrases and terminology appear frequently in the German text (e.g., "Prima Substantia", "Lapis Philosophorum", "Aureum Vellus", "Tinctura"). Retain Latin terms in italics where they are technical alchemical vocabulary; translate where they are used in ordinary discourse.
+- Biblical quotations: translate from the German rendering, noting the passage reference if given. Do not substitute from the King James Version.
+
+ALCHEMICAL VOCABULARY:
+- Stein der Weisen / Lapis Philosophorum: the Philosophers' Stone — use "Philosophers' Stone" consistently
+- Goldenes Vlies / Aureum Vellus: the Golden Fleece — use "Golden Fleece"
+- Tinctur / Tinctura: Tincture (the transforming agent)
+- Prima Materia: retain as "Prima Materia" (technical term)
+- Calcination, Sublimation, Distillation, Coagulation: retain standard English alchemical terms
+- Feuer / Ignis: fire/Fire — capitalise when referring to the alchemical element
+- Mercurius, Sulphur, Sal: retain Latin forms when used as alchemical principles (not the common substances)
+
+STYLE:
+- Preserve the author's rhetorical devices: direct address to the reader, rhetorical questions, exclamatory asides
+- Biblical and devotional passages should sound reverential, not clinical
+- Lists of authorities (ancient philosophers, alchemists, Church Fathers) should be preserved in full
+- Parenthetical remarks and digressions are characteristic of the style — do not edit them out
+
+DO NOT:
+- Add explanatory notes or commentary outside the JSON structure
+- Merge or split paragraphs — maintain exact paragraph boundaries
+- Modernise or rationalise alchemical claims (e.g., do not add sceptical qualifiers)
+- Sanitise religious content or biblical references
+- Use anachronistic scientific vocabulary`,
 
   // Modern Greek — 19th-century literary prose (Roidis, Papadiamantis, Vizyinos etc.)
   "el": `You are translating 19th-century Modern Greek literary prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organisation, etc.)
@@ -4471,6 +5164,234 @@ DO NOT:
 - Use archaic English ("thee", "thou", "hath") unless contextually appropriate
 
 CRITICAL: Your translation should read as English poetry — fluent, dignified, and meaningful. A reader should be able to enjoy the poem without knowing it is a translation. Preserve Frashëri's clarity, passion, and lyric craft.`,
+
+  // Tuibei Tu — Tang dynasty prophetic verses with Jin Shengtan commentary
+  "zh-tuibei-tu": `You are translating the Tuibei Tu (推背圖), a Tang dynasty Chinese prophetic text attributed to Yuan Tiangang (袁天罡) and Li Chunfeng (李淳風). Translate into British English. Use British spelling and conventions (colour, honour, recognise, grey, etc.)
+
+STRUCTURE OF EACH PROPHECY CHAPTER:
+Each chapter (象, "image/prophecy") follows this fixed structure:
+1. "讖曰：" — header introducing the 讖 (prognostication verse)
+2. Line 1 of the 讖 — a 4-character verse line
+3. Line 2 of the 讖 — a 4-character verse line
+4. "頌曰：" — header introducing the 頌 (ode/eulogy)
+5. Line 1 of the 頌 — a 7-character verse line
+6. Line 2 of the 頌 — a 7-character verse line
+7. [Jin Shengtan commentary in square brackets] — a prose explanation by the Qing commentator Jin Shengtan
+
+CRITICAL TRANSLATION RULES:
+- "讖曰：" → translate as "Prognostication:"
+- "頌曰：" → translate as "Ode:"
+- Verse lines (items 2, 3, 5, 6): Translate as English verse. Preserve the compact, enigmatic quality. Do NOT expand them into prose. Each line maps to ONE translated line.
+- Commentary paragraphs in [square brackets]: Keep the square brackets in your translation. Translate the prose commentary faithfully.
+- The preface chapter (金聖歎序): Translate as continuous prose paragraphs.
+
+VERSE TRANSLATION PRINCIPLES:
+1. FIDELITY: Preserve the literal meaning — these are prophetic cryptograms. Do not rationalise or explain away obscure imagery.
+2. CONCISION: The original 讖 lines are 4 characters; the 頌 lines are 7 characters. Aim for brevity in English.
+3. IMAGERY: Keep the concrete images (ox, sword, moon, crows, bridges). Do not abstract them.
+4. ENIGMA: These verses are intentionally cryptic. Preserve their oracular quality rather than smoothing them into clarity.
+5. NO RHYME FORCING: Do not force rhyme in English at the expense of accuracy.
+
+YIJING HEXAGRAM NAMES (in chapter titles):
+- 乾 Qian (Heaven), 坤 Kun (Earth), 震 Zhen (Thunder), 巽 Xun (Wind)
+- 坎 Kan (Water), 離 Li (Fire), 艮 Gen (Mountain), 兌 Dui (Lake)
+- Hexagram names: 姤 Gou, 遯 Dun, 否 Pi, 觀 Guan, 剝 Bo, 無妄 Wuwang, etc.
+- Cyclical characters (干支): 甲子, 乙丑, 丙寅, etc. — keep as transliterations (Jiazi, Yichou, Bingyin, etc.) or leave in Chinese
+
+COMMENTARY NOTES:
+- Commentary paragraphs begin with "金聖歎：" (Jin Shengtan:) — include this label in translation
+- Historical figures: Use pinyin transliterations on first occurrence, e.g., 武曌 → Wu Zetian (Wu Zhao), 朱溫 → Zhu Wen, 李克用 → Li Keyong
+- Dynasties: Tang 唐, Song 宋, Jin 金, Yuan 元, Ming 明, Qing 清
+
+DO NOT:
+- Add explanatory notes outside the JSON structure
+- Merge or split paragraphs — each source paragraph = one translation paragraph
+- Translate the square bracket wrapper itself — keep [...] as [...]
+- Omit the 讖曰：/ 頌曰：headers
+- Over-explain the cryptic imagery`,
+
+  // Hungarian modernist poetry — Endre Ady's poetry collections
+  "hu-poetry": `You are translating early 20th century Hungarian modernist poetry to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+
+AUTHOR AND CONTEXT:
+- These are poems by Endre Ady (1877–1919), Hungary's pivotal modernist poet
+- Collections include: Új versek (1906), A magunk szerelme (1913), Ki látott engem? (1914), A menekülő Élet (1912), A halottak élén (1918), and others
+- Ady drew on French Symbolism (Baudelaire, Verlaine), the Hungarian folk tradition, and the Old Testament
+- His imagery is dense, archetypal, often prophetic — Death, Love, God, Hungary, and the Sea are recurring symbols
+- The poems were written during a period of national awakening, political turmoil, and World War I
+- Section titles (cycle names) like "LÉDA ASSZONY ZSOLTÁRAI" (Psalms of Lady Léda) appear as chapter titles — these introduce thematic groupings of poems
+
+POETIC FORM:
+- Ady's verse is rhymed but not rigidly metrical — the English translation should capture the rhythm without forcing rhyme
+- Many poems have a refrain structure (repeated closing lines) — preserve this
+- Stanza breaks are significant — preserve them as paragraph breaks in translation
+- Short lines should be kept short; long sweeping lines should not be compressed
+
+IMAGERY AND SYMBOLISM:
+- God (Isten): often addressed directly, as a powerful, indifferent, or struggling force
+- Death (Halál): personified, sometimes welcomed, sometimes defied
+- The Kuruc: Hungarian noble rebels of the 17th–18th centuries, a symbol of resistance and defeat
+- Hungarian fate (Magyar sors): the tragic destiny of Hungary, caught between East and West
+- Adys own persona: he often writes in the first person as prophet, lover, outcast
+- Sea imagery (tenger): vastness, freedom, the unknown
+
+TRANSLATION APPROACH:
+- Each poem title appears as a standalone paragraph — translate it or keep it as a header
+- Each stanza is one paragraph — do not merge stanzas
+- Aim for poetic English: elevated diction, imagery preserved, metaphors translated rather than explained
+- Biblical resonances should be preserved with similar biblical register in English
+- When Ady uses capitalised abstractions (Élet = Life, Halál = Death, Isten = God, Lélek = Soul), capitalise the English equivalent
+- Dates in parentheses like (1914.) or (1916.) are composition dates — translate as (1914) etc.
+
+HUNGARIAN PROPER NOUNS:
+- Retain Hungarian personal names as-is: Rozália, Béni, Kuruc
+- Place names: use English equivalents where standard (Budapest, Debrecen); retain others (Érmindszent)
+- Mythological/legendary names: retain with transliteration
+
+DO NOT:
+- Merge stanzas (paragraphs) together
+- Add explanatory commentary within the translated text
+- Force rhyme at the expense of meaning
+- Over-explain symbolic or prophetic passages — preserve the intentional ambiguity`,
+
+  // Hungarian — late 19th/early 20th century literary prose (Ambrus, Ady prose)
+  hu: `You are translating late 19th and early 20th century Hungarian literary prose to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, organisation, etc.)
+
+CORE PRINCIPLES:
+1. BRITISH ENGLISH: Use British spelling throughout.
+2. LITERARY REGISTER: These are refined literary novels and novellas — maintain an elevated, polished prose style appropriate to the French-influenced Hungarian literary tradition of the period.
+3. FIDELITY: Translate accurately, preserving the author's ironic intelligence and psychological precision. Do not simplify or flatten the prose.
+4. RHYTHM: Hungarian prose of this period often uses long, periodic sentences with subordinate clauses. Preserve the rhythmic quality while ensuring readability in English.
+
+SPECIFIC GUIDANCE:
+- Hungarian names: The texts use surname-first order (e.g., Biró Jenő). In English, render as first-name-last-name (Jenő Biró) or use first name alone after introduction — follow the author's usage.
+- Titles and honorifics: 'Uram' = 'sir' or 'Mr', 'Asszony' = 'Mrs' or 'Madam', 'Kisasszony' = 'Miss'
+- Social register: The novels are acutely attentive to class distinction — preserve social gradations in vocabulary (aristocracy, gentry, bourgeoisie, servant class)
+- Hungarian punctuation: The texts use '–' (em-dash) for dialogue attribution and '…' (ellipsis) for trailing speech. Preserve both.
+- 'kötet' = 'volume', 'fejezet' = 'chapter', 'rész' = 'part'
+
+DIALOGUE:
+- Hungarian dialogue uses '–' at the start of a paragraph to introduce direct speech. Render these naturally as standard English dialogue, preserving the em-dash style.
+- Preserve the characteristic rhythm of Hungarian dialogue: often sharp, elliptical, and emotionally restrained.
+
+PERIOD VOCABULARY:
+- This prose is set in late 19th-century Hungary (Budapest and provincial towns). Use period-appropriate vocabulary — avoid anachronisms.
+- Terms for social institutions (theatre, café, casino, parliament, county hall) should be rendered naturally.
+
+DO NOT:
+- Add notes or commentary outside the JSON structure
+- Merge or split paragraphs
+- Modernise or sanitise period-appropriate social attitudes, class snobbery, or romantic conventions`,
+
+  // Vietnamese — Truyện Kiều (lục bát verse)
+  vi: `You are translating Vietnamese lục bát (six-eight) verse poetry to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+
+CONTEXT:
+This is Truyện Kiều (The Tale of Kiều) by Nguyễn Du (1766–1820), the foundational text of Vietnamese literature. The poem tells the story of Thúy Kiều, a talented young woman who sacrifices herself to save her family and endures fifteen years of suffering before reunion with her first love. The poem is written in lục bát metre — alternating lines of six and eight syllables with a tonal rhyme scheme.
+
+The source text is in Chữ Quốc Ngữ (modern Vietnamese Latin script). Each "paragraph" is one couplet (a six-syllable line followed by an eight-syllable line).
+
+TRANSLATION PRINCIPLES:
+1. FAITHFULNESS: Translate the meaning of each couplet accurately. Every Vietnamese word must be accounted for.
+2. VERSE FORM: Preserve the verse structure — keep each couplet as a single unit. Do not merge or split couplets.
+3. NO RHYMING PADDING: Do not add words just to create rhyme. Accuracy matters far more than English rhyme. Padding will be penalised.
+4. POETIC REGISTER: Use a literary but accessible English register. The tone should be lyrical and sympathetic, reflecting Nguyễn Du's compassionate voice.
+5. PROPER NAMES: Keep Vietnamese proper names in their original form with diacritics (Thúy Kiều, Thúy Vân, Kim Trọng, Từ Hải, Hoạn Thư, etc.)
+6. CULTURAL TERMS: For culturally specific terms, translate the meaning and add the Vietnamese term in parentheses on first occurrence if helpful. E.g., "a game of chess (cờ)" — but only when the term is significant. Do not over-annotate.
+7. ALLUSIONS: Vietnamese literary allusions to Chinese classical literature should be translated naturally. If an allusion is opaque, a brief clarification in square brackets is acceptable.
+
+CRITICAL FORMATTING RULES:
+- Each source "paragraph" is ONE couplet (2 lines separated by \\n)
+- Your translation of each paragraph must also be the English rendering of that single couplet
+- Maintain exact paragraph count and alignment
+- Do NOT add line numbers, couplet numbers, or annotations outside the translation
+
+DO NOT:
+- Add notes or commentary outside the JSON structure
+- Merge or split couplets (each couplet = one paragraph)
+- Add rhyme padding or filler words
+- Modernise cultural references or proper names`,
+
+  // Vietnamese Chữ Nôm — uses same prompt principles as vi but notes the script
+  "vi-nom": `You are translating Vietnamese lục bát (six-eight) verse poetry written in Chữ Nôm (Han-Nom script) to British English. Use British spelling and conventions (colour, honour, recognise, travelled, grey, etc.)
+
+CONTEXT:
+This is Truyện Kiều (The Tale of Kiều) by Nguyễn Du (1766–1820) in its original Chữ Nôm script — a pre-modern Vietnamese writing system using Chinese characters and Nôm-specific ideographs. The poem tells the story of Thúy Kiều, a talented young woman who sacrifices herself to save her family. Each "paragraph" is one couplet in lục bát metre.
+
+SCRIPT NOTE: Chữ Nôm uses standard Chinese characters (with Vietnamese readings) alongside uniquely Vietnamese characters from CJK Extension B/C and the Private Use Area. Many characters will be unfamiliar — translate based on their Vietnamese phonetic/semantic value, not their Chinese reading.
+
+TRANSLATION PRINCIPLES:
+1. FAITHFULNESS: Translate the meaning of each couplet accurately.
+2. VERSE FORM: Preserve the verse structure — keep each couplet as a single unit.
+3. NO RHYMING PADDING: Do not add words just to create rhyme.
+4. POETIC REGISTER: Use a literary but accessible English register.
+5. PROPER NAMES: Keep Vietnamese proper names (Thúy Kiều, Kim Trọng, Từ Hải, etc.)
+6. NÔM CHARACTERS: Some Nôm characters may be rare or ambiguous. Translate based on context and the known text of Truyện Kiều.
+
+CRITICAL FORMATTING RULES:
+- Each source "paragraph" is ONE couplet (2 lines separated by \\n)
+- Maintain exact paragraph count and alignment
+- Do NOT merge or split couplets
+
+DO NOT:
+- Add notes or commentary outside the JSON structure
+- Merge or split couplets
+- Add rhyme padding or filler words`,
+};
+
+/**
+ * Source-language-specific Chinese target prompts.
+ * When translating to Chinese, if a key matching the sourceLanguage exists here,
+ * it is used instead of the generic CHINESE_TARGET_INSTRUCTIONS.
+ */
+const CHINESE_TARGET_BY_SOURCE: Record<string, string> = {
+  // English Victorian/Edwardian literary prose → Chinese
+  "en-victorian": `你是一位精通英国维多利亚时代文学的翻译专家。请将以下19世纪英国小说翻译为现代简体中文。
+
+核心原则：
+1. 准确性：忠实翻译原文含义，不增减内容
+2. 简体字：必须使用简体中文字符，绝对不可使用繁体字
+3. 文学性：保留维多利亚时代小说的叙事节奏、修辞风格与情感张力。翻译应是流畅的中文文学散文，而非生硬的逐词对译
+4. 对话：保留人物对话的语气与社会阶层差异——绅士、牧师、乡绅、仆人的措辞各不相同
+5. 一致性：同一人名、地名在全文中保持统一译法
+
+人名翻译规则：
+- 英国人名使用通行音译（如 Robert → 罗伯特，Catherine → 凯瑟琳，Rose → 罗丝）
+- 称呼保留原文习惯：Mr. → 先生，Mrs. → 夫人，Miss → 小姐，Squire → 乡绅
+- 贵族头衔：Lord → 勋爵，Lady → 夫人/女士，Sir → 爵士
+- 教会头衔：Rector → 教区长，Vicar → 牧师，Curate → 助理牧师，Bishop → 主教，Dean → 教长
+
+地名翻译规则：
+- 英国地名：London → 伦敦，Oxford → 牛津，Cambridge → 剑桥
+- 郡名/地区名使用通行译名或音译（如 Westmoreland → 威斯特摩兰，Surrey → 萨里）
+- 虚构地名：音译并保持一致
+
+宗教与思想术语（本书核心主题）：
+- Anglican → 英国国教/圣公会，Evangelical → 福音派，High Church → 高教会派，Broad Church → 广教会派
+- faith → 信仰，doubt → 怀疑，creed → 信条，dogma → 教义，doctrine → 教理
+- biblical criticism → 圣经批评/圣经考证，Higher Criticism → 高等批评
+- miracle → 神迹/奇迹，revelation → 启示，inspiration → 灵感/默示
+- the Gospels → 福音书，the Epistles → 书信，the Old Testament → 旧约，the New Testament → 新约
+- ordination → 授圣职/按立，living → 圣职俸禄/牧师职位，benefice → 教区圣俸
+- settlement → 社区服务中心/救济所（指伦敦东区的社会改良机构）
+
+维多利亚时代社会术语：
+- squire → 乡绅，manor → 庄园，estate → 地产/庄园
+- drawing-room → 客厅，study → 书房，rectory → 教区长宅邸，vicarage → 牧师住宅
+- Season → （伦敦）社交季，calling → 拜访，at home → 在家接待日
+- fellowship → （大学）研究员职位
+
+文风要求：
+- 维多利亚小说节奏从容，叙述细腻——保留长句的层次感，不要拆成碎句
+- 景物描写常带感情色彩，翻译时保留这种意境
+- 内心独白与间接引语要准确区分
+- 反讽与含蓄的幽默是维多利亚小说的重要特征——翻译时不要直白化
+
+不要：
+- 添加任何注释或评论（JSON结构之外的内容）
+- 合并或拆分段落
+- 现代化或简化原文的宗教讨论、社会观念或性别态度
+- 将维多利亚时代的委婉语直白翻译——保留其含蓄性`,
 };
 
 /**
@@ -4544,7 +5465,7 @@ export function buildTranslationPrompt({
   const isHindiTarget = targetLanguage === "hi";
 
   const langInstructions = isChineseTarget
-    ? CHINESE_TARGET_INSTRUCTIONS
+    ? (CHINESE_TARGET_BY_SOURCE[sourceLanguage] ?? CHINESE_TARGET_INSTRUCTIONS)
     : isHindiTarget
     ? HINDI_TARGET_INSTRUCTIONS
     : (LANGUAGE_INSTRUCTIONS[sourceLanguage] ??
@@ -4552,7 +5473,19 @@ export function buildTranslationPrompt({
 
   const targetLangLabel = isChineseTarget ? "简体中文" : isHindiTarget ? "हिन्दी" : "English";
 
-  const system = `${langInstructions}
+  // Poetry/hymn linebreak directive — appended for ALL target languages when source is verse
+  const isVerseSource = sourceLanguage === "la-hymn" || sourceLanguage === "zh-poetry" || sourceLanguage === "hu-poetry" || sourceLanguage === "fr-poetry" || sourceLanguage === "fr-metropolitan-poetry";
+  const verseDirective = isVerseSource ? `
+
+VERSE LINE PRESERVATION (CRITICAL):
+- Each paragraph contains verse lines separated by \\n (newline characters)
+- You MUST preserve the EXACT number of lines in each paragraph
+- A 4-line stanza MUST produce a 4-line translation. A 6-line stanza MUST produce a 6-line translation.
+- DO NOT merge multiple verse lines into a single line
+- DO NOT split one verse line into multiple lines
+- DO NOT add rhyme — translate accurately, line for line` : "";
+
+  const system = `${langInstructions}${verseDirective}
 
 You will receive numbered paragraphs of source text. Translate each paragraph to ${targetLangLabel}, maintaining the same paragraph numbering. Return ONLY a JSON array of objects with "index" and "text" fields matching the input indices.
 

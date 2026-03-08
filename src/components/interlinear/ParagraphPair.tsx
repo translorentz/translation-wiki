@@ -21,23 +21,41 @@ const LANGUAGE_FONTS: Record<string, string> = {
 };
 
 /**
- * Renders text with [bracketed commentary] displayed in dark maroon.
- * Splits on square brackets, alternating between main text and commentary.
+ * Renders inline _italic_ markers as <em> elements.
+ * Matches Gutenberg convention: _word(s)_ for italicised text.
+ */
+function renderWithItalics(text: string, keyPrefix: string): React.ReactNode {
+  const parts = text.split(/(_[^_]+_)/g);
+  if (parts.length === 1) return text;
+
+  return parts.map((part, i) => {
+    if (part.startsWith("_") && part.endsWith("_") && part.length > 2) {
+      return (
+        <em key={`${keyPrefix}-i${i}`}>{part.slice(1, -1)}</em>
+      );
+    }
+    return part;
+  });
+}
+
+/**
+ * Renders text with [bracketed commentary] in dark maroon and _underscores_ as italics.
  */
 function renderWithCommentary(text: string): React.ReactNode {
   // Split on bracket groups, keeping the brackets as delimiters
   const parts = text.split(/(\[[^\]]*\])/g);
-  if (parts.length === 1) return text; // No brackets found
+  const hasItalics = text.includes("_");
+  if (parts.length === 1 && !hasItalics) return text;
 
   return parts.map((part, i) => {
     if (part.startsWith("[") && part.endsWith("]")) {
       return (
         <span key={i} className="text-[#6b2130]">
-          {part}
+          {renderWithItalics(part, `b${i}`)}
         </span>
       );
     }
-    return part;
+    return renderWithItalics(part, `t${i}`);
   });
 }
 
