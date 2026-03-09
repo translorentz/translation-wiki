@@ -732,15 +732,16 @@ async function translateChapter(
       "zh-shengji-zonglu": 0.3,
       "zh-joseon-sillok": 0.3,
       "zh-poetry": 0.3, // Chinese poetry with dense annotations (phonetic glosses, variant readings) compresses in English
-      grc: 0.08,       // Greek to English — lowered for OCR-damaged Byzantine Greek (Cantacuzenus)
-      "grc-history": 0.08,
-      "grc-gregory": 0.08,
+      grc: 0.5,       // Greek to English is roughly similar, but allow for compression
+      "grc-history": 0.5,
+      "grc-gregory": 0.5,
       la: 0.5,        // Latin similar to Greek
       "la-hymn": 0.3, // Latin hymns — short stanzas, linebreak check handles alignment
       fa: 0.5,        // Persian epic poetry (Shahnameh) — similar to English in length
       sr: 0.3,        // Serbian literary prose allows moderate compression
       hu: 0.3,        // Hungarian literary prose/dialogue compresses significantly into English
       "ru-literary": 0.15,  // Russian dialogue-heavy prose: short replies compress significantly
+      "ru-tipikon": 0.3,   // Liturgical commentary: short transitional paragraphs compress legitimately
       "sr-scholarly": 0.1, // OCR-damaged Serbian text — garbled source produces short translations
       "xcl-literature": 0.1, // OCR-damaged Classical Armenian — garbled source produces short translations
       "te-prose": 0.3,  // Telugu prose (agglutinative morphology) — English translations may be shorter
