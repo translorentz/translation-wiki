@@ -8,6 +8,7 @@ import { sql, eq, ilike, or, and, inArray, notInArray } from "drizzle-orm";
 const searchInputSchema = z.object({
   q: z.string().min(1).max(200),
   languages: z.array(z.string()).optional(),
+  targetLanguage: z.string().optional(), // Filter translations by target language (en, zh, etc.)
   limit: z.number().min(1).max(50).default(20),
   offset: z.number().min(0).default(0),
 });
@@ -210,7 +211,12 @@ export const searchRouter = createTRPCRouter({
         .innerJoin(texts, eq(chapters.textId, texts.id))
         .innerJoin(authors, eq(texts.authorId, authors.id))
         .innerJoin(languages, eq(texts.languageId, languages.id))
-        .leftJoin(translations, eq(translations.chapterId, chapters.id))
+        .leftJoin(
+          translations,
+          input.targetLanguage
+            ? and(eq(translations.chapterId, chapters.id), eq(translations.targetLanguage, input.targetLanguage))
+            : eq(translations.chapterId, chapters.id)
+        )
         .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
         .where(chapterWhereClause)
         .orderBy(texts.title, chapters.chapterNumber)
@@ -351,7 +357,12 @@ export const searchRouter = createTRPCRouter({
         .innerJoin(texts, eq(chapters.textId, texts.id))
         .innerJoin(authors, eq(texts.authorId, authors.id))
         .innerJoin(languages, eq(texts.languageId, languages.id))
-        .leftJoin(translations, eq(translations.chapterId, chapters.id))
+        .leftJoin(
+          translations,
+          input.targetLanguage
+            ? and(eq(translations.chapterId, chapters.id), eq(translations.targetLanguage, input.targetLanguage))
+            : eq(translations.chapterId, chapters.id)
+        )
         .leftJoin(translationVersions, eq(translations.currentVersionId, translationVersions.id))
         .where(chapterWhereClause)
         .orderBy(texts.title, chapters.chapterNumber)

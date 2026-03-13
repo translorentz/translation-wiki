@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
-import { formatChapterTitle, formatTextTitle, localePath } from "@/lib/utils";
+import { formatChapterTitle, formatTextTitle, localePath, localeToTargetLang } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -124,12 +124,15 @@ export default function SearchClient() {
     );
   };
 
+  const targetLanguage = localeToTargetLang(locale);
+
   // Fast query: titles and author names only (initial load, offset 0)
   const titlesQuery = useQuery(
     trpc.search.titles.queryOptions(
       {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
+        targetLanguage,
         limit: RESULTS_PER_PAGE,
         offset: 0,
       },
@@ -154,6 +157,7 @@ export default function SearchClient() {
       {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
+        targetLanguage,
         limit: RESULTS_PER_PAGE,
         offset: 0,
         excludeTextIds,
@@ -210,6 +214,7 @@ export default function SearchClient() {
           json: {
             q: query,
             languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
+            targetLanguage,
             limit: RESULTS_PER_PAGE,
             offset: newOffset,
             excludeTextIds: allTextIds,
