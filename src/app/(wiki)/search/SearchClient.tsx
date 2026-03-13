@@ -292,7 +292,7 @@ export default function SearchClient() {
                   variant={isSelected ? "default" : "outline"}
                   className="cursor-pointer select-none"
                 >
-                  {lang.name}
+                  {t(`sourcelang.${lang.code}` as Parameters<typeof t>[0])}
                 </Badge>
               </button>
             );

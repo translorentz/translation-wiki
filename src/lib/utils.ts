@@ -160,8 +160,12 @@ export function formatChapterTitle(
     if (sourceLangCode === "zh") {
       return { primary: original, secondary: null };
     }
-    // Non-Chinese texts: show Chinese title if available, else English fallback
-    return { primary: original, secondary: chapter.titleZh || english };
+    // Non-Chinese texts: show Chinese title as primary if available
+    if (chapter.titleZh) {
+      return { primary: chapter.titleZh, secondary: original };
+    }
+    // Fallback: show original with English as secondary
+    return { primary: original, secondary: english };
   }
 
   if (locale === "hi") {
@@ -169,7 +173,11 @@ export function formatChapterTitle(
     if (sourceLangCode === "sa" || sourceLangCode === "hi") {
       return { primary: original, secondary: null };
     }
-    return { primary: original, secondary: chapter.titleHi || english };
+    // Non-Hindi texts: show Hindi title as primary if available
+    if (chapter.titleHi) {
+      return { primary: chapter.titleHi, secondary: original };
+    }
+    return { primary: original, secondary: english };
   }
 
   return { primary: original, secondary: english };
