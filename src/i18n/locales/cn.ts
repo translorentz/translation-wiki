@@ -77,8 +77,10 @@ const cn: Translations = {
   "sourcelang.sq": "阿尔巴尼亚语",
   "sourcelang.en": "英语",
   "sourcelang.hu": "匈牙利语",
+  "sourcelang.ro": "罗马尼亚语",
   "sourcelang.vi": "越南语",
   "sourcelang.vi-nom": "越南语（喃字）",
+  "sourcelang.th": "泰语",
 
   // Search page
   "search.title": "\u641C\u7D22",

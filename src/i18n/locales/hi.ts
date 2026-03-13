@@ -77,8 +77,10 @@ const hi: Translations = {
   "sourcelang.sq": "अल्बानियाई",
   "sourcelang.en": "अंग्रेज़ी",
   "sourcelang.hu": "हंगेरियाई",
+  "sourcelang.ro": "रोमानियाई",
   "sourcelang.vi": "वियतनामी",
   "sourcelang.vi-nom": "वियतनामी (चू नोम)",
+  "sourcelang.th": "थाई",
 
   // Search page
   "search.title": "खोजें",

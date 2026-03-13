@@ -76,8 +76,10 @@ const en = {
   "sourcelang.sq": "Albanian",
   "sourcelang.en": "English",
   "sourcelang.hu": "Hungarian",
+  "sourcelang.ro": "Romanian",
   "sourcelang.vi": "Vietnamese",
   "sourcelang.vi-nom": "Vietnamese (Chữ Nôm)",
+  "sourcelang.th": "Thai",
 
   // Search page
   "search.title": "Search",
