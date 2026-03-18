@@ -80,6 +80,7 @@ const hi: Translations = {
   "sourcelang.ro": "रोमानियाई",
   "sourcelang.vi": "वियतनामी",
   "sourcelang.vi-nom": "वियतनामी (चू नोम)",
+  "sourcelang.ar": "अरबी",
   "sourcelang.th": "थाई",
 
   // Search page

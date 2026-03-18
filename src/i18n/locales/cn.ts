@@ -80,6 +80,7 @@ const cn: Translations = {
   "sourcelang.ro": "罗马尼亚语",
   "sourcelang.vi": "越南语",
   "sourcelang.vi-nom": "越南语（喃字）",
+  "sourcelang.ar": "阿拉伯语",
   "sourcelang.th": "泰语",
 
   // Search page

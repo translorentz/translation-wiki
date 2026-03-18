@@ -79,6 +79,7 @@ const en = {
   "sourcelang.ro": "Romanian",
   "sourcelang.vi": "Vietnamese",
   "sourcelang.vi-nom": "Vietnamese (Chữ Nôm)",
+  "sourcelang.ar": "Arabic",
   "sourcelang.th": "Thai",
 
   // Search page
