@@ -49,8 +49,7 @@ type ChapterResult = {
   authorName: string;
   authorSlug: string;
   langCode: string;
-  snippet?: string | null;
-  matchParagraphIndex?: number | null;
+  snippets?: Array<{ text: string; index: number }> | string | null;
 };
 
 export default function SearchClient() {
@@ -177,8 +176,7 @@ export default function SearchClient() {
       // Combine title chapters with content chapters
       const titleChapters = titlesQuery.data.chapters.map(ch => ({
         ...ch,
-        snippet: null as string | null,
-        matchParagraphIndex: null as number | null,
+        snippets: null as Array<{ text: string; index: number }> | null,
       }));
 
       if (searchContent && contentQuery.isSuccess && contentQuery.data) {
@@ -374,40 +372,59 @@ export default function SearchClient() {
                   {t("search.chapters")}
                 </h2>
               )}
-              {accumulatedChapters.map((result) => (
-                <Link
-                  key={result.chapterId}
-                  href={localePath(`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${result.matchParagraphIndex != null ? `?highlight=${result.matchParagraphIndex}` : ''}`, locale)}
-                >
-                  <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
-                    {(() => {
-                      const { primary, secondary } = formatChapterTitle(
-                        { title: result.chapterTitle, titleZh: result.chapterTitleZh },
-                        locale,
-                        result.langCode
-                      );
-                      return (
-                        <p className="font-medium">
-                          {primary}
-                          {secondary && (
-                            <span className="ml-2 text-sm font-normal text-muted-foreground">
-                              {secondary}
-                            </span>
-                          )}
-                        </p>
-                      );
-                    })()}
-                    <p className="text-sm text-muted-foreground">
-                      {result.textTitle} — {result.authorName}
-                    </p>
-                    {result.snippet && (
-                      <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
-                        ...{highlightMatch(result.snippet, query)}...
+              {accumulatedChapters.map((result) => {
+                // Parse snippets — can be a JSON array string from DB or already parsed
+                const parsedSnippets: Array<{ text: string; index: number }> = (() => {
+                  if (!result.snippets) return [];
+                  if (typeof result.snippets === 'string') {
+                    try { return JSON.parse(result.snippets); } catch { return []; }
+                  }
+                  if (Array.isArray(result.snippets)) return result.snippets;
+                  return [];
+                })();
+                const firstSnippet = parsedSnippets[0];
+                const highlightParam = firstSnippet ? `?highlight=${firstSnippet.index}` : '';
+
+                return (
+                  <Link
+                    key={result.chapterId}
+                    href={localePath(`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${highlightParam}`, locale)}
+                  >
+                    <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
+                      {(() => {
+                        const { primary, secondary } = formatChapterTitle(
+                          { title: result.chapterTitle, titleZh: result.chapterTitleZh },
+                          locale,
+                          result.langCode
+                        );
+                        return (
+                          <p className="font-medium">
+                            {primary}
+                            {secondary && (
+                              <span className="ml-2 text-sm font-normal text-muted-foreground">
+                                {secondary}
+                              </span>
+                            )}
+                          </p>
+                        );
+                      })()}
+                      <p className="text-sm text-muted-foreground">
+                        {result.textTitle} — {result.authorName}
                       </p>
-                    )}
-                  </Card>
-                </Link>
-              ))}
+                      {parsedSnippets.length > 0 && (
+                        <div className="mt-1 space-y-0.5">
+                          {parsedSnippets.map((s, i) => (
+                            <p key={i} className="text-xs text-muted-foreground line-clamp-1">
+                              <span className="text-muted-foreground/60">¶{s.index}</span>{' '}
+                              ...{highlightMatch(s.text, query)}...
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </Card>
+                  </Link>
+                );
+              })}
             </div>
           )}
 

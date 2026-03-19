@@ -174,38 +174,33 @@ export const searchRouter = createTRPCRouter({
           authorName: authors.name,
           authorSlug: authors.slug,
           langCode: languages.code,
-          snippet: sql<string>`COALESCE(
+          // Return up to 3 matching snippets with their paragraph indices
+          snippets: sql<string>`COALESCE(
             (
-              SELECT substring(para.value->>'text'
-                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
-                FOR 80)
-              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
+              SELECT jsonb_agg(jsonb_build_object(
+                'text', substring(sub.t FROM greatest(1, position(lower(${input.q}) in lower(sub.t)) - 30) FOR 80),
+                'index', sub.i
+              ))
+              FROM (
+                SELECT para.value->>'text' as t, (para.value->>'index')::int as i
+                FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+                WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+                LIMIT 3
+              ) sub
             ),
             (
-              SELECT substring(para.value->>'text'
-                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
-                FOR 80)
-              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
+              SELECT jsonb_agg(jsonb_build_object(
+                'text', substring(sub.t FROM greatest(1, position(lower(${input.q}) in lower(sub.t)) - 30) FOR 80),
+                'index', sub.i
+              ))
+              FROM (
+                SELECT para.value->>'text' as t, (para.value->>'index')::int as i
+                FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
+                WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+                LIMIT 3
+              ) sub
             )
-          )`.as('snippet'),
-          matchParagraphIndex: sql<number>`COALESCE(
-            (
-              SELECT (para.value->>'index')::int
-              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
-            ),
-            (
-              SELECT (para.value->>'index')::int
-              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
-            )
-          )`.as('match_paragraph_index'),
+          )`.as('snippets'),
         })
         .from(chapters)
         .innerJoin(texts, eq(chapters.textId, texts.id))
@@ -320,38 +315,32 @@ export const searchRouter = createTRPCRouter({
           authorName: authors.name,
           authorSlug: authors.slug,
           langCode: languages.code,
-          snippet: sql<string>`COALESCE(
+          snippets: sql<string>`COALESCE(
             (
-              SELECT substring(para.value->>'text'
-                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
-                FOR 80)
-              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
+              SELECT jsonb_agg(jsonb_build_object(
+                'text', substring(sub.t FROM greatest(1, position(lower(${input.q}) in lower(sub.t)) - 30) FOR 80),
+                'index', sub.i
+              ))
+              FROM (
+                SELECT para.value->>'text' as t, (para.value->>'index')::int as i
+                FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
+                WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+                LIMIT 3
+              ) sub
             ),
             (
-              SELECT substring(para.value->>'text'
-                FROM greatest(1, position(lower(${input.q}) in lower(para.value->>'text')) - 30)
-                FOR 80)
-              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
+              SELECT jsonb_agg(jsonb_build_object(
+                'text', substring(sub.t FROM greatest(1, position(lower(${input.q}) in lower(sub.t)) - 30) FOR 80),
+                'index', sub.i
+              ))
+              FROM (
+                SELECT para.value->>'text' as t, (para.value->>'index')::int as i
+                FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
+                WHERE lower(para.value->>'text') LIKE ${lowerPattern}
+                LIMIT 3
+              ) sub
             )
-          )`.as('snippet'),
-          matchParagraphIndex: sql<number>`COALESCE(
-            (
-              SELECT (para.value->>'index')::int
-              FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
-            ),
-            (
-              SELECT (para.value->>'index')::int
-              FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
-              WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-              LIMIT 1
-            )
-          )`.as('match_paragraph_index'),
+          )`.as('snippets'),
         })
         .from(chapters)
         .innerJoin(texts, eq(chapters.textId, texts.id))
