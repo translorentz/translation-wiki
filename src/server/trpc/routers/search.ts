@@ -40,8 +40,10 @@ export const searchRouter = createTRPCRouter({
           ? inArray(languages.code, input.languages)
           : undefined;
 
-      // Find texts matching by title or author name
+      // Find texts matching by title or author name (unaccent for diacritic-insensitive matching)
       const textMatchConditions = or(
+        sql`unaccent(${texts.title}) ILIKE unaccent(${pattern})`,
+        sql`unaccent(${authors.name}) ILIKE unaccent(${pattern})`,
         ilike(texts.title, pattern),
         ilike(authors.name, pattern)
       );
@@ -72,7 +74,10 @@ export const searchRouter = createTRPCRouter({
       // Find chapters matching by chapter title only (fast - no JSONB search)
       const matchedTextIds = textMatches.map((t) => t.textId);
 
-      const chapterTitleCondition = ilike(chapters.title, pattern);
+      const chapterTitleCondition = or(
+        sql`unaccent(${chapters.title}) ILIKE unaccent(${pattern})`,
+        ilike(chapters.title, pattern)
+      );
 
       // Build WHERE clause, only adding conditions that exist
       const chapterConditions = [
