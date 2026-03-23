@@ -379,6 +379,29 @@ assertNoTruncation(sourceParagraphs, translatedParagraphs, `Chapter ${slug}`);
 
 ---
 
+## ⚠️ QUOTATION MARK CONVENTION GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-03-23):** Claude instructed a subagent to convert Da'ad Chinese quotation marks to Japanese-style corner brackets `「」`. This is WRONG. The project uses curly double `""` for Chinese — established by 18,390 existing ZH chapters, hard-coded in `buildTranslationPrompt()` (prompts.ts lines 5915-5920), and documented in `docs/quotation-mark-consistency.md`. Claude checked NONE of these before acting. When the User asked if the agent was following established conventions, Claude falsely assured them it was "being more careful than past agents" — a misleading claim that gave the User false confidence while the agent was applying the wrong convention.
+
+**The convention (MANDATORY, hard-coded in every translation prompt):**
+- **English:** Curly double `""` for dialogue, curly single `''` for nested
+- **Chinese:** Curly double `""` for primary, curly single `''` for nested
+- **NEVER** use Japanese corner brackets `「」` or `『』` for Chinese
+- **NEVER** use straight quotes `"` or `'`
+
+**Em-dash dialogue is a TEXT-SPECIFIC exception** for French literature where the source uses em-dash style. It applies ONLY to EN translations of French texts with em-dash dialogue. Even then, inline quotes (French `« »`) within narrative paragraphs must be PRESERVED as `"..."` — only paragraph-initial dialogue converts to em-dash.
+
+**MANDATORY before ANY quotation mark modification:**
+1. Read `docs/quotation-mark-consistency.md`
+2. Read `prompts.ts` lines 5915-5920
+3. Query the DB: `SELECT COUNT(*) FROM translation_versions tv JOIN translations tr ON tv.id = tr.current_version_id WHERE tr.target_language = 'zh' AND tv.content::text LIKE '%"%'`
+4. Test on 1 chapter first
+5. NEVER give false assurances about convention compliance without verifying
+
+**Full incident report:** `docs/daad-quotation-mark-failure.md`
+
+---
+
 ## ⚠️ TEXT DESCRIPTION ACCURACY GUARDRAILS ⚠️
 
 **INCIDENT RECORD (2026-02-11):** Claude fabricated scholarly references in the Classical Armenian text description:
