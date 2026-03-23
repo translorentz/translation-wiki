@@ -96,6 +96,9 @@ const en = {
   "search.loadMore": "Load More",
   "search.loading": "Loading...",
   "search.searchContent": "Search inside texts",
+  "search.searchingWithin": "Searching within:",
+  "search.clearFilter": "Clear",
+  "search.placeholderInText": "Search within this text...",
 
   // Auth - Login
   "login.title": "Sign In",
@@ -285,6 +288,7 @@ const en = {
   // Export
   "export.failed": "Failed to generate",
   "export.generating": "Generating...",
+  "export.search": "Search",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
 

@@ -63,8 +63,10 @@ export default function SearchClient() {
 
   // Initialize state from URL params
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const textSlug = searchParams.get("text") ?? undefined;
   const [searchContent, setSearchContent] = useState(() => {
-    return searchParams.get("content") === "1";
+    // Auto-enable content search when scoped to a text
+    return searchParams.get("content") === "1" || !!searchParams.get("text");
   });
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(() => {
     const langParam = searchParams.get("lang");
@@ -90,6 +92,7 @@ export default function SearchClient() {
       if (q) params.set("q", q);
       if (langs.length > 0) params.set("lang", langs.join(","));
       if (searchContent) params.set("content", "1");
+      if (textSlug) params.set("text", textSlug);
       const localePathname = localePath(pathname, locale);
       const newUrl = params.toString()
         ? `${localePathname}?${params.toString()}`
@@ -132,6 +135,7 @@ export default function SearchClient() {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
         targetLanguage,
+        textSlug,
         limit: RESULTS_PER_PAGE,
         offset: 0,
       },
@@ -157,6 +161,7 @@ export default function SearchClient() {
         q: query,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
         targetLanguage,
+        textSlug,
         limit: RESULTS_PER_PAGE,
         offset: 0,
         excludeTextIds,
@@ -213,6 +218,7 @@ export default function SearchClient() {
             q: query,
             languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
             targetLanguage,
+            textSlug,
             limit: RESULTS_PER_PAGE,
             offset: newOffset,
             excludeTextIds: allTextIds,
@@ -254,9 +260,34 @@ export default function SearchClient() {
     <main className="mx-auto max-w-3xl">
       <h1 className="mb-6 text-3xl font-bold">{t("search.title")}</h1>
 
+      {/* Text scope banner */}
+      {textSlug && (
+        <div className="mb-4 flex items-center justify-between rounded-md border bg-muted/50 px-4 py-2 text-sm">
+          <span>
+            {t("search.searchingWithin")}{" "}
+            <strong>
+              {titlesQuery.data?.chapters?.[0]?.textTitle ?? textSlug}
+            </strong>
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const params = new URLSearchParams();
+              if (query) params.set("q", query);
+              const base = localePath(pathname, locale);
+              router.replace(params.toString() ? `${base}?${params.toString()}` : base, { scroll: false });
+            }}
+            className="ml-2 h-6 px-2 text-xs"
+          >
+            {t("search.clearFilter")}
+          </Button>
+        </div>
+      )}
+
       <Input
         type="search"
-        placeholder={t("search.placeholder")}
+        placeholder={textSlug ? t("search.placeholderInText") : t("search.placeholder")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="mb-4"
@@ -274,8 +305,8 @@ export default function SearchClient() {
         {t("search.searchContent")}
       </label>
 
-      {/* Language filter */}
-      {languagesQuery.data && languagesQuery.data.length > 0 && (
+      {/* Language filter — hide when scoped to a single text */}
+      {!textSlug && languagesQuery.data && languagesQuery.data.length > 0 && (
         <div className="mb-6 flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">{t("search.filter")}</span>
           {languagesQuery.data.map((lang) => {

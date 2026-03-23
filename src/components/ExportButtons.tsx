@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Download, BookOpen, Loader2 } from "lucide-react";
+import { Download, BookOpen, Loader2, Search } from "lucide-react";
+import Link from "next/link";
 import { useTranslation } from "@/i18n";
 
 interface ExportButtonsProps {
@@ -62,6 +63,16 @@ export function ExportButtons({ textId, textTitle, textSlug }: ExportButtonsProp
   return (
     <div>
       <div className="flex flex-row gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          asChild
+        >
+          <Link href={`/search?text=${textSlug}`}>
+            <Search className="mr-2 h-4 w-4" />
+            {t("export.search")}
+          </Link>
+        </Button>
         <Button
           variant="outline"
           size="sm"

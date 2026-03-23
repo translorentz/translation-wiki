@@ -97,6 +97,9 @@ const hi: Translations = {
   "search.loadMore": "और लोड करें",
   "search.loading": "लोड हो रहा है...",
   "search.searchContent": "ग्रंथों के भीतर खोजें",
+  "search.searchingWithin": "इस ग्रंथ में खोज:",
+  "search.clearFilter": "हटाएँ",
+  "search.placeholderInText": "इस ग्रंथ में खोजें...",
 
   // Auth - Login
   "login.title": "साइन इन करें",
@@ -281,6 +284,7 @@ const hi: Translations = {
   // Export
   "export.failed": "उत्पन्न करने में विफल",
   "export.generating": "उत्पन्न हो रहा है...",
+  "export.search": "खोजें",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
 

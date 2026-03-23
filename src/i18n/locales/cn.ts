@@ -97,6 +97,9 @@ const cn: Translations = {
   "search.loadMore": "\u52A0\u8F7D\u66F4\u591A",
   "search.loading": "\u52A0\u8F7D\u4E2D\u2026\u2026",
   "search.searchContent": "搜索正文内容",
+  "search.searchingWithin": "在以下文本中搜索：",
+  "search.clearFilter": "清除",
+  "search.placeholderInText": "在此文本中搜索...",
 
   // Auth - Login
   "login.title": "\u767B\u5F55",
@@ -280,6 +283,7 @@ const cn: Translations = {
   // Export
   "export.failed": "生成失败",
   "export.generating": "生成中……",
+  "export.search": "搜索",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
 

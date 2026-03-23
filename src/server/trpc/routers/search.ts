@@ -9,6 +9,7 @@ const searchInputSchema = z.object({
   q: z.string().min(1).max(200),
   languages: z.array(z.string()).optional(),
   targetLanguage: z.string().optional(), // Filter translations by target language (en, zh, etc.)
+  textSlug: z.string().optional(), // Filter to search within a single text
   limit: z.number().min(1).max(50).default(20),
   offset: z.number().min(0).default(0),
 });
@@ -39,6 +40,52 @@ export const searchRouter = createTRPCRouter({
         input.languages && input.languages.length > 0
           ? inArray(languages.code, input.languages)
           : undefined;
+
+      // Build text scope filter for in-text search
+      const textScopeFilter = input.textSlug
+        ? eq(texts.slug, input.textSlug)
+        : undefined;
+
+      // If scoped to a single text, skip text-level title search (we already know the text)
+      if (input.textSlug) {
+        // Only search chapter titles within the scoped text
+        const chapterTitleCondition = or(
+          sql`unaccent(${chapters.title}) ILIKE unaccent(${pattern})`,
+          ilike(chapters.title, pattern)
+        );
+
+        const scopedConditions = [chapterTitleCondition, textScopeFilter].filter(Boolean);
+
+        const chapterResults = await db
+          .select({
+            chapterId: chapters.id,
+            chapterNumber: chapters.chapterNumber,
+            chapterTitle: chapters.title,
+            chapterTitleZh: chapters.titleZh,
+            chapterSlug: chapters.slug,
+            textId: texts.id,
+            textTitle: texts.title,
+            textSlug: texts.slug,
+            authorName: authors.name,
+            authorSlug: authors.slug,
+            langCode: languages.code,
+          })
+          .from(chapters)
+          .innerJoin(texts, eq(chapters.textId, texts.id))
+          .innerJoin(authors, eq(texts.authorId, authors.id))
+          .innerJoin(languages, eq(texts.languageId, languages.id))
+          .where(and(...scopedConditions))
+          .orderBy(chapters.chapterNumber)
+          .limit(input.limit + 1)
+          .offset(input.offset);
+
+        const hasMore = chapterResults.length > input.limit;
+        return {
+          texts: [],
+          chapters: hasMore ? chapterResults.slice(0, input.limit) : chapterResults,
+          hasMore,
+        };
+      }
 
       // Find texts matching by title or author name (unaccent for diacritic-insensitive matching)
       const textMatchConditions = or(
@@ -151,6 +198,14 @@ export const searchRouter = createTRPCRouter({
         sql`"translation_versions"."content_tsv" @@ ${tsQuery}`
       );
 
+      // Build text scope filter for in-text search
+      const textScopeFilter = input.textSlug
+        ? eq(texts.slug, input.textSlug)
+        : undefined;
+
+      // For in-text search, increase snippet limit to 30 per chapter
+      const snippetLimit = sql.raw(String(input.textSlug ? 30 : 3));
+
       // Build exclusions for texts/chapters already shown
       const exclusions: ReturnType<typeof notInArray>[] = [];
       if (input.excludeTextIds && input.excludeTextIds.length > 0) {
@@ -161,7 +216,7 @@ export const searchRouter = createTRPCRouter({
       }
 
       // Build WHERE clause, only adding conditions that exist
-      const conditions = [contentMatchConditions, langFilter, ...exclusions].filter(Boolean);
+      const conditions = [contentMatchConditions, langFilter, textScopeFilter, ...exclusions].filter(Boolean);
       const chapterWhereClause = conditions.length > 1
         ? and(...conditions)
         : conditions[0];
@@ -179,7 +234,7 @@ export const searchRouter = createTRPCRouter({
           authorName: authors.name,
           authorSlug: authors.slug,
           langCode: languages.code,
-          // Return up to 3 matching snippets with their paragraph indices
+          // Return matching snippets with their paragraph indices (3 for global, 30 for in-text)
           snippets: sql<string>`COALESCE(
             (
               SELECT jsonb_agg(jsonb_build_object(
@@ -190,7 +245,7 @@ export const searchRouter = createTRPCRouter({
                 SELECT para.value->>'text' as t, (para.value->>'index')::int as i
                 FROM jsonb_array_elements(${chapters.sourceContent}->'paragraphs') AS para
                 WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-                LIMIT 3
+                LIMIT ${snippetLimit}
               ) sub
             ),
             (
@@ -202,7 +257,7 @@ export const searchRouter = createTRPCRouter({
                 SELECT para.value->>'text' as t, (para.value->>'index')::int as i
                 FROM jsonb_array_elements(${translationVersions.content}->'paragraphs') AS para
                 WHERE lower(para.value->>'text') LIKE ${lowerPattern}
-                LIMIT 3
+                LIMIT ${snippetLimit}
               ) sub
             )
           )`.as('snippets'),
