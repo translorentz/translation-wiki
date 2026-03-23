@@ -20,6 +20,8 @@ const LANGUAGE_FONTS: Record<string, string> = {
   ta: "font-serif",
 };
 
+const RTL_LANGUAGES = new Set(["ar", "fa"]);
+
 /**
  * Renders inline _italic_ markers as <em> elements.
  * Matches Gutenberg convention: _word(s)_ for italicised text.
@@ -112,11 +114,13 @@ export function ParagraphPair({
           sourceFontClass,
           sourceLanguage === "zh" && "text-lg leading-loose",
           sourceLanguage === "grc" && "text-base leading-relaxed",
+          RTL_LANGUAGES.has(sourceLanguage) && "text-right",
           isPoetry && "leading-normal",
           // Hide source with smooth transition
           hideSource && "hidden"
         )}
         lang={sourceLanguage}
+        dir={RTL_LANGUAGES.has(sourceLanguage) ? "rtl" : undefined}
         aria-hidden={hideSource}
       >
         {sourceText !== null ? (
