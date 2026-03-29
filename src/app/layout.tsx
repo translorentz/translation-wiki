@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
 import Link from "next/link";
 import { headers } from "next/headers";
+import { Analytics } from "@vercel/analytics/next";
 import { TRPCReactProvider } from "@/trpc/client";
 import { UserNav } from "@/components/auth/UserNav";
 import { LanguageSwitcher } from "@/components/navigation/LanguageSwitcher";
@@ -114,6 +115,7 @@ export default async function RootLayout({
             </footer>
           </LocaleProvider>
         </TRPCReactProvider>
+        <Analytics />
       </body>
     </html>
   );
