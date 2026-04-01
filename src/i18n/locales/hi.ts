@@ -213,7 +213,7 @@ const hi: Translations = {
 
   // Highlight cards
   "highlights.zhuziyulei": "झू शी के शिष्यों द्वारा लिखा गया नव-कन्फ्यूशियाई दर्शन।",
-  "highlights.centanni": "एक शताब्दी की उथल-पुथल के दौरान मिलान का व्यापक उपन्यास।",
+  "highlights.daad": "उस्मानी बेरूत में एक द्रूज़ स्त्री का विद्रोह और लालसा।",
   "highlights.romaike": "उत्तर बीज़ान्टियम में दरबारी राजनीति, गृहयुद्ध और धार्मिक मतभेद।",
   "highlights.dongpozhilin": "निर्वासन में सू शी द्वारा उपाख्यान, स्वप्न और ध्यान।",
   "highlights.paluba":

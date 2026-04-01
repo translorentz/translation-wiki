@@ -214,7 +214,7 @@ const cn: Translations = {
 
   // Highlight cards
   "highlights.zhuziyulei": "朱熹门人所录的理学语录。",
-  "highlights.centanni": "一部跨越百年动荡的米兰全景小说。",
+  "highlights.daad": "奥斯曼贝鲁特，一位德鲁兹女子的反抗与渴望。",
   "highlights.romaike": "晚期拜占庭的宫廷政治、内战与神学纷争。",
   "highlights.dongpozhilin": "苏轼在贬谪期间的轶事、梦境与沉思。",
   "highlights.paluba": "解构心理现实主义的波兰先锋派元小说。",

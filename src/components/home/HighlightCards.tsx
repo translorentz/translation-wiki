@@ -11,7 +11,7 @@ type Highlight = {
   secondaryTitle: string;
   teaserKey:
     | "highlights.zhuziyulei"
-    | "highlights.centanni"
+    | "highlights.daad"
     | "highlights.romaike"
     | "highlights.dongpozhilin"
     | "highlights.paluba"
@@ -28,12 +28,12 @@ const HIGHLIGHTS_EN: Highlight[] = [
     teaserKey: "highlights.zhuziyulei",
   },
   {
-    slug: "cento-anni",
-    authorSlug: "giuseppe-rovani",
-    langCode: "it",
-    originalTitle: "Cent\u2019anni",
-    secondaryTitle: "A Hundred Years (Cento Anni)",
-    teaserKey: "highlights.centanni",
+    slug: "daad",
+    authorSlug: "chekri-ganem",
+    langCode: "fr",
+    originalTitle: "Da\u2019ad",
+    secondaryTitle: "Da\u2019ad",
+    teaserKey: "highlights.daad",
   },
   {
     slug: "romaike-historia",
@@ -63,12 +63,12 @@ const HIGHLIGHTS_ZH: Highlight[] = [
     teaserKey: "highlights.paluba",
   },
   {
-    slug: "cento-anni",
-    authorSlug: "giuseppe-rovani",
-    langCode: "it",
-    originalTitle: "Cent\u2019anni",
-    secondaryTitle: "\u767E\u5E74",
-    teaserKey: "highlights.centanni",
+    slug: "daad",
+    authorSlug: "chekri-ganem",
+    langCode: "fr",
+    originalTitle: "Da\u2019ad",
+    secondaryTitle: "\u8FBE\u963F\u5FB7",
+    teaserKey: "highlights.daad",
   },
   {
     slug: "romaike-historia",
@@ -98,12 +98,12 @@ const HIGHLIGHTS_HI: Highlight[] = [
     teaserKey: "highlights.zhuziyulei",
   },
   {
-    slug: "cento-anni",
-    authorSlug: "giuseppe-rovani",
-    langCode: "it",
-    originalTitle: "Cent\u2019anni",
-    secondaryTitle: "A Hundred Years (Cento Anni)",
-    teaserKey: "highlights.centanni",
+    slug: "daad",
+    authorSlug: "chekri-ganem",
+    langCode: "fr",
+    originalTitle: "Da\u2019ad",
+    secondaryTitle: "Da\u2019ad",
+    teaserKey: "highlights.daad",
   },
   {
     slug: "romaike-historia",

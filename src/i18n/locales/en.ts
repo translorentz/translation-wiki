@@ -217,7 +217,7 @@ const en = {
 
   // Highlight cards
   "highlights.zhuziyulei": "Neo-Confucian philosophy recorded by Zhu Xi's students.",
-  "highlights.centanni": "A panoramic novel of Milan across a century of upheaval.",
+  "highlights.daad": "A Druze woman's defiance and desire in Ottoman Beirut.",
   "highlights.romaike": "Court politics, civil wars, and theological rifts in late Byzantium.",
   "highlights.dongpozhilin": "Anecdotes, dreams, and meditations by Su Shi in exile.",
   "highlights.paluba":
