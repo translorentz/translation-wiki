@@ -13,7 +13,7 @@ type Highlight = {
     | "highlights.zhuziyulei"
     | "highlights.daad"
     | "highlights.romaike"
-    | "highlights.dongpozhilin"
+    | "highlights.capponi"
     | "highlights.paluba"
     | "highlights.shahnameh";
 };
@@ -44,12 +44,12 @@ const HIGHLIGHTS_EN: Highlight[] = [
     teaserKey: "highlights.romaike",
   },
   {
-    slug: "dongpo-zhilin",
-    authorSlug: "su-shi",
-    langCode: "zh",
-    originalTitle: "\u6771\u5761\u5FD7\u6797",
-    secondaryTitle: "Dongpo's Records from the Bamboo Grove",
-    teaserKey: "highlights.dongpozhilin",
+    slug: "storia-repubblica-firenze",
+    authorSlug: "gino-capponi",
+    langCode: "it",
+    originalTitle: "Storia della Repubblica di Firenze",
+    secondaryTitle: "History of the Republic of Florence",
+    teaserKey: "highlights.capponi",
   },
 ];
 

@@ -217,9 +217,9 @@ const en = {
 
   // Highlight cards
   "highlights.zhuziyulei": "Neo-Confucian philosophy recorded by Zhu Xi's students.",
-  "highlights.daad": "A Druze woman's defiance and desire in Ottoman Beirut.",
+  "highlights.daad": "A novel of love amid sectarian bloodshed in 1860 Mount Lebanon.",
   "highlights.romaike": "Court politics, civil wars, and theological rifts in late Byzantium.",
-  "highlights.dongpozhilin": "Anecdotes, dreams, and meditations by Su Shi in exile.",
+  "highlights.capponi": "Florence from commune to principate, by a Risorgimento statesman.",
   "highlights.paluba":
     "A metafictional Polish novel that deconstructs psychological realism through a self-aware narrator.",
   "highlights.shahnameh":
