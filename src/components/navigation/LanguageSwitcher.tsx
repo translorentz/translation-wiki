@@ -21,10 +21,13 @@ export function LanguageSwitcher() {
       ? (currentPath.replace(/^\/cn/, "") || "/")
       : locale === "hi"
       ? (currentPath.replace(/^\/hi/, "") || "/")
+      : locale === "es"
+      ? (currentPath.replace(/^\/es/, "") || "/")
       : currentPath;
     // Add locale prefix for non-English locales
     const newPath = newLocale === "cn" ? `/cn${basePath}`
       : newLocale === "hi" ? `/hi${basePath}`
+      : newLocale === "es" ? `/es${basePath}`
       : basePath;
     // Full navigation so middleware runs and sets the correct cookie
     window.location.href = `${newPath}${search}`;
@@ -36,6 +39,7 @@ export function LanguageSwitcher() {
     en: "En",
     cn: "\u4E2D",
     hi: "\u0939\u093F",
+    es: "Es",
   };
   const shortLabel = SHORT_LABELS[locale] ?? "En";
 

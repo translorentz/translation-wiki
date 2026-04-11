@@ -10,17 +10,20 @@ interface TextSummary {
   title: string;
   titleOriginalScript: string | null;
   titleZh: string | null;
+  titleEs: string | null;
   slug: string;
   totalChapters: number;
   genre?: string;
   compositionYearDisplay?: string | null;
   hasZhTranslation?: boolean;
   hasHiTranslation?: boolean;
+  hasEsTranslation?: boolean;
 }
 
 interface AuthorSummary {
   name: string;
   nameOriginalScript: string | null;
+  nameEs: string | null;
   slug: string;
   era: string | null;
   texts: TextSummary[];
@@ -103,7 +106,8 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                 {author.texts.map((text) => {
                   const titleDisplay = formatTextTitle(text, locale);
                   const isUntranslated = (locale === "cn" && text.hasZhTranslation === false)
-                    || (locale === "hi" && text.hasHiTranslation === false);
+                    || (locale === "hi" && text.hasHiTranslation === false)
+                    || (locale === "es" && text.hasEsTranslation === false);
                   return (
                     <Link
                       key={text.slug}
@@ -178,7 +182,8 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                       {author.texts.map((text) => {
                         const titleDisplay = formatTextTitle(text, locale);
                         const isUntranslated = (locale === "cn" && text.hasZhTranslation === false)
-                    || (locale === "hi" && text.hasHiTranslation === false);
+                    || (locale === "hi" && text.hasHiTranslation === false)
+                    || (locale === "es" && text.hasEsTranslation === false);
                         return (
                           <Link
                             key={text.slug}

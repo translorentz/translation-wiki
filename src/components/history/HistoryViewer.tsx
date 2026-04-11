@@ -59,7 +59,7 @@ export function HistoryViewer({ versions }: HistoryViewerProps) {
               </h3>
               <p className="text-sm text-muted-foreground">
                 {selectedVersion.author.username} &middot;{" "}
-                {new Date(selectedVersion.createdAt).toLocaleString(locale === "cn" ? "zh-CN" : locale === "hi" ? "hi-IN" : "en-US")}
+                {new Date(selectedVersion.createdAt).toLocaleString(locale === "cn" ? "zh-CN" : locale === "hi" ? "hi-IN" : locale === "es" ? "es-MX" : "en-US")}
               </p>
               {selectedVersion.editSummary && (
                 <p className="mt-1 text-sm italic text-muted-foreground">

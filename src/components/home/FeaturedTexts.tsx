@@ -17,6 +17,7 @@ interface FeaturedText {
   title: string;
   titleOriginalScript: string | null;
   titleZh: string | null;
+  titleEs: string | null;
   slug: string;
   totalChapters: number;
   compositionYear: number | null;
@@ -24,9 +25,11 @@ interface FeaturedText {
   compositionEra: string | null;
   hasZhTranslation?: boolean;
   hasHiTranslation?: boolean;
+  hasEsTranslation?: boolean;
   author: {
     name: string;
     nameOriginalScript: string | null;
+    nameEs: string | null;
     slug: string;
   };
   language: {
@@ -131,7 +134,8 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                         const titleDisplay = formatTextTitle(text, locale);
                         const authorDisplay = formatAuthorName(text.author, locale);
                         const isUntranslated = (locale === "cn" && text.hasZhTranslation === false)
-                          || (locale === "hi" && text.hasHiTranslation === false);
+                          || (locale === "hi" && text.hasHiTranslation === false)
+                          || (locale === "es" && text.hasEsTranslation === false);
                         return (
                           <>
                             <h3 className={cn(

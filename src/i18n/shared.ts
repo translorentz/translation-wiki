@@ -6,19 +6,21 @@
 import en, { type TranslationKey, type Translations } from "./locales/en";
 import cn from "./locales/cn";
 import hi from "./locales/hi";
+import es from "./locales/es";
 
 export type { TranslationKey, Translations };
 
-export type Locale = "en" | "cn" | "hi";
+export type Locale = "en" | "cn" | "hi" | "es";
 
 export const LOCALES: { code: Locale; label: string }[] = [
   { code: "en", label: "English" },
   { code: "cn", label: "\u4E2D\u6587" },
+  { code: "es", label: "Espa\u00F1ol" },
 ];
 
 export const LOCALE_COOKIE = "NEXT_LOCALE";
 
-const dictionaries = { en, cn, hi } as const;
+const dictionaries = { en, cn, hi, es } as const;
 
 export { dictionaries };
 

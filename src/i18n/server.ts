@@ -12,6 +12,7 @@ export async function getLocale(): Promise<Locale> {
   const raw = cookieStore.get(LOCALE_COOKIE)?.value;
   if (raw === "cn") return "cn";
   if (raw === "hi") return "hi";
+  if (raw === "es") return "es";
   return "en";
 }
 

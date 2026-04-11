@@ -17,12 +17,14 @@ interface LanguageGroup {
   authors: {
     name: string;
     nameOriginalScript: string | null;
+    nameEs: string | null;
     slug: string;
     era: string | null;
     texts: {
       title: string;
       titleOriginalScript: string | null;
       titleZh: string | null;
+      titleEs: string | null;
       slug: string;
       totalChapters: number;
       genre: string;
@@ -30,6 +32,7 @@ interface LanguageGroup {
       compositionYearDisplay: string | null;
       hasZhTranslation?: boolean;
       hasHiTranslation?: boolean;
+      hasEsTranslation?: boolean;
     }[];
   }[];
 }
@@ -50,6 +53,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     : null;
   const hiTranslatedIds = locale === "hi"
     ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
+    : null;
+  const esTranslatedIds = locale === "es"
+    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "es" }))
     : null;
 
   // Hide texts whose source language matches the viewer's native language
@@ -118,6 +124,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       authorGroup = {
         name: text.author.name,
         nameOriginalScript: text.author.nameOriginalScript,
+        nameEs: text.author.nameEs ?? null,
         slug: text.author.slug,
         era: text.author.era,
         texts: [],
@@ -129,6 +136,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       title: text.title,
       titleOriginalScript: text.titleOriginalScript,
       titleZh: text.titleZh ?? null,
+      titleEs: text.titleEs ?? null,
       slug: text.slug,
       totalChapters: text.totalChapters,
       genre: text.genre || "uncategorized",
@@ -136,6 +144,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       compositionYearDisplay: text.compositionYearDisplay ?? null,
       hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
       hasHiTranslation: hiTranslatedIds ? hiTranslatedIds.has(text.id) : undefined,
+      hasEsTranslation: esTranslatedIds ? esTranslatedIds.has(text.id) : undefined,
     });
   }
 

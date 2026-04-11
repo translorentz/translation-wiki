@@ -123,9 +123,14 @@ const HIGHLIGHTS_HI: Highlight[] = [
   },
 ];
 
+// Phase 0.3 stub: HIGHLIGHTS_ES aliased to HIGHLIGHTS_EN.
+// Phase 5 will populate a curated Spanish-specific array from a SQL query
+// of finished Spanish translations.
+const HIGHLIGHTS_ES: Highlight[] = HIGHLIGHTS_EN;
+
 export function HighlightCards({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
-  const highlights = locale === "cn" ? HIGHLIGHTS_ZH : locale === "hi" ? HIGHLIGHTS_HI : HIGHLIGHTS_EN;
+  const highlights = locale === "cn" ? HIGHLIGHTS_ZH : locale === "hi" ? HIGHLIGHTS_HI : locale === "es" ? HIGHLIGHTS_ES : HIGHLIGHTS_EN;
 
   return (
     <div>

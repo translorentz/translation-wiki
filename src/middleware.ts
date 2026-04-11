@@ -10,17 +10,21 @@ export default auth((req) => {
 
   // --- Locale routing ---
   // /cn/... is always the Chinese UI locale prefix.
-  // /hi/... is always the Hindi UI locale prefix.
   // /zh/... is always a Chinese source language route (never locale).
+  // /hi/... was the Hindi UI locale prefix; Hindi is delinked — redirect to English equivalent.
+  if (pathname.startsWith("/hi/") || pathname === "/hi") {
+    const englishPath = pathname.replace(/^\/hi/, "") || "/";
+    return NextResponse.redirect(new URL(englishPath + req.nextUrl.search, req.nextUrl.origin));
+  }
   const isCn = pathname.startsWith("/cn/") || pathname === "/cn";
-  const isHi = pathname.startsWith("/hi/") || pathname === "/hi";
-  const isLocalePrefix = isCn || isHi;
+  const isEs = pathname.startsWith("/es/") || pathname === "/es";
+  const isLocalePrefix = isCn || isEs;
   const effectivePath = isCn
     ? (pathname.replace(/^\/cn/, "") || "/")
-    : isHi
-    ? (pathname.replace(/^\/hi/, "") || "/")
+    : isEs
+    ? (pathname.replace(/^\/es/, "") || "/")
     : pathname;
-  const localePrefix = isCn ? "/cn" : isHi ? "/hi" : "";
+  const localePrefix = isCn ? "/cn" : isEs ? "/es" : "";
 
   // Protect edit routes — require authentication
   if (effectivePath.includes("/edit") && !isLoggedIn) {
@@ -38,7 +42,7 @@ export default auth((req) => {
 
   // --- Rewrite locale-prefixed paths to unprefixed paths + set cookie ---
   if (isLocalePrefix) {
-    const localeCode = isCn ? "cn" : "hi";
+    const localeCode = isCn ? "cn" : "es";
     const url = new URL(effectivePath + req.nextUrl.search, req.nextUrl.origin);
     const response = NextResponse.rewrite(url);
     response.cookies.set("NEXT_LOCALE", localeCode, {
@@ -53,7 +57,7 @@ export default auth((req) => {
   // --- Non-prefixed paths: reset stale locale cookie to en ---
   const cookieLocale = req.cookies.get("NEXT_LOCALE")?.value;
   const response = NextResponse.next();
-  if (cookieLocale === "cn" || cookieLocale === "hi") {
+  if (cookieLocale === "cn" || cookieLocale === "hi" || cookieLocale === "es") {
     response.cookies.set("NEXT_LOCALE", "en", {
       path: "/",
       maxAge: 365 * 24 * 60 * 60,
