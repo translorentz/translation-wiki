@@ -196,48 +196,58 @@ async function main() {
   const allTransText = transParas.map((p) => p.text).join("\n");
   const allSrcText = srcParas.map((p) => p.text).join("\n");
 
-  // 2. Em-dash dialogue: lines beginning with — or – followed by space
-  // scan each paragraph and each line
-  let emDashDialogueCount = 0;
-  const emDashExamples: string[] = [];
+  // 2. Quote convention check (pan-Hispanic RAE):
+  //    ACCEPTED: raya — at paragraph start (literary dialogue)
+  //    ACCEPTED: «...» comillas latinas (quotations)
+  //    ACCEPTED: curly "..." nested inside «»
+  //    FLAGGED: curly "..." as PRIMARY (when no «» and no paragraph-leading —)
+  //    FLAGGED: Japanese brackets 「」
+  //    FLAGGED: straight ASCII " or ' as quote marks
+  let hasGuillemets = false;
+  let hasLeadingRaya = false;
+  let curlyDoubleCount = 0;
+  const curlyExamples: string[] = [];
   for (const p of transParas) {
+    if (/[\u00ab\u00bb]/.test(p.text)) hasGuillemets = true;
     const lines = p.text.split("\n");
     for (const line of lines) {
-      if (/^[\u2014\u2013]\s/.test(line)) {
-        emDashDialogueCount++;
-        if (emDashExamples.length < 3) emDashExamples.push(line.slice(0, 80));
+      if (/^[\u2014\u2013]\s/.test(line)) hasLeadingRaya = true;
+    }
+    // Count curly doubles
+    const curlyMatches = p.text.match(/[\u201C\u201D]/g);
+    if (curlyMatches) {
+      curlyDoubleCount += curlyMatches.length;
+      if (curlyExamples.length < 3) {
+        const idx = p.text.indexOf("\u201C");
+        if (idx >= 0) curlyExamples.push(p.text.substring(Math.max(0, idx - 20), idx + 40));
       }
     }
   }
-  if (emDashDialogueCount > 0) {
+
+  // Heuristic: if the chapter has curly "" AND no «» AND no paragraph-leading —,
+  // then curly "" is being used as PRIMARY — which is WRONG for Spanish.
+  if (curlyDoubleCount > 0 && !hasGuillemets && !hasLeadingRaya) {
     failures.push({
-      check: "em_dash_dialogue",
-      expected: 0,
-      got: emDashDialogueCount,
-      details: emDashExamples.join(" | "),
+      check: "curly_primary_instead_of_guillemets_or_raya",
+      expected: "«...» for quotations OR — for dialogue",
+      got: `${curlyDoubleCount} curly \u201C\u201D as primary (no «» or — found)`,
+      details: curlyExamples.join(" | "),
     });
   }
 
-  // 3. Guillemets
-  const guillemetCount = (allTransText.match(/[«»]/g) || []).length;
-  if (guillemetCount > 0) {
-    failures.push({ check: "guillemets", expected: 0, got: guillemetCount });
-  }
-
-  // 4. Japanese brackets
+  // 3. Japanese brackets — always wrong
   const jpBracketCount = (allTransText.match(/[「」『』]/g) || []).length;
   if (jpBracketCount > 0) {
     failures.push({ check: "jp_brackets", expected: 0, got: jpBracketCount });
   }
 
-  // 5. Straight double quotes (should be all curly " " or single ' ')
+  // 4. Straight double quotes — always wrong
   const straightDoubleCount = (allTransText.match(/"/g) || []).length;
   if (straightDoubleCount > 0) {
     failures.push({ check: "straight_double_quote", expected: 0, got: straightDoubleCount });
   }
 
-  // 6. Straight single quotes NOT in apostrophe position (\w'\w is allowed)
-  // Remove all \w'\w occurrences, then count remaining '
+  // 5. Straight single quotes NOT in apostrophe position (\w'\w is allowed)
   const strippedSingles = allTransText.replace(/\w'\w/g, "__").replace(/\w'/g, "__");
   const straightSingleCount = (strippedSingles.match(/'/g) || []).length;
   if (straightSingleCount > 0) {

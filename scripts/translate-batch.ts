@@ -698,61 +698,111 @@ async function translateChapter(
       return false;
     }
 
-    // SPANISH QUOTE NORMALIZATION — deterministic post-processing to enforce the
-    // Universal Dialogue Punctuation Rule. The LLM is nondeterministic with quotes;
-    // this normalizer guarantees that every saved Spanish translation uses curly
-    // quotes exclusively. Applied ONLY when targetLanguage === "es".
+    // SPANISH QUOTE NORMALIZATION — deterministic post-processing to enforce
+    // pan-Hispanic RAE conventions (genre-driven):
+    //   - Character dialogue in narrative → raya em-dash — (paragraph start)
+    //   - Quotations / citations / terms → comillas latinas «...»
+    //   - Nested inside raya or «» → curly double ""
+    //   - Deeply nested → curly single ''
+    //   - NEVER curly "" as PRIMARY (that's English/Chinese style, not Spanish)
+    //
+    // This normalizer is a safety net for legacy / non-compliant LLM output.
+    // It INVERTS the previous (incorrect) normalizer which converted «» → curly "".
     //
     // Rules:
-    // - Convert straight ASCII " to curly " or " (using a simple toggle)
-    // - Convert straight ASCII ' to curly ' or ' (only when used as quotation, not apostrophe)
-    // - Convert «...» to "..."
-    // - Convert 「...」 to "...", 『...』 to "..."
-    // - Convert paragraph-leading "— " or "– " to "" wrapping (em-dash dialogue to curly quote)
-    // - Preserve em-dashes used mid-sentence as parenthetical (not at paragraph start)
+    // - Leave existing «...» alone (already correct for citations)
+    // - Leave paragraph-leading — alone (correct literary dialogue marker)
+    // - Leave inline —speaker— tags alone
+    // - Convert curly "..." / "..." primary → «...» (when not nested inside «»)
+    // - Convert Japanese brackets 「...」 / 『...』 → «...»
+    // - Convert straight ASCII " pairs → «...»
+    // - Preserve apostrophes in contractions (l', d', c'est, it's, o'clock)
+    //
+    // Applied ONLY when targetLanguage === "es".
     if (targetLanguage === "es") {
       const normalizeQuotes = (input: string): string => {
         let s = input;
-        // 1. Guillemets: «foo» → "foo"
-        s = s.replace(/«/g, "\u201C").replace(/»/g, "\u201D");
-        // 2. Japanese corner brackets
-        s = s.replace(/[「『]/g, "\u201C").replace(/[」』]/g, "\u201D");
-        // 3. Paragraph-leading em-dash dialogue: remove leading "— " / "– "
-        //    (then wrap the rest in curly quotes). Apply per-line.
-        s = s
-          .split("\n")
-          .map((line) => {
-            const m = line.match(/^([\u2014\u2013])\s*(.+)$/);
-            if (m) {
-              // Wrap the rest in curly quotes. Preserve trailing punctuation.
-              const rest = m[2]!.trim();
-              // Avoid double-wrapping if already quoted
-              if (rest.startsWith("\u201C")) return rest;
-              return `\u201C${rest}\u201D`;
-            }
-            return line;
-          })
-          .join("\n");
-        // 4. Straight double quotes " → alternating curly " and "
-        //    Simple heuristic: first " is opening, second is closing, etc.
+
+        // 1. Japanese corner brackets → «...» (quotations)
+        s = s.replace(/「([^」]{0,500})」/g, "\u00ab$1\u00bb");
+        s = s.replace(/『([^』]{0,500})』/g, "\u00ab$1\u00bb");
+        // Any stragglers (unmatched): best-effort conversion
+        s = s.replace(/[「『]/g, "\u00ab").replace(/[」』]/g, "\u00bb");
+
+        // 2. Curly "..." pairs → «...»
+        //    Only convert when NOT nested inside existing «...». We do this by
+        //    splitting on «»: process each outside-of-guillemets segment, then
+        //    reassemble with the inside-of-guillemets segments preserved.
+        //
+        //    Parse guillemet-bracketed regions first.
+        const segments: { inside: boolean; text: string }[] = [];
         {
-          const parts = s.split('"');
-          if (parts.length > 1) {
-            let out = parts[0]!;
-            for (let i = 1; i < parts.length; i++) {
-              out += i % 2 === 1 ? "\u201C" : "\u201D";
-              out += parts[i]!;
+          let depth = 0;
+          let buf = "";
+          for (let i = 0; i < s.length; i++) {
+            const ch = s[i]!;
+            if (ch === "\u00ab") {
+              if (depth === 0 && buf.length > 0) {
+                segments.push({ inside: false, text: buf });
+                buf = "";
+              }
+              depth++;
+              buf += ch;
+            } else if (ch === "\u00bb") {
+              buf += ch;
+              depth--;
+              if (depth === 0) {
+                segments.push({ inside: true, text: buf });
+                buf = "";
+              } else if (depth < 0) {
+                // Stray close — treat as outside
+                depth = 0;
+                segments.push({ inside: false, text: buf });
+                buf = "";
+              }
+            } else {
+              buf += ch;
             }
-            s = out;
+          }
+          if (buf.length > 0) {
+            segments.push({ inside: depth > 0, text: buf });
           }
         }
-        // 5. Straight single quotes ' used as quotation (not apostrophe).
-        //    Only convert ' when NOT bracketed by letters on both sides (which would
-        //    indicate an apostrophe in d', l', 'tis, etc.). We use a conservative
-        //    toggle: if ' appears in the position of quotation (after whitespace or
-        //    start of line, or before whitespace/punctuation), convert it.
+
+        // For each outside segment, convert curly "..." pairs → «...».
+        // Do NOT touch segments inside «», since curly "" there is legitimate
+        // (secondary nesting).
+        for (const seg of segments) {
+          if (seg.inside) continue;
+          // Pair up curly open/close. Use a non-greedy match.
+          seg.text = seg.text.replace(
+            /\u201C([^\u201C\u201D]{0,1500})\u201D/g,
+            "\u00ab$1\u00bb"
+          );
+          // Any straight ASCII " pairs: toggle (odd=open, even=close → «»)
+          // Walk the string and toggle.
+          {
+            const parts = seg.text.split('"');
+            if (parts.length > 1) {
+              let out = parts[0]!;
+              for (let i = 1; i < parts.length; i++) {
+                out += i % 2 === 1 ? "\u00ab" : "\u00bb";
+                out += parts[i]!;
+              }
+              seg.text = out;
+            }
+          }
+        }
+        s = segments.map((seg) => seg.text).join("");
+
+        // 3. Straight ASCII single quotes — conservative pass.
+        //    Convert ' to curly apostrophe/close-quote ONLY when it is clearly
+        //    NOT inside a word (which would indicate a contraction apostrophe
+        //    that must be preserved).
+        //    Since curly single quotes are the TERTIARY nesting level in
+        //    Spanish, they are rare at top level. We toggle them only when
+        //    the ' is at a clear quotation position.
         {
-          // Split the string preserving characters; walk through and toggle.
           const chars = [...s];
           let open = true;
           for (let i = 0; i < chars.length; i++) {
@@ -761,14 +811,19 @@ async function translateChapter(
             const next = i + 1 < chars.length ? chars[i + 1]! : "";
             const prevIsWord = /\w/.test(prev);
             const nextIsWord = /\w/.test(next);
-            // Apostrophe: word'word (e.g. d'amour, l'homme, it's)
+            // Apostrophe: word'word (e.g. d'amour, l'homme, it's, c'est) — preserve
             if (prevIsWord && nextIsWord) continue;
-            // Quotation: convert
+            // Word-final apostrophe (o', 'tis edge case): preserve
+            if (prevIsWord && !nextIsWord) continue;
+            // Leading apostrophe in a word ('tis, 'twas): preserve
+            if (!prevIsWord && nextIsWord && /[a-zA-Z]/.test(next)) continue;
+            // Otherwise treat as quotation marker → curly single
             chars[i] = open ? "\u2018" : "\u2019";
             open = !open;
           }
           s = chars.join("");
         }
+
         return s;
       };
       for (let i = 0; i < translated.length; i++) {

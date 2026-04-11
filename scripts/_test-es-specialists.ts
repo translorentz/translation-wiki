@@ -18,10 +18,10 @@ import {
   SPANISH_TARGET_BY_SOURCE,
 } from "../src/server/translation/prompts";
 
-// Distinctive markers
-const CURLY_RULE_MARKER = "comillas dobles curvas";
-const NO_EM_DASH_MARKER = "NUNCA uses raya";
-const NO_GUILLEMETS_MARKER = "NUNCA uses comillas latinas";
+// Distinctive markers — post-correction (pan-Hispanic RAE: raya dialogue + «» citations)
+const GUILLEMETS_CITATION_MARKER = "\u00ab"; // « opening guillemet must appear in every header
+const RAYA_DIALOGUE_MARKER = "RAYA"; // the rule about — as dialogue marker
+const NO_CURLY_PRIMARY_MARKER = "como marcador PRIMARIO"; // curly "" not primary (header text)
 const MX_MARKER = "Español de México";
 const NEUTRO_MARKER = "Español Neutro";
 const HEMISTICH_MARKER = "/"; // the literal forward slash (used in the rule explanation)
@@ -52,7 +52,7 @@ const specs: Spec[] = [
     textType: "poetry",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       HEMISTICH_RULE_TEXT,
       SLASH_RULE_TEXT,
@@ -67,7 +67,7 @@ const specs: Spec[] = [
     textType: "poetry",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       HEMISTICH_RULE_TEXT,
       SLASH_RULE_TEXT,
@@ -81,7 +81,7 @@ const specs: Spec[] = [
     textType: "poetry",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       HEMISTICH_RULE_TEXT,
       SLASH_RULE_TEXT,
@@ -96,11 +96,11 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       "Qajar",
       "mashruteh",
-      "«", // it MUST mention the guillemets conversion rule
+      "«",
     ],
   },
   {
@@ -109,11 +109,12 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       "文言文",
       "Confucio",
       "chengyu",
+      RAYA_DIALOGUE_MARKER,
     ],
   },
   {
@@ -122,7 +123,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       LINE_PRESERVATION_MARKER,
       VERSE_LINE_MARKER,
@@ -136,7 +137,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       "bizantino",
       "politónico",
@@ -151,7 +152,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       "Sima Qian",
       "Shiji",
@@ -164,7 +165,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       "Maupassant",
       "raya",
@@ -177,7 +178,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       "Risorgimento",
       "raya",
@@ -190,7 +191,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       "Tolstói",
       "patroním",
@@ -203,7 +204,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       "Voluntad Real",
       "Voluntad General",
@@ -219,7 +220,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       "Hutcheson",
       "sentido moral",
@@ -233,10 +234,11 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "mx",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       MX_MARKER,
       "victorian",
       "anglican",
+      RAYA_DIALOGUE_MARKER,
     ],
   },
   {
@@ -245,7 +247,7 @@ const specs: Spec[] = [
     textType: "prose",
     expectedRegister: "neutro",
     mustContain: [
-      CURLY_RULE_MARKER,
+      GUILLEMETS_CITATION_MARKER,
       NEUTRO_MARKER,
       "Plotino",
       "Proclo",
@@ -288,18 +290,23 @@ function runSpec(s: Spec): { pass: boolean; details: string[] } {
       genre: s.genre,
     });
 
-    // 1. Universal curly quote rule
-    if (!system.includes(CURLY_RULE_MARKER)) {
+    // 1. Universal pan-Hispanic quote rule (raya dialogue + «» citations):
+    //    - Must mention guillemets « as primary citation marker
+    //    - Must mention raya as dialogue marker
+    //    - Must explicitly forbid curly "" as PRIMARY
+    if (!system.includes(GUILLEMETS_CITATION_MARKER)) {
       pass = false;
-      details.push(`  FAIL: missing universal curly-quote rule (${CURLY_RULE_MARKER})`);
+      details.push(`  FAIL: missing guillemets citation marker (${GUILLEMETS_CITATION_MARKER})`);
     }
-    if (!system.includes(NO_EM_DASH_MARKER)) {
+    if (!system.includes(RAYA_DIALOGUE_MARKER)) {
       pass = false;
-      details.push(`  FAIL: missing em-dash prohibition (${NO_EM_DASH_MARKER})`);
+      details.push(`  FAIL: missing raya dialogue marker (${RAYA_DIALOGUE_MARKER})`);
     }
-    if (!system.includes(NO_GUILLEMETS_MARKER)) {
+    if (!system.includes(NO_CURLY_PRIMARY_MARKER)) {
       pass = false;
-      details.push(`  FAIL: missing guillemet prohibition (${NO_GUILLEMETS_MARKER})`);
+      details.push(
+        `  FAIL: missing "${NO_CURLY_PRIMARY_MARKER}" prohibition (curly "" must not be primary)`
+      );
     }
 
     // 2. Register header

@@ -6834,60 +6834,106 @@ DO NOT:
 // Hard rules (enforced by translate-batch.ts):
 // - deepseek-chat ONLY for Spanish — never deepseek-reasoner, including poetry.
 // - Spanish source texts are never translated to Spanish (ES→ES is a thrown error).
-// - Universal Dialogue Punctuation Rule applies: only curly "" / ''. Never em-dash dialogue,
-//   never «», never 「」. Source text punctuation does NOT carry over to translations.
+// - Pan-Hispanic RAE quote conventions (genre-driven, NOT register-driven):
+//     * Character dialogue in narrative (novels, stories, plays, verse) → raya em-dash —
+//       at paragraph start; inline speaker tags with —dijo él— pattern.
+//     * Quotations (citing sources, scholarly references, inline quotes, titles) → «...»
+//       comillas latinas.
+//     * Nested inside raya dialogue or «»: curly double "" .
+//     * Deeply nested: curly single '' .
+//     * NEVER use curly "" as primary — that is English/Chinese style, not Spanish.
+//     * NEVER use «» as dialogue markers in narrative; those are for quotations.
+//     * NEVER use Japanese brackets 「」, nor straight ASCII " / ' for quoting.
 // ============================================================
 
-export const SPANISH_HEADER_MX = `REGLAS DE PUNTUACIÓN DE COMILLAS (ABSOLUTAS — SIN EXCEPCIONES):
-- Todo diálogo debe usar comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- Esta regla se aplica a TODO material entrecomillado: diálogo, citas, títulos de obras, nombres propios entrecomillados (armas, barcos, caballos), términos técnicos enfatizados, ironía o énfasis — SIEMPRE usa \u201C...\u201D curvas, NUNCA comillas rectas " o '.
-- NUNCA emitas el carácter " (comilla doble recta ASCII U+0022) en ninguna parte de la traducción. Si necesitas entrecomillar algo, usa SIEMPRE \u201C...\u201D curvas.
-- NUNCA emitas el carácter ' (comilla simple recta ASCII U+0027) para entrecomillar. El apóstrofo en contracciones (d', l', 'tis) está permitido, pero nunca para entrecomillar citas o títulos.
-- NUNCA uses raya (—) como marca de diálogo. Convierte "— Hola." en \u201CHola.\u201D.
-- NUNCA uses comillas latinas «». Convierte «texto» en \u201Ctexto\u201D.
-- NUNCA uses corchetes japoneses 「」 ni 『』.
-- Las convenciones de puntuación del texto fuente NO se trasladan a la traducción. El texto traducido no está en el idioma fuente. Guiones largos franceses, guillemets rusos/franceses, corchetes japoneses, comillas rectas inglesas — NINGUNO aparece en español. TODO entrecomillado usa \u201C...\u201D.
-- Ejemplo corrupto (NUNCA hagas esto): El guerrero tomó su arco "Lamento del Cuervo" — usa \u201CLamento del Cuervo\u201D.
-- Ejemplo corrupto (NUNCA hagas esto): el poema \'Canto Primero\' — usa \u2018Canto Primero\u2019 o \u201CCanto Primero\u201D.
+export const SPANISH_HEADER_MX = `REGLAS DE PUNTUACIÓN DE COMILLAS Y DIÁLOGO (ABSOLUTAS — PAN-HISPÁNICAS, RAE + ASALE):
 
-REGISTRO (Español de México — literario):
-- Traduce al español mexicano con registro literario adecuado a lectores mexicanos.
+ESTAS REGLAS SON POR GÉNERO, NO POR REGISTRO. Tanto el español mexicano como el español neutro usan las MISMAS convenciones de diálogo y cita. NUNCA uses las convenciones inglesas ni chinas (\u201C...\u201D como marcador primario de diálogo).
+
+1. DIÁLOGO DE PERSONAJES EN NARRATIVA (novelas, cuentos, teatro, verso con discurso directo):
+   - Usa RAYA (guion largo) \u2014 al inicio del párrafo para abrir el parlamento.
+   - Usa raya inline \u2014dijo él\u2014 para los incisos del narrador dentro del parlamento.
+   - Ejemplo correcto: \u2014\u00bfQu\u00e9 piensas? \u2014pregunt\u00f3 \u00e9l\u2014. Dime la verdad.
+   - Ejemplo correcto: \u2014No lo har\u00e9 \u2014respondi\u00f3 Mar\u00eda\u2014, aunque me lo ruegues.
+   - NUNCA uses \u201C...\u201D curvas inglesas como marca primaria de di\u00e1logo narrativo. Eso es estilo ingl\u00e9s/chino, no espa\u00f1ol.
+   - NUNCA uses \u00ab...\u00bb comillas latinas como marca de di\u00e1logo narrativo. \u00ab\u00bb se reservan para citas, no para di\u00e1logo.
+
+2. CITAS Y REFERENCIAS (citar fuentes, obras acad\u00e9micas, citas inline, t\u00edtulos entrecomillados):
+   - Usa COMILLAS LATINAS (angulares) \u00ab...\u00bb como marca primaria.
+   - Ejemplo correcto: Cicer\u00f3n escribi\u00f3: \u00abDe mortuis nil nisi bonum\u00bb.
+   - Ejemplo correcto: El concepto de \u00abvirtud c\u00edvica\u00bb aparece en el Libro III.
+   - Las comillas latinas \u00ab\u00bb son el marcador por defecto para citas en TODA prosa acad\u00e9mica, filos\u00f3fica, hist\u00f3rica, teol\u00f3gica, cient\u00edfica y comentarios.
+
+3. NIVELES DE ANIDAMIENTO (jerarqu\u00eda RAE):
+   - Primario (di\u00e1logo): raya \u2014 ; Primario (citas): \u00ab...\u00bb
+   - Secundario (dentro de raya o dentro de \u00ab\u00bb): comillas dobles curvas \u201C...\u201D
+   - Terciario (anidado m\u00e1s profundo): comillas simples curvas \u2018...\u2019
+   - Ejemplo de anidamiento: \u2014 Me dijo: \u201Clee a Cicer\u00f3n cuando escribe \u2018virtus vera nobilitas\u2019\u201D.
+   - Ejemplo de cita con anidamiento: El ensayo sostiene que \u00abla frase \u201Cpacem in terris\u201D resume la doctrina\u00bb.
+
+4. PROHIBICIONES ABSOLUTAS:
+   - NUNCA emitas \u201C...\u201D curvas como marcador PRIMARIO. Solo como secundario dentro de raya o \u00ab\u00bb.
+   - NUNCA uses \u00ab\u00bb como marca de di\u00e1logo narrativo (eso es para citas).
+   - NUNCA uses corchetes japoneses \u300c\u300d ni \u300e\u300f.
+   - NUNCA uses comillas rectas ASCII " ni ' para entrecomillar (el ap\u00f3strofo en contracciones como d\u2019, l\u2019, c\u2019est s\u00ed est\u00e1 permitido en palabras extranjeras, pero no para entrecomillar).
+   - Las convenciones de puntuaci\u00f3n del texto fuente NO se trasladan autom\u00e1ticamente al espa\u00f1ol. Si el fuente usa \u300c\u300d o \u201C...\u201D o \u00ab\u00bb de forma distinta a la espa\u00f1ola, se convierte a la convenci\u00f3n espa\u00f1ola que corresponda (raya para di\u00e1logo, \u00ab\u00bb para citas).
+
+REGISTRO (Espa\u00f1ol de M\u00e9xico \u2014 literario):
+- Traduce al espa\u00f1ol mexicano con registro literario adecuado a lectores mexicanos.
 - NUNCA uses "vosotros"; usa "ustedes" para la segunda persona del plural.
-- Preferencias léxicas mexicanas cuando resulte natural: "carro" sobre "coche", "computadora" sobre "ordenador", "celular" sobre "móvil", "alberca" sobre "piscina", "jugo" sobre "zumo", "elevador" sobre "ascensor" (contextual), "manejar" sobre "conducir".
-- Evita vocabulario peninsular que resulte extraño a un lector mexicano (p. ej. "coger" en sentidos no literarios, "tío/tía" como vocativo coloquial, "vale" como afirmación).
-- Para textos literarios y poéticos, prioriza la cadencia literaria mexicana natural sobre la fidelidad literal a idioms del idioma fuente — pero preserva todos los nombres propios, términos técnicos y marcadores estructurales.
+- Preferencias l\u00e9xicas mexicanas cuando resulte natural: "carro" sobre "coche", "computadora" sobre "ordenador", "celular" sobre "m\u00f3vil", "alberca" sobre "piscina", "jugo" sobre "zumo", "elevador" sobre "ascensor" (contextual), "manejar" sobre "conducir".
+- Evita vocabulario peninsular que resulte extra\u00f1o a un lector mexicano (p. ej. "coger" en sentidos no literarios, "t\u00edo/t\u00eda" como vocativo coloquial, "vale" como afirmaci\u00f3n).
+- Para textos literarios y po\u00e9ticos, prioriza la cadencia literaria mexicana natural sobre la fidelidad literal a idioms del idioma fuente \u2014 pero preserva todos los nombres propios, t\u00e9rminos t\u00e9cnicos y marcadores estructurales.
 
-CONVENCIONES ORTOGRÁFICAS:
-- Usa ¿ al inicio de preguntas y ¡ al inicio de exclamaciones.
-- Preserva tildes (á, é, í, ó, ú), la letra ñ, y la diéresis (ü) según las reglas de la RAE.
-- Aplica acentuación correcta según las reglas vigentes de la RAE.
-- Los números, fechas y unidades siguen las convenciones internacionales hispanohablantes.`;
+CONVENCIONES ORTOGR\u00c1FICAS:
+- Usa \u00bf al inicio de preguntas y \u00a1 al inicio de exclamaciones.
+- Preserva tildes (\u00e1, \u00e9, \u00ed, \u00f3, \u00fa), la letra \u00f1, y la di\u00e9resis (\u00fc) seg\u00fan las reglas de la RAE.
+- Aplica acentuaci\u00f3n correcta seg\u00fan las reglas vigentes de la RAE.
+- Los n\u00fameros, fechas y unidades siguen las convenciones internacionales hispanohablantes.`;
 
-export const SPANISH_HEADER_NEUTRO = `REGLAS DE PUNTUACIÓN DE COMILLAS (ABSOLUTAS — SIN EXCEPCIONES):
-- Todo diálogo debe usar comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- Esta regla se aplica a TODO material entrecomillado: diálogo, citas, títulos de obras, nombres propios entrecomillados (armas, barcos, caballos), términos técnicos enfatizados, ironía o énfasis — SIEMPRE usa \u201C...\u201D curvas, NUNCA comillas rectas " o '.
-- NUNCA emitas el carácter " (comilla doble recta ASCII U+0022) en ninguna parte de la traducción. Si necesitas entrecomillar algo, usa SIEMPRE \u201C...\u201D curvas.
-- NUNCA emitas el carácter ' (comilla simple recta ASCII U+0027) para entrecomillar. El apóstrofo en contracciones (d', l', 'tis) está permitido, pero nunca para entrecomillar citas o títulos.
-- NUNCA uses raya (—) como marca de diálogo. Convierte "— Hola." en \u201CHola.\u201D.
-- NUNCA uses comillas latinas «». Convierte «texto» en \u201Ctexto\u201D.
-- NUNCA uses corchetes japoneses 「」 ni 『』.
-- Las convenciones de puntuación del texto fuente NO se trasladan a la traducción. El texto traducido no está en el idioma fuente. Guiones largos franceses, guillemets rusos/franceses, corchetes japoneses, comillas rectas inglesas — NINGUNO aparece en español. TODO entrecomillado usa \u201C...\u201D.
-- Ejemplo corrupto (NUNCA hagas esto): el término "substantia" aparece en el texto — usa \u201Csubstantia\u201D.
-- Ejemplo corrupto (NUNCA hagas esto): el libro \'De Anima\' — usa \u201CDe Anima\u201D.
+export const SPANISH_HEADER_NEUTRO = `REGLAS DE PUNTUACIÓN DE COMILLAS Y DIÁLOGO (ABSOLUTAS — PAN-HISPÁNICAS, RAE + ASALE):
 
-REGISTRO (Español Neutro — estándar internacional):
-- Traduce a Español Neutro, el registro estándar internacional compartido por los países hispanohablantes.
+ESTAS REGLAS SON POR GÉNERO, NO POR REGISTRO. Tanto el español mexicano como el español neutro usan las MISMAS convenciones de diálogo y cita. NUNCA uses las convenciones inglesas ni chinas (\u201C...\u201D como marcador primario de diálogo).
+
+1. DIÁLOGO DE PERSONAJES EN NARRATIVA (novelas, cuentos, teatro, verso con discurso directo):
+   - Usa RAYA (guion largo) \u2014 al inicio del párrafo para abrir el parlamento.
+   - Usa raya inline \u2014dijo él\u2014 para los incisos del narrador dentro del parlamento.
+   - Ejemplo correcto: \u2014\u00bfQu\u00e9 piensas? \u2014pregunt\u00f3 \u00e9l\u2014. Dime la verdad.
+   - NUNCA uses \u201C...\u201D curvas inglesas como marca primaria de di\u00e1logo narrativo.
+   - NUNCA uses \u00ab...\u00bb comillas latinas como marca de di\u00e1logo narrativo. \u00ab\u00bb se reservan para citas, no para di\u00e1logo.
+
+2. CITAS Y REFERENCIAS (citar fuentes, obras acad\u00e9micas, citas inline, t\u00e9rminos entrecomillados, t\u00edtulos):
+   - Usa COMILLAS LATINAS (angulares) \u00ab...\u00bb como marca primaria. Este es el marcador por defecto para TODA prosa acad\u00e9mica, filos\u00f3fica, hist\u00f3rica, teol\u00f3gica, cient\u00edfica y comentario.
+   - Ejemplo correcto: Cicer\u00f3n escribi\u00f3: \u00abDe mortuis nil nisi bonum\u00bb.
+   - Ejemplo correcto: El t\u00e9rmino \u00absubstantia\u00bb aparece en el Libro III.
+   - Ejemplo correcto: El libro \u00abDe Anima\u00bb de Arist\u00f3teles define el alma.
+
+3. NIVELES DE ANIDAMIENTO (jerarqu\u00eda RAE):
+   - Primario (di\u00e1logo): raya \u2014 ; Primario (citas): \u00ab...\u00bb
+   - Secundario (dentro de raya o dentro de \u00ab\u00bb): comillas dobles curvas \u201C...\u201D
+   - Terciario (anidado m\u00e1s profundo): comillas simples curvas \u2018...\u2019
+   - Ejemplo: El ensayo sostiene que \u00abla frase \u201Cpacem in terris\u201D resume la doctrina, donde la \u2018pax\u2019 es el centro\u00bb.
+
+4. PROHIBICIONES ABSOLUTAS:
+   - NUNCA emitas \u201C...\u201D curvas como marcador PRIMARIO. Solo como secundario dentro de raya o \u00ab\u00bb.
+   - NUNCA uses \u00ab\u00bb como marca de di\u00e1logo narrativo (eso es para citas).
+   - NUNCA uses corchetes japoneses \u300c\u300d ni \u300e\u300f.
+   - NUNCA uses comillas rectas ASCII " ni ' para entrecomillar (el ap\u00f3strofo en contracciones como d\u2019, l\u2019 s\u00ed est\u00e1 permitido en palabras extranjeras, pero no para entrecomillar).
+   - Las convenciones de puntuaci\u00f3n del texto fuente NO se trasladan autom\u00e1ticamente al espa\u00f1ol. Si el fuente usa \u300c\u300d o \u201C...\u201D o \u00ab\u00bb de forma distinta a la espa\u00f1ola, se convierte a la convenci\u00f3n espa\u00f1ola que corresponda.
+
+REGISTRO (Espa\u00f1ol Neutro \u2014 est\u00e1ndar internacional):
+- Traduce a Espa\u00f1ol Neutro, el registro est\u00e1ndar internacional compartido por los pa\u00edses hispanohablantes.
 - NO uses marcadores regionales (ni mexicanismos, ni argentinismos, ni peninsularismos).
 - NUNCA uses "vosotros" ni conjugaciones vosotras; usa "ustedes" para la segunda persona del plural.
-- Evita vocabulario peninsular exclusivo cuando exista una alternativa neutra ("coger" en sentidos no literarios, "ordenador" en lugar de "computadora/computador", "móvil" cuando "teléfono/celular" funcione mejor, "piscina" cuando "alberca" o simplemente "piscina" sea apropiado).
-- Usa normas léxicas latinoamericanas internacionales. Prefiere términos reconocibles por un lector educado desde México hasta Argentina.
-- El registro debe ser formal-neutro para filosofía, teología, comentario, historia y ciencia. Para textos devocionales, mantén la solemnidad litúrgica sin regionalismos.
+- Evita vocabulario peninsular exclusivo cuando exista una alternativa neutra ("coger" en sentidos no literarios, "ordenador" en lugar de "computadora/computador", "m\u00f3vil" cuando "tel\u00e9fono/celular" funcione mejor, "piscina" cuando "alberca" o simplemente "piscina" sea apropiado).
+- Usa normas l\u00e9xicas latinoamericanas internacionales. Prefiere t\u00e9rminos reconocibles por un lector educado desde M\u00e9xico hasta Argentina.
+- El registro debe ser formal-neutro para filosof\u00eda, teolog\u00eda, comentario, historia y ciencia. Para textos devocionales, mant\u00e9n la solemnidad lit\u00fargica sin regionalismos.
 
-CONVENCIONES ORTOGRÁFICAS:
-- Usa ¿ al inicio de preguntas y ¡ al inicio de exclamaciones.
-- Preserva tildes (á, é, í, ó, ú), la letra ñ, y la diéresis (ü) según las reglas de la RAE.
-- Aplica acentuación correcta según las reglas vigentes de la RAE.
-- Los números, fechas y unidades siguen las convenciones internacionales hispanohablantes.`;
+CONVENCIONES ORTOGR\u00c1FICAS:
+- Usa \u00bf al inicio de preguntas y \u00a1 al inicio de exclamaciones.
+- Preserva tildes (\u00e1, \u00e9, \u00ed, \u00f3, \u00fa), la letra \u00f1, y la di\u00e9resis (\u00fc) seg\u00fan las reglas de la RAE.
+- Aplica acentuaci\u00f3n correcta seg\u00fan las reglas vigentes de la RAE.
+- Los n\u00fameros, fechas y unidades siguen las convenciones internacionales hispanohablantes.`;
 
 /**
  * Universal Spanish base prompt — Mexican register.
@@ -7039,9 +7085,10 @@ REGLA ABSOLUTA DE HEMISTIQUIOS — LA REGLA MÁS IMPORTANTE DE ESTE PROMPT:
 REGLA DE DIÁLOGO EN PAREADOS — CRÍTICA:
 - Cuando un pareado introduce diálogo (p.ej. "چنین پاسخ آورد اسفندیار / که بی‌تو مبیناد کس روزگار" = "Así respondió Esfandiyar / que nadie vea el tiempo sin ti"), DEBES preservar la barra "/" entre los dos hemistiquios.
 - NO FUSIONES el hemistiquio introductorio ("Esfandiyar respondió") con el contenido del diálogo en una sola línea.
-- INCORRECTO (violación catastrófica): Así respondió Esfandiyār: \u201CQue nadie vea el tiempo sin ti\u201D  (falta la barra "/")
-- CORRECTO: Así respondió Esfandiyār / \u201CQue nadie vea el tiempo sin ti\u201D
-- El diálogo va dentro de comillas curvas \u201C...\u201D pero la barra "/" entre hemistiquios se preserva siempre.
+- En verso persa, el di\u00e1logo dentro de un pareado va entre comillas latinas \u00ab...\u00bb (no raya, porque las rayas confundir\u00edan con la estructura de pareado), y la barra "/" se preserva siempre.
+- INCORRECTO (violaci\u00f3n catastr\u00f3fica): As\u00ed respondi\u00f3 Esfandiy\u0101r: \u00abQue nadie vea el tiempo sin ti\u00bb  (falta la barra "/")
+- CORRECTO: As\u00ed respondi\u00f3 Esfandiy\u0101r / \u00abQue nadie vea el tiempo sin ti\u00bb
+- Para citas dentro del di\u00e1logo (niveles anidados): \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
 
 PRINCIPIOS CENTRALES:
 1. FIDELIDAD ABSOLUTA AL TEXTO: Tu prioridad más alta es la fidelidad a las palabras del original persa. NO añadas palabras sustantivas que no estén en el persa. NO omitas palabras sustantivas que sí estén en el persa.
@@ -7079,11 +7126,10 @@ KHWĪSH (خویش):
 CONDICIONALES IMPLÍCITAS:
 El persa omite con frecuencia "si/cuando" antes de un estado que lleva a una consecuencia. Traduce [ESTADO] + [CONSECUENCIA] como "Cuando/Si [estado], [consecuencia]."
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo en la traducción usa comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- NUNCA uses raya (—) como marca de diálogo.
-- NUNCA uses comillas latinas «». Si el persa usa «», conviértelas a \u201C\u201D.
-- Las convenciones de puntuación del persa NO se trasladan al español.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_MX):
+- Di\u00e1logo y citas en verso persa usan comillas latinas \u00ab...\u00bb (no raya, para no colisionar con la barra "/" del pareado). Anidadas: \u201C...\u201D y luego \u2018...\u2019.
+- Si el persa usa \u00ab\u00bb para citas, se preservan como \u00ab\u00bb en espa\u00f1ol (son las mismas comillas).
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario de di\u00e1logo o cita.
 
 NO HAGAS:
 - Añadir palabras sustantivas no presentes en el persa — VIOLACIÓN CRÍTICA
@@ -7147,10 +7193,10 @@ NOMBRES PROPIOS:
 - Transliteración en fonética española: Nava'i, Lutfi, Babur, Husayn Bayqara.
 - Topónimos: usa formas españolas comunes (Samarcanda, Bujará, Kabul, Herat).
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo usa comillas dobles curvas \u201C...\u201D. Las citas anidadas usan \u2018...\u2019.
-- NUNCA uses raya (—) como marca de diálogo.
-- NUNCA uses comillas latinas «» ni corchetes japoneses 「」.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_MX):
+- Di\u00e1logo y citas en verso chagatai usan comillas latinas \u00ab...\u00bb (no raya, para no colisionar con la barra "/" del pareado). Anidadas: \u201C...\u201D y luego \u2018...\u2019.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 NO HAGAS:
 - Añadir notas explicativas fuera de la estructura JSON
@@ -7206,9 +7252,10 @@ ENFOQUE DE TRADUCCIÓN:
 NOMBRES PROPIOS:
 - Babur, Samarcanda (no Semerkand), Kabul (no Kabil), Fergana, Jorasán, Hind
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo y cita usa comillas dobles curvas \u201C...\u201D; nido con \u2018...\u2019.
-- NUNCA raya (—), NUNCA «», NUNCA 「」.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_MX):
+- Di\u00e1logo y citas en verso usan comillas latinas \u00ab...\u00bb (no raya, para no colisionar con la barra "/" del pareado). Anidadas: \u201C...\u201D y luego \u2018...\u2019.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 NO HAGAS:
 - Añadir notas explicativas fuera del JSON
@@ -7233,12 +7280,13 @@ PRINCIPIOS CENTRALES:
 2. LEGIBILIDAD: Produce prosa española natural y fluida para una audiencia literaria.
 3. REGISTRO: Esta prosa tiene un registro distintivo — educado, discursivo, a menudo mezclando diálogo coloquial con pasajes filosóficos elevados. Preserva ambos registros fielmente.
 
-REGLA CRÍTICA DE COMILLAS — PERSA «» NO SE TRASLADA AL ESPAÑOL:
-- El texto fuente persa usa comillas latinas «...» para diálogo y citas. En tu traducción al español, TODAS estas se convierten en comillas dobles curvas \u201C...\u201D.
-- NUNCA reproduzcas «...» en la traducción española. Esto es innegociable.
-- Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- Si el fuente usa raya (—) para diálogo, conviértela también a \u201C...\u201D.
-- Las convenciones de puntuación del persa NO se trasladan al español. Todo diálogo en español usa \u201C...\u201D.
+REGLA CRÍTICA DE DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver SPANISH_HEADER_NEUTRO):
+- El texto fuente persa usa comillas latinas \u00ab...\u00bb. En espa\u00f1ol, las CITAS y referencias tambi\u00e9n usan \u00ab...\u00bb \u2014 por lo tanto, las comillas \u00ab\u00bb del persa pasan DIRECTAMENTE al espa\u00f1ol cuando funcionan como citas. No hace falta ninguna conversi\u00f3n.
+- Para DI\u00c1LOGO DE PERSONAJES dentro de la narrativa (cuando el texto tiene discurso directo narrativo, no cita), convierte el marcador fuente a RAYA \u2014 al inicio del p\u00e1rrafo del parlamento. Ejemplo: \u00ab\u2014 Lee la Constituci\u00f3n, amigo \u2014respondi\u00f3 el maestro.\u00bb
+- Cuando el texto cita un pasaje de otra obra (religioso, filos\u00f3fico, legal), usa \u00ab...\u00bb.
+- Anidadas: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario. Eso es estilo ingl\u00e9s, no espa\u00f1ol.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 GUÍA ESTILÍSTICA:
 - Preserva la voz distintiva del autor — a menudo directa, argumentativa, pedagógica.
@@ -7272,9 +7320,10 @@ NOMBRES Y LUGARES:
 NO HAGAS:
 - Añadir palabras no presentes en el texto fuente.
 - Omitir contenido sustantivo.
-- Usar raya (—), «» o 「」 como marcas de diálogo en la traducción.
-- Modernizar arcaísmos más allá de lo necesario para la comprensión.
-- Añadir notas explicativas fuera del JSON.`,
+- Usar \u201C...\u201D curvas como marcador primario de di\u00e1logo o cita (estilo ingl\u00e9s, no espa\u00f1ol).
+- Usar corchetes japoneses \u300c\u300d.
+- Modernizar arca\u00edsmos m\u00e1s all\u00e1 de lo necesario para la comprensi\u00f3n.
+- A\u00f1adir notas explicativas fuera del JSON.`,
 
   // Classical/Literary Chinese narrative prose
   "zh-literary": `${SPANISH_HEADER_MX}
@@ -7309,12 +7358,17 @@ CHENGYU Y PROSA PARALELA:
 - Los chengyu (成語, modismos de cuatro caracteres) se traducen por su significado idiomático, no literalmente, salvo cuando la imagen literal es parte del significado cultural. En ese caso añade glosa entre paréntesis.
 - La prosa paralela (駢文) — cláusulas apareadas con simetría sintáctica — debe preservarse en español cuando sea posible, con cláusulas equilibradas pero legibles.
 
-DIÁLOGO (ABSOLUTO):
-- 曰 = "dijo" (neutro) — identifica al hablante por el contexto.
-- Todo diálogo usa comillas dobles curvas \u201C...\u201D. Las citas anidadas usan \u2018...\u2019.
-- NUNCA uses raya (—), «» ni 「」 como marcas de diálogo.
-- Preserva preguntas retóricas, exclamaciones y registros emocionales.
-- Los memoriales cortesanos y discursos formales deben sonar formales; el diálogo casual debe sonar natural.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_MX):
+- 曰 = "dijo" (neutro) \u2014 identifica al hablante por el contexto.
+- Como esta es prosa narrativa literaria, el DI\u00c1LOGO de personajes usa RAYA \u2014 al inicio del p\u00e1rrafo del parlamento, con incisos del narrador tambi\u00e9n entre rayas (\u2014dijo el rey\u2014).
+  - Ejemplo: \u2014No puedo obedecerte \u2014respondi\u00f3 el general\u2014. Mi lealtad es para el Hijo del Cielo.
+- Las CITAS de textos can\u00f3nicos, proverbios, poemas citados o t\u00edtulos usan comillas latinas \u00ab...\u00bb.
+  - Ejemplo: Confucio dijo en las \u00abAnalectas\u00bb: \u00abEl hombre superior busca la virtud\u00bb.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario. Eso es estilo ingl\u00e9s/chino, no espa\u00f1ol.
+- NUNCA uses corchetes japoneses \u300c\u300d \u2014 si el fuente chino los usa, conv\u00edertelos a \u00ab\u00bb para citas o a raya para di\u00e1logo.
+- Preserva preguntas ret\u00f3ricas, exclamaciones y registros emocionales.
+- Los memoriales cortesanos y discursos formales deben sonar formales; el di\u00e1logo casual debe sonar natural.
 
 TÉRMINOS MILITARES Y POLÍTICOS:
 - 兵 tropas/soldados, 車 carros, 騎 caballería, 步 infantería
@@ -7384,10 +7438,15 @@ CARACTERÍSTICAS DEL LATÍN MEDIEVAL:
 - Los períodos extensos pueden dividirse en oraciones españolas más cortas cuando sea necesario para la claridad.
 - Los prólogos en prosa pueden preceder a las secciones en verso — traduce la prosa como prosa y el verso como verso.
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo y cita usa comillas dobles curvas \u201C...\u201D. Nido con \u2018...\u2019.
-- NUNCA raya (—), NUNCA «», NUNCA 「」.
-- Las citas bíblicas conservan su referencia (Mt 5,3; 1 Cor 13,4) con el texto entre comillas curvas.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_NEUTRO):
+- Como los textos latinos que traduce este especialista son prosa acad\u00e9mica/filos\u00f3fica/teol\u00f3gica (Cicer\u00f3n, Aquinas, Bocio, cr\u00f3nicas), el marcador primario es \u00ab...\u00bb para CITAS (b\u00edblicas, patr\u00edsticas, cl\u00e1sicas, t\u00e9rminos t\u00e9cnicos).
+- Ejemplo: Agust\u00edn escribe: \u00abTolle, lege\u00bb (\u00abToma, lee\u00bb).
+- Ejemplo: El t\u00e9rmino escol\u00e1stico \u00absubstantia\u00bb designa el sujeto de los accidentes.
+- Para di\u00e1logo en prosa (raro en este corpus, pero presente en di\u00e1logos ciceronianos y en las Confesiones), usa raya \u2014 al inicio del p\u00e1rrafo.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
+- Las citas b\u00edblicas conservan su referencia (Mt 5,3; 1 Cor 13,4) con el texto entre \u00ab...\u00bb.
 
 NO HAGAS:
 - Añadir notas explicativas fuera del JSON.
@@ -7421,10 +7480,14 @@ TERMINOLOGÍA:
 - Para términos filosóficos y teológicos, usa los equivalentes españoles establecidos cuando existan.
 - Conserva los términos griegos transliterados entre paréntesis cuando sean irreemplazables (oikonomia, theosis, apophatikos).
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo y cita usa comillas dobles curvas \u201C...\u201D. Nido con \u2018...\u2019.
-- NUNCA raya (—), NUNCA «», NUNCA 「」 — aunque el texto fuente use «» o —, conviértelos a \u201C\u201D.
-- Las citas bíblicas con su referencia: preserva la referencia (Jn 1,1) con el texto entre comillas curvas.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_NEUTRO):
+- Como esta es prosa acad\u00e9mica (historia bizantina, teolog\u00eda, filosof\u00eda), el marcador primario es \u00ab...\u00bb para CITAS.
+- Ejemplo: Juan Cris\u00f3stomo ense\u00f1a: \u00abLa oraci\u00f3n es el arma del creyente\u00bb.
+- Para di\u00e1logo en prosa (raro), usa raya \u2014 al inicio del p\u00e1rrafo.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
+- Las citas b\u00edblicas con su referencia: preserva la referencia (Jn 1,1) con el texto entre \u00ab...\u00bb.
 
 NO HAGAS:
 - Producir "traduccionese" que refleje el orden de palabras o la sintaxis griega.
@@ -7491,9 +7554,14 @@ VOZ DE SIMA QIAN:
 - Compara con frecuencia figuras históricas, extrae lecciones morales y expresa simpatía por los derrotados.
 - Preserva las citas de discursos, memoriales y poesía exactamente según su estructura.
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- 曰 = "dijo" (neutro). Todo diálogo usa comillas dobles curvas \u201C...\u201D. Nido con \u2018...\u2019.
-- NUNCA raya (—), NUNCA «», NUNCA 「」.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_NEUTRO):
+- 曰 = "dijo" (neutro). Como esta es prosa hist\u00f3rica formal acad\u00e9mica, el marcador primario para CITAS de memoriales, ed\u00e9ctos, discursos formales y textos cl\u00e1sicos es \u00ab...\u00bb.
+- Ejemplo: Sima Qian comenta: \u00abEl sabio sufre lo que el necio ignora\u00bb.
+- Para DI\u00c1LOGO directo narrativo dentro de las biograf\u00edas (cuando dos personajes conversan), usa raya \u2014 al inicio del p\u00e1rrafo del parlamento.
+  - Ejemplo: \u2014Debemos atacar al alba \u2014dijo el general\u2014. El enemigo no lo espera.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 NO HAGAS:
 - Añadir notas explicativas fuera del JSON.
@@ -7512,15 +7580,18 @@ PRINCIPIOS CENTRALES:
 2. LEGIBILIDAD: Produce un español natural y fluido apropiado para un lector general.
 3. SABOR DE ÉPOCA: Mantén el registro literario del siglo XIX sin que el español suene arcaico ni rígido.
 
-REGLA CRÍTICA — CONVERSIÓN DE LA RAYA FRANCESA:
-- La prosa francesa del siglo XIX usa raya (—) como marca de diálogo: "— Bonjour, Monsieur."
-- En español, TODO diálogo marcado con raya en el francés DEBE convertirse a comillas dobles curvas \u201C...\u201D. NUNCA reproduzcas la raya francesa como marca de diálogo en el español.
-- Ejemplo fuente: "— Bonjour, dit-il en souriant."
-- Ejemplo traducción: "\u201CBuenos días\u201D, dijo sonriendo."
-- Cuando un párrafo contiene múltiples hablantes separados por rayas, cada intervención debe quedar entre comillas dobles curvas por separado.
-- Las comillas latinas «...» del francés también se convierten a \u201C...\u201D.
-- Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- Las convenciones de puntuación del francés NO se trasladan al español. Esto es innegociable.
+REGLA CRÍTICA — LAS CONVENCIONES FRANCESAS PASAN DIRECTAMENTE AL ESPAÑOL:
+- La prosa francesa del siglo XIX usa raya (\u2014) como marca de di\u00e1logo: \u00ab\u2014 Bonjour, Monsieur.\u00bb
+- EL ESPA\u00d1OL USA LA MISMA CONVENCI\u00d3N: raya \u2014 al inicio del p\u00e1rrafo para el di\u00e1logo narrativo, con incisos entre rayas (\u2014dit-il / \u2014dijo\u2014).
+- POR LO TANTO, PRESERVA la raya \u2014 del franc\u00e9s DIRECTAMENTE en el espa\u00f1ol. No la conviertas a comillas.
+- Ejemplo fuente: \u00ab\u2014 Bonjour, dit-il en souriant.\u00bb
+- Ejemplo traducci\u00f3n: \u00ab\u2014 Buenos d\u00edas \u2014dijo sonriendo.\u00bb
+- Cuando un p\u00e1rrafo contiene m\u00faltiples hablantes separados por rayas, cada intervenci\u00f3n conserva su raya al inicio.
+- Las comillas latinas \u00ab...\u00bb del franc\u00e9s (usadas para CITAS y t\u00e9rminos, no para di\u00e1logo) tambi\u00e9n pasan DIRECTAMENTE al espa\u00f1ol \u2014 son la convenci\u00f3n espa\u00f1ola para citas.
+  - Ejemplo: El narrador invoca \u00abla gloire\u00bb \u2192 en espa\u00f1ol: El narrador invoca \u00abla gloire\u00bb (o traducido: \u00abla gloria\u00bb).
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador PRIMARIO de di\u00e1logo ni de cita. Eso es estilo ingl\u00e9s, no espa\u00f1ol ni franc\u00e9s.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 ESTILO Y TONO:
 - La prosa del siglo XIX francés presenta oraciones largas, alusiones clásicas y una voz narrativa distintiva.
@@ -7553,10 +7624,12 @@ NO HAGAS:
 - Modernizar inadecuadamente las actitudes de época, convenciones sociales o vocabulario.
 - Usar jerga o modismos anacrónicos.
 - Fusionar o dividir párrafos.
-- Reproducir rayas (—) francesas como marcas de diálogo en el español — VIOLACIÓN ABSOLUTA.
-- Usar español peninsular ("vosotros", "coger" en sentidos problemáticos).
+- Usar comillas dobles curvas \u201C...\u201D como marcador primario de di\u00e1logo o cita (estilo ingl\u00e9s, no espa\u00f1ol).
+- Usar corchetes japoneses \u300c\u300d.
+- Eliminar la raya francesa de di\u00e1logo \u2014 debe preservarse, porque el espa\u00f1ol usa la misma convenci\u00f3n.
+- Usar espa\u00f1ol peninsular ("vosotros", "coger" en sentidos problem\u00e1ticos).
 
-La traducción debe leerse como prosa literaria española pulida — algo que un lector disfrute como novela, no que apenas tolere como ejercicio de traducción.`,
+La traducci\u00f3n debe leerse como prosa literaria espa\u00f1ola pulida \u2014 algo que un lector disfrute como novela, no que apenas tolere como ejercicio de traducci\u00f3n.`,
 
   // 19th-century Italian literary prose
   "it-literary-19c": `${SPANISH_HEADER_MX}
@@ -7568,15 +7641,16 @@ PRINCIPIOS CENTRALES:
 2. LEGIBILIDAD: Produce un español natural y fluido apropiado para un lector general.
 3. SABOR DE ÉPOCA: Mantén el registro literario del siglo XIX sin que el español suene arcaico ni rígido.
 
-REGLA CRÍTICA — CONVERSIÓN DE LA RAYA ITALIANA:
-- La prosa italiana del siglo XIX usa raya (— o --) para introducir diálogo. DEBES convertir estas a comillas dobles curvas estándar en español.
-- "— Ordina quel che vuoi" → "\u201COrdena lo que quieras\u201D"
-- "—Come ti senti?—chiesi a Massimo" → "\u201C¿Cómo te sientes?\u201D, le pregunté a Massimo.
-- Cuando un párrafo contenga múltiples hablantes separados por rayas, cada intervención debe quedar entre comillas dobles curvas por separado: "— Anche noi. — rispose l'altro" → "\u201CNosotros también\u201D, respondió el otro.
-- NUNCA conserves la raya (—) como marca de diálogo en el español. Todo diálogo usa \u201C...\u201D.
-- Las comillas latinas «...» del italiano también se convierten a \u201C...\u201D.
-- Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- Las convenciones de puntuación del italiano NO se trasladan al español.
+REGLA CRÍTICA — LAS CONVENCIONES ITALIANAS PASAN DIRECTAMENTE AL ESPAÑOL:
+- La prosa italiana del siglo XIX usa raya (\u2014 o --) para introducir di\u00e1logo. EL ESPA\u00d1OL USA LA MISMA CONVENCI\u00d3N: raya \u2014 al inicio del p\u00e1rrafo del parlamento, con incisos del narrador entre rayas.
+- POR LO TANTO, PRESERVA la raya \u2014 del italiano DIRECTAMENTE en el espa\u00f1ol. No la conviertas a comillas.
+- \u00ab\u2014 Ordina quel che vuoi\u00bb \u2192 \u00ab\u2014 Ordena lo que quieras\u00bb
+- \u00ab\u2014Come ti senti? \u2014chiesi a Massimo\u00bb \u2192 \u00ab\u2014\u00bfC\u00f3mo te sientes? \u2014le pregunt\u00e9 a Massimo\u00bb
+- \u00ab\u2014 Anche noi. \u2014 rispose l'altro\u00bb \u2192 \u00ab\u2014 Nosotros tambi\u00e9n \u2014respondi\u00f3 el otro\u00bb
+- Las comillas latinas \u00ab...\u00bb del italiano (usadas para CITAS y t\u00e9rminos, no para di\u00e1logo) tambi\u00e9n pasan DIRECTAMENTE al espa\u00f1ol \u2014 son la convenci\u00f3n espa\u00f1ola para citas.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador PRIMARIO de di\u00e1logo ni de cita. Eso es estilo ingl\u00e9s, no espa\u00f1ol ni italiano.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 ESTILO Y TONO:
 - Esta es literatura italiana de la era del Risorgimento, a menudo con estructuras oracionales elaboradas, alusiones clásicas y voz narrativa dramática.
@@ -7607,8 +7681,10 @@ NO HAGAS:
 - Modernizar inadecuadamente las actitudes de época.
 - Usar jerga o modismos anacrónicos.
 - Fusionar o dividir párrafos.
-- Reproducir rayas (—) italianas como marcas de diálogo en el español — VIOLACIÓN ABSOLUTA.
-- Usar español peninsular ("vosotros", "coger" en sentidos problemáticos).`,
+- Usar comillas dobles curvas \u201C...\u201D como marcador primario de di\u00e1logo o cita (estilo ingl\u00e9s, no espa\u00f1ol).
+- Usar corchetes japoneses \u300c\u300d.
+- Eliminar la raya italiana de di\u00e1logo \u2014 debe preservarse, porque el espa\u00f1ol usa la misma convenci\u00f3n.
+- Usar espa\u00f1ol peninsular ("vosotros", "coger" en sentidos problem\u00e1ticos).`,
 
   // 19th-century Russian literary prose (Tolstoy, Dostoevsky, Chekhov, Turgenev, etc.)
   "ru-literary": `${SPANISH_HEADER_MX}
@@ -7625,13 +7701,14 @@ PRINCIPIOS CENTRALES:
 2. FIDELIDAD: Traduce con precisión, incluyendo las digresiones del autor, sus comentarios al margen y sus vuelos retóricos.
 3. LEGIBILIDAD: Produce prosa española natural que capture el espíritu del original.
 
-REGLA CRÍTICA — CONVERSIÓN DE LA RAYA RUSA:
-- La prosa rusa usa raya (—) como marca de diálogo. En español, TODO diálogo marcado con raya DEBE convertirse a comillas dobles curvas \u201C...\u201D.
-- Ejemplo: "— Здравствуйте, — сказал он." → "\u201CBuenos días\u201D, dijo.
-- Las comillas bajas «...» del ruso también se convierten a \u201C...\u201D.
-- NUNCA reproduzcas la raya ni las comillas latinas como marcas de diálogo en la traducción española.
-- Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- Las convenciones de puntuación del ruso NO se trasladan al español.
+REGLA CRÍTICA — LAS CONVENCIONES RUSAS PASAN DIRECTAMENTE AL ESPAÑOL:
+- La prosa rusa usa raya (\u2014) como marca de di\u00e1logo. EL ESPA\u00d1OL USA LA MISMA CONVENCI\u00d3N: raya \u2014 al inicio del p\u00e1rrafo del parlamento, con incisos del narrador entre rayas.
+- POR LO TANTO, PRESERVA la raya \u2014 del ruso DIRECTAMENTE en el espa\u00f1ol.
+- Ejemplo: \u00ab\u2014 \u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435, \u2014 \u0441\u043a\u0430\u0437\u0430\u043b \u043e\u043d.\u00bb \u2192 \u00ab\u2014 Buenos d\u00edas \u2014dijo.\u00bb
+- Las comillas bajas \u00ab...\u00bb del ruso (usadas para CITAS y t\u00e9rminos) pasan DIRECTAMENTE al espa\u00f1ol \u2014 son la convenci\u00f3n espa\u00f1ola para citas.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador PRIMARIO de di\u00e1logo ni de cita. Eso es estilo ingl\u00e9s, no espa\u00f1ol ni ruso.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 NOMBRES Y TÍTULOS:
 - Translitera consistentemente los nombres personales rusos a ortografía española natural (p. ej., Святославич → Sviatoslávich, Двоекуров → Dvoyékurov, Раскольников → Raskólnikov, Наташа → Natasha, Анна → Ana).
@@ -7660,8 +7737,10 @@ NO HAGAS:
 - Añadir notas explicativas fuera del JSON.
 - Normalizar técnicas narrativas irregulares o experimentales — presérvalas.
 - Sobreexplicar referencias culturales que el original deja sin explicar.
-- Reproducir rayas (—) rusas como marcas de diálogo en español — VIOLACIÓN ABSOLUTA.
-- Usar español peninsular ("vosotros", "coger" en sentidos problemáticos).`,
+- Usar comillas dobles curvas \u201C...\u201D como marcador primario de di\u00e1logo o cita (estilo ingl\u00e9s, no espa\u00f1ol).
+- Usar corchetes japoneses \u300c\u300d.
+- Eliminar la raya rusa de di\u00e1logo \u2014 debe preservarse, porque el espa\u00f1ol usa la misma convenci\u00f3n.
+- Usar espa\u00f1ol peninsular ("vosotros", "coger" en sentidos problem\u00e1ticos).`,
 
   // British Idealism (Bradley, Bosanquet, T.H. Green, Royce, etc.)
   "en-philosophy": `${SPANISH_HEADER_NEUTRO}
@@ -7731,15 +7810,17 @@ OBRAS (títulos establecidos en español):
 ESTILO DE EXPOSICIÓN:
 - Las oraciones de Bosanquet son a menudo muy largas y contienen múltiples cláusulas subordinadas y calificadores. Al traducir, preserva la jerarquía lógica; puedes segmentar moderadamente, pero no rompas el argumento.
 - El contraste sutil entre los sustantivos abstractos con artículo definido o indefinido (the Idea vs. an idea, the State vs. a state) debe marcarse en español con "la Idea" / "una idea", "el Estado" / "un estado".
-- Los términos entre comillas en el original (p. ej. "real" will, "ideal fact") conservan las comillas dobles curvas \u201C...\u201D en español.
-- Las frases en latín, francés o alemán se mantienen en el idioma original con traducción entre paréntesis.
+- Los términos entre comillas en el original (p. ej. "real" will, "ideal fact") se convierten a comillas latinas \u00ab...\u00bb en espa\u00f1ol (marcador primario de cita en prosa acad\u00e9mica).
+- Las frases en lat\u00edn, franc\u00e9s o alem\u00e1n se mantienen en el idioma original con traducci\u00f3n entre par\u00e9ntesis.
 
-CITAS Y BLOQUES DE CITA:
-- Bosanquet cita con frecuencia a Hegel, Rousseau y Mill. Las citas usan comillas dobles curvas \u201C...\u201D; las citas dentro de citas usan comillas simples curvas \u2018...\u2019.
-- Las referencias al final de las citas (p. ej., "Phil. of Right, § 258") se conservan en el original sin traducir.
-
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo y cita usa comillas dobles curvas \u201C...\u201D. NUNCA raya (—), NUNCA «», NUNCA 「」.
+CITAS Y BLOQUES DE CITA (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_NEUTRO):
+- Como esta es prosa filos\u00f3fica acad\u00e9mica (no narrativa), el marcador primario es \u00ab...\u00bb para TODAS las citas, referencias y t\u00e9rminos t\u00e9cnicos entrecomillados.
+- Bosanquet cita con frecuencia a Hegel, Rousseau y Mill: usa \u00ab...\u00bb. Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- Ejemplo: Bosanquet define el Estado como \u00abla realizaci\u00f3n \u00e9tica de la libertad\u00bb.
+- Ejemplo con anidamiento: Bradley argumenta que \u00abla frase \u201Cself-realisation\u201D encierra la totalidad del idealismo\u00bb.
+- Las referencias al final de las citas (p. ej., "Phil. of Right, \u00a7 258") se conservan en el original sin traducir.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 NO HAGAS:
 - Añadir notas explicativas fuera del JSON.
@@ -7805,11 +7886,15 @@ ESTILO:
 - Los sustantivos abstractos en mayúscula en el original (Beauty, Virtue, Reason) no requieren marca especial en español, pero los términos deben mantenerse consistentes.
 - Las frases latinas y griegas se traducen con el original entre paréntesis (p. ej., a priori → a priori (a priori); summum bonum → sumo bien (summum bonum)).
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo y cita usa comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- NUNCA raya (—), NUNCA «», NUNCA 「」.
-- Las cursivas del original (p. ej., Beauty, Virtue) no requieren reproducirse como formato, pero la consistencia terminológica sí debe mantenerse.
-- Las rayas largas internas del inglés del siglo XVIII (— o --) usadas como signo parentético pueden conservarse como raya española ( — ) cuando cumplen esa función, no como marca de diálogo.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_NEUTRO):
+- Como esta es prosa filos\u00f3fica acad\u00e9mica ilustrada (no narrativa), el marcador primario es \u00ab...\u00bb para TODAS las citas, t\u00e9rminos t\u00e9cnicos y referencias.
+- Ejemplo: Hutcheson define la virtud como \u00abla disposici\u00f3n estable a la benevolencia\u00bb.
+- Ejemplo: El principio de \u00abla mayor felicidad para el mayor n\u00famero\u00bb se remonta a Hutcheson.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
+- Las cursivas del original (p. ej., Beauty, Virtue) no requieren reproducirse como formato, pero la consistencia terminol\u00f3gica s\u00ed debe mantenerse.
+- Las rayas largas internas del ingl\u00e9s del siglo XVIII (\u2014 o --) usadas como signo parent\u00e9tico pueden conservarse como raya espa\u00f1ola (\u2014) cuando cumplen esa funci\u00f3n de inciso.
 
 NO HAGAS:
 - Añadir notas explicativas fuera del JSON.
@@ -7862,9 +7947,16 @@ ESTILO Y TONO:
 - Distingue con precisión entre monólogo interior, estilo indirecto libre y narración.
 - La ironía y el humor sutil son rasgos centrales — no los literaliza ni los explicites.
 
-DIÁLOGO (ABSOLUTO):
-- Todo diálogo usa comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- NUNCA raya (—) como marca de diálogo; NUNCA «»; NUNCA 「」.
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_MX):
+- REGLA CR\u00cdTICA: El ingl\u00e9s victoriano usa \u201C...\u201D curvas como marcador primario de di\u00e1logo. DEBES convertir este di\u00e1logo a RAYA \u2014 espa\u00f1ola al inicio del p\u00e1rrafo del parlamento, con incisos del narrador entre rayas.
+- Ejemplo fuente: \u201CI cannot marry him,\u201D she said, \u201Cnot even for the living.\u201D
+- Ejemplo traducci\u00f3n: \u2014No puedo casarme con \u00e9l \u2014dijo\u2014, ni siquiera por el beneficio eclesi\u00e1stico.
+- Para CITAS b\u00edblicas, patr\u00edsticas, hist\u00f3ricas, t\u00edtulos de obras y t\u00e9rminos teol\u00f3gicos entrecomillados, usa \u00ab...\u00bb. Los textos teol\u00f3gicos de este corpus (Newman, Mrs. Humphry Ward) se apoyan mucho en citas b\u00edblicas.
+  - Ejemplo: San Pablo escribe: \u00abTodo es puro para los puros\u00bb.
+  - Ejemplo: El t\u00e9rmino \u00abhigh criticism\u00bb designa la cr\u00edtica b\u00edblica acad\u00e9mica.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb (dentro de raya, lo mismo: \u2014... \u201C...\u201D ...).
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador PRIMARIO de di\u00e1logo narrativo. Eso es estilo ingl\u00e9s, no espa\u00f1ol.
+- NUNCA uses corchetes japoneses \u300c\u300d.
 
 NO HAGAS:
 - Añadir notas explicativas fuera del JSON.
@@ -7937,10 +8029,14 @@ ESTRUCTURA DE LA ORACIÓN:
 - Divide estos en oraciones españolas más cortas cuando mejore la claridad, pero preserva la arquitectura lógica del argumento.
 - Prefiere la voz activa cuando el significado lo permita.
 
-DIÁLOGO Y CITAS (ABSOLUTO):
-- Todo diálogo y cita usa comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
-- NUNCA raya (—), NUNCA «», NUNCA 「」.
-- Las citas de Platón, Aristóteles u otros autores con su referencia estándar se preservan (p. ej., Rep. 509b, Met. 1028a).
+DIÁLOGO Y CITAS (PAN-HISPÁNICO — ver encabezado SPANISH_HEADER_NEUTRO):
+- Como esta es prosa filos\u00f3fica neoplat\u00f3nica acad\u00e9mica, el marcador primario es \u00ab...\u00bb para TODAS las citas, t\u00e9rminos t\u00e9cnicos griegos y referencias de Plat\u00f3n o Arist\u00f3teles.
+- Ejemplo: Plotino ense\u00f1a que \u00abel Uno est\u00e1 m\u00e1s all\u00e1 del ser\u00bb.
+- Ejemplo: El t\u00e9rmino \u00abhypostasis\u00bb designa un nivel real del ser.
+- Niveles anidados: \u00ab ... \u201C ... \u2018 ... \u2019 ... \u201D ... \u00bb.
+- NUNCA uses comillas dobles curvas \u201C...\u201D como marcador primario.
+- NUNCA uses corchetes japoneses \u300c\u300d.
+- Las citas de Plat\u00f3n, Arist\u00f3teles u otros autores con su referencia est\u00e1ndar se preservan (p. ej., Rep. 509b, Met. 1028a) con el texto entre \u00ab...\u00bb.
 
 NO HAGAS:
 - Producir "traduccionese" que refleje el orden de palabras griego.
