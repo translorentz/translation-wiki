@@ -42,9 +42,11 @@ if (fs.existsSync(envPath)) {
     if (dbMatch) {
       process.env.DATABASE_URL = dbMatch[1].replace(/^['"]|['"]$/g, "");
     }
-    const dsMatch = line.match(/^DEEPSEEK_API_KEY=(.+)$/);
+    // Load DEEPSEEK_API_KEY, DEEPSEEK_API_KEYS, DEEPSEEK_API_KEY_2..10,
+    // and DEEPSEEK_EXTRA_API_2..10 for multi-key pooling.
+    const dsMatch = line.match(/^(DEEPSEEK_API_KEY|DEEPSEEK_API_KEYS|DEEPSEEK_API_KEY_\d+|DEEPSEEK_EXTRA_API_\d+)=(.+)$/);
     if (dsMatch) {
-      process.env.DEEPSEEK_API_KEY = dsMatch[1].replace(/^['"]|['"]$/g, "");
+      process.env[dsMatch[1]] = dsMatch[2].replace(/^['"]|['"]$/g, "");
     }
   }
 }
@@ -55,15 +57,71 @@ if (!connectionString) {
   process.exit(1);
 }
 
-const apiKey = process.env.DEEPSEEK_API_KEY;
-if (!apiKey) {
-  console.error("DEEPSEEK_API_KEY is required.");
+// ============================================================
+// Multi-key DeepSeek pool
+// ============================================================
+// Load all DeepSeek API keys from env vars (supports several naming
+// conventions) and build a round-robin client pool. Concurrent
+// translate-batch.ts workers thereby distribute load across keys,
+// multiplying throughput up to the organization-level quota cap.
+function loadDeepseekKeys(): string[] {
+  const keys: string[] = [];
+  // Comma-separated (optional form)
+  if (process.env.DEEPSEEK_API_KEYS) {
+    keys.push(
+      ...process.env.DEEPSEEK_API_KEYS.split(",").map((k) => k.trim()).filter(Boolean)
+    );
+  }
+  // Primary single key
+  if (process.env.DEEPSEEK_API_KEY) keys.push(process.env.DEEPSEEK_API_KEY);
+  // Extra numbered keys: DEEPSEEK_API_KEY_2 .. _10
+  for (let i = 2; i <= 10; i++) {
+    const k = process.env[`DEEPSEEK_API_KEY_${i}`];
+    if (k) keys.push(k);
+  }
+  // Extra numbered keys: DEEPSEEK_EXTRA_API_2 .. _10
+  for (let i = 2; i <= 10; i++) {
+    const k = process.env[`DEEPSEEK_EXTRA_API_${i}`];
+    if (k) keys.push(k);
+  }
+  return Array.from(new Set(keys.filter(Boolean)));
+}
+
+const DEEPSEEK_KEYS = loadDeepseekKeys();
+if (DEEPSEEK_KEYS.length === 0) {
+  console.error("No DeepSeek API keys found (tried DEEPSEEK_API_KEY, DEEPSEEK_API_KEYS, DEEPSEEK_API_KEY_2..10, DEEPSEEK_EXTRA_API_2..10).");
   process.exit(1);
+}
+console.log(`Loaded ${DEEPSEEK_KEYS.length} DeepSeek API key${DEEPSEEK_KEYS.length === 1 ? "" : "s"}`);
+
+const deepseekClients = DEEPSEEK_KEYS.map(
+  (key) => new OpenAI({ apiKey: key, baseURL: "https://api.deepseek.com" })
+);
+
+let nextClientIdx = 0;
+function getNextClient(): OpenAI {
+  const c = deepseekClients[nextClientIdx % deepseekClients.length];
+  nextClientIdx++;
+  return c;
+}
+
+// Cache-stability + effectiveness tracking
+let cacheHitTokensTotal = 0;
+let cacheMissTokensTotal = 0;
+let cacheSampledCalls = 0;
+const systemPromptHashes = new Set<string>();
+function hashPrompt(s: string): string {
+  // Simple FNV-1a 32-bit hash — no crypto needed, just for stability log
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
 }
 
 const client = postgres(connectionString);
 const db = drizzle(client, { schema });
-const openai = new OpenAI({ apiKey, baseURL: "https://api.deepseek.com" });
 
 const DEFAULT_DELAY_MS = 3000;
 const DEFAULT_MODEL = "deepseek-chat";
@@ -508,7 +566,11 @@ async function translateBatch(
       genre,
     });
 
-    const response = await openai.chat.completions.create({
+    const clientForCall = getNextClient();
+    const sysHash = hashPrompt(system);
+    systemPromptHashes.add(`${sourceLanguage}->${targetLanguage}:${sysHash}`);
+
+    const response = await clientForCall.chat.completions.create({
       model: MODEL,
       max_tokens: 8192,
       messages: [
@@ -516,6 +578,30 @@ async function translateBatch(
         { role: "user", content: user },
       ],
     });
+
+    // Capture DeepSeek server-side prompt cache usage (transparent caching).
+    // Fields: prompt_cache_hit_tokens / prompt_cache_miss_tokens (DeepSeek
+    // specific; not part of the OpenAI standard type).
+    const usage = response.usage as unknown as {
+      prompt_tokens?: number;
+      completion_tokens?: number;
+      prompt_cache_hit_tokens?: number;
+      prompt_cache_miss_tokens?: number;
+    } | undefined;
+    if (usage) {
+      const hit = usage.prompt_cache_hit_tokens ?? 0;
+      const miss = usage.prompt_cache_miss_tokens ?? 0;
+      cacheHitTokensTotal += hit;
+      cacheMissTokensTotal += miss;
+      cacheSampledCalls++;
+      const total = hit + miss;
+      if (total > 0) {
+        const pct = ((hit / total) * 100).toFixed(1);
+        process.stdout.write(
+          `      [cache] hit=${hit} miss=${miss} (${pct}% hit) sysHash=${sysHash}\n`
+        );
+      }
+    }
 
     const content = response.choices[0]?.message?.content;
     if (!content) {
@@ -1646,6 +1732,18 @@ async function main() {
   console.log(
     `Translated: ${totalTranslated}, Skipped: ${totalSkipped}, Errors: ${totalErrors}`
   );
+
+  // Cache effectiveness summary
+  if (cacheSampledCalls > 0) {
+    const total = cacheHitTokensTotal + cacheMissTokensTotal;
+    const pct = total > 0 ? ((cacheHitTokensTotal / total) * 100).toFixed(1) : "0.0";
+    console.log(
+      `Cache: ${cacheHitTokensTotal} hit / ${cacheMissTokensTotal} miss tokens across ${cacheSampledCalls} calls (${pct}% hit rate)`
+    );
+    console.log(
+      `Distinct system-prompt hashes observed: ${systemPromptHashes.size} (fewer = better cache reuse)`
+    );
+  }
 
   await client.end();
 }
