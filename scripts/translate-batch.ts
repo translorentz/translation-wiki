@@ -1,7 +1,14 @@
 /**
  * Batch translates untranslated chapters using the Claude API.
  *
- * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS] [--target-language en|zh] [--model deepseek-chat|deepseek-reasoner]
+ * Usage: pnpm translate:batch [--text zhuziyulei|ceremonialis] [--start N] [--end N] [--delay MS] [--target-language en|zh|es] [--model deepseek-chat|deepseek-reasoner]
+ *
+ * Target languages:
+ *   en  British English (default)
+ *   zh  Simplified Chinese
+ *   es  Spanish — hard-locked to deepseek-chat; register auto-resolved
+ *       (Mexican for literature/poetry, Español Neutro for everything else).
+ *       Forbidden: es → es (Spanish source texts are never translated to Spanish).
  *
  * Prerequisites:
  * - Database seeded with chapters (pnpm db:seed)
@@ -424,7 +431,9 @@ function splitTextIntoSubChunks(text: string, sourceLanguage: string, maxChunkCh
 async function translateLongParagraphViaSplitting(
   paragraph: Paragraph,
   sourceLanguage: string,
-  targetLanguage: string
+  targetLanguage: string,
+  textType: string | null = null,
+  genre: string | null = null
 ): Promise<Paragraph> {
   // Use a SMALLER chunk size than normal batching — we're here because the
   // paragraph was too long for normal translation, so be more aggressive
@@ -444,7 +453,7 @@ async function translateLongParagraphViaSplitting(
 
     for (let attempt = 1; attempt <= MAX_SUB_RETRIES; attempt++) {
       try {
-        const result = await translateBatch([subParagraph], sourceLanguage, targetLanguage);
+        const result = await translateBatch([subParagraph], sourceLanguage, targetLanguage, textType, genre);
         if (result.length > 0 && result[0].text.trim()) {
           translatedParts.push(result[0].text);
           translated = true;
@@ -483,7 +492,9 @@ const MISMATCH_MAX_RETRIES = 2;
 async function translateBatch(
   paragraphs: Paragraph[],
   sourceLanguage: string,
-  targetLanguage: string = "en"
+  targetLanguage: string = "en",
+  textType: string | null = null,
+  genre: string | null = null
 ): Promise<Paragraph[]> {
   const expectedIndices = paragraphs.map((p) => p.index);
 
@@ -492,6 +503,8 @@ async function translateBatch(
       sourceLanguage,
       paragraphs,
       targetLanguage,
+      textType,
+      genre,
     });
 
     const response = await openai.chat.completions.create({
@@ -545,14 +558,16 @@ async function translateBatchWithRetry(
   batchNum: number,
   totalBatches: number,
   depth: number = 0,
-  targetLanguage: string = "en"
+  targetLanguage: string = "en",
+  textType: string | null = null,
+  genre: string | null = null
 ): Promise<{ results: Paragraph[]; failed: number }> {
   const MAX_RETRIES = 3;
   const label = totalBatches > 1 ? `    batch ${batchNum}/${totalBatches}` : "    batch 1/1";
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const result = await translateBatch(paragraphs, sourceLanguage, targetLanguage);
+      const result = await translateBatch(paragraphs, sourceLanguage, targetLanguage, textType, genre);
       process.stdout.write(`${label} (${result.length} paragraphs)\n`);
       return { results: result, failed: 0 };
     } catch (err) {
@@ -573,9 +588,9 @@ async function translateBatchWithRetry(
     process.stdout.write(`${label} splitting batch (${paragraphs.length} → ${firstHalf.length}+${secondHalf.length})\n`);
 
     await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
-    const r1 = await translateBatchWithRetry(firstHalf, sourceLanguage, batchNum, totalBatches, depth + 1, targetLanguage);
+    const r1 = await translateBatchWithRetry(firstHalf, sourceLanguage, batchNum, totalBatches, depth + 1, targetLanguage, textType, genre);
     await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
-    const r2 = await translateBatchWithRetry(secondHalf, sourceLanguage, batchNum, totalBatches, depth + 1, targetLanguage);
+    const r2 = await translateBatchWithRetry(secondHalf, sourceLanguage, batchNum, totalBatches, depth + 1, targetLanguage, textType, genre);
 
     return { results: [...r1.results, ...r2.results], failed: r1.failed + r2.failed };
   }
@@ -584,7 +599,7 @@ async function translateBatchWithRetry(
   if (paragraphs.length === 1 && paragraphs[0].text.length > 500) {
     try {
       process.stdout.write(`${label} trying split-translate-rejoin for para ${paragraphs[0].index} (${paragraphs[0].text.length} chars)\n`);
-      const result = await translateLongParagraphViaSplitting(paragraphs[0], sourceLanguage, targetLanguage);
+      const result = await translateLongParagraphViaSplitting(paragraphs[0], sourceLanguage, targetLanguage, textType, genre);
       return { results: [result], failed: 0 };
     } catch (splitErr) {
       process.stdout.write(`${label} split-translate also failed: ${(splitErr as Error).message}\n`);
@@ -612,7 +627,8 @@ async function translateChapter(
   systemUserId: number,
   textSlug: string,
   targetLanguage: string = "en",
-  textType: string = "prose"
+  textType: string = "prose",
+  genre: string | null = null
 ): Promise<boolean> {
   const sourceContent = chapter.sourceContent as {
     paragraphs: Paragraph[];
@@ -647,7 +663,7 @@ async function translateChapter(
       if (i > 0) {
         await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
       }
-      const batchResult = await translateBatchWithRetry(chunks[i], sourceLanguage, i + 1, chunks.length, 0, targetLanguage);
+      const batchResult = await translateBatchWithRetry(chunks[i], sourceLanguage, i + 1, chunks.length, 0, targetLanguage, textType, genre);
       translated.push(...batchResult.results);
       failedParagraphs += batchResult.failed;
     }
@@ -758,7 +774,75 @@ async function translateChapter(
     const MIN_LENGTH_RATIO_ZH: Record<string, number> = {
       default: 0,
     };
-    const ratioTable = targetLanguage === "zh" ? MIN_LENGTH_RATIO_ZH : MIN_LENGTH_RATIO_EN;
+    // When translating TO Spanish: Spanish is generally more verbose than English,
+    // so ratios are calibrated higher than MIN_LENGTH_RATIO_EN. Sources where English
+    // already expands massively (CJK, Greek, Latin) still need lower floors because
+    // Spanish and English are proportionally similar relative to those compact sources.
+    // Romance peers (fr, it, en) run near 0.8+ because output is roughly 1:1 to 1.2:1.
+    const MIN_LENGTH_RATIO_ES: Record<string, number> = {
+      zh: 0.4, // Chinese → Spanish: massive expansion
+      "zh-literary": 0.4,
+      "zh-science": 0.4,
+      "zh-biji": 0.4,
+      "zh-poetry": 0.3,
+      "zh-joseon-sillok": 0.4,
+      grc: 0.5,
+      "grc-history": 0.5,
+      "grc-gregory": 0.5,
+      "grc-philosophy": 0.5,
+      la: 0.5,
+      "la-hymn": 0.4,
+      fa: 0.6, // Persian poetry has compressed meter
+      "fa-prose": 0.5,
+      chg: 0.5,
+      "chg-babur": 0.5,
+      ja: 0.4,
+      ru: 0.4,
+      "ru-literary": 0.4, // Dialogue-heavy compresses
+      "ru-tipikon": 0.4,
+      ar: 0.5,
+      "ar-sufi": 0.5,
+      "ar-fiqh": 0.5,
+      fr: 0.8, // Romance peer
+      "fr-literary": 0.8,
+      "fr-poetry": 0.6,
+      "fr-metropolitan": 0.8,
+      "fr-metropolitan-poetry": 0.6,
+      "fr-academic": 0.8,
+      it: 0.8,
+      "it-literary-19c": 0.8,
+      "it-nonfiction-19c": 0.8,
+      "it-renaissance-dialogue": 0.8,
+      en: 0.8, // English source → Spanish ~1.1× expansion typical
+      "en-philosophy": 0.8,
+      "en-philosophy-18c": 0.8,
+      "en-victorian": 0.8,
+      "en-science": 0.8,
+      de: 0.7,
+      "de-philosophy": 0.7,
+      pl: 0.6,
+      "pl-poetry": 0.5,
+      "pl-philosophy": 0.7,
+      hu: 0.6,
+      "hu-poetry": 0.5,
+      sr: 0.6,
+      "sr-scholarly": 0.4,
+      "sr-philosophy": 0.6,
+      ta: 0,
+      "ta-prose": 0.4,
+      te: 0.4,
+      "te-prose": 0.4,
+      xcl: 0.1,
+      "xcl-literature": 0.1,
+      hy: 0.5,
+      default: 0.7,
+    };
+    const ratioTable =
+      targetLanguage === "zh"
+        ? MIN_LENGTH_RATIO_ZH
+        : targetLanguage === "es"
+        ? MIN_LENGTH_RATIO_ES
+        : MIN_LENGTH_RATIO_EN;
     const minRatio = ratioTable[sourceLanguage] ?? ratioTable.default;
 
     const truncatedParagraphs: { index: number; srcLen: number; transLen: number; ratio: number }[] = [];
@@ -871,6 +955,14 @@ async function main() {
   let totalErrors = 0;
 
   for (const text of textsToProcess) {
+    // Defensive: Spanish source texts must NEVER be translated into Spanish (ES→ES forbidden).
+    // No current Spanish source texts exist, but this guardrail prevents future accidents.
+    if (text.language.code === "es" && targetLanguage === "es") {
+      throw new Error(
+        `Refusing to translate Spanish source text "${text.slug}" into Spanish (ES→ES forbidden).`
+      );
+    }
+
     // Determine prompt variant based on language and genre
     let promptLang = text.language.code;
     let usingSpecialPrompt = false;
@@ -1118,9 +1210,9 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // English Victorian/Edwardian literary prose — specialist Chinese target prompt
+    // English Victorian/Edwardian literary prose — specialist Chinese/Spanish target prompt
     const isVictorianEnglish = text.language.code === "en" && text.genre === "literature";
-    if (isVictorianEnglish && targetLanguage === "zh") {
+    if (isVictorianEnglish && (targetLanguage === "zh" || targetLanguage === "es")) {
       promptLang = "en-victorian";
       usingSpecialPrompt = true;
     }
@@ -1128,12 +1220,16 @@ async function main() {
     // Select model — CLI --model flag overrides auto-selection
     // Without override: use deepseek-reasoner ONLY for texts in REASONER_SLUGS
     // Exception: Hindi target always uses deepseek-chat (User directive 2026-02-26)
+    // Exception: Spanish target ALWAYS uses deepseek-chat, including poetry
+    //   (User directive 2026-04-11 — hard rule, bypasses REASONER_SLUGS)
     // Note: Poetry texts use deepseek-chat by default (User directive 2026-03-06)
     //   — deepseek-reasoner is reserved for specific texts that need it (REASONER_SLUGS)
     if (modelOverride) {
       MODEL = modelOverride;
     } else if (targetLanguage === "hi") {
       MODEL = DEFAULT_MODEL; // Hindi always deepseek-chat
+    } else if (targetLanguage === "es") {
+      MODEL = DEFAULT_MODEL; // Spanish always deepseek-chat, including poetry
     } else {
       MODEL = REASONER_SLUGS.has(text.slug) ? "deepseek-reasoner" : DEFAULT_MODEL;
     }
@@ -1190,7 +1286,8 @@ async function main() {
         systemUserId,
         text.slug,
         targetLanguage,
-        text.textType ?? "prose"
+        text.textType ?? "prose",
+        text.genre ?? null
       );
 
       if (success) {

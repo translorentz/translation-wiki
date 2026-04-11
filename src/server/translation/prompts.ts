@@ -2,6 +2,10 @@ interface TranslationPromptParams {
   sourceLanguage: string;
   paragraphs: { index: number; text: string }[];
   targetLanguage?: string; // defaults to "en"
+  /** Text type ("prose" | "poetry"). Used by Spanish register resolver to force Mexican register for poetry. */
+  textType?: string | null;
+  /** Text genre (e.g. "literature", "philosophy", "history"). Used by Spanish register resolver. */
+  genre?: string | null;
 }
 
 const LANGUAGE_INSTRUCTIONS: Record<string, string> = {
@@ -5456,22 +5460,224 @@ DO NOT:
 - Merge or split paragraphs
 - Modernise or sanitise violence, religious content, or period-appropriate attitudes`;
 
+// ============================================================
+// SPANISH TARGET — Register split (Mexican / Neutro) + dispatcher
+// ============================================================
+//
+// Architecture:
+// - SPANISH_HEADER_MX / SPANISH_HEADER_NEUTRO: register-specific style blocks, restating the
+//   Universal Dialogue Punctuation Rule and vocabulary guidance. Prepended to every Spanish prompt.
+// - SPANISH_TARGET_INSTRUCTIONS_MX / _NEUTRO: universal base prompts used when no source-specific
+//   specialist exists in SPANISH_TARGET_BY_SOURCE.
+// - SPANISH_TARGET_BY_SOURCE: source-language-keyed specialist prompts (populated in Phase 0.6).
+// - SPANISH_REGISTER_BY_GENRE + resolveSpanishRegister(): resolves which register to use
+//   (Mexican for literature/poetry, Neutro for everything else).
+//
+// Hard rules (enforced by translate-batch.ts):
+// - deepseek-chat ONLY for Spanish — never deepseek-reasoner, including poetry.
+// - Spanish source texts are never translated to Spanish (ES→ES is a thrown error).
+// - Universal Dialogue Punctuation Rule applies: only curly "" / ''. Never em-dash dialogue,
+//   never «», never 「」. Source text punctuation does NOT carry over to translations.
+// ============================================================
+
+export const SPANISH_HEADER_MX = `REGLAS DE PUNTUACIÓN DE DIÁLOGO (ABSOLUTAS):
+- Todo diálogo debe usar comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
+- NUNCA uses raya (—) como marca de diálogo. Convierte "— Hola." en "\u201CHola.\u201D".
+- NUNCA uses comillas latinas «». Convierte «texto» en \u201Ctexto\u201D.
+- NUNCA uses corchetes japoneses 「」 ni 『』.
+- Las convenciones de puntuación del texto fuente NO se trasladan a la traducción. El texto traducido no está en el idioma fuente. Guiones largos franceses, guillemets rusos/franceses, corchetes japoneses — NINGUNO aparece en español. TODO diálogo usa \u201C\u201D.
+
+REGISTRO (Español de México — literario):
+- Traduce al español mexicano con registro literario adecuado a lectores mexicanos.
+- NUNCA uses "vosotros"; usa "ustedes" para la segunda persona del plural.
+- Preferencias léxicas mexicanas cuando resulte natural: "carro" sobre "coche", "computadora" sobre "ordenador", "celular" sobre "móvil", "alberca" sobre "piscina", "jugo" sobre "zumo", "elevador" sobre "ascensor" (contextual), "manejar" sobre "conducir".
+- Evita vocabulario peninsular que resulte extraño a un lector mexicano (p. ej. "coger" en sentidos no literarios, "tío/tía" como vocativo coloquial, "vale" como afirmación).
+- Para textos literarios y poéticos, prioriza la cadencia literaria mexicana natural sobre la fidelidad literal a idioms del idioma fuente — pero preserva todos los nombres propios, términos técnicos y marcadores estructurales.
+
+CONVENCIONES ORTOGRÁFICAS:
+- Usa ¿ al inicio de preguntas y ¡ al inicio de exclamaciones.
+- Preserva tildes (á, é, í, ó, ú), la letra ñ, y la diéresis (ü) según las reglas de la RAE.
+- Aplica acentuación correcta según las reglas vigentes de la RAE.
+- Los números, fechas y unidades siguen las convenciones internacionales hispanohablantes.`;
+
+export const SPANISH_HEADER_NEUTRO = `REGLAS DE PUNTUACIÓN DE DIÁLOGO (ABSOLUTAS):
+- Todo diálogo debe usar comillas dobles curvas \u201C...\u201D. Las citas anidadas usan comillas simples curvas \u2018...\u2019.
+- NUNCA uses raya (—) como marca de diálogo. Convierte "— Hola." en "\u201CHola.\u201D".
+- NUNCA uses comillas latinas «». Convierte «texto» en \u201Ctexto\u201D.
+- NUNCA uses corchetes japoneses 「」 ni 『』.
+- Las convenciones de puntuación del texto fuente NO se trasladan a la traducción. El texto traducido no está en el idioma fuente. Guiones largos franceses, guillemets rusos/franceses, corchetes japoneses — NINGUNO aparece en español. TODO diálogo usa \u201C\u201D.
+
+REGISTRO (Español Neutro — estándar internacional):
+- Traduce a Español Neutro, el registro estándar internacional compartido por los países hispanohablantes.
+- NO uses marcadores regionales (ni mexicanismos, ni argentinismos, ni peninsularismos).
+- NUNCA uses "vosotros" ni conjugaciones vosotras; usa "ustedes" para la segunda persona del plural.
+- Evita vocabulario peninsular exclusivo cuando exista una alternativa neutra ("coger" en sentidos no literarios, "ordenador" en lugar de "computadora/computador", "móvil" cuando "teléfono/celular" funcione mejor, "piscina" cuando "alberca" o simplemente "piscina" sea apropiado).
+- Usa normas léxicas latinoamericanas internacionales. Prefiere términos reconocibles por un lector educado desde México hasta Argentina.
+- El registro debe ser formal-neutro para filosofía, teología, comentario, historia y ciencia. Para textos devocionales, mantén la solemnidad litúrgica sin regionalismos.
+
+CONVENCIONES ORTOGRÁFICAS:
+- Usa ¿ al inicio de preguntas y ¡ al inicio de exclamaciones.
+- Preserva tildes (á, é, í, ó, ú), la letra ñ, y la diéresis (ü) según las reglas de la RAE.
+- Aplica acentuación correcta según las reglas vigentes de la RAE.
+- Los números, fechas y unidades siguen las convenciones internacionales hispanohablantes.`;
+
+/**
+ * Universal Spanish base prompt — Mexican register.
+ * Used as fallback when SPANISH_TARGET_BY_SOURCE has no specialist for a given source language.
+ */
+export const SPANISH_TARGET_INSTRUCTIONS_MX = `${SPANISH_HEADER_MX}
+
+Eres un traductor literario al español mexicano. Traduce los párrafos proporcionados preservando su estructura exacta.
+
+PRINCIPIOS CENTRALES:
+1. FIDELIDAD: Traduce lo que el texto dice, no lo que crees que debería decir. Preserva la voz y la intención del autor.
+2. PRECISIÓN: Reproduce nombres, títulos y términos con exactitud y consistencia.
+3. LEGIBILIDAD: Produce prosa española natural y fluida.
+4. ALINEACIÓN DE PÁRRAFOS: Cada párrafo fuente produce exactamente un párrafo traducido. No dividas, unas ni re-segmentes los párrafos.
+
+NOMBRES PROPIOS:
+- Preserva nombres propios en su escritura original cuando serían irreconocibles transliterados; de lo contrario usa la romanización española estándar.
+- Nombres clásicos griegos y latinos: usa las formas españolas establecidas (p. ej. Platón, Cicerón, Agustín, Constantinopla).
+- Nombres chinos: usa pinyin sin tonos (p. ej. 孔子 → Confucio; 朱熹 → Zhu Xi).
+- Nombres persas/árabes: usa transliteración española estándar (p. ej. Ferdousí, Avicena, Averroes).
+- Mantén la consistencia en toda la traducción.
+
+TERMINOLOGÍA:
+- Usa la terminología académica española estándar para términos filosóficos, teológicos y científicos.
+- Para términos sin equivalente español establecido, proporciona una transliteración o traducción con el original entre paréntesis en la primera aparición.
+
+FORMATO DE SALIDA:
+- Devuelve ÚNICAMENTE un arreglo JSON de objetos con los campos "index" y "text" coincidentes con los párrafos de entrada.
+- No añadas notas ni comentarios fuera de la estructura JSON.
+- No combines ni dividas párrafos.`;
+
+/**
+ * Universal Spanish base prompt — Español Neutro register.
+ * Used as fallback when SPANISH_TARGET_BY_SOURCE has no specialist for a given source language.
+ */
+export const SPANISH_TARGET_INSTRUCTIONS_NEUTRO = `${SPANISH_HEADER_NEUTRO}
+
+Eres un traductor académico al Español Neutro. Traduce los párrafos proporcionados preservando su estructura exacta.
+
+PRINCIPIOS CENTRALES:
+1. FIDELIDAD: Traduce lo que el texto dice, no lo que crees que debería decir. Preserva la voz y la intención del autor.
+2. PRECISIÓN: Reproduce nombres, títulos y términos con exactitud y consistencia.
+3. LEGIBILIDAD: Produce prosa española natural, fluida y comprensible para lectores hispanohablantes de cualquier país.
+4. ALINEACIÓN DE PÁRRAFOS: Cada párrafo fuente produce exactamente un párrafo traducido. No dividas, unas ni re-segmentes los párrafos.
+
+NOMBRES PROPIOS:
+- Preserva nombres propios en su escritura original cuando serían irreconocibles transliterados; de lo contrario usa la romanización española estándar.
+- Nombres clásicos griegos y latinos: usa las formas españolas establecidas (p. ej. Platón, Cicerón, Agustín, Constantinopla).
+- Nombres chinos: usa pinyin sin tonos (p. ej. 孔子 → Confucio; 朱熹 → Zhu Xi).
+- Nombres persas/árabes: usa transliteración española estándar (p. ej. Ferdousí, Avicena, Averroes).
+- Mantén la consistencia en toda la traducción.
+
+TERMINOLOGÍA:
+- Usa la terminología académica española estándar para términos filosóficos, teológicos, históricos y científicos.
+- Para términos sin equivalente español establecido, proporciona una transliteración o traducción con el original entre paréntesis en la primera aparición.
+
+FORMATO DE SALIDA:
+- Devuelve ÚNICAMENTE un arreglo JSON de objetos con los campos "index" y "text" coincidentes con los párrafos de entrada.
+- No añadas notas ni comentarios fuera de la estructura JSON.
+- No combines ni dividas párrafos.`;
+
+/**
+ * Genre-based default register for Spanish translation.
+ * Literature and poetry → Mexican (literary cadence).
+ * Everything else → Neutro (international academic standard).
+ *
+ * Additionally, any text with textType === "poetry" is forced to "mx" in resolveSpanishRegister
+ * regardless of genre (poetry always uses the Mexican literary register).
+ */
+export const SPANISH_REGISTER_BY_GENRE: Record<string, "mx" | "neutro"> = {
+  literature: "mx",
+  poetry: "mx",
+  philosophy: "neutro",
+  theology: "neutro",
+  devotional: "neutro",
+  commentary: "neutro",
+  history: "neutro",
+  science: "neutro",
+  ritual: "neutro",
+};
+
+/**
+ * Resolve the Spanish register (Mexican vs Neutro) for a given text.
+ * Priority: explicit slug override > poetry textType > genre table > default "neutro".
+ */
+export function resolveSpanishRegister(
+  textType: string | null | undefined,
+  genre: string | null | undefined,
+  slugOverride?: "mx" | "neutro"
+): "mx" | "neutro" {
+  if (slugOverride) return slugOverride;
+  if (textType === "poetry") return "mx";
+  if (genre && SPANISH_REGISTER_BY_GENRE[genre]) return SPANISH_REGISTER_BY_GENRE[genre];
+  return "neutro";
+}
+
+/**
+ * Source-language-specific Spanish target prompts.
+ * Parallel to CHINESE_TARGET_BY_SOURCE. Populated incrementally in Phase 0.6 by a separate agent.
+ *
+ * Keys match the specialist prompt keys resolved by translate-batch.ts (e.g. "zh-literary",
+ * "fa", "chg-babur", "grc-philosophy"). Values are complete Spanish system prompts — each
+ * should prepend either SPANISH_HEADER_MX or SPANISH_HEADER_NEUTRO and preserve all structural
+ * rules from the corresponding English/Chinese specialist (hemistich slash, verse line count,
+ * polytonic preservation, chengyu handling, em-dash-to-curly-quote conversion, etc.).
+ *
+ * When a key is missing, buildTranslationPrompt falls back to SPANISH_TARGET_INSTRUCTIONS_MX
+ * or _NEUTRO based on resolveSpanishRegister().
+ */
+export const SPANISH_TARGET_BY_SOURCE: Record<string, string> = {
+  // Specialist Spanish prompts will be added in Phase 0.6
+};
+
 export function buildTranslationPrompt({
   sourceLanguage,
   paragraphs,
   targetLanguage = "en",
+  textType,
+  genre,
 }: TranslationPromptParams): { system: string; user: string } {
   const isChineseTarget = targetLanguage === "zh";
   const isHindiTarget = targetLanguage === "hi";
+  const isSpanishTarget = targetLanguage === "es";
 
-  const langInstructions = isChineseTarget
-    ? (CHINESE_TARGET_BY_SOURCE[sourceLanguage] ?? CHINESE_TARGET_INSTRUCTIONS)
+  // Defensive: Spanish source texts must NEVER be translated into Spanish.
+  if (isSpanishTarget && sourceLanguage === "es") {
+    throw new Error(
+      `Refusing to build a Spanish translation prompt for a Spanish source (sourceLanguage="es", targetLanguage="es"). ES→ES is forbidden.`
+    );
+  }
+
+  let langInstructions: string;
+  if (isSpanishTarget) {
+    const specialist = SPANISH_TARGET_BY_SOURCE[sourceLanguage];
+    if (specialist) {
+      langInstructions = specialist;
+    } else {
+      const register = resolveSpanishRegister(textType, genre);
+      langInstructions =
+        register === "mx" ? SPANISH_TARGET_INSTRUCTIONS_MX : SPANISH_TARGET_INSTRUCTIONS_NEUTRO;
+    }
+  } else if (isChineseTarget) {
+    langInstructions = CHINESE_TARGET_BY_SOURCE[sourceLanguage] ?? CHINESE_TARGET_INSTRUCTIONS;
+  } else if (isHindiTarget) {
+    langInstructions = HINDI_TARGET_INSTRUCTIONS;
+  } else {
+    langInstructions =
+      LANGUAGE_INSTRUCTIONS[sourceLanguage] ??
+      `You are translating from ${sourceLanguage} to English.`;
+  }
+
+  const targetLangLabel = isChineseTarget
+    ? "简体中文"
     : isHindiTarget
-    ? HINDI_TARGET_INSTRUCTIONS
-    : (LANGUAGE_INSTRUCTIONS[sourceLanguage] ??
-      `You are translating from ${sourceLanguage} to English.`);
-
-  const targetLangLabel = isChineseTarget ? "简体中文" : isHindiTarget ? "हिन्दी" : "English";
+    ? "हिन्दी"
+    : isSpanishTarget
+    ? "Español"
+    : "English";
 
   // Poetry/hymn linebreak directive — appended for ALL target languages when source is verse
   const isVerseSource = sourceLanguage === "la-hymn" || sourceLanguage === "zh-poetry" || sourceLanguage === "hu-poetry" || sourceLanguage === "fr-poetry" || sourceLanguage === "fr-metropolitan-poetry";
