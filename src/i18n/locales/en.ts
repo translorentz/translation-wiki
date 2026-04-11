@@ -310,7 +310,7 @@ const en = {
   "nav.about": "About",
   "about.title": "About Deltoi",
   "about.mission":
-    "The goal of this project is to allow translators and scholars to comment on, collaborate on, edit, criticise, check, and endorse translations of important texts that are not yet available in English or Chinese. The initial translations on this website are made using artificial intelligence; this project aims to build upon that foundation to produce proper and accessible translations.",
+    "The goal of this project is to allow translators and scholars to comment on, collaborate on, edit, criticise, check, and endorse translations of important texts that are not yet available in English, Chinese, or Spanish. The initial translations on this website are made using artificial intelligence; this project aims to build upon that foundation to produce proper and accessible translations. Effort has been made so most texts chosen for the Deltoi project do not already have complete formal translations.",
   "about.registrationTitle": "Registration",
   "about.registration":
     "Sign-ups are currently limited to select users by invitation. If you are interested in contributing, please contact Bryan Cheong.",

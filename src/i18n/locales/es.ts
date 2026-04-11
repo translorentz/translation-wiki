@@ -312,7 +312,7 @@ const es: Translations = {
   "nav.about": "Acerca de",
   "about.title": "Acerca de Deltoi",
   "about.mission":
-    "El objetivo de este proyecto es permitir que traductores y académicos comenten, colaboren, editen, critiquen, verifiquen y aprueben traducciones de textos importantes que aún no están disponibles en inglés o chino. Las traducciones iniciales en este sitio web se realizan mediante inteligencia artificial; este proyecto pretende construir sobre esa base para producir traducciones adecuadas y accesibles. Se ha hecho un esfuerzo para que la mayoría de los textos elegidos para el proyecto Deltoi no tengan ya traducciones formales completas.",
+    "El objetivo de este proyecto es permitir que traductores y académicos comenten, colaboren, editen, critiquen, verifiquen y aprueben traducciones de textos importantes que aún no están disponibles en inglés, chino o español. Las traducciones iniciales en este sitio web se realizan mediante inteligencia artificial; este proyecto pretende construir sobre esa base para producir traducciones adecuadas y accesibles. Se ha hecho un esfuerzo para que la mayoría de los textos elegidos para el proyecto Deltoi no tengan ya traducciones formales completas.",
   "about.registrationTitle": "Registro",
   "about.registration":
     "Los registros están actualmente limitados a usuarios seleccionados por invitación. Si está interesado en contribuir, por favor contacte a Bryan Cheong.",
