@@ -131,12 +131,14 @@ export const authors = pgTable("authors", {
   name: varchar("name", { length: 255 }).notNull(),
   nameZh: varchar("name_zh", { length: 255 }),
   nameHi: varchar("name_hi", { length: 255 }),
+  nameEs: varchar("name_es", { length: 255 }),
   nameOriginalScript: varchar("name_original_script", { length: 255 }),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   era: varchar("era", { length: 255 }),
   description: text("description"),
   descriptionZh: text("description_zh"),
   descriptionHi: text("description_hi"),
+  descriptionEs: text("description_es"),
 });
 
 export const authorsRelations = relations(authors, ({ many }) => ({
@@ -162,9 +164,11 @@ export const texts = pgTable(
       .references(() => authors.id),
     titleZh: varchar("title_zh", { length: 500 }),
     titleHi: varchar("title_hi", { length: 500 }),
+    titleEs: varchar("title_es", { length: 500 }),
     description: text("description"),
     descriptionZh: text("description_zh"),
     descriptionHi: text("description_hi"),
+    descriptionEs: text("description_es"),
     sourceUrl: text("source_url"),
     totalChapters: integer("total_chapters").notNull().default(0),
     compositionYear: integer("composition_year"),
@@ -208,6 +212,7 @@ export const chapters = pgTable(
     title: varchar("title", { length: 500 }),
     titleZh: varchar("title_zh", { length: 500 }),
     titleHi: varchar("title_hi", { length: 500 }),
+    titleEs: varchar("title_es", { length: 500 }),
     sourceContent: jsonb("source_content"), // { paragraphs: [{ index, text }] }
     currentSourceVersionId: integer("current_source_version_id"), // Points to latest sourceVersion
     ordering: integer("ordering").notNull(),
