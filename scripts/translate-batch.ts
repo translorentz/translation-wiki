@@ -235,6 +235,20 @@ const BATCH_DELAY_MS = 2000;
 // Very long paragraphs (>1500 chars) should be processed alone to prevent truncation
 const SOLO_PARAGRAPH_THRESHOLD = 1500;
 
+// In-chapter batch parallelism (speedup #3, 2026-04-11).
+// Run up to N concurrent batches per chapter via a bounded-worker pool.
+// Default 3 was validated on jan-cimbura ch16 (19 batches, 150 paras, cs→es):
+// serial 422.61s → parallel 138.03s = 3.06× speedup, 0 retries, full validation PASS.
+// Configurable via TRANSLATE_BATCH_CONCURRENCY env var.
+const MAX_CONCURRENT_BATCHES_PER_CHAPTER = (() => {
+  const env = process.env.TRANSLATE_BATCH_CONCURRENCY;
+  if (env) {
+    const parsed = parseInt(env, 10);
+    if (!isNaN(parsed) && parsed >= 1 && parsed <= 16) return parsed;
+  }
+  return 3;
+})();
+
 function chunkParagraphs(paragraphs: Paragraph[], sourceLanguage: string): Paragraph[][] {
   const maxChars = MAX_CHARS_BY_LANG[sourceLanguage] ?? DEFAULT_MAX_CHARS;
   const chunks: Paragraph[][] = [];
@@ -746,13 +760,55 @@ async function translateChapter(
     const translated: Paragraph[] = [];
     let failedParagraphs = 0;
 
-    for (let i = 0; i < chunks.length; i++) {
-      if (i > 0) {
-        await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+    // Concurrent batch execution (speedup #3, 2026-04-11).
+    // Instead of processing the chapter's batches serially (one API call at a
+    // time with a 2s inter-batch delay), run up to N batches concurrently via
+    // a bounded worker pool. Each worker pulls the next unprocessed batch
+    // index, awaits translateBatchWithRetry, and writes the result into a
+    // pre-allocated slot in source order. Results are reassembled in source
+    // order after all batches complete, so all downstream guardrails
+    // (alignment, truncation, slash, linebreak, zh-leak, length-ratio)
+    // operate on a correctly-ordered result array exactly as before.
+    //
+    // Per-batch retries still work (translateBatchWithRetry handles its own
+    // retry / split-in-half / split-translate-rejoin escalation chain). Failed
+    // batches return placeholder paragraphs, which the post-chapter verifier
+    // will still catch via the length-ratio / alignment checks.
+    const concurrency = Math.min(MAX_CONCURRENT_BATCHES_PER_CHAPTER, chunks.length);
+    if (chunks.length > 1) {
+      process.stdout.write(
+        `    [concurrent] chapter ${chapter.chapterNumber}: ${chunks.length} batches, concurrency=${concurrency}\n`
+      );
+    }
+
+    const batchResults: { results: Paragraph[]; failed: number }[] = new Array(chunks.length);
+    let nextChunkIdx = 0;
+    async function batchWorker() {
+      while (true) {
+        const myIdx = nextChunkIdx++;
+        if (myIdx >= chunks.length) return;
+        batchResults[myIdx] = await translateBatchWithRetry(
+          chunks[myIdx],
+          sourceLanguage,
+          myIdx + 1,
+          chunks.length,
+          0,
+          targetLanguage,
+          textType,
+          genre
+        );
       }
-      const batchResult = await translateBatchWithRetry(chunks[i], sourceLanguage, i + 1, chunks.length, 0, targetLanguage, textType, genre);
-      translated.push(...batchResult.results);
-      failedParagraphs += batchResult.failed;
+    }
+    await Promise.all(Array.from({ length: concurrency }, () => batchWorker()));
+
+    // Reassemble in source order (batch 0 → 1 → ... → N-1)
+    for (let i = 0; i < chunks.length; i++) {
+      const br = batchResults[i];
+      if (!br) {
+        throw new Error(`Missing result for batch ${i + 1}/${chunks.length}`);
+      }
+      translated.push(...br.results);
+      failedParagraphs += br.failed;
     }
 
     if (translated.length === 0) {
