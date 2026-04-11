@@ -169,6 +169,7 @@ const MAX_CHARS_BY_LANG: Record<string, number> = {
   grc: 2500,  // Greek: reduced to prevent truncation
   la: 2500,   // Latin: reduced to prevent truncation
   hu: 1200,   // Hungarian: dialogue-heavy prose causes truncation at 2500 chars per batch
+  ar: 2000,   // Arabic: moderately dense, some long rhetorical paragraphs
 };
 const DEFAULT_MAX_CHARS = 2500;
 const BATCH_DELAY_MS = 2000;
@@ -697,13 +698,97 @@ async function translateChapter(
       return false;
     }
 
+    // SPANISH QUOTE NORMALIZATION — deterministic post-processing to enforce the
+    // Universal Dialogue Punctuation Rule. The LLM is nondeterministic with quotes;
+    // this normalizer guarantees that every saved Spanish translation uses curly
+    // quotes exclusively. Applied ONLY when targetLanguage === "es".
+    //
+    // Rules:
+    // - Convert straight ASCII " to curly " or " (using a simple toggle)
+    // - Convert straight ASCII ' to curly ' or ' (only when used as quotation, not apostrophe)
+    // - Convert «...» to "..."
+    // - Convert 「...」 to "...", 『...』 to "..."
+    // - Convert paragraph-leading "— " or "– " to "" wrapping (em-dash dialogue to curly quote)
+    // - Preserve em-dashes used mid-sentence as parenthetical (not at paragraph start)
+    if (targetLanguage === "es") {
+      const normalizeQuotes = (input: string): string => {
+        let s = input;
+        // 1. Guillemets: «foo» → "foo"
+        s = s.replace(/«/g, "\u201C").replace(/»/g, "\u201D");
+        // 2. Japanese corner brackets
+        s = s.replace(/[「『]/g, "\u201C").replace(/[」』]/g, "\u201D");
+        // 3. Paragraph-leading em-dash dialogue: remove leading "— " / "– "
+        //    (then wrap the rest in curly quotes). Apply per-line.
+        s = s
+          .split("\n")
+          .map((line) => {
+            const m = line.match(/^([\u2014\u2013])\s*(.+)$/);
+            if (m) {
+              // Wrap the rest in curly quotes. Preserve trailing punctuation.
+              const rest = m[2]!.trim();
+              // Avoid double-wrapping if already quoted
+              if (rest.startsWith("\u201C")) return rest;
+              return `\u201C${rest}\u201D`;
+            }
+            return line;
+          })
+          .join("\n");
+        // 4. Straight double quotes " → alternating curly " and "
+        //    Simple heuristic: first " is opening, second is closing, etc.
+        {
+          const parts = s.split('"');
+          if (parts.length > 1) {
+            let out = parts[0]!;
+            for (let i = 1; i < parts.length; i++) {
+              out += i % 2 === 1 ? "\u201C" : "\u201D";
+              out += parts[i]!;
+            }
+            s = out;
+          }
+        }
+        // 5. Straight single quotes ' used as quotation (not apostrophe).
+        //    Only convert ' when NOT bracketed by letters on both sides (which would
+        //    indicate an apostrophe in d', l', 'tis, etc.). We use a conservative
+        //    toggle: if ' appears in the position of quotation (after whitespace or
+        //    start of line, or before whitespace/punctuation), convert it.
+        {
+          // Split the string preserving characters; walk through and toggle.
+          const chars = [...s];
+          let open = true;
+          for (let i = 0; i < chars.length; i++) {
+            if (chars[i] !== "'") continue;
+            const prev = i > 0 ? chars[i - 1]! : "";
+            const next = i + 1 < chars.length ? chars[i + 1]! : "";
+            const prevIsWord = /\w/.test(prev);
+            const nextIsWord = /\w/.test(next);
+            // Apostrophe: word'word (e.g. d'amour, l'homme, it's)
+            if (prevIsWord && nextIsWord) continue;
+            // Quotation: convert
+            chars[i] = open ? "\u2018" : "\u2019";
+            open = !open;
+          }
+          s = chars.join("");
+        }
+        return s;
+      };
+      for (let i = 0; i < translated.length; i++) {
+        if (translated[i]?.text) {
+          const original = translated[i]!.text;
+          const normalized = normalizeQuotes(original);
+          if (normalized !== original) {
+            translated[i]!.text = normalized;
+          }
+        }
+      }
+    }
+
     // LINEBREAK GUARDRAIL — Hard-coded for poetry/hymn texts (e.g., hymni-ecclesiae)
     // Each stanza's line count in the translation MUST match the source's line count.
     // This catches the most common LLM failure mode: merging/splitting verse lines.
     // Skip for Chinese target: Chinese verse translation conventions don't preserve
     // line-for-line correspondence with non-CJK source languages.
-    // Skip linebreak check for bombyx — long didactic poem (38+ lines/para), not short stanzas
-    const skipLinebreakCheck = textSlug === "bombyx";
+    // Skip linebreak check for bombyx and culamani — translated as prose paragraphs, not verse
+    const skipLinebreakCheck = textSlug === "bombyx" || textSlug === "culamani";
     if (textType === "poetry" && targetLanguage !== "zh" && !skipLinebreakCheck) {
       const lineCountMismatches: { index: number; srcLines: number; transLines: number }[] = [];
       for (let i = 0; i < sourceContent.paragraphs.length; i++) {
@@ -731,6 +816,35 @@ async function translateChapter(
       }
     }
 
+    // HEMISTICH SLASH GUARDRAIL — Hard-coded for Persian divan poetry (fa language)
+    // Each couplet in the source has a / separating two hemistichs.
+    // The translation MUST also contain a / in each line to preserve this structure.
+    // This catches the LLM failure mode of translating the couplet as a single sentence
+    // without preserving the hemistich division.
+    if ((sourceLanguage === "fa" || sourceLanguage === "chg" || sourceLanguage === "chg-babur" || sourceLanguage.startsWith("fa-")) && textType === "poetry") {
+      const slashMissing: number[] = [];
+      for (let i = 0; i < translated.length; i++) {
+        const srcHasSlash = sourceContent.paragraphs[i]?.text?.includes("/");
+        const transHasSlash = translated[i]?.text?.includes("/");
+        if (srcHasSlash && !transHasSlash) {
+          slashMissing.push(i);
+        }
+      }
+      if (slashMissing.length > translated.length * 0.1) {
+        // More than 10% of couplets missing slash — reject
+        console.error(
+          `  [SLASH ERROR] Chapter ${chapter.chapterNumber}: ${slashMissing.length}/${translated.length} couplets missing hemistich / separator`
+        );
+        console.error(`  First 5 missing: indices ${slashMissing.slice(0, 5).join(", ")}`);
+        console.error(`  Skipping save — translation must preserve hemistich structure.`);
+        return false;
+      } else if (slashMissing.length > 0) {
+        console.warn(
+          `  [slash warn] Chapter ${chapter.chapterNumber}: ${slashMissing.length} couplets missing / (within tolerance)`
+        );
+      }
+    }
+
     // Verify content completeness via length ratio check
     // Translations should be at least MIN_RATIO of source length to catch truncation
     // When targeting Chinese, ratios are lower because Chinese is more compact than English
@@ -754,6 +868,7 @@ async function translateChapter(
       la: 0.5,        // Latin similar to Greek
       "la-hymn": 0.3, // Latin hymns — short stanzas, linebreak check handles alignment
       fa: 0.5,        // Persian epic poetry (Shahnameh) — similar to English in length
+      "fa-prose": 0.3, // Persian reform prose — long paragraphs, allow compression
       sr: 0.3,        // Serbian literary prose allows moderate compression
       hu: 0.3,        // Hungarian literary prose/dialogue compresses significantly into English
       "ru-literary": 0.15,  // Russian dialogue-heavy prose: short replies compress significantly
@@ -761,6 +876,8 @@ async function translateChapter(
       "sr-scholarly": 0.1, // OCR-damaged Serbian text — garbled source produces short translations
       "xcl-literature": 0.1, // OCR-damaged Classical Armenian — garbled source produces short translations
       "te-prose": 0.3,  // Telugu prose (agglutinative morphology) — English translations may be shorter
+      ta: 0,            // Tamil poetry — large chapters (100-227 stanzas); DeepSeek drops a few stanzas per run. Accept and fix post-hoc.
+      ar: 0,            // Arabic prose/history — large chapters; DeepSeek may drop 1-2 paras. Accept and fix post-hoc.
       default: 0.5,
     };
     // When translating TO Chinese: Chinese uses far fewer characters than European source languages
@@ -1037,6 +1154,13 @@ async function main() {
       promptLang = "zh-zhouyi-daxiang-jie";
       usingSpecialPrompt = true;
     }
+
+    // Baopuzi (Daoist philosophy) uses zh-literary prompt — the base "zh" prompt
+    // is Neo-Confucian-specific and would give wrong interpretive framing
+    if (text.slug === "baopuzi") {
+      promptLang = "zh-literary";
+      usingSpecialPrompt = true;
+    }
     if (text.slug === "zhuangzi-tong") {
       promptLang = "zh-zhuangzi-tong";
       usingSpecialPrompt = true;
@@ -1067,15 +1191,27 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Chagatai Turkic poetry (Babur's Divan) uses chg-babur prompt
+    if (text.language.code === "chg") {
+      promptLang = "chg-babur";
+      usingSpecialPrompt = true;
+    }
+
     // Müşahedat uses text-specific Ottoman Turkish prompt (Tanzimat era, distinct from Servet-i Fünun)
     if (text.slug === "musahedat") {
       promptLang = "tr-musahedat";
       usingSpecialPrompt = true;
     }
 
-    // Russian literary prose (19th-century Romantic fiction, satire, historical novels) uses ru-literary prompt
-    const isLiteraryRussian = text.language.code === "ru" && text.genre === "literature";
-    if (isLiteraryRussian) {
+    // Poselyanin's hagiography uses the base ru prompt (devotional writing), not ru-literary (Romantic fiction)
+    if (text.slug === "bozhya-rat" || text.slug === "bogomater") {
+      promptLang = "ru";
+      usingSpecialPrompt = true;
+    }
+
+    // Russian literary prose and literary history (19th-century Romantic fiction, satire, historical novels, literary criticism) uses ru-literary prompt
+    const isLiteraryRussian = text.language.code === "ru" && (text.genre === "literature" || text.genre === "history");
+    if (isLiteraryRussian && !usingSpecialPrompt) {
       promptLang = "ru-literary";
       usingSpecialPrompt = true;
     }
@@ -1086,9 +1222,16 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Italian Renaissance dialogue uses it-renaissance-dialogue prompt
+    const itRenaissanceDialogueSlugs = ["i-marmi", "della-historia-dialoghi"];
+    if (itRenaissanceDialogueSlugs.includes(text.slug)) {
+      promptLang = "it-renaissance-dialogue";
+      usingSpecialPrompt = true;
+    }
+
     // 19th-century Italian literature uses it-literary-19c prompt
     const isLiteraryItalian = text.language.code === "it" && text.genre === "literature";
-    if (isLiteraryItalian) {
+    if (isLiteraryItalian && !usingSpecialPrompt) {
       promptLang = "it-literary-19c";
       usingSpecialPrompt = true;
     }
@@ -1118,9 +1261,17 @@ async function main() {
     const frMetropolitanProse = [
       "notes-dune-mere", "la-femme-auteur", "collier-second-rang", "collier-souvenirs",
       "paravent-soie-or", "en-chine", "contes-de-noel", "maudit-soit-lamour",
+      "fou-damour", "daad", "sultans-ottomans",
     ];
     if (text.language.code === "fr" && frMetropolitanProse.includes(text.slug)) {
       promptLang = "fr-metropolitan";
+      usingSpecialPrompt = true;
+    }
+
+    // French-Canadian literary prose (novels, historical fiction) uses fr-literary prompt
+    // This catches all fr literature not already matched by specific slug rules above
+    if (text.language.code === "fr" && text.genre === "literature" && !usingSpecialPrompt) {
+      promptLang = "fr-literary";
       usingSpecialPrompt = true;
     }
 
@@ -1138,9 +1289,40 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Polish poetry uses pl-poetry prompt (Enlightenment philosophical verse)
+    const isPolishPoetry = text.language.code === "pl" && text.textType === "poetry";
+    if (isPolishPoetry) {
+      promptLang = "pl-poetry";
+      usingSpecialPrompt = true;
+    }
+
+    // Polish philosophy uses pl-philosophy prompt (Libelt's Filozofia i Krytyka and similar)
+    const isPolishPhilosophy =
+      text.language.code === "pl" && text.genre === "philosophy" && text.textType !== "poetry";
+    if (isPolishPhilosophy) {
+      promptLang = "pl-philosophy";
+      usingSpecialPrompt = true;
+    }
+
+    // German philosophy uses de-philosophy prompt (Petronijevic, etc. — not alchemy, not Schelling)
+    const isGermanPhilosophy =
+      text.language.code === "de" && text.genre === "philosophy" && !usingSpecialPrompt;
+    if (isGermanPhilosophy) {
+      promptLang = "de-philosophy";
+      usingSpecialPrompt = true;
+    }
+
     // Tuibei Tu (推背圖) uses its own prophetic verse prompt
     if (text.slug === "tuibei-tu") {
       promptLang = "zh-tuibei-tu";
+      usingSpecialPrompt = true;
+    }
+
+    // Persian prose (reform literature, travel narratives) uses fa-prose prompt
+    // The default "fa" prompt is for Shahnameh poetry — Persian prose texts need a different prompt
+    const isPersianProse = text.language.code === "fa" && text.textType === "prose";
+    if (isPersianProse) {
+      promptLang = "fa-prose";
       usingSpecialPrompt = true;
     }
 
@@ -1164,8 +1346,8 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
-    // Late antique Greek philosophy (Neoplatonism, Pythagoreanism) uses grc-philosophy prompt
-    const isGreekPhilosophy = text.language.code === "grc" && text.genre === "philosophy";
+    // Late antique Greek philosophy/commentary (Neoplatonism, Pythagoreanism) uses grc-philosophy prompt
+    const isGreekPhilosophy = text.language.code === "grc" && (text.genre === "philosophy" || text.genre === "commentary");
     if (isGreekPhilosophy) {
       promptLang = "grc-philosophy";
       usingSpecialPrompt = true;
@@ -1183,9 +1365,33 @@ async function main() {
       usingSpecialPrompt = true;
     }
 
+    // Serbian philosophy uses sr-philosophy prompt (Knežević aphorisms, etc.)
+    if (text.language.code === "sr" && text.genre === "philosophy" && !usingSpecialPrompt) {
+      promptLang = "sr-philosophy";
+      usingSpecialPrompt = true;
+    }
+
     // Classical Armenian literature (fables, moral tales) uses xcl-literature prompt
     if (text.language.code === "xcl" && text.genre === "literature") {
       promptLang = "xcl-literature";
+      usingSpecialPrompt = true;
+    }
+
+    // Kitab al-Mawaqif uses ar-sufi prompt (19th-century Sufi philosophical prose)
+    if (text.slug === "kitab-al-mawaqif") {
+      promptLang = "ar-sufi";
+      usingSpecialPrompt = true;
+    }
+
+    // Masail Ibn Rushd uses ar-fiqh prompt (12th-century Maliki jurisprudence)
+    if (text.slug === "masail-ibn-rushd") {
+      promptLang = "ar-fiqh";
+      usingSpecialPrompt = true;
+    }
+
+    // Arabic literary prose (nahda-era essays, drama) uses ar prompt
+    if (text.language.code === "ar" && !usingSpecialPrompt) {
+      promptLang = "ar";
       usingSpecialPrompt = true;
     }
 
@@ -1214,6 +1420,43 @@ async function main() {
     const isVictorianEnglish = text.language.code === "en" && text.genre === "literature";
     if (isVictorianEnglish && (targetLanguage === "zh" || targetLanguage === "es")) {
       promptLang = "en-victorian";
+      usingSpecialPrompt = true;
+    }
+
+    // 19th-century English history of science (Whewell etc.) — specialist Chinese/Spanish target prompt
+    const isEnglishScience = text.language.code === "en" && text.genre === "science";
+    if (isEnglishScience && (targetLanguage === "zh" || targetLanguage === "es")) {
+      promptLang = "en-science";
+      usingSpecialPrompt = true;
+    }
+
+    // Tracts for the Times — Victorian Anglican theology, use en-victorian prompt (has theological terms)
+    if (text.slug === "tracts-for-the-times" && (targetLanguage === "zh" || targetLanguage === "es")) {
+      promptLang = "en-victorian";
+      usingSpecialPrompt = true;
+    }
+
+    // Butler's Analogy of Religion — 18th-century Anglican theology, en-victorian prompt has relevant theological terms
+    if (text.slug === "analogy-of-religion" && (targetLanguage === "zh" || targetLanguage === "es")) {
+      promptLang = "en-victorian";
+      usingSpecialPrompt = true;
+    }
+
+    // Hutcheson's Inquiry — 18th-century English moral philosophy
+    if (text.slug === "hutcheson-inquiry" && (targetLanguage === "zh" || targetLanguage === "es")) {
+      promptLang = "en-philosophy-18c";
+      usingSpecialPrompt = true;
+    }
+
+    // Bosanquet's Philosophical Theory of the State — late 19c British Idealist political philosophy
+    if (text.slug === "philosophical-theory-of-state" && (targetLanguage === "zh" || targetLanguage === "es")) {
+      promptLang = "en-philosophy";
+      usingSpecialPrompt = true;
+    }
+
+    // Bradley's Appearance and Reality — late 19c British Idealist metaphysics
+    if (text.slug === "appearance-and-reality" && (targetLanguage === "zh" || targetLanguage === "es")) {
+      promptLang = "en-philosophy";
       usingSpecialPrompt = true;
     }
 
