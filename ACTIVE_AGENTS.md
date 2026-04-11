@@ -22,6 +22,19 @@ Track all running agents and background workers here. Update when launching or c
 | aae47d3d9031a008c | 0.2+0.3 | UI infra + locale branches | COMPLETE | 2026-04-11 | 2026-04-11 |
 | aaea427deabed5313 | 0.8 | Verification gates + batched push | COMPLETE | 2026-04-11 | 2026-04-11 |
 | a2e8a2a367d5c7f05 | 1 | Pilot 22 representative texts (sequential) | COMPLETE | 2026-04-11 | 2026-04-11 |
+| a2fee2cae20f1b50c | 2 | Survey + Wave 2D Romance (fr/it/pt/ro) | RUNNING | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W1 | 2D | Wave 2D worker W1 (30 texts, 2260 ch) | LAUNCHED | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W2 | 2D | Wave 2D worker W2 (32 texts, 1462 ch) | LAUNCHED | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W3 | 2D | Wave 2D worker W3 (33 texts, 480 ch) | LAUNCHED | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W4 | 2D | Wave 2D worker W4 (34 texts, 545 ch) | LAUNCHED | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W5 | 2D | Wave 2D worker W5 (33 texts, 650 ch) | LAUNCHED | 2026-04-11 | - |
+
+### Wave 2D survey & launch (agent a2fee2cae20f1b50c) — 2026-04-11
+- **Corpus survey:** 34,805 chapters across 1,077 texts need ES translation (see `docs/es-corpus-survey.md`).
+- **Wave 2D scope:** 162 Romance texts, **5,397 chapters**, 115,575 paragraphs (~5× plan estimate).
+- **Partition:** LPT-balanced across 5 workers at ~23,114 paragraphs each (`/tmp/es-wave-2d-partition.json`).
+- **Expected cost:** ~$22 (5,397 × $0.004). Well under $300 budget.
+- **Expected runtime:** ~8–11 hours per worker; workers run in parallel via run_in_background.
 
 **Phase 1 (agent a2e8a2a367d5c7f05) COMPLETE** — 2026-04-11
 - **Result:** 22/22 pilots passed after 2 prompt-edit self-recovery iterations.
