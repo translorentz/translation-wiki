@@ -782,6 +782,46 @@ async function translateChapter(
       }
     }
 
+    // ZH LEAK GUARDRAIL — Hard-coded for Chinese → Spanish translations.
+    // Catches the catastrophic failure mode observed on chaozhen-fayuan-chanhui-wen
+    // where the worker persisted the source Chinese text as its own Spanish
+    // "translation" (ratio 1.00 — every paragraph was untranslated CJK). This
+    // guardrail detects untranslated Chinese characters leaking through into
+    // Spanish output and refuses the save. Thresholds:
+    //   - >10% of paragraphs containing ANY Chinese characters, OR
+    //   - >5% of total character count being Chinese
+    // Either trips → reject. Legitimate Spanish translations of Chinese texts
+    // should contain essentially ZERO Chinese characters (occasional proper
+    // noun glosses stay well under these thresholds).
+    if (
+      targetLanguage === "es" &&
+      (sourceLanguage === "zh" || sourceLanguage.startsWith("zh-"))
+    ) {
+      const chineseRegex = /[\u4e00-\u9fff\u3400-\u4dbf]/g;
+      let leakyParas = 0;
+      let totalChineseChars = 0;
+      let totalChars = 0;
+      for (const para of translated) {
+        const text = para?.text ?? "";
+        const matches = text.match(chineseRegex) ?? [];
+        if (matches.length > 0) leakyParas++;
+        totalChineseChars += matches.length;
+        totalChars += text.length;
+      }
+      const paraLeakRate =
+        translated.length > 0 ? leakyParas / translated.length : 0;
+      const charLeakRate = totalChars > 0 ? totalChineseChars / totalChars : 0;
+      if (paraLeakRate > 0.10 || charLeakRate > 0.05) {
+        console.error(
+          `  [ZH LEAK ERROR] ${textSlug} ch${chapter.chapterNumber}: ${leakyParas}/${translated.length} paragraphs contain Chinese chars (${(paraLeakRate * 100).toFixed(1)}%), char leak rate ${(charLeakRate * 100).toFixed(1)}%`
+        );
+        console.error(
+          `  Skipping save — Chinese source text leaked into Spanish translation.`
+        );
+        return false;
+      }
+    }
+
     // LINEBREAK GUARDRAIL — Hard-coded for poetry/hymn texts (e.g., hymni-ecclesiae)
     // Each stanza's line count in the translation MUST match the source's line count.
     // This catches the most common LLM failure mode: merging/splitting verse lines.
