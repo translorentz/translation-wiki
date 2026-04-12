@@ -48,8 +48,36 @@ if (fs.existsSync(envPath)) {
     if (dsMatch) {
       process.env[dsMatch[1]] = dsMatch[2].replace(/^['"]|['"]$/g, "");
     }
+    // Load dedicated isolated keys (e.g. CHINESE_HISTORY_DEEPSEEK_API_KEY) so
+    // that --api-key-env <VARNAME> can find them. These are intentionally NOT
+    // included in the main loadDeepseekKeys() pool — see the explicit
+    // exclusion + value-dedupe in that function.
+    const dedicatedMatch = line.match(/^([A-Z][A-Z0-9_]*_DEEPSEEK_API_KEY)=(.+)$/);
+    if (dedicatedMatch) {
+      process.env[dedicatedMatch[1]] = dedicatedMatch[2].replace(/^['"]|['"]$/g, "");
+    }
   }
 }
+
+// Early-parse --api-key-env so dedicated-key isolation can apply BEFORE the
+// module-level DeepSeek pool is built. Used by the 24 Histories drain
+// (CHINESE_HISTORY_DEEPSEEK_API_KEY) so that mingshi/songshi consume only
+// the dedicated key and never the main 6-key pool.
+function earlyParseApiKeyEnv(): string | undefined {
+  const args = process.argv.slice(2);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--api-key-env" && args[i + 1]) return args[i + 1];
+  }
+  return undefined;
+}
+const DEDICATED_KEY_ENV = earlyParseApiKeyEnv();
+
+// The set of env-var names that hold isolated/dedicated keys. These keys
+// must NEVER be loaded into the main DeepSeek pool — they exist precisely to
+// isolate their rate-limit budget from the main pool.
+const DEDICATED_KEY_ENV_VARS = new Set<string>([
+  "CHINESE_HISTORY_DEEPSEEK_API_KEY",
+]);
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -84,10 +112,37 @@ function loadDeepseekKeys(): string[] {
     const k = process.env[`DEEPSEEK_EXTRA_API_${i}`];
     if (k) keys.push(k);
   }
-  return Array.from(new Set(keys.filter(Boolean)));
+
+  // Dedicated isolated keys (CHINESE_HISTORY_DEEPSEEK_API_KEY, etc.) must
+  // NEVER appear in the main pool. Build a set of forbidden VALUES from the
+  // known dedicated env vars and filter them out by value, even if a key
+  // happened to be aliased into one of the main-pool variables.
+  const forbiddenValues = new Set<string>();
+  for (const v of DEDICATED_KEY_ENV_VARS) {
+    const val = process.env[v];
+    if (val) forbiddenValues.add(val);
+  }
+
+  const filtered = keys.filter((k) => Boolean(k) && !forbiddenValues.has(k));
+  return Array.from(new Set(filtered));
 }
 
-const DEEPSEEK_KEYS = loadDeepseekKeys();
+let DEEPSEEK_KEYS: string[];
+if (DEDICATED_KEY_ENV) {
+  // --api-key-env <VARNAME> overrides the entire pool with a single dedicated
+  // key. Used to isolate rate-limit budgets (e.g. 24 Histories drain).
+  const dedicatedKey = process.env[DEDICATED_KEY_ENV];
+  if (!dedicatedKey) {
+    console.error(
+      `--api-key-env ${DEDICATED_KEY_ENV} was specified, but process.env.${DEDICATED_KEY_ENV} is undefined or empty. Aborting.`
+    );
+    process.exit(1);
+  }
+  DEEPSEEK_KEYS = [dedicatedKey];
+  console.log(`Using dedicated API key from env var ${DEDICATED_KEY_ENV} (single-key pool, isolated from main pool)`);
+} else {
+  DEEPSEEK_KEYS = loadDeepseekKeys();
+}
 if (DEEPSEEK_KEYS.length === 0) {
   console.error("No DeepSeek API keys found (tried DEEPSEEK_API_KEY, DEEPSEEK_API_KEYS, DEEPSEEK_API_KEY_2..10, DEEPSEEK_EXTRA_API_2..10).");
   process.exit(1);
@@ -171,6 +226,7 @@ function parseArgs() {
   let retranslate = false;
   let targetLanguage = "en";
   let modelOverride: string | undefined;
+  let apiKeyEnv: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--text" && args[i + 1]) textSlug = args[i + 1];
@@ -180,9 +236,13 @@ function parseArgs() {
     if (args[i] === "--retranslate") retranslate = true;
     if (args[i] === "--target-language" && args[i + 1]) targetLanguage = args[i + 1];
     if (args[i] === "--model" && args[i + 1]) modelOverride = args[i + 1];
+    // --api-key-env is parsed early (before module init) by earlyParseApiKeyEnv()
+    // for the purpose of overriding the DeepSeek key pool. Captured here too so
+    // main() can log it. Both must agree.
+    if (args[i] === "--api-key-env" && args[i + 1]) apiKeyEnv = args[i + 1];
   }
 
-  return { textSlug, start, end, delay, retranslate, targetLanguage, modelOverride };
+  return { textSlug, start, end, delay, retranslate, targetLanguage, modelOverride, apiKeyEnv };
 }
 
 // ============================================================
@@ -1277,12 +1337,15 @@ async function translateChapter(
 // ============================================================
 
 async function main() {
-  const { textSlug, start, end, delay, retranslate, targetLanguage, modelOverride } = parseArgs();
+  const { textSlug, start, end, delay, retranslate, targetLanguage, modelOverride, apiKeyEnv } = parseArgs();
 
   console.log("=== Batch Translation ===\n");
   console.log(`Model: ${modelOverride || MODEL}${modelOverride ? " (CLI override)" : ""}`);
   console.log(`Target language: ${targetLanguage}`);
   console.log(`Delay: ${delay}ms between requests`);
+  if (apiKeyEnv) {
+    console.log(`API key isolation: --api-key-env ${apiKeyEnv} (single-key dedicated pool)`);
+  }
   if (retranslate) {
     console.log(`Mode: RETRANSLATE (existing translations will be replaced)`);
   }
@@ -1426,6 +1489,23 @@ async function main() {
     if (twentyFourHistoriesSlugs.includes(text.slug)) {
       promptLang = `zh-${text.slug}`;
       usingSpecialPrompt = true;
+      // Spanish dispatch fallback: only zh-shiji exists in
+      // SPANISH_TARGET_BY_SOURCE today. Per-slug Spanish specialists for the
+      // other 23 histories are not yet authored, so we fall back to the
+      // zh-shiji "24 Histories" base specialist for ES target. Once a
+      // per-slug ES specialist is added (e.g. "zh-mingshi" key in
+      // SPANISH_TARGET_BY_SOURCE), this fallback will silently stop
+      // applying for that slug.
+      if (targetLanguage === "es") {
+        // Lazy import to avoid module-cycle issues
+        // (SPANISH_TARGET_BY_SOURCE lives in the same prompts.ts file as
+        // buildTranslationPrompt)
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const { SPANISH_TARGET_BY_SOURCE } = require("../src/server/translation/prompts");
+        if (!(promptLang in SPANISH_TARGET_BY_SOURCE)) {
+          promptLang = "zh-shiji";
+        }
+      }
     }
 
     // Chagatai Turkic poetry (Babur's Divan) uses chg-babur prompt
