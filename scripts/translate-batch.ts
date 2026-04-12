@@ -153,7 +153,7 @@ const deepseekClients = DEEPSEEK_KEYS.map(
   (key) => new OpenAI({ apiKey: key, baseURL: "https://api.deepseek.com" })
 );
 
-let nextClientIdx = 0;
+let nextClientIdx = Math.floor(Math.random() * Math.max(deepseekClients.length, 1));
 function getNextClient(): OpenAI {
   const c = deepseekClients[nextClientIdx % deepseekClients.length];
   nextClientIdx++;
