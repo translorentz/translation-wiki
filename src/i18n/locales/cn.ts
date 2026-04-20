@@ -163,7 +163,7 @@ const cn: Translations = {
 
   // Footer
   "footer.description":
-    "Deltoi \u2014 \u53E4\u5178\u6587\u672C\u9010\u884C\u5BF9\u7167\u7FFB\u8BD1\u534F\u4F5C\u7EF4\u57FA\u3002",
+    "Deltoi\uFF1A\u53E4\u5178\u6587\u672C\u9010\u884C\u5BF9\u7167\u7FFB\u8BD1\u534F\u4F5C\u7EF4\u57FA\u3002",
   "footer.trial": "Bryan Cheong \u8BD5\u9A8C\u9879\u76EE\u3002\u5185\u5BB9\u4EE5",
   "footer.license": "CC BY-NC-SA 4.0",
   "footer.licenseSuffix": "\u8BB8\u53EF\u534F\u8BAE\u53D1\u5E03",

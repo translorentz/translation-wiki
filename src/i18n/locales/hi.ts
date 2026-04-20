@@ -162,7 +162,7 @@ const hi: Translations = {
   "profile.cancel": "रद्द करें",
 
   // Footer
-  "footer.description": "Deltoi — प्राचीन ग्रंथों के पंक्तिबद्ध अनुवाद का सहयोगी विकी।",
+  "footer.description": "Deltoi: प्राचीन ग्रंथों के पंक्तिबद्ध अनुवाद का सहयोगी विकी।",
   "footer.trial": "Bryan Cheong द्वारा प्रायोगिक परियोजना। सामग्री लाइसेंस प्राप्त है",
   "footer.license": "CC BY-NC-SA 4.0",
   "footer.licenseSuffix": " के तहत।",

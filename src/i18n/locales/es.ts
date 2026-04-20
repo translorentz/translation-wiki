@@ -168,7 +168,7 @@ const es: Translations = {
 
   // Footer
   "footer.description":
-    "Deltoi — Una wiki colaborativa de traducciones interlineales de textos precontemporáneos.",
+    "Deltoi: Una wiki colaborativa de traducciones interlineales de textos precontemporáneos.",
   "footer.trial": "Proyecto de prueba de Bryan Cheong. El contenido está licenciado bajo",
   "footer.license": "CC BY-NC-SA 4.0",
   "footer.licenseSuffix": ".",
