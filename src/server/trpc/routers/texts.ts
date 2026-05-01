@@ -62,6 +62,7 @@ const cachedTextBySlug = unstable_cache(
             slug: true,
             title: true,
             titleZh: true,
+            titleEs: true,
             ordering: true,
           },
         },
