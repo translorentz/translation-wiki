@@ -2,7 +2,35 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-04-20
+**Last updated:** 2026-05-01
+
+## RUNNING — Spanish Metadata Population (2026-05-01)
+
+Populate ALL `_es` columns across the database via DeepSeek (Español Neutro). Script: `scripts/translate-metadata-es.ts`. Pinned to dedicated keys to avoid contention with active chapter-translation chains.
+
+Scope:
+- texts.title_es        — 1084 rows
+- texts.description_es  — 1084 rows
+- authors.name_es       — 548 rows
+- authors.description_es— 488 rows
+- chapters.title_es     — 35,034 rows (batched 50/req)
+- HIGHLIGHTS_ES         — to update in `src/components/home/HighlightCards.tsx`
+
+### Workers
+- es-meta-titles-and-descs - DEEPSEEK_EXTRA_API_6 - phase: titles → descriptions → authors - RUNNING (started 13:40, log: logs/es-meta-titles.log)
+- es-meta-chapters         - DEEPSEEK_EXTRA_API_5 - phase: chapters (35k titles, 50/batch) - RUNNING (started 13:40, log: logs/es-meta-chapters.log)
+
+## RUNNING — Qingshigao (Draft History of Qing) ES Drain (2026-05-01)
+
+Spanish translation drain for qingshigao using dedicated 24-Histories DeepSeek key.
+
+- Text: qingshigao (529 chapters total, 40 done at start, 489 remaining)
+- Target: es
+- Key: CHINESE_HISTORY_DEEPSEEK_API_KEY (dedicated 24H pool)
+- Model: deepseek-chat (default for ES)
+
+### Workers
+- qsg-es-drain-session-1 - ES ch 2-70 (next 30 untranslated) - RUNNING (started 2026-05-01 13:33)
 
 ## RUNNING — Ouyang Xiu Ji (Collected Works of Ouyang Xiu) Pipeline (2026-05-01)
 

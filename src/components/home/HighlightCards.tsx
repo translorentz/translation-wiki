@@ -123,10 +123,40 @@ const HIGHLIGHTS_HI: Highlight[] = [
   },
 ];
 
-// Phase 0.3 stub: HIGHLIGHTS_ES aliased to HIGHLIGHTS_EN.
-// Phase 5 will populate a curated Spanish-specific array from a SQL query
-// of finished Spanish translations.
-const HIGHLIGHTS_ES: Highlight[] = HIGHLIGHTS_EN;
+const HIGHLIGHTS_ES: Highlight[] = [
+  {
+    slug: "shahnameh",
+    authorSlug: "ferdowsi",
+    langCode: "fa",
+    originalTitle: "شاهنامه",
+    secondaryTitle: "Libro de los Reyes",
+    teaserKey: "highlights.shahnameh",
+  },
+  {
+    slug: "zhuziyulei",
+    authorSlug: "zhu-xi",
+    langCode: "zh",
+    originalTitle: "朱子語類",
+    secondaryTitle: "Conversaciones Clasificadas del Maestro Zhu",
+    teaserKey: "highlights.zhuziyulei",
+  },
+  {
+    slug: "romaike-historia",
+    authorSlug: "nicephorus-gregoras",
+    langCode: "grc",
+    originalTitle: "Ρωμαϊκὴ Ἱστορία",
+    secondaryTitle: "Historia Romana",
+    teaserKey: "highlights.romaike",
+  },
+  {
+    slug: "storia-repubblica-firenze",
+    authorSlug: "gino-capponi",
+    langCode: "it",
+    originalTitle: "Storia della Repubblica di Firenze",
+    secondaryTitle: "Historia de la República de Florencia",
+    teaserKey: "highlights.capponi",
+  },
+];
 
 export function HighlightCards({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
