@@ -1,8 +1,35 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/server/auth/config";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextResponse as NextResponseType } from "next/server";
 
 const { auth } = NextAuth(authConfig);
+
+// Paths that are safe to cache at the Vercel edge.
+// Read-only chapter/text/browse pages benefit hugely; auth and edit flows must
+// never be cached.
+function isCacheablePath(p: string): boolean {
+  if (p.startsWith("/api/")) return false;
+  if (p.startsWith("/admin")) return false;
+  if (p === "/profile" || p.startsWith("/profile/")) return false;
+  if (p === "/login" || p.startsWith("/login/")) return false;
+  if (p === "/register" || p.startsWith("/register/")) return false;
+  if (p === "/contribute") return false;
+  if (p === "/search") return false; // query-string variability
+  if (p.includes("/edit")) return false; // /edit, /edit-source
+  if (p.includes("/history")) return false;
+  if (p.includes("/discussion")) return false;
+  return true; // /, /texts, /about, /[lang]/[author]/[text], /[lang]/[author]/[text]/[chapter]
+}
+
+// Edge cache for 5 min, serve stale for 24h while revalidating in background.
+// No browser cache (users get fresh on hard-refresh).
+const CACHE_HEADER = "public, s-maxage=300, stale-while-revalidate=86400";
+
+function applyCacheHeader(response: NextResponseType, effectivePath: string, isLoggedIn: boolean) {
+  if (isLoggedIn) return; // never cache personalized auth responses
+  if (!isCacheablePath(effectivePath)) return;
+  response.headers.set("Cache-Control", CACHE_HEADER);
+}
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
@@ -51,6 +78,7 @@ export default auth((req) => {
       sameSite: "lax",
     });
     response.headers.set("x-locale-path", effectivePath);
+    applyCacheHeader(response, effectivePath, isLoggedIn);
     return response;
   }
 
@@ -65,6 +93,7 @@ export default auth((req) => {
     });
   }
   response.headers.set("x-locale-path", pathname);
+  applyCacheHeader(response, pathname, isLoggedIn);
   return response;
 });
 
