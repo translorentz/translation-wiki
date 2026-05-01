@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { revalidateTag } from "next/cache";
 import { createTRPCRouter, publicProcedure, editorProcedure } from "../init";
 import { db } from "@/server/db";
 import {
@@ -100,6 +101,12 @@ export const translationsRouter = createTRPCRouter({
           updatedAt: new Date(),
         })
         .where(eq(translations.id, translation.id));
+
+      // Bust read caches so the editor sees their change immediately. Also
+      // bust text-ids — if this is the first translation for the chapter's
+      // text in this target language, the front/browse page filter changes.
+      revalidateTag("chapter", { expire: 0 });
+      revalidateTag("text-ids", { expire: 0 });
 
       return newVersion;
     }),

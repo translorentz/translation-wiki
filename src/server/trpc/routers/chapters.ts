@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { createTRPCRouter, publicProcedure, editorProcedure } from "../init";
 import { db } from "@/server/db";
 import {
@@ -8,6 +9,39 @@ import {
   sourceVersions,
 } from "@/server/db/schema";
 import { eq, and, desc } from "drizzle-orm";
+
+// Cache tag for chapter reads. Invalidated by source/translation mutations
+// below so editors see their changes on the very next render.
+const CHAPTER_TAG = "chapter";
+// `texts.getBySlug` (in the texts router) embeds the chapter list, so source
+// edits also bust the text cache. text-ids invalidation lives in
+// translations.ts (the only mutation that flips a text's translation status).
+const TEXT_TAG = "text";
+
+const cachedChapterByTextAndSlug = unstable_cache(
+  async (textId: number, slug: string, targetLanguage: string) => {
+    const chapter = await db.query.chapters.findFirst({
+      where: and(eq(chapters.textId, textId), eq(chapters.slug, slug)),
+      with: {
+        translations: {
+          where: eq(translations.targetLanguage, targetLanguage),
+          with: {
+            currentVersion: {
+              with: {
+                author: {
+                  columns: { id: true, username: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return chapter ?? null;
+  },
+  ["chapters.getByTextAndSlug.v1"],
+  { revalidate: 300, tags: [CHAPTER_TAG] }
+);
 
 export const chaptersRouter = createTRPCRouter({
   getByTextAndNumber: publicProcedure
@@ -51,27 +85,11 @@ export const chaptersRouter = createTRPCRouter({
       })
     )
     .query(async ({ input }) => {
-      const chapter = await db.query.chapters.findFirst({
-        where: and(
-          eq(chapters.textId, input.textId),
-          eq(chapters.slug, input.slug)
-        ),
-        with: {
-          translations: {
-            where: eq(translations.targetLanguage, input.targetLanguage),
-            with: {
-              currentVersion: {
-                with: {
-                  author: {
-                    columns: { id: true, username: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
-      return chapter ?? null;
+      return cachedChapterByTextAndSlug(
+        input.textId,
+        input.slug,
+        input.targetLanguage
+      );
     }),
 
   updateSource: editorProcedure
@@ -121,6 +139,11 @@ export const chaptersRouter = createTRPCRouter({
           currentSourceVersionId: newVersion.id,
         })
         .where(eq(chapters.id, input.chapterId));
+
+      // { expire: 0 } = immediate invalidation. Without a profile arg, Next 16
+      // logs a deprecation warning and treats this as stale-while-revalidate.
+      revalidateTag(CHAPTER_TAG, { expire: 0 });
+      revalidateTag(TEXT_TAG, { expire: 0 });
 
       return newVersion;
     }),
@@ -229,6 +252,11 @@ export const chaptersRouter = createTRPCRouter({
             .where(eq(translations.id, input.translationId));
         }
       }
+
+      // { expire: 0 } = immediate invalidation. Without a profile arg, Next 16
+      // logs a deprecation warning and treats this as stale-while-revalidate.
+      revalidateTag(CHAPTER_TAG, { expire: 0 });
+      revalidateTag(TEXT_TAG, { expire: 0 });
 
       return newSourceVersion;
     }),
