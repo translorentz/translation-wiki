@@ -2,7 +2,95 @@
 
 Track all running agents and background workers here. Update when launching or completing agents.
 
-**Last updated:** 2026-04-11
+**Last updated:** 2026-04-20
+
+## RUNNING — Ouyang Xiu Ji (Collected Works of Ouyang Xiu) Pipeline (2026-05-01)
+
+End-to-end addition of the 153-juan Collected Works of Ouyang Xiu (Northern Song, 1007-1072) from zh.wikisource.org.
+
+- Author: ouyang-xiu (id 592, reused from commit 060cb09)
+- Text: ouyangxiu-ji (id 1219, 153 chapters)
+- Genre: literature -> zh-literary specialist
+- Targets: EN + ES (Chinese source -> skip ZH)
+
+### Workers
+- blknnntps - EN ch 1-3 - COMPLETE (3/3)
+- bm6pbeorq - EN ch 4-30 - RUNNING
+- b4aor8sv8 - EN ch 31-80 - RUNNING
+- bepd33nl5 - EN ch 81-153 - RUNNING
+- bngpspb1f - ES ch 1-30 - RUNNING
+- bf0o1xc98 - ES ch 31-80 - RUNNING
+- b1zzcjoa3 - ES ch 81-153 - RUNNING
+
+Watchers:
+- b1fsrgwip - waits until EN >= 50
+- bs9r051wk - waits until EN >= 150 AND ES >= 150 (translation completion)
+
+Structural commit pushed: cd6671c
+
+### COMPLETE — 縱囚論 splice into ouyangxiu-ji ch17 (2026-05-01)
+
+The standalone zongqiulun text (id 1218) had pre-translated EN (translation_versions.id 85120) and ES (id 85124) translations. Ouyang Xiu Ji ch17 (id 48249) bundles 縱囚論 with 6 other essays.
+
+- Translated ch17 v1 fresh (EN tv 85497, ES tv 85499) via translate-batch.ts
+- Built v2 via SQL CTE that overwrites only paragraph indices 2,3,4 with zongqiulun translations:
+  - ch17.idx 2 ← zongqiulun[0] + " " + zongqiulun[1]
+  - ch17.idx 3 ← zongqiulun[2] + " " + zongqiulun[3]
+  - ch17.idx 4 ← zongqiulun[4] (verbatim)
+- v2 inserted append-only with previous_version_id linkage; current_version_id updated
+- EN v2: tv id 85502; ES v2: tv id 85503
+- Audit: pnpm tsx scripts/_audit-spanish-pilot.ts ouyangxiu-ji 17 → passed
+- Standalone zongqiulun text and translations preserved unchanged
+- See docs/zongqiulun-slot-into-ouyangxiu-ji.md (gitignored, local only)
+
+
+
+## SESSION END STATE (2026-04-20)
+
+**Spanish Translation Rollout: 12,625 / 34,805 chapters (36.3%)**
+**458 texts at 100%, 221 partial, 404 untouched**
+
+Full state document: `docs/spanish-rollout-state-20260420-final.md`
+
+### Processes potentially still running at session end (may die on session exit)
+- `bow02ycis` — 6-worker Chinese floor (6 pinned keys)
+- `b2srdysqa` — cronica-matteo-villani ch 951-1081
+- `brm0btb1i` — storia-italia-balbo ch 121-178
+- `bi6j4yn04` — pesme-ilic ch 41-80
+- `bkgm2ksxc` — mingshi ch 201-220 (dedicated key)
+- `bdewhkdan` — mingshi ch 221-240 (dedicated key)
+
+### Key infrastructure commits (all on main, all deployed)
+- `e099656` — Phase 0 foundation (schema, dictionary, prompts, UI, verification)
+- `defc72a` — Phase 1 pilot + guardrails (normalizeQuotes, verse line rule)
+- `7a003cc` — Spanish quote convention correction (raya + «» per RAE)
+- `c1dfa00` — zh-leak guardrail
+- `0bda2cd` — Multi-key pool (6 keys) + prompt caching
+- `366028a` — In-chapter batch parallelism (N=3)
+- `b7b9808` — --api-key-env dedicated key isolation
+- `09f652f` — Round-robin random seed
+- `edbdf6d` — Claude direct-translate verse rescue helper
+- `f39e691` — Home page buttons + hero padding
+- `d00fbb9` — Footer "Deltoi:" fix
+
+---
+
+## 24 Histories Dedicated-Key Drain (Mingshi + Songshi)
+
+**Started:** 2026-04-11
+**Key:** `CHINESE_HISTORY_DEEPSEEK_API_KEY` (isolated single-key pool)
+**Prompt:** `zh-shiji` 24H specialist (auto-fallback for slugs without per-slug ES specialist)
+**Commit:** `b7b9808 feat(translation): --api-key-env flag for dedicated key isolation` — pushed to main
+**Logs:** `data/24h-pipeline/dedicated-logs/`
+
+| Worker | Text | Range | Status |
+|--------|------|-------|--------|
+| W1 | mingshi | 2-6 | RUNNING (smoke ch1 PASS: 96=96 paras, ratio 6.39, 0 failures) |
+| W2 | songshi | 1-5 | RUNNING |
+
+**Pre-flight smoke test:** Mingshi ch1 translated successfully via dedicated key + zh-shiji fallback. Audit: ratio=6.39, no zh-leak, alignment 96=96. The fallback path is verified working end-to-end.
+
+**No overlap:** Other 24H workers are on bei-qi-shu, chenshu, jiu-wudaishi, liangshu, zhoushu — none on mingshi/songshi.
 
 ---
 
@@ -22,12 +110,109 @@ Track all running agents and background workers here. Update when launching or c
 | aae47d3d9031a008c | 0.2+0.3 | UI infra + locale branches | COMPLETE | 2026-04-11 | 2026-04-11 |
 | aaea427deabed5313 | 0.8 | Verification gates + batched push | COMPLETE | 2026-04-11 | 2026-04-11 |
 | a2e8a2a367d5c7f05 | 1 | Pilot 22 representative texts (sequential) | COMPLETE | 2026-04-11 | 2026-04-11 |
-| a2fee2cae20f1b50c | 2 | Survey + Wave 2D Romance (fr/it/pt/ro) | RUNNING | 2026-04-11 | - |
-| a2fee2cae20f1b50c-W1 | 2D | Wave 2D worker W1 (30 texts, 2260 ch) | LAUNCHED | 2026-04-11 | - |
-| a2fee2cae20f1b50c-W2 | 2D | Wave 2D worker W2 (32 texts, 1462 ch) | LAUNCHED | 2026-04-11 | - |
-| a2fee2cae20f1b50c-W3 | 2D | Wave 2D worker W3 (33 texts, 480 ch) | LAUNCHED | 2026-04-11 | - |
-| a2fee2cae20f1b50c-W4 | 2D | Wave 2D worker W4 (34 texts, 545 ch) | LAUNCHED | 2026-04-11 | - |
-| a2fee2cae20f1b50c-W5 | 2D | Wave 2D worker W5 (33 texts, 650 ch) | LAUNCHED | 2026-04-11 | - |
+| a2fee2cae20f1b50c | 2 | Survey + Wave 2D Romance (fr/it/ro, 5,397 ch) launch | COMPLETE | 2026-04-11 | 2026-04-11 |
+| a2fee2cae20f1b50c-W1 | 2D | Wave 2D worker W1 (30 texts, 2260 ch) | DIED EARLY (only ~16/5398 total ch done before all 5 workers exited) | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W2 | 2D | Wave 2D worker W2 (32 texts, 1462 ch) | DIED EARLY | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W3 | 2D | Wave 2D worker W3 (33 texts, 480 ch) | DIED EARLY | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W4 | 2D | Wave 2D worker W4 (34 texts, 545 ch) | DIED EARLY | 2026-04-11 | - |
+| a2fee2cae20f1b50c-W5 | 2D | Wave 2D worker W5 (33 texts, 650 ch) | DIED EARLY | 2026-04-11 | - |
+| a07d608f320018600-W1 | 2D-RECOVERY | Wave 2D recovery W1 (32 texts, 3341 ch, 23046 para, bash id b5kkdsp88) | RUNNING | 2026-04-11T13:30:08Z | - |
+| a07d608f320018600-W2 | 2D-RECOVERY | Wave 2D recovery W2 (31 texts, 414 ch, 23046 para, bash id b0yn717sq) | RUNNING | 2026-04-11T13:30:14Z | - |
+| a07d608f320018600-W3 | 2D-RECOVERY | Wave 2D recovery W3 (34 texts, 421 ch, 23049 para, bash id bm1j0vzl2) | RUNNING | 2026-04-11T13:30:18Z | - |
+| a07d608f320018600-W4 | 2D-RECOVERY | Wave 2D recovery W4 (34 texts, 507 ch, 23049 para, bash id bb05pmbrq) | RUNNING | 2026-04-11T13:30:20Z | - |
+| a07d608f320018600-W5 | 2D-RECOVERY | Wave 2D recovery W5 (31 texts, 699 ch, 23046 para, bash id bxze2rvo1) | RUNNING | 2026-04-11T13:30:23Z | - |
+| ad2f6d2c3c3956622 | 2 | Wave 2E Latin/Greek (la/grc/el, 2,697 ch) coordinator | MONITORING | 2026-04-11 | - |
+| a07d608f320018600 | 2 | Wave 2D recovery + relaunch (durable Bash workers) | RUNNING | 2026-04-11 | - |
+| aa97ac37320a2c874 | 2 | Wave 2F Persian/Chagatai/Arabic (fa/chg/ar, 3,904 ch / 397,347 para / 72 texts) coordinator — slash guardrail critical | RUNNING | 2026-04-11 | - |
+| aca128036bef3c9e1 | 2 | Wave 2E recovery + relaunch (durable Bash workers, ~2,697 ch) | RUNNING | 2026-04-11 | - |
+| aa157e5ba5088bb39 | 2 | Wave 2C English (en, 4,361 ch / 265,341 para / 118 texts) coordinator | RUNNING | 2026-04-11 | - |
+| ae795b2e1fa83ca4f | 2 | Wave health check + DB progress snapshot | RUNNING | 2026-04-11 | - |
+| a2caae37a6be9e8a4 | 2 | Wave 2G Slavic+Indic+Other (197 texts / 5,098 ch / 274,330 para) coordinator | COMPLETE — workers expected to die after agent exit (background-worker death pattern); ~93 ch translated in 21min before exit, all early audits clean | 2026-04-11 | 2026-04-11 |
+| a2caae37a6be9e8a4-W1 | 2G | Wave 2G worker W1 (39 chunks, 848 ch, 54874 para; nekuda-leskov→ru-literary lead; bash id b70tiw8a5; pid 78225) | RUNNING | 2026-04-11T13:50:07Z | - |
+| a2caae37a6be9e8a4-W2 | 2G | Wave 2G worker W2 (40 chunks, 753 ch, 54862 para; salomeya→ru-literary lead; bash id b983fem8i; pid 78254) | RUNNING | 2026-04-11T13:50:11Z | - |
+| a2caae37a6be9e8a4-W3 | 2G | Wave 2G worker W3 (39 chunks, 984 ch, 54873 para; lektsii-tom2→ru-literary lead; bash id btn7ob5x2; pid 78282) | RUNNING | 2026-04-11T13:50:13Z | - |
+| a2caae37a6be9e8a4-W4 | 2G | Wave 2G worker W4 (40 chunks, 1408 ch, 54861 para; rok-na-vsi→cs lead; bash id bfc20n375; pid 78310) | RUNNING | 2026-04-11T13:50:16Z | - |
+| a2caae37a6be9e8a4-W5 | 2G | Wave 2G worker W5 (39 chunks, 1105 ch, 54860 para; vasily-tyorkin→ru-literary lead; bash id bd2n9yeca; pid 78338) | RUNNING | 2026-04-11T13:50:18Z | - |
+| afd07bfd7513edf1c | 2 | SYNCHRONOUS PATTERN TEST — Shahnameh ch 1-30 ES (foreground only) | RUNNING | 2026-04-11 | - |
+
+### Architecture pivot 2026-04-11 ~14:00Z
+
+ALL background-worker waves DIED. Health check (agent ae795b2e1fa83ca4f) at 13:47Z showed 0 alive translate-batch processes despite 6 wave coordinators having launched ~25-30 background workers (some via nohup, some via Bash run_in_background — both equally dead). Total ES translations in DB: 104/34,805 (0.30%).
+
+**Root cause:** Background bash processes do NOT survive subagent termination in this environment. `nohup` does not detach. `run_in_background: true` is reaped on agent exit. The `wait` strategy worked for Whewell because the agent stayed in foreground until `wait` returned — none of the wave coordinators followed that pattern; they all backgrounded then slept then exited, killing the children.
+
+**Pivot:** Switch to SYNCHRONOUS in-agent pattern. Each agent runs translate-batch.ts in the foreground (or backgrounded with `wait` in the SAME bash block) for a bounded chunk and exits cleanly when work is done. Agent lifetime = worker lifetime.
+
+**Test agent afd07bfd7513edf1c**: Shahnameh ch 1-30 via pure synchronous translate-batch.ts. **VALIDATED** — 11 chapters in 8 minutes, 7/7 audits PASS, 0 errors. Pattern proven.
+
+**Sync batch 1 launched (5 parallel agents, 2026-04-11 ~14:10Z, target ~1,570 chapters):**
+- a9f411b3a6e66c18d — Sync 2F-1 Persian (Shahnameh 31-80, Bidel 1-50, Sanai 1-30, Hakim 1-30, Muizzi 1-30) ~190 ch
+- acd161164539d4bd7 — Sync 2D-1 Romance (annali-italia 1-500 + small Italian) ~680 ch
+- a116e89a8c100d654 — Sync 2E-1 Latin/Greek (smallest texts first) ~200 ch
+- a550a4d5cc596f919 — Sync 2C-1 English (Bradley/Bosanquet/Hutcheson/Whewell) ~220 ch
+- a4d422a2efd85e2da — Sync 2H + 2G smallest (sq + Slavic/Indic small texts) ~280 ch
+
+See `docs/spanish-rollout-architecture-pivot.md` for full diagnosis.
+| aa97ac37320a2c874-W1 | 2F | Wave 2F worker W1 (14 chunks, 1054 ch, 79443 para; shahnameh lead; bash id b9uos3f7h) | RUNNING | 2026-04-11T13:33:40Z | - |
+| aa97ac37320a2c874-W2 | 2F | Wave 2F worker W2 (14 chunks, 620 ch, 79468 para; bidel-dehlavi lead; bash id bsaewtbj8) | RUNNING | 2026-04-11T13:33:47Z | - |
+| aa97ac37320a2c874-W3 | 2F | Wave 2F worker W3 (14 chunks, 380 ch, 79514 para; sanai-divan lead; bash id bin290n3a) | RUNNING | 2026-04-11T13:33:54Z | - |
+| aa97ac37320a2c874-W4 | 2F | Wave 2F worker W4 (15 chunks, 790 ch, 79454 para; hakim-qaani + masail-ibn-rushd; bash id b8ivv1lk8) | RUNNING | 2026-04-11T13:34:00Z | - |
+| aa97ac37320a2c874-W5 | 2F | Wave 2F worker W5 (15 chunks, 1060 ch, 79468 para; amir-muizzi + khaqani-shirvani; bash id bo1bq82hh) | RUNNING | 2026-04-11T13:34:09Z | - |
+| ad2f6d2c3c3956622-W1 | 2E | Wave 2E worker W1 (23 texts, 165 ch, 10,442 para) | RUNNING | 2026-04-11 | - |
+| ad2f6d2c3c3956622-W2 | 2E | Wave 2E worker W2 (23 texts, 297 ch, 10,440 para) | RUNNING | 2026-04-11 | - |
+| ad2f6d2c3c3956622-W3 | 2E | Wave 2E worker W3 (24 texts, 906 ch, 10,440 para) | RUNNING | 2026-04-11 | - |
+| ad2f6d2c3c3956622-W4 | 2E | Wave 2E worker W4 (25 texts, 665 ch, 10,445 para) | RUNNING | 2026-04-11 | - |
+| ad2f6d2c3c3956622-W5 | 2E | Wave 2E worker W5 (25 texts, 664 ch, 10,442 para) | RUNNING | 2026-04-11 | - |
+| aa157e5ba5088bb39-W1 | 2C | Wave 2C worker W1 (23 units, 850 ch, 53,044 para; en→es; bash id bm0zzpgdm) | RUNNING | 2026-04-11 | - |
+| aa157e5ba5088bb39-W2 | 2C | Wave 2C worker W2 (24 units, 944 ch, 53,069 para; en→es; bash id bzgzsn51i) | RUNNING | 2026-04-11 | - |
+| aa157e5ba5088bb39-W3 | 2C | Wave 2C worker W3 (24 units, 737 ch, 53,162 para; en→es; bash id b0web2rcd) | RUNNING | 2026-04-11 | - |
+| aa157e5ba5088bb39-W4 | 2C | Wave 2C worker W4 (23 units, 878 ch, 53,037 para; en→es; bash id bdhr50pme) | RUNNING | 2026-04-11 | - |
+| aa157e5ba5088bb39-W5 | 2C | Wave 2C worker W5 (24 units, 952 ch, 53,029 para; en→es; bash id b6hgg73se) | RUNNING | 2026-04-11 | - |
+
+### Wave 2F launch & early hemistich audit (agent aa97ac37320a2c874) — 2026-04-11
+
+- **Scope:** 72 texts, 3,904 chapters, 397,347 paragraphs (fa 38 / chg 2 / ar 32). Persian poetry dominates (360k of 397k paragraphs).
+- **Launch time:** 2026-04-11T13:33:40Z–13:34:09Z (5 workers staggered 6–9s each via Bash `run_in_background`)
+- **Bash IDs:** W1=b9uos3f7h, W2=bsaewtbj8, W3=bin290n3a, W4=b8ivv1lk8, W5=bo1bq82hh
+- **Partition:** `/tmp/es-wave-2f-partition.json` (LPT-balanced ~79,460 paragraphs per worker)
+- **Scope doc:** `docs/es-wave-2f-scope.md`
+- **Handoff:** `docs/es-wave-2f-handoff.md` + `/tmp/es-wave-2f-handoff.json`
+- **Prompt dispatch verified:** fa → `SPANISH_TARGET_BY_SOURCE["fa"]` (hemistich `/` rule at prompts.ts lines 7029–7037, marked "VIOLACIÓN CATASTRÓFICA"); chg → `chg`; babur-divan → `chg-babur`; fa-prose → `fa-prose` (Neutro); ar → universal Neutro fallback. Confirmed in worker logs: `model: deepseek-chat` for Shahnameh (REASONER_SLUGS bypassed for Spanish target).
+- **Early hemistich audit (T+5min, 15 poetry chapters sampled):**
+  - shahnameh ch 1–13: 13/13 PASS (slash rate 100%, ratios 1.14–1.59)
+  - bidel-dehlavi-divan ch 1–2: 2/2 PASS (slash rate 100%, ratios 1.73–1.78)
+  - Side-by-side eyeball check (scripts/_sample-es-wave-2f-translation.ts) on shahnameh ch5 p0 and bidel ch1 p0: slash preserved, Mexican Spanish literary register correct, no em-dash, no guillemets, no straight quotes.
+  - **0 slash failures, 0 total failures across 15 chapters → VERDICT: CONTINUE**
+  - No `[SLASH ERROR]` or `[slash warn]` logs from any of 5 workers. Persian Hemistich Catastrophe pattern NOT reproducing.
+- **Worker progress at T+5min:**
+  - W1: 13 shahnameh chapters completed (~2.6 ch/min)
+  - W2: 2 bidel-dehlavi chapters completed (100 paras each)
+  - W3/W4/W5: 0 chapters completed — stuck on huge first chapters (Sanai Divan ch1 = 21 batches; Hakim Qaani ch1 = 13 batches; Amir Muizzi ch1 = 92 batches). First `[done]` marks expected 15–60 min after launch.
+- **Halt triggers fired:** 0
+- **Revised completion window:** 2026-04-11T22:00Z – 2026-04-12T04:00Z (longer than initial estimate due to 500+ paragraph first-chapters in several Persian divans)
+- **Audit artifact:** `/tmp/es-wave-2f-early-audit.json`
+- **New scripts:** `scripts/_partition-es-wave-2f.ts`, `scripts/_run-es-wave-2f-worker.sh`, `scripts/_audit-es-wave-2f-early.ts`, `scripts/_sample-es-wave-2f-translation.ts`
+- **Next session:** resume via `docs/es-wave-2f-handoff.md`. Follow-up audit pass (including Arabic prose samples) once W3/W4/W5 drain their first texts.
+
+### Wave 2E launch & early audit (agent ad2f6d2c3c3956622) — 2026-04-11
+
+- **Scope:** 120 texts, 2,697 chapters, 52,209 paragraphs (la 44 / grc 56 / el 20)
+- **Launch time:** 2026-04-11T13:18:22Z–13:18:35Z
+- **Worker PIDs (runner):** W1=75607, W2=75636, W3=75663, W4=75690, W5=75719
+- **Partition:** `/tmp/es-wave-2e-partition.json` (LPT-balanced, ~10,440 paragraphs each)
+- **Handoff:** `docs/es-wave-2e-handoff.md` + `/tmp/es-wave-2e-handoff.json`
+- **Early audit (T+8min, 8 chapters sampled):**
+  - la-hymn/hymni-ecclesiae ch 1/3/5/10/15: PASS (verse lines 4=4 preserved, ratios 1.17–1.39)
+  - el/poiimata-kai-peza ch 1: PASS (29/29, ratio 0.98)
+  - grc/eikona-adikias ch 1: PASS (5/5, ratio 0.98)
+  - grc/gnosis-patriarchon-thronon ch 1: PASS (5/5, ratio 1.04)
+  - **Zero violations across la-hymn (verse fallback), el (generic fallback), grc (specialist) paths.**
+  - Universal verse directive from Phase 1 self-recovery is correctly activating for la-hymn.
+- **Progress at T+8min:** 20/2701 chapters (0.74%)
+- **Throughput:** ~2.8 chapters/min across 5 workers → ~16 hours wall clock (better than plan's 26h estimate)
+- **Prompt edits during early audit:** none (all samples pass)
+- **Expected completion:** ~2026-04-12T05:00Z
+- **Next session:** resume via `docs/es-wave-2e-handoff.md`
 
 ### Wave 2D survey & launch (agent a2fee2cae20f1b50c) — 2026-04-11
 - **Corpus survey:** 34,805 chapters across 1,077 texts need ES translation (see `docs/es-corpus-survey.md`).
