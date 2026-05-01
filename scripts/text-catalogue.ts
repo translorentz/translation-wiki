@@ -5791,26 +5791,8 @@ const TEXTS = [
     compositionEra: "Song Dynasty (c. 1080–1101)",
   },
   // === Ouyang Xiu (歐陽脩) ===
-  {
-    title: "Discourse on Releasing Prisoners (Zongqiulun)",
-    titleOriginalScript: "縱囚論",
-    titleZh: "縱囚論",
-    slug: "zongqiulun",
-    languageCode: "zh",
-    genre: "literature" as const,
-    textType: "prose" as const,
-    authorSlug: "ouyang-xiu",
-    description:
-      "A short argumentative essay by Ouyang Xiu interrogating the famous incident in 632 CE when Tang Taizong released over three hundred condemned prisoners on the promise that they return on a fixed date to be executed, and was honoured for his clemency when every one of them returned. Ouyang Xiu rejects the conventional reading of the episode as evidence of Taizong's moral reach, arguing instead that ruler and prisoners had silently colluded in a mutual deception staged for the production of the emperor's reputation. The essay sets out a general principle that the governance of sage-kings must rest on what is natural to human feeling rather than on extraordinary acts cultivated for fame, and concludes that the release of prisoners cannot be a constant law because it would empty capital punishment of force. The piece is one of the most widely studied examples of Northern Song guwen prose for its terse parallel structures and its method of overturning a received historical judgment by re-examining the motives of its participants.",
-    descriptionZh:
-      "歐陽脩議論文，質疑唐太宗貞觀六年（632）縱放三百多名死囚使其自歸就死、死囚悉皆如期歸來這一史事的傳統評價。文中指出此事實為君臣心知肚明之共謀：太宗料其必歸而縱之，囚徒料其必赦而歸之，「上下交相賊以成此名」，並非真正的恩德感化。據此提出聖人之治本於人情，不立異以為高，不逆情以干譽；縱囚一事偶為可也，常為則殺人者皆不死，不可以為天下之常法。全篇以對舉句式翻案立論，是北宋古文運動的代表作之一。",
-    sourceUrl: "https://zh.wikisource.org/wiki/縱囚論",
-    processedDir: "data/processed/zongqiulun",
-    compositionYear: 1058,
-    compositionEra: "Northern Song",
-    compositionYearDisplay: "Northern Song, c. 1058",
-    totalChapters: 1,
-  },
+  // (Standalone 縱囚論 entry removed 2026-05-01 — content is preserved
+  //  within ouyangxiu-ji chapter 17 alongside the other essays of juan 17.)
   {
     title: "Collected Works of Ouyang Xiu (Ouyangxiu Ji)",
     titleOriginalScript: "歐陽脩集",
