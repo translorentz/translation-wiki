@@ -41,21 +41,27 @@ function handlePublicPath(req: NextRequest): NextResponse {
     : isEs
     ? (pathname.replace(/^\/es/, "") || "/")
     : pathname;
-  const desiredLocale = isCn ? "cn" : isEs ? "es" : "en";
   const currentLocale = req.cookies.get("NEXT_LOCALE")?.value;
 
   let response: NextResponse;
   if (isCn || isEs) {
     const url = new URL(effectivePath + req.nextUrl.search, req.nextUrl.origin);
     response = NextResponse.rewrite(url);
+    const localeCode = isCn ? "cn" : "es";
+    // Only set cookie when it would actually change. First visit to /cn or /es
+    // (no cookie yet) sets it; subsequent visits with the right cookie don't.
+    if (currentLocale !== localeCode) {
+      response.cookies.set("NEXT_LOCALE", localeCode, COOKIE_OPTS);
+    }
   } else {
     response = NextResponse.next();
-  }
-
-  // Only mutate the cookie when the value would change. This keeps Set-Cookie
-  // off most responses, so the edge can serve from cache.
-  if (currentLocale !== desiredLocale) {
-    response.cookies.set("NEXT_LOCALE", desiredLocale, COOKIE_OPTS);
+    // Non-prefixed paths default to English. getLocale() treats absent cookie
+    // as "en", so we DON'T set NEXT_LOCALE=en when the cookie is absent —
+    // doing so would attach Set-Cookie to every anonymous first visit and
+    // defeat caching. Only clear stale non-en cookies (user switched languages).
+    if (currentLocale === "cn" || currentLocale === "hi" || currentLocale === "es") {
+      response.cookies.set("NEXT_LOCALE", "en", COOKIE_OPTS);
+    }
   }
 
   response.headers.set("x-locale-path", effectivePath);
