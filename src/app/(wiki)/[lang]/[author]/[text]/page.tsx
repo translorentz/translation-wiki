@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
-import { getServerTranslation } from "@/i18n/server";
+import { getServerTranslation, getLocale } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
 import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
@@ -19,6 +19,7 @@ export async function generateMetadata({
   params,
 }: TextPageProps): Promise<Metadata> {
   const { lang, author, text: textSlug } = await params;
+  const locale = await getLocale();
   const trpc = await getServerTRPC();
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -28,18 +29,35 @@ export async function generateMetadata({
 
   if (!textData) return { title: "Text Not Found" };
 
+  const localizedTitle =
+    (locale === "es" && textData.titleEs) ||
+    (locale === "cn" && textData.titleZh) ||
+    textData.title;
+  const localizedDescription =
+    (locale === "es" && textData.descriptionEs) ||
+    (locale === "cn" && textData.descriptionZh) ||
+    textData.description;
+  const localizedAuthorName =
+    (locale === "es" && textData.author.nameEs) ||
+    (locale === "cn" && textData.author.nameZh) ||
+    textData.author.name;
+
+  const fallbackDescription =
+    locale === "es"
+      ? `Lee y traduce ${localizedTitle} por ${localizedAuthorName}`
+      : locale === "cn"
+      ? `阅读并翻译${localizedTitle},作者${localizedAuthorName}`
+      : `Read and translate ${localizedTitle} by ${localizedAuthorName}`;
+
   const canonicalPath = `/${lang}/${author}/${textSlug}`;
   return {
-    title: `${textData.title} — Deltoi`,
-    description:
-      textData.description ??
-      `Read and translate ${textData.title} by ${textData.author.name}`,
+    title: `${localizedTitle} — Deltoi`,
+    description: localizedDescription ?? fallbackDescription,
     alternates: {
       canonical: canonicalPath,
       languages: {
         en: canonicalPath,
         "zh-Hans": `/cn${canonicalPath}`,
-        hi: `/hi${canonicalPath}`,
         es: `/es${canonicalPath}`,
       },
     },

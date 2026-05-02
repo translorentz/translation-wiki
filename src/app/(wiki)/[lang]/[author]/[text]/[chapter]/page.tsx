@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { auth } from "@/server/auth";
 import { getServerTRPC } from "@/trpc/server";
-import { getServerTranslation } from "@/i18n/server";
+import { getServerTranslation, getLocale } from "@/i18n/server";
 import { parseChapterTitle, formatChapterTitle, localePath, localeToTargetLang } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
@@ -23,6 +23,7 @@ export async function generateMetadata({
   params,
 }: ChapterPageProps): Promise<Metadata> {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
+  const locale = await getLocale();
   const trpc = await getServerTRPC();
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -35,18 +36,44 @@ export async function generateMetadata({
   const chapterInfo = textData.chapters.find(
     (c) => c.slug === chapterSlug
   );
-  const { original, english } = parseChapterTitle(chapterInfo?.title ?? null);
+
+  // Pick the locale-appropriate chapter title for the browser tab. titleEs /
+  // titleZh hold the localized form; the unlocalized title is the canonical
+  // fallback.
+  const localizedChapterTitle =
+    (locale === "es" && chapterInfo?.titleEs) ||
+    (locale === "cn" && chapterInfo?.titleZh) ||
+    chapterInfo?.title ||
+    null;
+  const { original, english } = parseChapterTitle(localizedChapterTitle);
   const chapterTitle = english ? `${original} (${english})` : original;
+
+  const localizedTextTitle =
+    (locale === "es" && textData.titleEs) ||
+    (locale === "cn" && textData.titleZh) ||
+    textData.title;
+  const localizedAuthorName =
+    (locale === "es" && textData.author.nameEs) ||
+    (locale === "cn" && textData.author.nameZh) ||
+    textData.author.name;
+
+  const titleSuffix =
+    locale === "es"
+      ? `Lee la traducción de ${chapterTitle} de ${localizedTextTitle} por ${localizedAuthorName}`
+      : locale === "cn"
+      ? `阅读${localizedTextTitle}的${chapterTitle},作者${localizedAuthorName}`
+      : `Read the translation of ${chapterTitle} from ${localizedTextTitle} by ${localizedAuthorName}`;
 
   const canonicalPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
   return {
-    title: `${chapterTitle} — ${textData.title} — Deltoi`,
-    description: `Read the translation of ${chapterTitle} from ${textData.title} by ${textData.author.name}`,
+    title: `${chapterTitle} — ${localizedTextTitle} — Deltoi`,
+    description: titleSuffix,
     alternates: {
       canonical: canonicalPath,
       languages: {
         en: canonicalPath,
         "zh-Hans": `/cn${canonicalPath}`,
+        es: `/es${canonicalPath}`,
       },
     },
   };
