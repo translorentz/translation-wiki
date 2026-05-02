@@ -25,7 +25,7 @@ const cachedTextsList = unstable_cache(
       orderBy: (texts, { asc }) => [asc(texts.title)],
     });
   },
-  ["texts.list.v2"],
+  ["texts.list.v3"],
   { revalidate: 600, tags: [TEXTS_LIST_TAG] }
 );
 

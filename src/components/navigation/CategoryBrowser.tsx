@@ -27,6 +27,7 @@ interface AuthorSummary {
   nameEs: string | null;
   slug: string;
   era: string | null;
+  eraEs?: string | null;
   texts: TextSummary[];
 }
 
@@ -96,11 +97,11 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                     {authorDisplay.secondary}
                   </span>
                 )}
-                {author.era && (
+                {(() => { const e = (locale === "es" && author.eraEs) || author.era; return e && (
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
-                    ({author.era})
+                    ({e})
                   </span>
-                )}
+                ); })()}
               </h3>
 
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -172,11 +173,11 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                           {authorDisplay.secondary}
                         </span>
                       )}
-                      {author.era && (
+                      {(() => { const e = (locale === "es" && author.eraEs) || author.era; return e && (
                         <span className="ml-2 text-sm font-normal text-muted-foreground">
-                          ({author.era})
+                          ({e})
                         </span>
-                      )}
+                      ); })()}
                     </h3>
 
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">

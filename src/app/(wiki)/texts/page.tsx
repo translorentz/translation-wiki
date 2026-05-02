@@ -20,6 +20,7 @@ interface LanguageGroup {
     nameEs: string | null;
     slug: string;
     era: string | null;
+    eraEs?: string | null;
     texts: {
       title: string;
       titleOriginalScript: string | null;
@@ -128,6 +129,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         nameEs: text.author.nameEs ?? null,
         slug: text.author.slug,
         era: text.author.era,
+        eraEs: text.author.eraEs ?? null,
         texts: [],
       };
       langGroup.authors.push(authorGroup);

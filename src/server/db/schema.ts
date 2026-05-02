@@ -135,6 +135,7 @@ export const authors = pgTable("authors", {
   nameOriginalScript: varchar("name_original_script", { length: 255 }),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
   era: varchar("era", { length: 255 }),
+  eraEs: varchar("era_es", { length: 255 }),
   description: text("description"),
   descriptionZh: text("description_zh"),
   descriptionHi: text("description_hi"),
