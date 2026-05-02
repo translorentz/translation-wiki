@@ -303,6 +303,7 @@ export const translationVersions = pgTable(
       .references(() => translations.id, { onDelete: "cascade" }),
     versionNumber: integer("version_number").notNull(),
     content: jsonb("content").notNull(), // { paragraphs: [{ index, text }] }
+    contentTsv: tsvector("content_tsv"), // populated by trg_tv_content_tsv trigger
     authorId: integer("author_id")
       .notNull()
       .references(() => users.id),
