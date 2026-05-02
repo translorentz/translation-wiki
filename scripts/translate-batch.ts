@@ -287,6 +287,10 @@ const MAX_CHARS_BY_LANG: Record<string, number> = {
   grc: 2500,  // Greek: reduced to prevent truncation
   la: 2500,   // Latin: reduced to prevent truncation
   hu: 1200,   // Hungarian: dialogue-heavy prose causes truncation at 2500 chars per batch
+  "hu-historical-19c": 1200, // Hungarian historical novel (Eötvös 1847): same dense register
+  "hu-zord-ido": 1200, // Hungarian historical novel (Kemény 1862): same dense register
+  "hu-verse-epic": 1500, // Hungarian dactylic-hexameter verse epic (Vörösmarty 1825): each para = 1 verse line (~50-70 chars), batch ~25 lines per call
+  "hu-gardonyi": 1200, // Hungarian late-Realist prose (Gárdonyi 1905): dialogue-heavy
   ar: 2000,   // Arabic: moderately dense, some long rhetorical paragraphs
 };
 const DEFAULT_MAX_CHARS = 2500;
@@ -878,6 +882,29 @@ async function translateChapter(
 
     if (failedParagraphs > 0) {
       process.stdout.write(`    ⚠ ${failedParagraphs} paragraphs could not be translated\n`);
+    }
+
+    // Refuse to save chapters that contain placeholder paragraphs. Saving
+    // placeholders has caused 472+ chapters of damage historically (see
+    // CLAUDE.md "Truncation Error Resolution Order", 2026-02-18 + 2026-05-02).
+    // Per User directive, the correct response when a paragraph cannot be
+    // translated is to LEAVE THE CHAPTER UNTRANSLATED (current_version_id NULL),
+    // so the next pipeline run can split the source paragraph at a sentence
+    // boundary and retry. A placeholder head is invisible to gap-check tooling
+    // and silently corrupts the corpus.
+    const PLACEHOLDER_DETECTOR =
+      /Translation pending|automated translation failed|\[ERROR\]/;
+    const placeholderParas = translated.filter((p) =>
+      PLACEHOLDER_DETECTOR.test(p.text),
+    );
+    if (placeholderParas.length > 0) {
+      console.error(
+        `  [PLACEHOLDER REJECT] Chapter ${chapter.chapterNumber}: ${placeholderParas.length} paragraph(s) failed translation (indices: ${placeholderParas
+          .slice(0, 10)
+          .map((p) => p.index)
+          .join(", ")}${placeholderParas.length > 10 ? ", ..." : ""}). Refusing to save placeholder text. Chapter remains untranslated; next run should split the source paragraph(s) and retry.`,
+      );
+      return false;
     }
 
     // Post-chapter verification: ensure translated paragraph count matches source
@@ -1717,6 +1744,45 @@ async function main() {
     // Zhu Zi Yu Lei uses specialist ZZYL prompt (dialogue conventions, philosophical terminology)
     if (text.slug === "zhuziyulei") {
       promptLang = "zh-zhuziyulei";
+      usingSpecialPrompt = true;
+    }
+
+    // Eötvös József's "Magyarország 1514-ben" (1847 historical novel about the
+    // Dózsa peasant rebellion) uses a dedicated Reform-Era literary prompt
+    // distinct from the late-19c hu prose register used for Ady/Bajza.
+    if (text.slug === "magyarorszag-1514-ben") {
+      promptLang = "hu-historical-19c";
+      usingSpecialPrompt = true;
+    }
+
+    // Kemény Zsigmond's "Zord idő" (1862 historical novel set in 1541 — fall of
+    // Buda, partition of Hungary) uses its own dedicated prompt with the
+    // Doboka/Buda character set and 16th-century terminology.
+    if (text.slug === "zord-ido") {
+      promptLang = "hu-zord-ido";
+      usingSpecialPrompt = true;
+    }
+
+    // Vörösmarty's "Zalán futása" (1825 dactylic-hexameter Romantic verse epic
+    // on the 9th-century Magyar Conquest) uses its own specialist prompt that
+    // enforces ONE-VERSE-LINE PER PARAGRAPH 1:1 alignment, heroic register,
+    // and Magyar Conquest proper-noun conventions across EN/ZH/ES targets.
+    // Created simultaneously in all three target dictionaries per the
+    // Persian-hemistich-disaster prompt-parity rule (CLAUDE.md 2026-03-23).
+    // Overrides the generic isHungarianPoetry → hu-poetry routing above.
+    if (text.slug === "zalan-futasa") {
+      promptLang = "hu-verse-epic";
+      usingSpecialPrompt = true;
+    }
+
+    // Géza Gárdonyi's "Az öreg tekintetes" (1905 contemporary urban Realist
+    // novel, set in turn-of-the-century Budapest) uses its own dedicated
+    // prompt with the urban-bourgeois character set and class-honorific
+    // terminology (tekintetes, nagyságos, doktorné, inas, házmester, portás).
+    // Distinct from hu-historical-19c and hu-zord-ido because the register
+    // and milieu are entirely different from the high-period historical novels.
+    if (text.slug === "az-oreg-tekintetes") {
+      promptLang = "hu-gardonyi";
       usingSpecialPrompt = true;
     }
 

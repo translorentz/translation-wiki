@@ -4,6 +4,51 @@ Project guidance for Claude Code. For full historical context, see `ARCHIVED_CLA
 
 ---
 
+## ⚠️ UNIVERSAL DIALOGUE PUNCTUATION RULE (ABSOLUTE) ⚠️
+
+**For ALL translated texts into English or Chinese, speech/dialogue SHALL be in double quotation marks `""`. This is ABSOLUTE, UNIVERSAL, and ADMITS NO EXCEPTIONS.**
+
+- **English translations:** All dialogue uses curly double `""`. Nested quotations use curly single `''`.
+- **Chinese translations:** All dialogue uses curly double `""`. Nested quotations use curly single `''`.
+- **Source text punctuation conventions DO NOT carry over to translations.** The translated text is NOT in the source language. French em-dashes, Greek em-dashes, Russian guillemets `«»`, Japanese `「」`, Serbian em-dashes — NONE of these appear in translations. They are converted to `""`.
+- **NEVER use em-dashes (—) as dialogue markers in English or Chinese translations.** Convert `— Bonjour!` to `"Bonjour!"`. Convert `—They are.—And this ruin?` to `"They are." "And this ruin?"`.
+- **NEVER use guillemets `«»` in English or Chinese translations.** Convert to `""`.
+- **NEVER use Japanese brackets `「」` or `『』` in Chinese translations.** Convert to `""` / `''`.
+- **This rule overrides any language-specific translation prompt.** If a prompt says "maintain em-dash convention" or "keep source dialogue markers", that instruction is WRONG and must be corrected.
+
+**INCIDENT RECORD (2026-03-31):** The `fr` translation prompt wrongly instructed `"— " marks direct speech; maintain this convention`, causing ~100+ French-Canadian texts and the Exoristos Greek novel to be translated with em-dash dialogue instead of quotation marks. This is a catastrophic waste. Every translation prompt must state this rule AT THE TOP.
+
+---
+
+## ⚠️ NEVER SAVE PLACEHOLDER TEXT TO TRANSLATIONS (ABSOLUTE) ⚠️
+
+**INCIDENT RECORD (2026-05-02):** Across all three target languages, **472 chapters** were silently published containing strings like `[Translation pending — automated translation failed for this paragraph]`, `automated translation failed`, and `[ERROR]` baked into `translation_versions.content`. These were invisible to gap-check tooling (because `current_version_id` was set), invisible to length-ratio checks (because the placeholder is not unusually short), and reached real readers on the live site. This is a catastrophic, dignity-destroying failure mode.
+
+**The rule:** When a paragraph cannot be translated — for ANY reason (truncation, refusal, JSON parse error, model timeout, API error) — the correct response is **leave the chapter untranslated** (do NOT set `current_version_id`). The pipeline's truncation-error resolution path then takes over: split the source paragraph at a sentence boundary (per User directive 2026-02-18), then retry. **Never** substitute a placeholder string and save it as a translation row.
+
+**Layered defenses (all must remain in place):**
+
+1. **Script-level guard** — `scripts/translate-batch.ts` lines 887–908 contain a `PLACEHOLDER_DETECTOR` regex (`/Translation pending|automated translation failed|\[ERROR\]/`) that, if matched in any translated paragraph, refuses to save the chapter and logs `[PLACEHOLDER REJECT] Chapter N: K paragraph(s) failed translation`. Any future translation script (Gemini fallback, Claude direct-translate, etc.) MUST replicate this guard before calling the DB writer.
+
+2. **Database trigger** — `reject_placeholder_translations` on `translation_versions` (BEFORE INSERT OR UPDATE OF content). Backed by the function `reject_placeholder_translation_versions()` which raises `PLACEHOLDER_REJECT: ...` on any paragraph matching the same regex (case-insensitive). This is the last-line defense and catches any path that bypasses the script-level guard. **Never disable this trigger** — even temporarily — without first verifying that no placeholder text could be written during the window.
+
+3. **Audit query** — to find any historical leakage:
+   ```sql
+   SELECT t.slug, c.chapter_number, tr.target_language
+   FROM translations tr
+   JOIN translation_versions tv ON tv.id = tr.current_version_id
+   JOIN chapters c ON c.id = tr.chapter_id
+   JOIN texts t ON t.id = c.text_id
+   WHERE tv.content::text ~* 'Translation pending|automated translation failed|\[ERROR\]';
+   ```
+   This query MUST return 0 rows. If it returns anything, halt all translation work and clear the offending `current_version_id` values immediately, then re-run the pipeline (which will now split + retry).
+
+**If a future legitimate use of the literal string `[ERROR]` arises** (e.g. a text whose source genuinely contains the word in brackets), the rule still holds: source content is checked at translation time, not in the translated paragraph — so a source paragraph reading "Then [ERROR] appeared" translates to whatever the model produces, and the model's output is what gets regex-checked. If a real translation legitimately needs `[ERROR]` in the output, this is so rare that it warrants per-text consultation with the User; do not weaken the regex unilaterally.
+
+**This rule overrides any retry budget.** A translation script MUST NOT save a placeholder even if it has exhausted its retry attempts. The chapter stays untranslated, the next pipeline run picks it up.
+
+---
+
 ## ⚠️ CRITICAL SECURITY RULES ⚠️
 
 **INCIDENT RECORD (2026-01-25):** A swap file `.env.local.swp` containing API keys was committed to the public repository. This is a SEVERE security breach. The Google/Gemini API key has been revoked as a result. Claude Code has apologized deeply and sincerely after this incident. Claude Code has remorsefully promised never to commit such a mistake ever again.
@@ -379,6 +424,39 @@ assertNoTruncation(sourceParagraphs, translatedParagraphs, `Chapter ${slug}`);
 
 ---
 
+## ⚠️ TRANSLATION PRESERVATION GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-03-26):** When integrating Kitab al-Mawaqif Volume 1 with existing Volumes 2-3, Claude deleted all 104 chapters and their translations for Vols 2-3, then reseeded from scratch. This destroyed 208 translation jobs (104 EN + 104 ZH) that were in progress or complete. The correct approach was trivial: `UPDATE chapters SET chapter_number = chapter_number + 216` to renumber existing chapters (translations link to `chapter.id`, not `chapter_number` — renumbering is safe). Claude did not consider the translations before acting.
+
+**Translations are a precious resource.** Each represents API cost, processing time, and verification work. They cannot be recreated for free.
+
+**MANDATORY before ANY chapter deletion or reorganisation:**
+1. **Check for translations:** `SELECT COUNT(*) FROM translations WHERE chapter_id IN (SELECT id FROM chapters WHERE text_id = X)`
+2. **If translations exist: NEVER delete chapters.** Use `UPDATE` to renumber instead.
+3. **When adding chapters before existing ones:** Renumber existing chapters UP first, then insert new ones at the lower positions.
+4. **When in doubt: ask the User.** The cost of asking is zero. The cost of deleting translations is hours of API time.
+
+**Full incident report:** `docs/kitab-translation-deletion-failure.md`
+
+---
+
+## ⚠️ TRANSLATION VERIFICATION GUARDRAILS ⚠️
+
+**INCIDENT RECORD (2026-03-26):** The User asked THREE TIMES whether Kitab al-Mawaqif chapter 115 was translated. Each time Claude checked process lists (`ps aux`), saw workers "running" for the range, and assured the User it would be handled. The truth: the worker had already FINISHED and ch115 was never translated — it was one of 82 chapters silently missed across multiple workers. Claude gave false assurance based on process counts instead of querying the DB.
+
+**MANDATORY — when asked about translation status:**
+1. **Query the DB for the specific chapter** — not process lists, not log files, not worker ranges
+   ```sql
+   SELECT CASE WHEN tr.current_version_id IS NOT NULL THEN 'done' ELSE 'NEED' END
+   FROM chapters c JOIN translations tr ON tr.chapter_id = c.id
+   WHERE c.chapter_number = X AND tr.target_language = 'en';
+   ```
+2. **After ANY worker completes:** immediately run a full gap check for that text
+3. **Never trust "Skipped: N"** — verify those N chapters in the DB. "Skipped" can mean error, truncation, or race condition.
+4. **If the User asks the same question twice:** the first answer was wrong. Investigate thoroughly.
+
+---
+
 ## ⚠️ PERSIAN ZH HEMISTICH CATASTROPHE (2026-03-23) ⚠️
 
 **INCIDENT RECORD:** Claude created an English translation prompt for Persian poetry (`LANGUAGE_INSTRUCTIONS["fa"]`) with explicit hemistich/slash guidance but NEVER created a matching Chinese prompt (`CHINESE_TARGET_BY_SOURCE["fa"]`). Result: **every single Persian poetry ZH translation on the site (~200+ chapters across 20+ poets, ~100,000+ couplets) has broken hemistich structure.** The User repeatedly instructed Claude to implement "hard regex check for slashes" — Claude acknowledged each time but never verified the Chinese side. This is the most wasteful error in the project's history.
@@ -398,12 +476,15 @@ assertNoTruncation(sourceParagraphs, translatedParagraphs, `Chapter ${slug}`);
 **INCIDENT RECORD (2026-03-23):** Claude instructed a subagent to convert Da'ad Chinese quotation marks to Japanese-style corner brackets `「」`. This is WRONG. The project uses curly double `""` for Chinese — established by 18,390 existing ZH chapters, hard-coded in `buildTranslationPrompt()` (prompts.ts lines 5915-5920), and documented in `docs/quotation-mark-consistency.md`. Claude checked NONE of these before acting. When the User asked if the agent was following established conventions, Claude falsely assured them it was "being more careful than past agents" — a misleading claim that gave the User false confidence while the agent was applying the wrong convention.
 
 **The convention (MANDATORY, hard-coded in every translation prompt):**
-- **English:** Curly double `""` for dialogue, curly single `''` for nested
-- **Chinese:** Curly double `""` for primary, curly single `''` for nested
+- **English:** Curly double `""` for ALL dialogue, curly single `''` for nested
+- **Chinese:** Curly double `""` for ALL dialogue, curly single `''` for nested
 - **NEVER** use Japanese corner brackets `「」` or `『』` for Chinese
 - **NEVER** use straight quotes `"` or `'`
+- **NEVER** use em-dashes `—` as dialogue markers in ANY translation
+- **NEVER** use guillemets `«»` in ANY translation
+- **Source text dialogue conventions (em-dashes, guillemets, etc.) DO NOT carry over to translations. ALL dialogue in translations uses `""`.**
 
-**Em-dash dialogue is a TEXT-SPECIFIC exception** for French literature where the source uses em-dash style. It applies ONLY to EN translations of French texts with em-dash dialogue. Even then, inline quotes (French `« »`) within narrative paragraphs must be PRESERVED as `"..."` — only paragraph-initial dialogue converts to em-dash.
+**There are NO exceptions to this rule.** The previous em-dash exception for French literature has been REVOKED (2026-03-31). It was wrong and caused ~100+ texts to be translated with em-dash dialogue.
 
 **MANDATORY before ANY quotation mark modification:**
 1. Read `docs/quotation-mark-consistency.md`
@@ -538,10 +619,22 @@ All text descriptions should be **thoughtful** — not generic or boilerplate.
 ### Truncation Error Resolution Order
 **Stipulation (2026-02-18):** All truncation retries MUST begin with paragraph splitting. This is the FIRST step — not simple retry. Split the problematic paragraph(s) at sentence boundaries in the database, re-index, then retranslate. Simple retry is only appropriate when the paragraph is too short (<100 chars) to split.
 
-### Dual-Target Translation (English + Chinese ONLY)
-**Stipulation (2026-02-19):** ALL texts MUST be translated into both English AND Chinese as part of the standard workflow. This applies to all new texts going forward. Chinese source texts are exempt from Chinese translation (only translate to English). Use `--target-language zh` flag with `translate-batch.ts` for Chinese translation.
+### Tri-Target Translation (English + Chinese + Spanish)
+**Stipulation (2026-02-19, UPDATED 2026-04-11):** ALL texts MUST be translated into English, Chinese, AND Spanish as part of the standard workflow. This applies to all new texts going forward. Source texts are exempt from translation into their own language:
+- Chinese source texts: translate to English + Spanish only (skip Chinese)
+- English source texts: translate to Chinese + Spanish only (skip English)
+- Spanish source texts (if any): translate to English + Chinese only (skip Spanish)
 
-**Stipulation (2026-02-27):** Do NOT translate into Hindi (or any other language) unless the User explicitly and clearly instructs so for specific texts. Hindi translations are NOT part of the standard workflow. The established workflow produces English and Chinese translations ONLY. Launching Hindi translation workers without explicit User instruction is prohibited.
+Use `--target-language zh` for Chinese, `--target-language es` for Spanish.
+
+**Spanish specifics (User directive 2026-04-11):**
+- Mexican Spanish for literature and poetry; Español Neutro for everything else
+- `deepseek-chat` for ALL Spanish translations including poetry (no `deepseek-reasoner`)
+- Spanish quote conventions follow RAE: raya `—` for narrative dialogue, `«»` for quotations, `""` nested
+- 24 Histories use dedicated `CHINESE_HISTORY_DEEPSEEK_API_KEY` via `--api-key-env CHINESE_HISTORY_DEEPSEEK_API_KEY`
+- See `docs/spanish-rollout-learnings.md` for full standing rules
+
+**Stipulation (2026-02-27, UPDATED 2026-04-11):** Do NOT translate into Hindi (or any language other than English, Chinese, or Spanish) unless the User explicitly and clearly instructs so. The established workflow produces English, Chinese, and Spanish translations. Launching translation workers for other target languages without explicit User instruction is prohibited.
 
 ---
 
@@ -687,7 +780,12 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 9. **Original-script title (MANDATORY for non-Latin-script texts):** Set `title_original_script` to the title in its original writing system (e.g., 搜神記 for Chinese, Ῥωμαϊκὴ Ἱστορία for Greek, Շdelays for Armenian). This field controls the **grey secondary title** shown on both the Front Page and Browse Page via `formatTextTitle()`. Without it, no grey original-script title appears. For Chinese source texts: `title_original_script` = the Chinese title.
    - **Anonymous author consolidation:** All anonymous Chinese texts outside the Daoist Canon MUST use `Anonymous (Chinese)` (ID 294, slug `anonymous-chinese`). Do NOT create new anonymous entries like `anonymous-zh`.
 
-**Title convention:** "English Name (Transliteration)" — e.g., "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
+**Title convention (MANDATORY — Browse Page text card format):**
+- **`title` field** = English translated title. For non-Latin scripts, include transliteration in parentheses: "Classified Conversations of Master Zhu (Zhu Zi Yu Lei)"
+- **`title_original_script` field** = Original-language title shown in grey on the card: e.g., "朱子語類", "Les revenants", "Masāʼil Ibn Rushd"
+- **NEVER put the original-language title in the `title` field** — the `title` field is always English
+- For Latin-script languages (French, Italian, Polish, etc.), `title` = English translation only (no transliteration needed since original is readable in `title_original_script`)
+- Example card: **The Beginner** / *Le débutant* (grey) / 1914 · 12 ch
 
 ---
 
@@ -695,28 +793,38 @@ pnpm tsx scripts/translate-batch.ts --text <slug>  # Translate
 
 **DUAL-TARGET (User directive 2026-02-19):** All texts MUST be translated into **both English and Chinese**. This is now part of the standard workflow. After English translation completes, Chinese translation follows using the same script with `--target-language zh`.
 
+**⚠️ NEVER translate a text into its own source language.** English source texts get ZH + ES — NEVER EN. Chinese source texts get EN + ES — NEVER ZH. Spanish source texts get EN + ZH — NEVER ES. Translating a language into itself is a scandalous waste of API tokens. **INCIDENT:** 412 English chapters and 291+ Chinese chapters were wastefully "translated" into their own source language.
+
 - **Engine (Prose):** DeepSeek V3 (`deepseek-chat`)
-- **Engine (Poetry):** DeepSeek V3 (`deepseek-chat`) by default. Use DeepSeek Reasoner (`deepseek-reasoner`) only for texts in `REASONER_SLUGS` (User directive 2026-03-06)
-- **Engine (Hindi target):** DeepSeek V3 (`deepseek-chat`) — **ALWAYS, even for poetry** (User directive 2026-02-26). `translate-batch.ts` enforces this automatically.
-- **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N] [--target-language zh]`
+- **Engine (Poetry, EN/ZH targets):** DeepSeek V3 (`deepseek-chat`) by default. Use DeepSeek Reasoner (`deepseek-reasoner`) only for texts in `REASONER_SLUGS` (User directive 2026-03-06)
+- **Engine (ES target):** DeepSeek V3 (`deepseek-chat`) — **ALWAYS, even for poetry** (User directive 2026-04-11). `translate-batch.ts` enforces this automatically.
+- **Script:** `scripts/translate-batch.ts --text <slug> [--start N] [--end N] [--target-language zh|es]`
 - **Batching:** zh=1500 chars, grc/la=2500 chars per API call (reduced 2026-02-05 to prevent truncation)
 - **Solo paragraphs:** Paragraphs >1500 chars get their own batch to prevent re-segmentation
-- **Parallelization:** Split ranges across background workers
+- **Parallelization:** Split ranges across background workers. 6-key DeepSeek pool (main) + 1 dedicated 24H key
 - **Skip logic:** Already-translated chapters skipped automatically (but does NOT prevent concurrent duplicate work — see rule below)
 
-### Dual-Target Translation Workflow (English + Chinese ONLY)
+### Tri-Target Translation Workflow (English + Chinese + Spanish)
 
-**⚠️ Hindi and other languages are NOT part of the standard workflow.** Do NOT launch Hindi translation workers unless the User explicitly and clearly instructs so for specific texts. This directive (2026-02-27) supersedes any assumption that Hindi is a standard target.
+**⚠️ Only English, Chinese, and Spanish are standard target languages.** Do NOT launch translation workers for any other target language unless the User explicitly and clearly instructs so.
 
-For every text, translation proceeds in two phases:
+For every text, translation proceeds in three phases:
 1. **English translation:** `pnpm tsx scripts/translate-batch.ts --text <slug>`
 2. **Chinese translation:** `pnpm tsx scripts/translate-batch.ts --text <slug> --target-language zh`
+3. **Spanish translation:** `pnpm tsx scripts/translate-batch.ts --text <slug> --target-language es`
 
-Both phases use the same script, same DeepSeek engine, same batching logic. The `--target-language zh` flag selects the Chinese translation prompt and inserts with `target_language = 'zh'`.
+All three phases use the same script, same DeepSeek engine, same batching logic. Skip the phase whose target language matches the source language.
 
 **Special cases for Chinese translation:**
 - **Poetry texts (e.g., Shahnameh):** Use dedicated scripts with `deepseek-reasoner` and language-specific prompts (e.g., `/tmp/translate-shahnameh-zh.ts`)
-- **Chinese source texts:** Only translate to English (source language = target language makes no sense)
+- **Chinese source texts:** Translate to English + Spanish only — skip Chinese
+
+**Special cases for Spanish translation:**
+- **Mexican Spanish for literature/poetry; Español Neutro for everything else** (resolveSpanishRegister in prompts.ts)
+- **24 Histories:** Use dedicated key `--api-key-env CHINESE_HISTORY_DEEPSEEK_API_KEY`
+- **Quote conventions:** Raya `—` for narrative dialogue, `«»` for quotations, `""` nested (RAE pan-Hispanic)
+- **English source texts:** Translate to Chinese + Spanish only — skip English
+- **English source texts:** Only translate to Chinese — English source texts do NOT need English translation (the source IS the English content, displayed directly to English-site readers)
 - **Prompt selection:** `translate-batch.ts` auto-selects Chinese prompts. If no suitable Chinese prompt exists, create one in `prompts.ts` before translating.
 
 ### Poetry Translation (deepseek-reasoner)
@@ -981,7 +1089,7 @@ Joint doc: `docs/<pipeline>-collaboration.md`
 - **Agents:** 2 processor agents split the viable texts
 - **Task:** Scrape source text, structure into `data/processed/<slug>/chapter-NNN.json`
 - **JSON format:** `{ "title": "Italian Title (English Title)", "paragraphs": ["para1", "para2", ...] }`
-- **Title convention:** Include English translation for non-Latin-script titles; Italian/Latin/etc. titles include English in parentheses
+- **Title convention:** `title` field = English translation. `title_original_script` = original-language title (shown in grey on Browse page). See title convention section above.
 - **Clean:** Remove HTML artifacts, footnote markers, page numbers, Wikisource navigation
 - **Output:** Chapter JSON files in `data/processed/<slug>/`
 
@@ -1145,6 +1253,25 @@ ORDER BY ratio;
 ```
 
 **Resolution for gaps/truncation:** If long source paragraphs cause truncation (>3000 chars), split them at sentence boundaries (。for Chinese, . for Western languages) using a database update or fix script. See `scripts/fix-daoist-hagiographies.ts` for an example.
+
+### Phase 8 — Quotation Mark Fix (MANDATORY)
+
+After all translations are complete and reviewed, run a quotation mark audit and fix on ALL translated chapters for the text. This is the FINAL step before declaring a text complete.
+
+**What to check and fix (translations only — NEVER touch source_content):**
+1. **Em-dash dialogue** (`—Text`, `–Text`) → convert to `"Text"` using multi-layered regex
+2. **Guillemets** (`«»`) → convert to `""`
+3. **Japanese brackets** (`「」``『』`) → convert to `""` / `''`
+4. **Straight quotes** (`"` `'`) → convert to curly equivalents
+5. **Single-as-primary** (where `'` outnumber `"`) → swap hierarchy, restore apostrophes
+
+**Rules:**
+- Em-dashes used as punctuation (parenthetical asides, not dialogue) are LEFT ALONE
+- Poetry texts: handle conservatively — only fix clear quote issues
+- Apostrophes in contractions (it's, don't, l'homme, d'amour) must be preserved after any swap
+- Per-line fallback: if a fix produces empty text or absurd length, keep the original
+
+**Reference scripts:** `scripts/_fix-emdash-dialogue-v2.ts`, `scripts/_fix-session-quotes.ts`, `scripts/_fix-hungarian-quotes.ts`
 
 ### Pipeline Data Files
 | File | Purpose |
@@ -1382,6 +1509,14 @@ Armenian Unicode characters (U+0530-U+058F) were corrupted during development, w
 - Use Unicode escape sequences when adding Armenian programmatically (e.g., `\u0540` for Հ)
 - Never copy-paste Armenian from potentially corrupted sources
 - If "delays" appears in Armenian context, check processing scripts
+
+**MANDATORY post-publish check for ALL Armenian text work:**
+```bash
+# Run AFTER seeding, processing, or any Armenian text operation
+grep -rn "delays" data/processed/<armenian-slug>/*.json | grep -v '"index"'
+grep -rn "delays" scripts/seed-<armenian-slug>.ts
+```
+If "delays" appears in any Armenian text context, the file is corrupted and must be regenerated using Unicode escapes.
 
 **Fix report:** `docs/armenian-delays-fix-report.md`
 
