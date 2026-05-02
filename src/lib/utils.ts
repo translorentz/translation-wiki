@@ -29,6 +29,19 @@ export function localeToTargetLang(locale: Locale | string): string {
 }
 
 /**
+ * Pick the locale-appropriate composition-year display string. Spanish has
+ * its own column because many Chinese texts have English-laced strings like
+ * "Eastern Han, Yongchu 5 (111)" that need real translation, not a copy.
+ */
+export function localizedYearDisplay(
+  text: { compositionYearDisplay?: string | null; compositionYearDisplayEs?: string | null },
+  locale: Locale | string
+): string | null {
+  if (locale === "es" && text.compositionYearDisplayEs) return text.compositionYearDisplayEs;
+  return text.compositionYearDisplay ?? null;
+}
+
+/**
  * Parses a chapter title that may contain both original language and English.
  * Supported formats:
  * - "原文 (English Translation)" — parenthetical format

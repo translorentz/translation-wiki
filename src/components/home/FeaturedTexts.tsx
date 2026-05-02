@@ -11,7 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useTranslation } from "@/i18n";
-import { cn, formatAuthorName, formatTextTitle, localePath } from "@/lib/utils";
+import { cn, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
 
 interface FeaturedText {
   title: string;
@@ -22,6 +22,7 @@ interface FeaturedText {
   totalChapters: number;
   compositionYear: number | null;
   compositionYearDisplay: string | null;
+  compositionYearDisplayEs?: string | null;
   compositionEra: string | null;
   hasZhTranslation?: boolean;
   hasHiTranslation?: boolean;
@@ -159,7 +160,7 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                         );
                       })()}
                       <p className="text-xs text-muted-foreground">
-                        {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}
+                        {(() => { const y = localizedYearDisplay(text, locale); return y && <>{y} &middot; </>; })()}
                         {text.totalChapters} {t("featured.ch")}
                       </p>
                     </Card>

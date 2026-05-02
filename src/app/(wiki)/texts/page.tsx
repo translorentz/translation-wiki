@@ -30,6 +30,7 @@ interface LanguageGroup {
       genre: string;
       sortOrder: number | null;
       compositionYearDisplay: string | null;
+      compositionYearDisplayEs?: string | null;
       hasZhTranslation?: boolean;
       hasHiTranslation?: boolean;
       hasEsTranslation?: boolean;
@@ -142,6 +143,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       genre: text.genre || "uncategorized",
       sortOrder: text.sortOrder ?? null,
       compositionYearDisplay: text.compositionYearDisplay ?? null,
+      compositionYearDisplayEs: text.compositionYearDisplayEs ?? null,
       hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
       hasHiTranslation: hiTranslatedIds ? hiTranslatedIds.has(text.id) : undefined,
       hasEsTranslation: esTranslatedIds ? esTranslatedIds.has(text.id) : undefined,

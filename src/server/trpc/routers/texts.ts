@@ -25,7 +25,7 @@ const cachedTextsList = unstable_cache(
       orderBy: (texts, { asc }) => [asc(texts.title)],
     });
   },
-  ["texts.list.v1"],
+  ["texts.list.v2"],
   { revalidate: 600, tags: [TEXTS_LIST_TAG] }
 );
 
@@ -70,7 +70,7 @@ const cachedTextBySlug = unstable_cache(
     });
     return result ?? null;
   },
-  ["texts.getBySlug.v1"],
+  ["texts.getBySlug.v2"],
   { revalidate: 300, tags: [TEXT_TAG] }
 );
 

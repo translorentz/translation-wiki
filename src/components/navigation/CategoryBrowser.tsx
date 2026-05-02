@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { useMemo } from "react";
 import { useTranslation } from "@/i18n";
-import { cn, formatAuthorName, formatTextTitle, localePath } from "@/lib/utils";
+import { cn, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
 
 interface TextSummary {
   title: string;
@@ -15,6 +15,7 @@ interface TextSummary {
   totalChapters: number;
   genre?: string;
   compositionYearDisplay?: string | null;
+  compositionYearDisplayEs?: string | null;
   hasZhTranslation?: boolean;
   hasHiTranslation?: boolean;
   hasEsTranslation?: boolean;
@@ -124,7 +125,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} {t("featured.ch")}
+                          {(() => { const y = localizedYearDisplay(text, locale); return y && <>{y} &middot; </>; })()}{text.totalChapters} {t("featured.ch")}
                         </p>
                       </Card>
                     </Link>
@@ -200,7 +201,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                                 </p>
                               )}
                               <p className="text-xs text-muted-foreground">
-                                {text.compositionYearDisplay && <>{text.compositionYearDisplay} &middot; </>}{text.totalChapters} {t("featured.ch")}
+                                {(() => { const y = localizedYearDisplay(text, locale); return y && <>{y} &middot; </>; })()}{text.totalChapters} {t("featured.ch")}
                               </p>
                             </Card>
                           </Link>

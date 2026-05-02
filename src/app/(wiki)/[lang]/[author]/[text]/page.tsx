@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { getServerTranslation } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
-import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath } from "@/lib/utils";
+import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
 
 interface TextPageProps {
@@ -88,9 +88,9 @@ export default async function TextPage({ params }: TextPageProps) {
           {authorDisplay.secondary && (
             <span className="ml-1">({authorDisplay.secondary})</span>
           )}
-          {textData.compositionYearDisplay && (
-            <span className="ml-2">&middot; {textData.compositionYearDisplay}</span>
-          )}
+          {(() => { const y = localizedYearDisplay(textData, locale); return y && (
+            <span className="ml-2">&middot; {y}</span>
+          ); })()}
         </p>
         {description && (
           <p className="mt-3 leading-relaxed text-muted-foreground">
