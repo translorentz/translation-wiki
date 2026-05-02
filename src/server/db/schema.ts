@@ -9,8 +9,17 @@ import {
   boolean,
   uniqueIndex,
   index,
+  customType,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+
+// Postgres tsvector type — populated by the trg_chapter_source_tsv trigger
+// from source_content. Used by the search router for full-text matching.
+const tsvector = customType<{ data: string; driverData: string }>({
+  dataType() {
+    return "tsvector";
+  },
+});
 
 // ============================================================
 // Users
@@ -216,6 +225,7 @@ export const chapters = pgTable(
     titleHi: varchar("title_hi", { length: 500 }),
     titleEs: varchar("title_es", { length: 500 }),
     sourceContent: jsonb("source_content"), // { paragraphs: [{ index, text }] }
+    sourceTsv: tsvector("source_tsv"), // populated by trg_chapter_source_tsv trigger
     currentSourceVersionId: integer("current_source_version_id"), // Points to latest sourceVersion
     ordering: integer("ordering").notNull(),
   },
