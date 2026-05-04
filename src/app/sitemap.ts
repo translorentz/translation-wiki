@@ -4,7 +4,10 @@ import { eq } from "drizzle-orm";
 import type { MetadataRoute } from "next";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 3600;
+// Intentionally no `revalidate` export — `force-dynamic` and `revalidate` are
+// mutually exclusive; specifying both has been observed to cause Next 16 to
+// prerender the route at build time anyway, baking in incorrect output that
+// then bypasses our id-coercion fix even on fresh requests.
 
 const BASE_URL = "https://deltoi.com";
 const LOCALES = ["", "/cn", "/es"] as const;
