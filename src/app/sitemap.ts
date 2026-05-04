@@ -25,10 +25,11 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
-  // The framework passes `id` as the URL path segment (string), not the typed number,
-  // so coerce defensively before any branch comparison — silent string/number mismatch
-  // here corrupted shard 0 in the first deploy.
-  const shardId = Number(id);
+  // The framework passes `id` as the URL path segment (e.g. "0", "1", or in
+  // some Next 16 builds the literal "0.xml" with extension), not the typed
+  // number — silent string/number mismatch here corrupted shard 0 on the
+  // first deploy. parseInt strips trailing ".xml" if present.
+  const shardId = parseInt(String(id), 10);
   const lastModified = new Date();
 
   if (shardId === 0) {
