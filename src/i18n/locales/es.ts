@@ -220,6 +220,7 @@ const es: Translations = {
   // Highlight cards
   "highlights.zhuziyulei": "Filosofía neoconfuciana registrada por los estudiantes de Zhu Xi.",
   "highlights.daad": "Una novela de amor en medio del derramamiento de sangre sectario en el Monte Líbano de 1860.",
+  "highlights.urshalim": "Tolerancia religiosa y fanatismo en los últimos días de la Jerusalén romana.",
   "highlights.romaike": "Política cortesana, guerras civiles y divisiones teológicas en el Bizancio tardío.",
   "highlights.capponi": "Florencia desde la comuna al principado, por un estadista del Risorgimento.",
   "highlights.paluba":

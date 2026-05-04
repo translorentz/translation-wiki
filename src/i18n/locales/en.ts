@@ -218,6 +218,7 @@ const en = {
   // Highlight cards
   "highlights.zhuziyulei": "Neo-Confucian philosophy recorded by Zhu Xi's students.",
   "highlights.daad": "A novel of love amid sectarian bloodshed in 1860 Mount Lebanon.",
+  "highlights.urshalim": "Religious tolerance and fanaticism in Roman Jerusalem's last days.",
   "highlights.romaike": "Court politics, civil wars, and theological rifts in late Byzantium.",
   "highlights.capponi": "Florence from commune to principate, by a Risorgimento statesman.",
   "highlights.paluba":

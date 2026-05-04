@@ -215,6 +215,7 @@ const cn: Translations = {
   // Highlight cards
   "highlights.zhuziyulei": "朱熹门人所录的理学语录。",
   "highlights.daad": "1860年黎巴嫩山教派屠杀中的爱情小说。",
+  "highlights.urshalim": "罗马耶路撒冷陷落前夕的宗教宽容与狂热。",
   "highlights.romaike": "晚期拜占庭的宫廷政治、内战与神学纷争。",
   "highlights.capponi": "从公社到公国——一位复兴运动政治家笔下的佛罗伦萨。",
   "highlights.paluba": "解构心理现实主义的波兰先锋派元小说。",

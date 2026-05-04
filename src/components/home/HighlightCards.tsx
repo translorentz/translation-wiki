@@ -12,6 +12,7 @@ type Highlight = {
   teaserKey:
     | "highlights.zhuziyulei"
     | "highlights.daad"
+    | "highlights.urshalim"
     | "highlights.romaike"
     | "highlights.capponi"
     | "highlights.paluba"
@@ -28,12 +29,12 @@ const HIGHLIGHTS_EN: Highlight[] = [
     teaserKey: "highlights.zhuziyulei",
   },
   {
-    slug: "daad",
-    authorSlug: "chekri-ganem",
-    langCode: "fr",
-    originalTitle: "Da\u2019ad",
-    secondaryTitle: "Da\u2019ad",
-    teaserKey: "highlights.daad",
+    slug: "urshalim-al-jadida",
+    authorSlug: "farah-antun",
+    langCode: "ar",
+    originalTitle: "\u0623\u0648\u0631\u0634\u0644\u064A\u0645 \u0627\u0644\u062C\u062F\u064A\u062F\u0629",
+    secondaryTitle: "The New Jerusalem",
+    teaserKey: "highlights.urshalim",
   },
   {
     slug: "romaike-historia",
@@ -63,12 +64,12 @@ const HIGHLIGHTS_ZH: Highlight[] = [
     teaserKey: "highlights.paluba",
   },
   {
-    slug: "daad",
-    authorSlug: "chekri-ganem",
-    langCode: "fr",
-    originalTitle: "Da\u2019ad",
-    secondaryTitle: "\u8FBE\u963F\u5FB7",
-    teaserKey: "highlights.daad",
+    slug: "urshalim-al-jadida",
+    authorSlug: "farah-antun",
+    langCode: "ar",
+    originalTitle: "\u0623\u0648\u0631\u0634\u0644\u064A\u0645 \u0627\u0644\u062C\u062F\u064A\u062F\u0629",
+    secondaryTitle: "\u65B0\u8036\u8DEF\u6492\u51B7",
+    teaserKey: "highlights.urshalim",
   },
   {
     slug: "romaike-historia",
@@ -123,40 +124,10 @@ const HIGHLIGHTS_HI: Highlight[] = [
   },
 ];
 
-const HIGHLIGHTS_ES: Highlight[] = [
-  {
-    slug: "shahnameh",
-    authorSlug: "ferdowsi",
-    langCode: "fa",
-    originalTitle: "شاهنامه",
-    secondaryTitle: "Libro de los Reyes",
-    teaserKey: "highlights.shahnameh",
-  },
-  {
-    slug: "zhuziyulei",
-    authorSlug: "zhu-xi",
-    langCode: "zh",
-    originalTitle: "朱子語類",
-    secondaryTitle: "Conversaciones Clasificadas del Maestro Zhu",
-    teaserKey: "highlights.zhuziyulei",
-  },
-  {
-    slug: "romaike-historia",
-    authorSlug: "nicephorus-gregoras",
-    langCode: "grc",
-    originalTitle: "Ρωμαϊκὴ Ἱστορία",
-    secondaryTitle: "Historia Romana",
-    teaserKey: "highlights.romaike",
-  },
-  {
-    slug: "storia-repubblica-firenze",
-    authorSlug: "gino-capponi",
-    langCode: "it",
-    originalTitle: "Storia della Repubblica di Firenze",
-    secondaryTitle: "Historia de la República de Florencia",
-    teaserKey: "highlights.capponi",
-  },
-];
+// Phase 0.3 stub: HIGHLIGHTS_ES aliased to HIGHLIGHTS_EN.
+// Phase 5 will populate a curated Spanish-specific array from a SQL query
+// of finished Spanish translations.
+const HIGHLIGHTS_ES: Highlight[] = HIGHLIGHTS_EN;
 
 export function HighlightCards({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
