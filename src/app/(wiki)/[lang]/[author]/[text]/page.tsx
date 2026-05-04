@@ -6,6 +6,7 @@ import { getServerTranslation, getLocale } from "@/i18n/server";
 import { Card } from "@/components/ui/card";
 import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
+import { buildBookJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
 interface TextPageProps {
   params: Promise<{
@@ -88,8 +89,34 @@ export default async function TextPage({ params }: TextPageProps) {
   const titleDisplay = formatTextTitle(textData, locale);
   const authorDisplay = formatAuthorName(textData.author, locale);
 
+  const localizedTextTitleForLd =
+    (locale === "es" && textData.titleEs) ||
+    (locale === "cn" && textData.titleZh) ||
+    textData.title;
+  const localizedAuthorNameForLd =
+    (locale === "es" && textData.author.nameEs) ||
+    (locale === "cn" && textData.author.nameZh) ||
+    textData.author.name;
+  const bookJsonLd = buildBookJsonLd({
+    title: localizedTextTitleForLd,
+    authorName: localizedAuthorNameForLd,
+    description: description ?? null,
+    sourceLangCode: lang,
+    uiLocale: locale,
+    textPath: `/${lang}/${author}/${textSlug}`,
+    compositionYear: textData.compositionYear ?? null,
+  });
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: locale === "cn" ? "首页" : locale === "es" ? "Inicio" : "Home", url: localePath("/", locale) },
+    { name: locale === "cn" ? "浏览" : locale === "es" ? "Catálogo" : "Browse", url: localePath("/texts", locale) },
+    { name: localizedAuthorNameForLd, url: basePath.replace(`/${textSlug}`, "") },
+    { name: localizedTextTitleForLd, url: basePath },
+  ]);
+
   return (
     <main className="mx-auto max-w-4xl">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(bookJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }} />
       {/* Text metadata */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold">{titleDisplay.primary}</h1>

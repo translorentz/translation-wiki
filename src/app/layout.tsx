@@ -11,6 +11,7 @@ import { getTranslator } from "@/i18n/shared";
 import { localePath } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { buildWebsiteJsonLd, jsonLdScript } from "@/lib/jsonld";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,9 +30,29 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Deltoi",
+  metadataBase: new URL("https://deltoi.com"),
+  title: {
+    default: "Deltoi — Interlinear Translations of Classical Texts",
+    template: "%s — Deltoi",
+  },
   description:
-    "A collaborative wiki of interlinear translations of pre-contemporary texts.",
+    "A collaborative wiki of interlinear translations of pre-contemporary texts in over thirty source languages, side-by-side with English, Chinese, and Spanish.",
+  applicationName: "Deltoi",
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: "website",
+    siteName: "Deltoi",
+    title: "Deltoi — Interlinear Translations of Classical Texts",
+    description:
+      "A collaborative wiki of interlinear translations of pre-contemporary texts.",
+    url: "https://deltoi.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Deltoi — Interlinear Translations of Classical Texts",
+    description:
+      "A collaborative wiki of interlinear translations of pre-contemporary texts.",
+  },
 };
 
 export default async function RootLayout({
@@ -44,12 +65,19 @@ export default async function RootLayout({
   const headersList = await headers();
   const effectivePath = headersList.get("x-locale-path") || "/";
 
+  const websiteJsonLd = buildWebsiteJsonLd(locale);
+
   return (
     <html lang={locale === "cn" ? "zh-Hans" : locale === "es" ? "es" : "en"}>
       <head>
-        <link rel="alternate" hrefLang="en" href={effectivePath} />
-        <link rel="alternate" hrefLang="zh-Hans" href={`/cn${effectivePath}`} />
-        <link rel="alternate" hrefLang="es" href={`/es${effectivePath}`} />
+        <link rel="alternate" hrefLang="en" href={`https://deltoi.com${effectivePath}`} />
+        <link rel="alternate" hrefLang="zh-Hans" href={`https://deltoi.com/cn${effectivePath}`} />
+        <link rel="alternate" hrefLang="es" href={`https://deltoi.com/es${effectivePath}`} />
+        <link rel="alternate" hrefLang="x-default" href={`https://deltoi.com${effectivePath}`} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(websiteJsonLd) }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} min-h-screen antialiased`}

@@ -9,6 +9,7 @@ import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
 import { EndorseButton } from "@/components/endorsement/EndorseButton";
+import { buildChapterJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
 interface ChapterPageProps {
   params: Promise<{
@@ -125,8 +126,40 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
 
   const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
 
+  const localizedTextTitleForLd =
+    (locale === "es" && textData.titleEs) ||
+    (locale === "cn" && textData.titleZh) ||
+    textData.title;
+  const localizedAuthorNameForLd =
+    (locale === "es" && textData.author.nameEs) ||
+    (locale === "cn" && textData.author.nameZh) ||
+    textData.author.name;
+  const localizedChapterTitleForLd =
+    (locale === "es" && chapter.titleEs) ||
+    (locale === "cn" && chapter.titleZh) ||
+    chapter.title ||
+    `Chapter ${chapter.chapterNumber}`;
+  const chapterJsonLd = buildChapterJsonLd({
+    textTitle: localizedTextTitleForLd,
+    textPath: `/${lang}/${author}/${textSlug}`,
+    chapterTitle: localizedChapterTitleForLd,
+    chapterPath: `/${lang}/${author}/${textSlug}/${chapterSlug}`,
+    chapterNumber: chapter.chapterNumber,
+    sourceLangCode: lang,
+    uiLocale: locale,
+  });
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: locale === "cn" ? "首页" : locale === "es" ? "Inicio" : "Home", url: localePath("/", locale) },
+    { name: locale === "cn" ? "浏览" : locale === "es" ? "Catálogo" : "Browse", url: localePath("/texts", locale) },
+    { name: localizedAuthorNameForLd, url: basePath.replace(`/${textSlug}`, "") },
+    { name: localizedTextTitleForLd, url: basePath },
+    { name: localizedChapterTitleForLd, url: `${basePath}/${chapterSlug}` },
+  ]);
+
   return (
     <div className="flex gap-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(chapterJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }} />
       {/* Sidebar */}
       <aside className="hidden w-64 shrink-0 lg:block">
         <h3 className="mb-3 text-sm font-semibold text-muted-foreground">

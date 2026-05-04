@@ -1,11 +1,43 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getServerTRPC } from "@/trpc/server";
 import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 import { HighlightCards } from "@/components/home/HighlightCards";
-import { getServerTranslation } from "@/i18n/server";
+import { getServerTranslation, getLocale } from "@/i18n/server";
 import { getGenreDisplayName, type Locale } from "@/i18n/shared";
 import { localePath, localeToTargetLang } from "@/lib/utils";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const title =
+    locale === "cn"
+      ? "Deltoi — 古典文献的对照翻译"
+      : locale === "es"
+      ? "Deltoi — Traducciones interlineales de textos clásicos"
+      : "Deltoi — Interlinear Translations of Classical Texts";
+  const description =
+    locale === "cn"
+      ? "汇集三十余种古典语言的前现代文献,与英文、中文、西班牙文译本对照阅读的协作维基。"
+      : locale === "es"
+      ? "Wiki colaborativa de traducciones interlineales de textos premodernos en más de treinta lenguas clásicas, con paralelo en inglés, chino y español."
+      : "A collaborative wiki of interlinear translations of pre-contemporary texts in over thirty source languages, side-by-side with English, Chinese, and Spanish.";
+  return {
+    title: { absolute: title },
+    description,
+    alternates: {
+      canonical: "/",
+      languages: {
+        en: "/",
+        "zh-Hans": "/cn",
+        es: "/es",
+        "x-default": "/",
+      },
+    },
+    openGraph: { title, description, url: "/", type: "website" },
+    twitter: { title, description, card: "summary_large_image" },
+  };
+}
 
 export default async function HomePage() {
   const trpc = await getServerTRPC();

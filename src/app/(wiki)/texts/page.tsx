@@ -1,14 +1,47 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
-import { getServerTranslation } from "@/i18n/server";
+import { getServerTranslation, getLocale } from "@/i18n/server";
 import { getGenreDisplayName } from "@/i18n/shared";
 import { localePath, localeToTargetLang } from "@/lib/utils";
 import type { TranslationKey } from "@/i18n/locales/en";
 
 // Force dynamic rendering to ensure fresh data from database
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const title =
+    locale === "cn"
+      ? "浏览全部文献 — Deltoi"
+      : locale === "es"
+      ? "Catálogo — Deltoi"
+      : "Browse — Deltoi";
+  const description =
+    locale === "cn"
+      ? "浏览 Deltoi 收录的全部前现代文献:三十余种语言、千余部作品,可按语言与体裁筛选。"
+      : locale === "es"
+      ? "Explora todo el corpus de textos premodernos de Deltoi: más de mil obras en treinta lenguas, filtrables por idioma y género."
+      : "Browse the full Deltoi corpus of pre-contemporary texts — over a thousand works in thirty languages, filterable by language and genre.";
+  const canonicalPath = "/texts";
+  return {
+    title: { absolute: title },
+    description,
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        en: canonicalPath,
+        "zh-Hans": `/cn${canonicalPath}`,
+        es: `/es${canonicalPath}`,
+        "x-default": canonicalPath,
+      },
+    },
+    openGraph: { title, description, type: "website" },
+    twitter: { title, description, card: "summary_large_image" },
+  };
+}
 
 interface LanguageGroup {
   code: string;
