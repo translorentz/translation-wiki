@@ -200,8 +200,8 @@ const es: Translations = {
   "interlinear.noContent": "No hay contenido disponible para este capítulo.",
   "interlinear.notTranslated": "Aún no traducido",
   "interlinear.sourceRemoved": "Párrafo del texto original eliminado",
-  "interlinear.showOriginal": "Mostrar original",
-  "interlinear.hideOriginal": "Ocultar original",
+  "interlinear.showOriginal": "Mostrar",
+  "interlinear.hideOriginal": "Ocultar",
   "interlinear.showOriginalText": "Mostrar texto original",
   "interlinear.hideOriginalText": "Ocultar texto original",
 

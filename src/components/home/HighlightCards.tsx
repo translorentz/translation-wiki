@@ -124,10 +124,45 @@ const HIGHLIGHTS_HI: Highlight[] = [
   },
 ];
 
-// Phase 0.3 stub: HIGHLIGHTS_ES aliased to HIGHLIGHTS_EN.
-// Phase 5 will populate a curated Spanish-specific array from a SQL query
-// of finished Spanish translations.
-const HIGHLIGHTS_ES: Highlight[] = HIGHLIGHTS_EN;
+// Spanish highlights — same selections as the English carousel, but the
+// secondaryTitle (the only locale-readable line on mobile, since the teaser
+// is hidden below sm) is replaced with the Spanish title from texts.title_es.
+// Aliasing to HIGHLIGHTS_EN was a Phase 0.3 stub that left mobile ES users
+// reading English titles; this restores parity with HIGHLIGHTS_ZH.
+const HIGHLIGHTS_ES: Highlight[] = [
+  {
+    slug: "zhuziyulei",
+    authorSlug: "zhu-xi",
+    langCode: "zh",
+    originalTitle: "朱子語類",
+    secondaryTitle: "Conversaciones Clasificadas del Maestro Zhu",
+    teaserKey: "highlights.zhuziyulei",
+  },
+  {
+    slug: "urshalim-al-jadida",
+    authorSlug: "farah-antun",
+    langCode: "ar",
+    originalTitle: "أورشليم الجديدة",
+    secondaryTitle: "La Nueva Jerusalén",
+    teaserKey: "highlights.urshalim",
+  },
+  {
+    slug: "romaike-historia",
+    authorSlug: "nicephorus-gregoras",
+    langCode: "grc",
+    originalTitle: "Ρωμαϊκὴ Ἱστορία",
+    secondaryTitle: "Historia Romana",
+    teaserKey: "highlights.romaike",
+  },
+  {
+    slug: "storia-repubblica-firenze",
+    authorSlug: "gino-capponi",
+    langCode: "it",
+    originalTitle: "Storia della Repubblica di Firenze",
+    secondaryTitle: "Historia de la República de Florencia",
+    teaserKey: "highlights.capponi",
+  },
+];
 
 export function HighlightCards({ locale }: { locale: Locale }) {
   const t = getTranslator(locale);
