@@ -51,8 +51,10 @@ export async function generateMetadata({
       : `Read and translate ${localizedTitle} by ${localizedAuthorName}`;
 
   const canonicalPath = `/${lang}/${author}/${textSlug}`;
+  // The root layout's title.template appends " — Deltoi", so return only the
+  // page-specific title here (otherwise we get "— Deltoi — Deltoi").
   return {
-    title: `${localizedTitle} — Deltoi`,
+    title: localizedTitle,
     description: localizedDescription ?? fallbackDescription,
     alternates: {
       canonical: canonicalPath,
@@ -60,7 +62,18 @@ export async function generateMetadata({
         en: canonicalPath,
         "zh-Hans": `/cn${canonicalPath}`,
         es: `/es${canonicalPath}`,
+        "x-default": canonicalPath,
       },
+    },
+    openGraph: {
+      title: localizedTitle,
+      description: localizedDescription ?? fallbackDescription,
+      type: "article",
+    },
+    twitter: {
+      title: localizedTitle,
+      description: localizedDescription ?? fallbackDescription,
+      card: "summary_large_image",
     },
   };
 }

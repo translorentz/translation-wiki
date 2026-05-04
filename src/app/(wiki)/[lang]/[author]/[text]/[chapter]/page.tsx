@@ -66,8 +66,12 @@ export async function generateMetadata({
       : `Read the translation of ${chapterTitle} from ${localizedTextTitle} by ${localizedAuthorName}`;
 
   const canonicalPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
+  // The root layout's title.template appends " — Deltoi", so the chapter
+  // title here ends with the parent text name and the template handles the
+  // brand. (Returning "— Deltoi" here would yield "— Deltoi — Deltoi".)
+  const pageTitle = `${chapterTitle} — ${localizedTextTitle}`;
   return {
-    title: `${chapterTitle} — ${localizedTextTitle} — Deltoi`,
+    title: pageTitle,
     description: titleSuffix,
     alternates: {
       canonical: canonicalPath,
@@ -75,7 +79,18 @@ export async function generateMetadata({
         en: canonicalPath,
         "zh-Hans": `/cn${canonicalPath}`,
         es: `/es${canonicalPath}`,
+        "x-default": canonicalPath,
       },
+    },
+    openGraph: {
+      title: pageTitle,
+      description: titleSuffix,
+      type: "article",
+    },
+    twitter: {
+      title: pageTitle,
+      description: titleSuffix,
+      card: "summary_large_image",
     },
   };
 }
