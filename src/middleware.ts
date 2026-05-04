@@ -152,7 +152,10 @@ export default function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match all paths except API auth, static assets, and images
-    "/((?!api/auth|_next/static|_next/image|favicon.ico).*)",
+    // Match all paths except API auth, static assets, images, and SEO files.
+    // sitemap.xml + robots.txt + sitemap/N.xml are public crawler endpoints —
+    // they must not be locale-redirected, auth-gated, or wrapped by the
+    // layout (which would break content-type or inject HTML).
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|robots\\.txt|sitemap-index\\.xml|sitemap/).*)",
   ],
 };

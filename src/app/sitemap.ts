@@ -25,9 +25,13 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
+  // The framework passes `id` as the URL path segment (string), not the typed number,
+  // so coerce defensively before any branch comparison — silent string/number mismatch
+  // here corrupted shard 0 in the first deploy.
+  const shardId = Number(id);
   const lastModified = new Date();
 
-  if (id === 0) {
+  if (shardId === 0) {
     const entries: MetadataRoute.Sitemap = [];
 
     // Static pages — all three locales.
@@ -86,8 +90,8 @@ export default async function sitemap({
     return entries;
   }
 
-  // Chapter shards. id === 1 is the first shard, etc.
-  const offset = (id - 1) * CHAPTERS_PER_SHARD;
+  // Chapter shards. shardId === 1 is the first chapter shard.
+  const offset = (shardId - 1) * CHAPTERS_PER_SHARD;
   const allChapters = await db
     .select({
       chapterSlug: chapters.slug,
