@@ -2,6 +2,7 @@ import { db } from "@/server/db";
 import { texts, chapters } from "@/server/db/schema";
 import { eq, asc } from "drizzle-orm";
 import epub, { type Chapter } from "epub-gen-memory";
+import { auth } from "@/server/auth";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -27,6 +28,17 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ textId: string }> }
 ) {
+  // Login-gated. EPUB generation builds the entire book in memory and
+  // streams several MB to the client; it was a top bot-bandwidth target.
+  // Restricted to authenticated users.
+  const session = await auth();
+  if (!session?.user) {
+    return Response.json(
+      { error: "Sign in required to download" },
+      { status: 401 },
+    );
+  }
+
   const { textId: textIdStr } = await params;
   const textId = parseInt(textIdStr, 10);
   const url = new URL(request.url);

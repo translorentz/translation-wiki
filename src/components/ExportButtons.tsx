@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { Download, BookOpen, Loader2, Search } from "lucide-react";
+import { Download, BookOpen, Loader2, Search, LogIn } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "@/i18n";
+import { localePath } from "@/lib/utils";
 
 interface ExportButtonsProps {
   textId: number;
@@ -55,50 +57,67 @@ function useExport(textId: number, textSlug: string, format: "pdf" | "epub", loc
   return { loading, error, handleExport };
 }
 
-export function ExportButtons({ textId, textTitle, textSlug }: ExportButtonsProps) {
+export function ExportButtons({ textId, textSlug }: ExportButtonsProps) {
   const { t, locale } = useTranslation();
+  const { status } = useSession();
   const pdf = useExport(textId, textSlug, "pdf", locale);
   const epubExport = useExport(textId, textSlug, "epub", locale);
+
+  const isAuthed = status === "authenticated";
+  const isLoadingAuth = status === "loading";
 
   return (
     <div>
       <div className="flex flex-row gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          asChild
-        >
+        <Button variant="outline" size="sm" asChild>
           <Link href={`/search?text=${textSlug}`}>
             <Search className="mr-2 h-4 w-4" />
             {t("export.search")}
           </Link>
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={pdf.handleExport}
-          disabled={pdf.loading}
-        >
-          {pdf.loading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Download className="mr-2 h-4 w-4" />
-          )}
-          {pdf.loading ? t("export.generating") : t("export.pdf")}
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={epubExport.handleExport}
-          disabled={epubExport.loading}
-        >
-          {epubExport.loading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <BookOpen className="mr-2 h-4 w-4" />
-          )}
-          {epubExport.loading ? t("export.generating") : t("export.epub")}
-        </Button>
+        {isAuthed ? (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={pdf.handleExport}
+              disabled={pdf.loading}
+            >
+              {pdf.loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {pdf.loading ? t("export.generating") : t("export.pdf")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={epubExport.handleExport}
+              disabled={epubExport.loading}
+            >
+              {epubExport.loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <BookOpen className="mr-2 h-4 w-4" />
+              )}
+              {epubExport.loading ? t("export.generating") : t("export.epub")}
+            </Button>
+          </>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            disabled={isLoadingAuth}
+            title={t("export.signInToDownload")}
+          >
+            <Link href={localePath("/login", locale)}>
+              <LogIn className="mr-2 h-4 w-4" />
+              {t("export.signInToDownload")}
+            </Link>
+          </Button>
+        )}
       </div>
       {(pdf.error || epubExport.error) && (
         <p className="mt-1 text-xs text-destructive">

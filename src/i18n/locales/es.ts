@@ -294,6 +294,7 @@ const es: Translations = {
   "export.search": "Buscar",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
+  "export.signInToDownload": "Inicia sesión para descargar",
 
   // Table of contents
   "toc.title": "Tabla de contenidos",

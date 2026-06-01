@@ -288,6 +288,7 @@ const hi: Translations = {
   "export.search": "खोजें",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
+  "export.signInToDownload": "डाउनलोड करने के लिए साइन इन करें",
 
   // Table of contents
   "toc.title": "विषय सूची",

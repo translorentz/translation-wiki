@@ -2,6 +2,7 @@ import { db } from "@/server/db";
 import { texts, chapters } from "@/server/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { generatePdf } from "@/components/pdf/PdfDocument";
+import { auth } from "@/server/auth";
 
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
@@ -10,6 +11,17 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ textId: string }> }
 ) {
+  // Login-gated. PDF generation is expensive (Puppeteer-class compute,
+  // multi-MB bandwidth) and was the heaviest bot-scrape vector on the site.
+  // Restricted to authenticated users so abuse traffic cannot reach it.
+  const session = await auth();
+  if (!session?.user) {
+    return Response.json(
+      { error: "Sign in required to download" },
+      { status: 401 },
+    );
+  }
+
   const { textId: textIdStr } = await params;
   const textId = parseInt(textIdStr, 10);
   const url = new URL(request.url);

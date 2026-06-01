@@ -287,6 +287,7 @@ const cn: Translations = {
   "export.search": "搜索",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
+  "export.signInToDownload": "登录以下载",
 
   // Table of contents
   "toc.title": "目录",

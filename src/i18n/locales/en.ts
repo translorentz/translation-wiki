@@ -292,6 +292,7 @@ const en = {
   "export.search": "Search",
   "export.pdf": "PDF",
   "export.epub": "EPUB",
+  "export.signInToDownload": "Sign in to download",
 
   // Table of contents
   "toc.title": "Table of contents",
