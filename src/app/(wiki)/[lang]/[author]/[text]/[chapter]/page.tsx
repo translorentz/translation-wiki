@@ -1,15 +1,38 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/server/auth";
-import { getServerTRPC } from "@/trpc/server";
-import { getServerTranslation, getLocale } from "@/i18n/server";
+import { getPublicServerTRPC } from "@/trpc/server";
+import { getTranslator, type Locale } from "@/i18n/shared";
 import { parseChapterTitle, formatChapterTitle, localePath, localeToTargetLang } from "@/lib/utils";
 import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
 import { EndorseButton } from "@/components/endorsement/EndorseButton";
+import { ChapterEditAffordances } from "@/components/chapter/ChapterEditAffordances";
 import { buildChapterJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
+
+// ISR — revalidate every 5 minutes. Combined with generateStaticParams below,
+// this promotes the route from "ƒ Dynamic" to "● SSG with on-demand fallback".
+// Chapters not in the static list are rendered on first request and ISR-cached.
+export const revalidate = 300;
+export const dynamicParams = true;
+
+// Server-render every chapter page as the English baseline. Non-English UI
+// readers see English chapter content on first paint; the LocaleProvider
+// switches header / footer labels client-side. The interlinear viewer's
+// translation column is the English translation; a future bundle may add
+// a client-side refetch keyed on useLocale() to swap in the user's preferred
+// translation.
+const SSR_LOCALE: Locale = "en";
+const SSR_TARGET_LANG = localeToTargetLang(SSR_LOCALE);
+
+// Returning an empty array opts the route into SSG-with-revalidate without
+// enumerating the ~38K (lang, author, text, chapter) tuples at build time —
+// which would blow build duration past Vercel's limits. Each unique chapter
+// renders on first request and is then served from ISR cache.
+export async function generateStaticParams() {
+  return [];
+}
 
 interface ChapterPageProps {
   params: Promise<{
@@ -24,8 +47,7 @@ export async function generateMetadata({
   params,
 }: ChapterPageProps): Promise<Metadata> {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
-  const locale = await getLocale();
-  const trpc = await getServerTRPC();
+  const trpc = await getPublicServerTRPC();
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
     authorSlug: author,
@@ -34,42 +56,18 @@ export async function generateMetadata({
 
   if (!textData) return { title: "Chapter Not Found" };
 
-  const chapterInfo = textData.chapters.find(
-    (c) => c.slug === chapterSlug
-  );
+  const chapterInfo = textData.chapters.find((c) => c.slug === chapterSlug);
 
-  // Pick the locale-appropriate chapter title for the browser tab. titleEs /
-  // titleZh hold the localized form; the unlocalized title is the canonical
-  // fallback.
-  const localizedChapterTitle =
-    (locale === "es" && chapterInfo?.titleEs) ||
-    (locale === "cn" && chapterInfo?.titleZh) ||
-    chapterInfo?.title ||
-    null;
-  const { original, english } = parseChapterTitle(localizedChapterTitle);
+  // English baseline metadata. The alternates.languages block surfaces the
+  // /cn/... and /es/... variants to search engines.
+  const { original, english } = parseChapterTitle(chapterInfo?.title ?? null);
   const chapterTitle = english ? `${original} (${english})` : original;
-
-  const localizedTextTitle =
-    (locale === "es" && textData.titleEs) ||
-    (locale === "cn" && textData.titleZh) ||
-    textData.title;
-  const localizedAuthorName =
-    (locale === "es" && textData.author.nameEs) ||
-    (locale === "cn" && textData.author.nameZh) ||
-    textData.author.name;
-
-  const titleSuffix =
-    locale === "es"
-      ? `Lee la traducción de ${chapterTitle} de ${localizedTextTitle} por ${localizedAuthorName}`
-      : locale === "cn"
-      ? `阅读${localizedTextTitle}的${chapterTitle},作者${localizedAuthorName}`
-      : `Read the translation of ${chapterTitle} from ${localizedTextTitle} by ${localizedAuthorName}`;
+  const textTitle = textData.title;
+  const authorName = textData.author.name;
+  const titleSuffix = `Read the translation of ${chapterTitle} from ${textTitle} by ${authorName}`;
 
   const canonicalPath = `/${lang}/${author}/${textSlug}/${chapterSlug}`;
-  // The root layout's title.template appends " — Deltoi", so the chapter
-  // title here ends with the parent text name and the template handles the
-  // brand. (Returning "— Deltoi" here would yield "— Deltoi — Deltoi".)
-  const pageTitle = `${chapterTitle} — ${localizedTextTitle}`;
+  const pageTitle = `${chapterTitle} — ${textTitle}`;
   return {
     title: pageTitle,
     description: titleSuffix,
@@ -98,13 +96,10 @@ export async function generateMetadata({
 export default async function ChapterPage({ params }: ChapterPageProps) {
   const { lang, author, text: textSlug, chapter: chapterSlug } = await params;
 
-  const session = await auth();
-  const canEdit = session?.user?.role === "editor" || session?.user?.role === "admin";
+  const trpc = await getPublicServerTRPC();
+  const locale: Locale = SSR_LOCALE;
+  const t = getTranslator(locale);
 
-  const trpc = await getServerTRPC();
-  const { t, locale } = await getServerTranslation();
-
-  // Fetch the text to get its ID and chapter list
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
     authorSlug: author,
@@ -115,60 +110,46 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     notFound();
   }
 
-  // Fetch chapter data with translations for the current locale
   const chapter = await trpc.chapters.getByTextAndSlug({
     textId: textData.id,
     slug: chapterSlug,
-    targetLanguage: localeToTargetLang(locale),
+    targetLanguage: SSR_TARGET_LANG,
   });
 
   if (!chapter) {
     notFound();
   }
 
-  // Get the current translation content (if any)
   const translation = chapter.translations?.[0];
   const translationContent = translation?.currentVersion?.content as {
     paragraphs: { index: number; text: string }[];
   } | null;
 
-  // Navigation: previous and next chapters by ordering
-  const currentIdx = textData.chapters.findIndex(
-    (c) => c.slug === chapterSlug
-  );
+  const currentIdx = textData.chapters.findIndex((c) => c.slug === chapterSlug);
   const prevChapter = currentIdx > 0 ? textData.chapters[currentIdx - 1] : undefined;
-  const nextChapter = currentIdx < textData.chapters.length - 1 ? textData.chapters[currentIdx + 1] : undefined;
+  const nextChapter =
+    currentIdx < textData.chapters.length - 1 ? textData.chapters[currentIdx + 1] : undefined;
 
   const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
 
-  const localizedTextTitleForLd =
-    (locale === "es" && textData.titleEs) ||
-    (locale === "cn" && textData.titleZh) ||
-    textData.title;
-  const localizedAuthorNameForLd =
-    (locale === "es" && textData.author.nameEs) ||
-    (locale === "cn" && textData.author.nameZh) ||
-    textData.author.name;
-  const localizedChapterTitleForLd =
-    (locale === "es" && chapter.titleEs) ||
-    (locale === "cn" && chapter.titleZh) ||
-    chapter.title ||
-    `Chapter ${chapter.chapterNumber}`;
+  const textTitleForLd = textData.title;
+  const authorNameForLd = textData.author.name;
+  const chapterTitleForLd = chapter.title || `Chapter ${chapter.chapterNumber}`;
   const chapterJsonLd = buildChapterJsonLd({
-    textTitle: localizedTextTitleForLd,
+    textTitle: textTitleForLd,
     textPath: `/${lang}/${author}/${textSlug}`,
-    chapterTitle: localizedChapterTitleForLd,
+    chapterTitle: chapterTitleForLd,
     chapterPath: `/${lang}/${author}/${textSlug}/${chapterSlug}`,
     chapterNumber: chapter.chapterNumber,
     sourceLangCode: lang,
     uiLocale: locale,
   });
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
-    { name: locale === "cn" ? "首页" : locale === "es" ? "Inicio" : "Home", url: localePath("/", locale) },
-    { name: locale === "cn" ? "浏览" : locale === "es" ? "Catálogo" : "Browse", url: localePath("/texts", locale) },
-    { name: localizedAuthorNameForLd, url: basePath.replace(`/${textSlug}`, "") },
-    { name: localizedTextTitleForLd, url: basePath },
-    { name: localizedChapterTitleForLd, url: `${basePath}/${chapterSlug}` },
+    { name: "Home", url: localePath("/", locale) },
+    { name: "Browse", url: localePath("/texts", locale) },
+    { name: authorNameForLd, url: basePath.replace(`/${textSlug}`, "") },
+    { name: textTitleForLd, url: basePath },
+    { name: chapterTitleForLd, url: `${basePath}/${chapterSlug}` },
   ]);
 
   return (
@@ -191,7 +172,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
 
       {/* Main content */}
       <main className="min-w-0 flex-1">
-        {/* Header */}
         <div className="mb-6">
           <Link
             href={basePath}
@@ -216,16 +196,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
             {t("chapter.chapterOf").replace("{n}", String(chapter.chapterNumber)).replace("{m}", String(textData.totalChapters))}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {canEdit && (
-              <>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`${basePath}/${chapterSlug}/edit`}>{t("chapter.editTranslation")}</Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`${basePath}/${chapterSlug}/edit-source`}>{t("chapter.editSource")}</Link>
-                </Button>
-              </>
-            )}
+            <ChapterEditAffordances basePath={basePath} chapterSlug={chapterSlug} />
             <Button variant="ghost" size="sm" asChild>
               <Link href={`${basePath}/${chapterSlug}/history`}>{t("chapter.history")}</Link>
             </Button>
@@ -235,7 +206,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           </div>
         </div>
 
-        {/* Interlinear content */}
         <InterlinearViewer
           sourceContent={
             (chapter.sourceContent as {
@@ -247,7 +217,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           textType={textData.textType}
         />
 
-        {/* Endorsement */}
         {translation?.currentVersion && (
           <div className="mt-4 flex items-center gap-2">
             <EndorseButton
@@ -261,7 +230,6 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           </div>
         )}
 
-        {/* Navigation */}
         <nav className="mt-8 flex items-center justify-between border-t border-border pt-4">
           {prevChapter ? (
             <Button variant="outline" asChild>
