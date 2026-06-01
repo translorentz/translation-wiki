@@ -8,11 +8,35 @@ import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath, loca
 import { ExportButtons } from "@/components/ExportButtons";
 import { buildBookJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
-// ISR — revalidate every 5 minutes.
+// ISR — revalidate every 5 minutes. Combined with generateStaticParams()
+// below, this promotes the dynamic-segment route from "dynamic on demand"
+// (the Next 16 default for [param] segments without static params) to "SSG
+// with revalidate", which is the only way the response gets the
+// public, s-maxage=300 Cache-Control header that Cloudflare's Cache Rule
+// can honour. Without generateStaticParams, `revalidate` is dead code on
+// a dynamic-segment route.
 export const revalidate = 300;
+
+// Allow newly seeded texts (added after the build) to render on-demand and
+// ISR-cache thereafter. This is the Next default; setting it explicitly so
+// the contract is visible.
+export const dynamicParams = true;
 
 // SSR locale is fixed; client components localise post-hydration.
 const SSR_LOCALE: Locale = "en";
+
+// Enumerate every (lang, author, text) triple in the corpus so Next prerenders
+// each text page at build time. Each newly-pushed deploy refreshes the list.
+// Any text seeded between deploys still renders on-demand via dynamicParams.
+export async function generateStaticParams() {
+  const trpc = await getPublicServerTRPC();
+  const texts = await trpc.texts.list();
+  return texts.map((t) => ({
+    lang: t.language.code,
+    author: t.author.slug,
+    text: t.slug,
+  }));
+}
 
 interface TextPageProps {
   params: Promise<{
