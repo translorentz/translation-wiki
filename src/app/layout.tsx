@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
-import Link from "next/link";
-import { headers } from "next/headers";
 import { TRPCReactProvider } from "@/trpc/client";
-import { UserNav } from "@/components/auth/UserNav";
-import { LanguageSwitcher } from "@/components/navigation/LanguageSwitcher";
 import { LocaleProvider } from "./LocaleProvider";
-import { getLocale } from "@/i18n/server";
-import { getTranslator } from "@/i18n/shared";
-import { localePath } from "@/lib/utils";
+import { SiteHeader } from "@/components/navigation/SiteHeader";
+import { SiteFooter } from "@/components/navigation/SiteFooter";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { buildWebsiteJsonLd, jsonLdScript } from "@/lib/jsonld";
@@ -55,93 +50,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+// Static WebSite JSON-LD. Per-page JSON-LD (Book, Chapter, BreadcrumbList)
+// emitted in each page component carries the locale-specific URL prefix.
+const WEBSITE_JSON_LD = buildWebsiteJsonLd("en");
+
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
-  const t = getTranslator(locale);
-  const headersList = await headers();
-  const effectivePath = headersList.get("x-locale-path") || "/";
-
-  const websiteJsonLd = buildWebsiteJsonLd(locale);
-
   return (
-    <html lang={locale === "cn" ? "zh-Hans" : locale === "es" ? "es" : "en"}>
+    <html lang="en">
       <head>
-        <link rel="alternate" hrefLang="en" href={`https://deltoi.com${effectivePath}`} />
-        <link rel="alternate" hrefLang="zh-Hans" href={`https://deltoi.com/cn${effectivePath}`} />
-        <link rel="alternate" hrefLang="es" href={`https://deltoi.com/es${effectivePath}`} />
-        <link rel="alternate" hrefLang="x-default" href={`https://deltoi.com${effectivePath}`} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: jsonLdScript(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(WEBSITE_JSON_LD) }}
         />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} min-h-screen antialiased`}
       >
         <TRPCReactProvider>
-          <LocaleProvider locale={locale}>
-            {/* Header */}
-            <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
-              <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center gap-6">
-                  <Link href={localePath("/", locale)} className="font-[family-name:var(--font-lora)] text-lg font-semibold">
-                    Deltoi
-                  </Link>
-                  <nav className="hidden gap-4 sm:flex">
-                    <Link
-                      href={localePath("/texts", locale)}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {t("nav.browse")}
-                    </Link>
-                    <Link
-                      href={localePath("/search", locale)}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {t("nav.search")}
-                    </Link>
-                    <Link
-                      href={localePath("/about", locale)}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {t("nav.about")}
-                    </Link>
-                  </nav>
-                </div>
-                <div className="flex items-center gap-2">
-                  <LanguageSwitcher />
-                  <UserNav />
-                </div>
-              </div>
-            </header>
-
-            {/* Main content */}
+          <LocaleProvider>
+            <SiteHeader />
             <div className="mx-auto max-w-7xl">{children}</div>
-
-            {/* Footer */}
-            <footer className="mt-16 border-t border-border">
-              <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                <p className="text-center text-sm text-muted-foreground">
-                  {t("footer.description")}
-                </p>
-                <p className="mt-2 text-center text-xs text-gray-400">
-                  {t("footer.trial")}{" "}
-                  <a
-                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-gray-300"
-                  >
-                    {t("footer.license")}
-                  </a>
-                  {t("footer.licenseSuffix")}
-                </p>
-              </div>
-            </footer>
+            <SiteFooter />
           </LocaleProvider>
         </TRPCReactProvider>
         <Analytics />
