@@ -1,66 +1,57 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getServerTRPC } from "@/trpc/server";
+import { getPublicServerTRPC } from "@/trpc/server";
 import { FeaturedTexts } from "@/components/home/FeaturedTexts";
 import { HighlightCards } from "@/components/home/HighlightCards";
-import { getServerTranslation, getLocale } from "@/i18n/server";
-import { getGenreDisplayName, type Locale } from "@/i18n/shared";
+import { getTranslator, type Locale } from "@/i18n/shared";
 import { localePath, localeToTargetLang } from "@/lib/utils";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
-  const title =
-    locale === "cn"
-      ? "Deltoi — 古典文献的对照翻译"
-      : locale === "es"
-      ? "Deltoi — Traducciones interlineales de textos clásicos"
-      : "Deltoi — Interlinear Translations of Classical Texts";
-  const description =
-    locale === "cn"
-      ? "汇集三十余种古典语言的前现代文献,与英文、中文、西班牙文译本对照阅读的协作维基。"
-      : locale === "es"
-      ? "Wiki colaborativa de traducciones interlineales de textos premodernos en más de treinta lenguas clásicas, con paralelo en inglés, chino y español."
-      : "A collaborative wiki of interlinear translations of pre-contemporary texts in over thirty source languages, side-by-side with English, Chinese, and Spanish.";
-  return {
-    title: { absolute: title },
-    description,
-    alternates: {
-      canonical: "/",
-      languages: {
-        en: "/",
-        "zh-Hans": "/cn",
-        es: "/es",
-        "x-default": "/",
-      },
+// ISR — revalidate every 5 minutes. Combined with no dynamic-API calls in this
+// component or the root layout, this lets the page be statically prerendered
+// and edge-cacheable by Cloudflare + Vercel.
+export const revalidate = 300;
+
+// Page is rendered once for all UI locales as the "English" baseline shell;
+// the LocaleProvider on the client switches header / footer / FeaturedTexts /
+// HighlightCards labels post-hydration based on the URL prefix.
+const SSR_LOCALE: Locale = "en";
+
+const TITLE = "Deltoi — Interlinear Translations of Classical Texts";
+const DESCRIPTION =
+  "A collaborative wiki of interlinear translations of pre-contemporary texts in over thirty source languages, side-by-side with English, Chinese, and Spanish.";
+
+export const metadata: Metadata = {
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/",
+    languages: {
+      en: "/",
+      "zh-Hans": "/cn",
+      es: "/es",
+      "x-default": "/",
     },
-    openGraph: { title, description, url: "/", type: "website" },
-    twitter: { title, description, card: "summary_large_image" },
-  };
-}
+  },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: "/", type: "website" },
+  twitter: { title: TITLE, description: DESCRIPTION, card: "summary_large_image" },
+};
 
 export default async function HomePage() {
-  const trpc = await getServerTRPC();
+  const trpc = await getPublicServerTRPC();
   const allTextsRaw = await trpc.texts.list();
-  const { t, locale } = await getServerTranslation();
+  const locale: Locale = SSR_LOCALE;
+  const t = getTranslator(locale);
 
-  // Get text IDs with translations for the current locale (only needed for non-en)
-  const zhTranslatedIds = locale === "cn"
-    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "zh" }))
-    : null;
-  const hiTranslatedIds = locale === "hi"
-    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
-    : null;
-  const esTranslatedIds = locale === "es"
-    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "es" }))
-    : null;
-
-  // Hide texts whose source language matches the viewer's native language
+  // Hide texts whose source language matches the (default English) viewer's
+  // native language. The legacy locale-conditional translatedIds filter
+  // returns null for "en" (no filter applied), which the prior server-render
+  // code also did via the locale === "cn" | "hi" | "es" guard.
   const nativeLang = localeToTargetLang(locale);
   const allTexts = allTextsRaw.filter((t) => t.language.code !== nativeLang);
 
-  // Derive language links dynamically from the texts in the database
-  // Count texts per language and sort by descending count (most prolific first)
+  // Derive language links dynamically from the texts in the database.
+  // Count texts per language and sort by descending count (most prolific first).
   const languageCounts = new Map<string, { name: string; count: number }>();
   for (const text of allTexts) {
     const existing = languageCounts.get(text.language.code);
@@ -74,7 +65,7 @@ export default async function HomePage() {
     .map(([code, data]) => ({ code, label: data.name, count: data.count }))
     .sort((a, b) => b.count - a.count);
 
-  // Count texts per genre and sort by descending count
+  // Count texts per genre and sort by descending count.
   const genreCounts = new Map<string, number>();
   for (const text of allTexts) {
     const genre = text.genre || "uncategorized";
@@ -84,7 +75,7 @@ export default async function HomePage() {
     .filter(([, count]) => count > 0)
     .map(([code, count]) => ({
       code,
-      label: getGenreDisplayName(code, t),
+      label: t(`genre.${code}` as Parameters<typeof t>[0]) || code,
       count,
     }))
     .sort((a, b) => b.count - a.count);
@@ -111,12 +102,14 @@ export default async function HomePage() {
       name: text.language.name,
       displayName: text.language.displayName,
     },
-    hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
-    hasHiTranslation: hiTranslatedIds ? hiTranslatedIds.has(text.id) : undefined,
-    hasEsTranslation: esTranslatedIds ? esTranslatedIds.has(text.id) : undefined,
+    // Translation-availability badges left undefined; FeaturedTexts is a
+    // client component and can re-derive these from useLocale() if needed.
+    hasZhTranslation: undefined,
+    hasHiTranslation: undefined,
+    hasEsTranslation: undefined,
   }));
 
-  // Localise language labels for the sidebar
+  // Localise language labels for the sidebar.
   const localizedLanguageLinks = languageLinks.map((lang) => {
     const key = `sourcelang.${lang.code}` as Parameters<typeof t>[0];
     const localized = t(key);
@@ -148,7 +141,7 @@ export default async function HomePage() {
 
       {/* Highlights */}
       <div className="mx-auto mb-8 max-w-5xl">
-        <HighlightCards locale={locale} />
+        <HighlightCards />
       </div>
 
       {/* Main content: sidebar + featured texts */}

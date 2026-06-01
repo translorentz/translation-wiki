@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getServerTRPC } from "@/trpc/server";
-import { getServerTranslation, getLocale } from "@/i18n/server";
+import { getPublicServerTRPC } from "@/trpc/server";
+import { getTranslator, type Locale } from "@/i18n/shared";
 import { Card } from "@/components/ui/card";
 import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
 import { buildBookJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
+
+// ISR — revalidate every 5 minutes.
+export const revalidate = 300;
+
+// SSR locale is fixed; client components localise post-hydration.
+const SSR_LOCALE: Locale = "en";
 
 interface TextPageProps {
   params: Promise<{
@@ -20,8 +26,7 @@ export async function generateMetadata({
   params,
 }: TextPageProps): Promise<Metadata> {
   const { lang, author, text: textSlug } = await params;
-  const locale = await getLocale();
-  const trpc = await getServerTRPC();
+  const trpc = await getPublicServerTRPC();
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
     authorSlug: author,
@@ -30,29 +35,16 @@ export async function generateMetadata({
 
   if (!textData) return { title: "Text Not Found" };
 
-  const localizedTitle =
-    (locale === "es" && textData.titleEs) ||
-    (locale === "cn" && textData.titleZh) ||
-    textData.title;
-  const localizedDescription =
-    (locale === "es" && textData.descriptionEs) ||
-    (locale === "cn" && textData.descriptionZh) ||
-    textData.description;
-  const localizedAuthorName =
-    (locale === "es" && textData.author.nameEs) ||
-    (locale === "cn" && textData.author.nameZh) ||
-    textData.author.name;
+  // SSR metadata renders the English baseline. /cn/... and /es/... variants
+  // are surfaced via the alternates.languages block so search engines find
+  // them.
+  const localizedTitle = textData.title;
+  const localizedDescription = textData.description;
+  const localizedAuthorName = textData.author.name;
 
-  const fallbackDescription =
-    locale === "es"
-      ? `Lee y traduce ${localizedTitle} por ${localizedAuthorName}`
-      : locale === "cn"
-      ? `阅读并翻译${localizedTitle},作者${localizedAuthorName}`
-      : `Read and translate ${localizedTitle} by ${localizedAuthorName}`;
+  const fallbackDescription = `Read and translate ${localizedTitle} by ${localizedAuthorName}`;
 
   const canonicalPath = `/${lang}/${author}/${textSlug}`;
-  // The root layout's title.template appends " — Deltoi", so return only the
-  // page-specific title here (otherwise we get "— Deltoi — Deltoi").
   return {
     title: localizedTitle,
     description: localizedDescription ?? fallbackDescription,
@@ -81,8 +73,9 @@ export async function generateMetadata({
 export default async function TextPage({ params }: TextPageProps) {
   const { lang, author, text: textSlug } = await params;
 
-  const trpc = await getServerTRPC();
-  const { t, locale } = await getServerTranslation();
+  const trpc = await getPublicServerTRPC();
+  const locale: Locale = SSR_LOCALE;
+  const t = getTranslator(locale);
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -95,21 +88,12 @@ export default async function TextPage({ params }: TextPageProps) {
   }
 
   const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
-  const description = (locale === "cn" && textData.descriptionZh)
-    || (locale === "hi" && textData.descriptionHi)
-    || (locale === "es" && textData.descriptionEs)
-    || textData.description;
+  const description = textData.description;
   const titleDisplay = formatTextTitle(textData, locale);
   const authorDisplay = formatAuthorName(textData.author, locale);
 
-  const localizedTextTitleForLd =
-    (locale === "es" && textData.titleEs) ||
-    (locale === "cn" && textData.titleZh) ||
-    textData.title;
-  const localizedAuthorNameForLd =
-    (locale === "es" && textData.author.nameEs) ||
-    (locale === "cn" && textData.author.nameZh) ||
-    textData.author.name;
+  const localizedTextTitleForLd = textData.title;
+  const localizedAuthorNameForLd = textData.author.name;
   const bookJsonLd = buildBookJsonLd({
     title: localizedTextTitleForLd,
     authorName: localizedAuthorNameForLd,
@@ -120,8 +104,8 @@ export default async function TextPage({ params }: TextPageProps) {
     compositionYear: textData.compositionYear ?? null,
   });
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
-    { name: locale === "cn" ? "首页" : locale === "es" ? "Inicio" : "Home", url: localePath("/", locale) },
-    { name: locale === "cn" ? "浏览" : locale === "es" ? "Catálogo" : "Browse", url: localePath("/texts", locale) },
+    { name: "Home", url: localePath("/", locale) },
+    { name: "Browse", url: localePath("/texts", locale) },
     { name: localizedAuthorNameForLd, url: basePath.replace(`/${textSlug}`, "") },
     { name: localizedTextTitleForLd, url: basePath },
   ]);

@@ -1,11 +1,15 @@
-import { getServerTranslation } from "@/i18n/server";
+import { getTranslator, type Locale } from "@/i18n/shared";
+
+export const revalidate = 300;
+
+const SSR_LOCALE: Locale = "en";
 
 export const metadata = {
   title: "About — Deltoi",
 };
 
-export default async function AboutPage() {
-  const { t } = await getServerTranslation();
+export default function AboutPage() {
+  const t = getTranslator(SSR_LOCALE);
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-16 sm:px-6">

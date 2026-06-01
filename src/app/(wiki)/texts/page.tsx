@@ -1,47 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getServerTRPC } from "@/trpc/server";
+import { getPublicServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
 import { Badge } from "@/components/ui/badge";
-import { getServerTranslation, getLocale } from "@/i18n/server";
-import { getGenreDisplayName } from "@/i18n/shared";
+import { getTranslator, getGenreDisplayName, type Locale } from "@/i18n/shared";
 import { localePath, localeToTargetLang } from "@/lib/utils";
 import type { TranslationKey } from "@/i18n/locales/en";
 
-// Force dynamic rendering to ensure fresh data from database
-export const dynamic = "force-dynamic";
+// Note: this page is dynamic by virtue of reading async `searchParams` for
+// ?lang= and ?genre= filters. It cannot be ISR-cached without restructuring
+// the filter UI to read URL params client-side. We've removed the now-
+// redundant `force-dynamic` export and the cookies()-based getLocale() call,
+// but the page itself still renders per request. Render is hardcoded as the
+// English shell; client components localise labels post-hydration.
+const SSR_LOCALE: Locale = "en";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getLocale();
-  const title =
-    locale === "cn"
-      ? "浏览全部文献 — Deltoi"
-      : locale === "es"
-      ? "Catálogo — Deltoi"
-      : "Browse — Deltoi";
-  const description =
-    locale === "cn"
-      ? "浏览 Deltoi 收录的全部前现代文献:三十余种语言、千余部作品,可按语言与体裁筛选。"
-      : locale === "es"
-      ? "Explora todo el corpus de textos premodernos de Deltoi: más de mil obras en treinta lenguas, filtrables por idioma y género."
-      : "Browse the full Deltoi corpus of pre-contemporary texts — over a thousand works in thirty languages, filterable by language and genre.";
-  const canonicalPath = "/texts";
-  return {
-    title: { absolute: title },
-    description,
-    alternates: {
-      canonical: canonicalPath,
-      languages: {
-        en: canonicalPath,
-        "zh-Hans": `/cn${canonicalPath}`,
-        es: `/es${canonicalPath}`,
-        "x-default": canonicalPath,
-      },
+const TITLE = "Browse — Deltoi";
+const DESCRIPTION =
+  "Browse the full Deltoi corpus of pre-contemporary texts — over a thousand works in thirty languages, filterable by language and genre.";
+
+export const metadata: Metadata = {
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/texts",
+    languages: {
+      en: "/texts",
+      "zh-Hans": "/cn/texts",
+      es: "/es/texts",
+      "x-default": "/texts",
     },
-    openGraph: { title, description, type: "website" },
-    twitter: { title, description, card: "summary_large_image" },
-  };
-}
+  },
+  openGraph: { title: TITLE, description: DESCRIPTION, type: "website" },
+  twitter: { title: TITLE, description: DESCRIPTION, card: "summary_large_image" },
+};
 
 interface LanguageGroup {
   code: string;
@@ -78,22 +70,13 @@ interface BrowsePageProps {
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const { lang, genre } = await searchParams;
-  const trpc = await getServerTRPC();
+  const trpc = await getPublicServerTRPC();
   const allTextsRaw = await trpc.texts.list();
-  const { t, locale } = await getServerTranslation();
+  const locale: Locale = SSR_LOCALE;
+  const t = getTranslator(locale);
 
-  // Get text IDs with translations for the current locale (only needed for non-en)
-  const zhTranslatedIds = locale === "cn"
-    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "zh" }))
-    : null;
-  const hiTranslatedIds = locale === "hi"
-    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "hi" }))
-    : null;
-  const esTranslatedIds = locale === "es"
-    ? new Set(await trpc.texts.getTextIdsWithTranslation({ targetLanguage: "es" }))
-    : null;
-
-  // Hide texts whose source language matches the viewer's native language
+  // Hide texts whose source language matches the (default English) viewer's
+  // native language.
   const nativeLang = localeToTargetLang(locale);
   const allTexts = allTextsRaw.filter((t) => t.language.code !== nativeLang);
 
@@ -179,9 +162,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       sortOrder: text.sortOrder ?? null,
       compositionYearDisplay: text.compositionYearDisplay ?? null,
       compositionYearDisplayEs: text.compositionYearDisplayEs ?? null,
-      hasZhTranslation: zhTranslatedIds ? zhTranslatedIds.has(text.id) : undefined,
-      hasHiTranslation: hiTranslatedIds ? hiTranslatedIds.has(text.id) : undefined,
-      hasEsTranslation: esTranslatedIds ? esTranslatedIds.has(text.id) : undefined,
+      hasZhTranslation: undefined,
+      hasHiTranslation: undefined,
+      hasEsTranslation: undefined,
     });
   }
 
@@ -324,11 +307,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
           )}
           {langDisplayName && (
             <>
-              {genreDisplayName ? " \u00B7 " : ` ${t("browse.in")} `}
+              {genreDisplayName ? " · " : ` ${t("browse.in")} `}
               <span className="font-medium text-foreground">{langDisplayName}</span>
             </>
           )}
-          {" \u00B7 "}
+          {" · "}
           <Link href={localePath("/texts", locale)} className="text-primary hover:underline">
             {t("browse.clearFilters")}
           </Link>

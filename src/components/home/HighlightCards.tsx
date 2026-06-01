@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { getTranslator, type Locale } from "@/i18n/shared";
+import { useTranslation } from "@/i18n";
 import { localePath } from "@/lib/utils";
 
 type Highlight = {
@@ -24,7 +26,7 @@ const HIGHLIGHTS_EN: Highlight[] = [
     slug: "zhuziyulei",
     authorSlug: "zhu-xi",
     langCode: "zh",
-    originalTitle: "\u6731\u5B50\u8A9E\u985E",
+    originalTitle: "朱子語類",
     secondaryTitle: "Classified Conversations of Master Zhu",
     teaserKey: "highlights.zhuziyulei",
   },
@@ -32,7 +34,7 @@ const HIGHLIGHTS_EN: Highlight[] = [
     slug: "urshalim-al-jadida",
     authorSlug: "farah-antun",
     langCode: "ar",
-    originalTitle: "\u0623\u0648\u0631\u0634\u0644\u064A\u0645 \u0627\u0644\u062C\u062F\u064A\u062F\u0629",
+    originalTitle: "أورشليم الجديدة",
     secondaryTitle: "The New Jerusalem",
     teaserKey: "highlights.urshalim",
   },
@@ -40,7 +42,7 @@ const HIGHLIGHTS_EN: Highlight[] = [
     slug: "romaike-historia",
     authorSlug: "nicephorus-gregoras",
     langCode: "grc",
-    originalTitle: "\u03A1\u03C9\u03BC\u03B1\u03CA\u03BA\u1F74 \u1F39\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1",
+    originalTitle: "Ρωμαϊκὴ Ἱστορία",
     secondaryTitle: "Roman History",
     teaserKey: "highlights.romaike",
   },
@@ -59,32 +61,32 @@ const HIGHLIGHTS_ZH: Highlight[] = [
     slug: "paluba",
     authorSlug: "karol-irzykowski",
     langCode: "pl",
-    originalTitle: "Pa\u0142uba",
-    secondaryTitle: "\u5973\u5DEB",
+    originalTitle: "Pałuba",
+    secondaryTitle: "女巫",
     teaserKey: "highlights.paluba",
   },
   {
     slug: "urshalim-al-jadida",
     authorSlug: "farah-antun",
     langCode: "ar",
-    originalTitle: "\u0623\u0648\u0631\u0634\u0644\u064A\u0645 \u0627\u0644\u062C\u062F\u064A\u062F\u0629",
-    secondaryTitle: "\u65B0\u8036\u8DEF\u6492\u51B7",
+    originalTitle: "أورشليم الجديدة",
+    secondaryTitle: "新耶路撒冷",
     teaserKey: "highlights.urshalim",
   },
   {
     slug: "romaike-historia",
     authorSlug: "nicephorus-gregoras",
     langCode: "grc",
-    originalTitle: "\u03A1\u03C9\u03BC\u03B1\u03CA\u03BA\u1F74 \u1F39\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1",
-    secondaryTitle: "\u7F57\u9A6C\u53F2",
+    originalTitle: "Ρωμαϊκὴ Ἱστορία",
+    secondaryTitle: "罗马史",
     teaserKey: "highlights.romaike",
   },
   {
     slug: "shahnameh",
     authorSlug: "ferdowsi",
     langCode: "fa",
-    originalTitle: "\u0634\u0627\u0647\u0646\u0627\u0645\u0647",
-    secondaryTitle: "\u5217\u738B\u7EAA",
+    originalTitle: "شاهنامه",
+    secondaryTitle: "列王纪",
     teaserKey: "highlights.shahnameh",
   },
 ];
@@ -94,7 +96,7 @@ const HIGHLIGHTS_HI: Highlight[] = [
     slug: "zhuziyulei",
     authorSlug: "zhu-xi",
     langCode: "zh",
-    originalTitle: "\u6731\u5B50\u8A9E\u985E",
+    originalTitle: "朱子語類",
     secondaryTitle: "Classified Conversations of Master Zhu",
     teaserKey: "highlights.zhuziyulei",
   },
@@ -102,15 +104,15 @@ const HIGHLIGHTS_HI: Highlight[] = [
     slug: "daad",
     authorSlug: "chekri-ganem",
     langCode: "fr",
-    originalTitle: "Da\u2019ad",
-    secondaryTitle: "Da\u2019ad",
+    originalTitle: "Da’ad",
+    secondaryTitle: "Da’ad",
     teaserKey: "highlights.daad",
   },
   {
     slug: "romaike-historia",
     authorSlug: "nicephorus-gregoras",
     langCode: "grc",
-    originalTitle: "\u03A1\u03C9\u03BC\u03B1\u03CA\u03BA\u1F74 \u1F39\u03C3\u03C4\u03BF\u03C1\u03AF\u03B1",
+    originalTitle: "Ρωμαϊκὴ Ἱστορία",
     secondaryTitle: "Roman History",
     teaserKey: "highlights.romaike",
   },
@@ -118,17 +120,12 @@ const HIGHLIGHTS_HI: Highlight[] = [
     slug: "shahnameh",
     authorSlug: "ferdowsi",
     langCode: "fa",
-    originalTitle: "\u0634\u0627\u0647\u0646\u0627\u0645\u0647",
+    originalTitle: "شاهنامه",
     secondaryTitle: "Shahnameh",
     teaserKey: "highlights.shahnameh",
   },
 ];
 
-// Spanish highlights — same selections as the English carousel, but the
-// secondaryTitle (the only locale-readable line on mobile, since the teaser
-// is hidden below sm) is replaced with the Spanish title from texts.title_es.
-// Aliasing to HIGHLIGHTS_EN was a Phase 0.3 stub that left mobile ES users
-// reading English titles; this restores parity with HIGHLIGHTS_ZH.
 const HIGHLIGHTS_ES: Highlight[] = [
   {
     slug: "zhuziyulei",
@@ -164,9 +161,19 @@ const HIGHLIGHTS_ES: Highlight[] = [
   },
 ];
 
-export function HighlightCards({ locale }: { locale: Locale }) {
-  const t = getTranslator(locale);
-  const highlights = locale === "cn" ? HIGHLIGHTS_ZH : locale === "hi" ? HIGHLIGHTS_HI : locale === "es" ? HIGHLIGHTS_ES : HIGHLIGHTS_EN;
+// Now a client component — reads locale from LocaleProvider context so the
+// server can render a locale-agnostic shell (initially HIGHLIGHTS_EN), and
+// the client swaps in the right carousel post-hydration.
+export function HighlightCards() {
+  const { t, locale } = useTranslation();
+  const highlights =
+    locale === "cn"
+      ? HIGHLIGHTS_ZH
+      : locale === "hi"
+      ? HIGHLIGHTS_HI
+      : locale === "es"
+      ? HIGHLIGHTS_ES
+      : HIGHLIGHTS_EN;
 
   return (
     <div>
