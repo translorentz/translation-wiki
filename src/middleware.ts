@@ -4,6 +4,23 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
+// Origin lockdown — reject any request that did NOT come through Cloudflare.
+// Cloudflare's Transform Rule (Modify Request Header → Set static) injects
+// x-vercel-origin-secret on every proxied request. Anyone hitting Vercel directly
+// (via the .vercel.app preview URL or a discovered 216.150.x.x anycast IP
+// with Host: deltoi.com) lacks the header and gets a 403. CF_PASS_TOKEN
+// should ONLY be set in Vercel's PRODUCTION env (not Preview, not Development)
+// so local dev (`pnpm dev`) and preview deployments stay reachable without it.
+function checkCloudflareGate(req: NextRequest): NextResponse | null {
+  const expected = process.env.CF_PASS_TOKEN;
+  if (!expected) return null;
+  const presented = req.headers.get("x-vercel-origin-secret");
+  if (presented !== expected) {
+    return new NextResponse("Forbidden", { status: 403 });
+  }
+  return null;
+}
+
 // Paths that are safe to cache at the Vercel edge.
 // Read-only chapter/text/browse pages benefit hugely; auth and edit flows must
 // never be cached. These paths also bypass the NextAuth middleware wrapper
@@ -120,6 +137,11 @@ const authProtectedHandler = auth((req) => {
 });
 
 export default function middleware(req: NextRequest) {
+  // Origin lockdown — block requests that didn't traverse Cloudflare.
+  // Runs before everything else so 403 responses are as cheap as possible.
+  const gated = checkCloudflareGate(req);
+  if (gated) return gated;
+
   const { pathname } = req.nextUrl;
 
   // Hindi delink — handle before anything else
