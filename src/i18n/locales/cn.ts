@@ -100,6 +100,7 @@ const cn: Translations = {
   "search.searchingWithin": "在以下文本中搜索：",
   "search.clearFilter": "清除",
   "search.placeholderInText": "在此文本中搜索...",
+  "search.button": "搜索",
 
   // Auth - Login
   "login.title": "\u767B\u5F55",

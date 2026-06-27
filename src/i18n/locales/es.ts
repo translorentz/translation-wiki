@@ -101,6 +101,7 @@ const es: Translations = {
   "search.searchingWithin": "Buscando dentro de:",
   "search.clearFilter": "Borrar",
   "search.placeholderInText": "Buscar dentro de este texto...",
+  "search.button": "Buscar",
 
   // Auth - Login
   "login.title": "Iniciar sesión",

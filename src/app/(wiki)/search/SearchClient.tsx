@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { Search as SearchIcon } from "lucide-react";
 import { useTRPC } from "@/trpc/client";
 import { formatChapterTitle, formatTextTitle, localePath, localeToTargetLang } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -61,8 +62,14 @@ export default function SearchClient() {
 
   const RESULTS_PER_PAGE = 20;
 
-  // Initialize state from URL params
-  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  // Initialize state from URL params. `query` is the live input value (changes
+  // on every keystroke); `submittedQuery` is what the search backend actually
+  // sees and only updates when the user presses Enter or clicks Search. This
+  // separation prevents the previous behaviour of firing a DB query on every
+  // keystroke. The URL `q=` param is the deep-link contract, so it seeds both.
+  const initialQ = searchParams.get("q") ?? "";
+  const [query, setQuery] = useState(initialQ);
+  const [submittedQuery, setSubmittedQuery] = useState(initialQ);
   const textSlug = searchParams.get("text") ?? undefined;
   const [searchContent, setSearchContent] = useState(() => {
     // Auto-enable content search when scoped to a text
@@ -85,7 +92,9 @@ export default function SearchClient() {
     trpc.search.languages.queryOptions()
   );
 
-  // Update URL params when query or languages change (no page param needed)
+  // Sync URL params with the SUBMITTED query (not every keystroke). Filter
+  // toggles still update the URL immediately because each toggle is a single
+  // deliberate click, not a typing burst.
   const updateUrl = useCallback(
     (q: string, langs: string[]) => {
       const params = new URLSearchParams();
@@ -99,24 +108,22 @@ export default function SearchClient() {
         : localePathname;
       router.replace(newUrl, { scroll: false });
     },
-    [pathname, router, locale]
+    [pathname, router, locale, searchContent, textSlug]
   );
 
-  // Debounced URL update for query changes
   useEffect(() => {
-    const timer = setTimeout(() => {
-      updateUrl(query, selectedLanguages);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [query, selectedLanguages, searchContent, updateUrl]);
+    updateUrl(submittedQuery, selectedLanguages);
+  }, [submittedQuery, selectedLanguages, searchContent, updateUrl]);
 
-  // Reset accumulated results when query, languages, or content toggle change
+  // Reset accumulated results when SUBMITTED query, languages, or content
+  // toggle change. Reset is keyed off submittedQuery so typing in the input
+  // doesn't clear the visible results until the user actually submits.
   useEffect(() => {
     setAccumulatedTexts([]);
     setAccumulatedChapters([]);
     setCurrentOffset(0);
     setHasMoreResults(false);
-  }, [query, selectedLanguages, searchContent]);
+  }, [submittedQuery, selectedLanguages, searchContent]);
 
   const toggleLanguage = (code: string) => {
     setSelectedLanguages((prev) =>
@@ -126,20 +133,28 @@ export default function SearchClient() {
     );
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = query.trim();
+    if (trimmed.length < 2) return;
+    setSubmittedQuery(trimmed);
+  };
+
   const targetLanguage = localeToTargetLang(locale);
 
-  // Fast query: titles and author names only (initial load, offset 0)
+  // Fast query: titles and author names only (initial load, offset 0). Fires
+  // only when `submittedQuery` changes, not on every keystroke of `query`.
   const titlesQuery = useQuery(
     trpc.search.titles.queryOptions(
       {
-        q: query,
+        q: submittedQuery,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
         targetLanguage,
         textSlug,
         limit: RESULTS_PER_PAGE,
         offset: 0,
       },
-      { enabled: query.length >= 2 }
+      { enabled: submittedQuery.length >= 2 }
     )
   );
 
@@ -154,11 +169,12 @@ export default function SearchClient() {
     [titlesQuery.data?.chapters]
   );
 
-  // Slow query: content search (only runs after titles query completes)
+  // Slow query: content search (only runs after titles query completes).
+  // Also keyed off submittedQuery so it only fires on submit.
   const contentQuery = useQuery(
     trpc.search.content.queryOptions(
       {
-        q: query,
+        q: submittedQuery,
         languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
         targetLanguage,
         textSlug,
@@ -168,7 +184,7 @@ export default function SearchClient() {
         excludeChapterIds,
       },
       {
-        enabled: query.length >= 2 && titlesQuery.isSuccess && searchContent,
+        enabled: submittedQuery.length >= 2 && titlesQuery.isSuccess && searchContent,
       }
     )
   );
@@ -215,7 +231,7 @@ export default function SearchClient() {
       const inputPayload = {
         "0": {
           json: {
-            q: query,
+            q: submittedQuery,
             languages: selectedLanguages.length > 0 ? selectedLanguages : undefined,
             targetLanguage,
             textSlug,
@@ -274,7 +290,7 @@ export default function SearchClient() {
             size="sm"
             onClick={() => {
               const params = new URLSearchParams();
-              if (query) params.set("q", query);
+              if (submittedQuery) params.set("q", submittedQuery);
               const base = localePath(pathname, locale);
               router.replace(params.toString() ? `${base}?${params.toString()}` : base, { scroll: false });
             }}
@@ -285,14 +301,20 @@ export default function SearchClient() {
         </div>
       )}
 
-      <Input
-        type="search"
-        placeholder={textSlug ? t("search.placeholderInText") : t("search.placeholder")}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="mb-4"
-        autoFocus
-      />
+      <form onSubmit={handleSubmit} className="mb-4 flex gap-2">
+        <Input
+          type="search"
+          placeholder={textSlug ? t("search.placeholderInText") : t("search.placeholder")}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="flex-1"
+          autoFocus
+        />
+        <Button type="submit" disabled={query.trim().length < 2}>
+          <SearchIcon className="mr-2 h-4 w-4" />
+          {t("search.button")}
+        </Button>
+      </form>
 
       {/* Content search toggle */}
       <label className="mb-4 flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
@@ -338,19 +360,19 @@ export default function SearchClient() {
       )}
 
       {/* Loading state - show when fetching (including refetches when filters change) */}
-      {isSearching && query.length >= 2 && (
+      {isSearching && submittedQuery.length >= 2 && (
         <p className="text-sm text-muted-foreground">{t("search.searchingTitles")}</p>
       )}
 
       {/* Content search loading - show when titles done but content still loading */}
-      {!isSearching && searchContent && isContentLoading && query.length >= 2 && (
+      {!isSearching && searchContent && isContentLoading && submittedQuery.length >= 2 && (
         <p className="text-sm text-muted-foreground">{t("search.searchingContent")}</p>
       )}
 
       {/* No results message - only show when not searching */}
-      {!isSearching && !(searchContent && isContentLoading) && !hasResults && query.length >= 2 && (
+      {!isSearching && !(searchContent && isContentLoading) && !hasResults && submittedQuery.length >= 2 && (
         <p className="py-4 text-muted-foreground">
-          {t("search.noResults")} &ldquo;{query}&rdquo;
+          {t("search.noResults")} &ldquo;{submittedQuery}&rdquo;
           {selectedLanguages.length > 0 && ` ${t("search.withFilter")}`}
         </p>
       )}
@@ -447,7 +469,7 @@ export default function SearchClient() {
                           {parsedSnippets.map((s, i) => (
                             <p key={i} className="text-xs text-muted-foreground line-clamp-1">
                               <span className="text-muted-foreground/60">¶{s.index}</span>{' '}
-                              ...{highlightMatch(s.text, query)}...
+                              ...{highlightMatch(s.text, submittedQuery)}...
                             </p>
                           ))}
                         </div>

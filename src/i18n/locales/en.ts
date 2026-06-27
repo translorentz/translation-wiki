@@ -99,6 +99,7 @@ const en = {
   "search.searchingWithin": "Searching within:",
   "search.clearFilter": "Clear",
   "search.placeholderInText": "Search within this text...",
+  "search.button": "Search",
 
   // Auth - Login
   "login.title": "Sign In",

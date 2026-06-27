@@ -100,6 +100,7 @@ const hi: Translations = {
   "search.searchingWithin": "इस ग्रंथ में खोज:",
   "search.clearFilter": "हटाएँ",
   "search.placeholderInText": "इस ग्रंथ में खोजें...",
+  "search.button": "खोजें",
 
   // Auth - Login
   "login.title": "साइन इन करें",
