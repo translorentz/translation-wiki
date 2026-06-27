@@ -129,6 +129,7 @@ export function FeaturedTexts({ texts }: FeaturedTextsProps) {
                   <Link
                     key={text.slug}
                     href={localePath(`/${text.language.code}/${text.author.slug}/${text.slug}`, locale)}
+                    prefetch={false}
                   >
                     <Card className="px-4 py-2.5 transition-colors hover:bg-muted/50">
                       {(() => {

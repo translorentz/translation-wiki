@@ -114,6 +114,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                     <Link
                       key={text.slug}
                       href={localePath(`/${lang.code}/${author.slug}/${text.slug}`, locale)}
+                      prefetch={false}
                     >
                       <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
                         <p className={cn(
@@ -190,6 +191,7 @@ export function CategoryBrowser({ languages }: CategoryBrowserProps) {
                           <Link
                             key={text.slug}
                             href={localePath(`/${lang.code}/${author.slug}/${text.slug}`, locale)}
+                            prefetch={false}
                           >
                             <Card className="px-3 py-2 transition-colors hover:bg-muted/50">
                               <p className={cn(

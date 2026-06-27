@@ -51,6 +51,7 @@ export function TableOfContents({
                 <Link
                   ref={isActive ? activeRef : undefined}
                   href={href}
+                  prefetch={false}
                   className={cn(
                     "block rounded-md px-3 py-1.5 text-sm transition-colors",
                     isActive
