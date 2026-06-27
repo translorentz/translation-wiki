@@ -4,10 +4,9 @@ import Link from "next/link";
 import { getPublicServerTRPC } from "@/trpc/server";
 import { getTranslator, type Locale } from "@/i18n/shared";
 import { parseChapterTitle, formatChapterTitle, localePath, localeToTargetLang } from "@/lib/utils";
-import { InterlinearViewer } from "@/components/interlinear/InterlinearViewer";
+import { LocalizedTranslationSection } from "@/components/interlinear/LocalizedTranslationSection";
 import { TableOfContents } from "@/components/navigation/TableOfContents";
 import { Button } from "@/components/ui/button";
-import { EndorseButton } from "@/components/endorsement/EndorseButton";
 import { ChapterEditAffordances } from "@/components/chapter/ChapterEditAffordances";
 import { buildChapterJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
@@ -206,29 +205,22 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           </div>
         </div>
 
-        <InterlinearViewer
+        <LocalizedTranslationSection
+          textId={textData.id}
+          chapterSlug={chapterSlug}
           sourceContent={
             (chapter.sourceContent as {
               paragraphs: { index: number; text: string }[];
             }) ?? { paragraphs: [] }
           }
-          translationContent={translationContent ?? null}
           sourceLanguage={lang}
           textType={textData.textType}
+          initialTranslationContent={translationContent ?? null}
+          initialTranslationVersionId={translation?.currentVersion?.id ?? null}
+          initialTranslationAuthorUsername={
+            translation?.currentVersion?.author?.username ?? null
+          }
         />
-
-        {translation?.currentVersion && (
-          <div className="mt-4 flex items-center gap-2">
-            <EndorseButton
-              translationVersionId={translation.currentVersion.id}
-            />
-            {translation.currentVersion.author && (
-              <span className="text-xs text-muted-foreground">
-                {t("chapter.translatedBy").replace("{name}", translation.currentVersion.author.username)}
-              </span>
-            )}
-          </div>
-        )}
 
         <nav className="mt-8 flex items-center justify-between border-t border-border pt-4">
           {prevChapter ? (
