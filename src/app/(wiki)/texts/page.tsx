@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getPublicServerTRPC } from "@/trpc/server";
 import { CategoryBrowser } from "@/components/navigation/CategoryBrowser";
-import { Badge } from "@/components/ui/badge";
-import { getTranslator, getGenreDisplayName, type Locale } from "@/i18n/shared";
-import { localePath, localeToTargetLang } from "@/lib/utils";
-import type { TranslationKey } from "@/i18n/locales/en";
+import { LocalizedBrowseFilters } from "@/components/browse/LocalizedBrowseFilters";
+import { type Locale } from "@/i18n/shared";
+import { localeToTargetLang } from "@/lib/utils";
 
 // Note: this page is dynamic by virtue of reading async `searchParams` for
 // ?lang= and ?genre= filters. It cannot be ISR-cached without restructuring
@@ -73,7 +71,6 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const trpc = await getPublicServerTRPC();
   const allTextsRaw = await trpc.texts.list();
   const locale: Locale = SSR_LOCALE;
-  const t = getTranslator(locale);
 
   // Hide texts whose source language matches the (default English) viewer's
   // native language.
@@ -215,109 +212,21 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     return countB - countA;
   });
 
-  // Build filter link helpers
-  const buildFilterUrl = (newLang?: string, newGenre?: string) => {
-    const params = new URLSearchParams();
-    if (newLang) params.set("lang", newLang);
-    if (newGenre) params.set("genre", newGenre);
-    const qs = params.toString();
-    const path = qs ? `/texts?${qs}` : "/texts";
-    return localePath(path, locale);
-  };
-
-  // Display names for active filters
-  const genreDisplayName = genre ? getGenreDisplayName(genre, t) : null;
-
-  // Localised language display name for the active filter
-  const langDisplayName = lang
-    ? (() => {
-        const key = `sourcelang.${lang}` as TranslationKey;
-        const localized = t(key);
-        return localized !== key ? localized : (langCounts.get(lang)?.name || lang);
-      })()
-    : null;
-
   // Count totals for "All" badges
   const totalTextsForGenreAll = textsForGenreCounts.length;
   const totalTextsForLangAll = textsForLangCounts.length;
 
   return (
     <main className="mx-auto max-w-5xl">
-      <h1 className="mb-4 text-3xl font-bold">{t("browse.title")}</h1>
-
-      {/* Category filter bar */}
-      <div className="mb-3 flex flex-wrap gap-2">
-        <span className="flex items-center text-sm text-muted-foreground mr-2">{t("browse.category")}</span>
-        <Link href={buildFilterUrl(lang, undefined)}>
-          <Badge
-            variant={!genre ? "default" : "outline"}
-            className="cursor-pointer transition-colors hover:bg-primary/80"
-          >
-            {t("browse.all")} ({totalTextsForGenreAll})
-          </Badge>
-        </Link>
-        {sortedGenres.map(([g, count]) => (
-          <Link key={g} href={buildFilterUrl(lang, g)}>
-            <Badge
-              variant={genre === g ? "default" : "outline"}
-              className="cursor-pointer transition-colors hover:bg-primary/80"
-            >
-              {getGenreDisplayName(g, t)} ({count})
-            </Badge>
-          </Link>
-        ))}
-      </div>
-
-      {/* Language filter bar */}
-      <div className="mb-6 flex flex-wrap gap-2">
-        <span className="flex items-center text-sm text-muted-foreground mr-2">{t("browse.language")}</span>
-        <Link href={buildFilterUrl(undefined, genre)}>
-          <Badge
-            variant={!lang ? "default" : "outline"}
-            className="cursor-pointer transition-colors hover:bg-primary/80"
-          >
-            {t("browse.all")} ({totalTextsForLangAll})
-          </Badge>
-        </Link>
-        {sortedLanguages.map(([code, data]) => {
-          const key = `sourcelang.${code}` as TranslationKey;
-          const localizedName = t(key);
-          const displayName = localizedName !== key ? localizedName : data.name;
-          return (
-            <Link key={code} href={buildFilterUrl(code, genre)}>
-              <Badge
-                variant={lang === code ? "default" : "outline"}
-                className="cursor-pointer transition-colors hover:bg-primary/80"
-              >
-                {displayName} ({data.count})
-              </Badge>
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Active filter indicator */}
-      {(genreDisplayName || langDisplayName) && (
-        <p className="mb-4 text-sm text-muted-foreground">
-          {t("browse.showing")} {filteredTexts.length} {filteredTexts.length !== 1 ? t("browse.texts") : t("browse.text")}
-          {genreDisplayName && (
-            <>
-              {" "}{t("browse.in")} <span className="font-medium text-foreground">{genreDisplayName}</span>
-            </>
-          )}
-          {langDisplayName && (
-            <>
-              {genreDisplayName ? " · " : ` ${t("browse.in")} `}
-              <span className="font-medium text-foreground">{langDisplayName}</span>
-            </>
-          )}
-          {" · "}
-          <Link href={localePath("/texts", locale)} className="text-primary hover:underline">
-            {t("browse.clearFilters")}
-          </Link>
-        </p>
-      )}
-
+      <LocalizedBrowseFilters
+        sortedGenres={sortedGenres}
+        sortedLanguages={sortedLanguages}
+        activeGenre={genre}
+        activeLang={lang}
+        totalForGenreAll={totalTextsForGenreAll}
+        totalForLangAll={totalTextsForLangAll}
+        filteredCount={filteredTexts.length}
+      />
       <CategoryBrowser languages={languages} />
     </main>
   );

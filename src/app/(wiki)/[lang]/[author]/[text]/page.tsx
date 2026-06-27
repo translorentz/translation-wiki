@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { getPublicServerTRPC } from "@/trpc/server";
-import { getTranslator, type Locale } from "@/i18n/shared";
-import { Card } from "@/components/ui/card";
-import { formatChapterTitle, formatAuthorName, formatTextTitle, localePath, localizedYearDisplay } from "@/lib/utils";
+import { type Locale } from "@/i18n/shared";
+import { localePath } from "@/lib/utils";
 import { ExportButtons } from "@/components/ExportButtons";
+import { LocalizedTextHeader } from "@/components/text/LocalizedTextHeader";
+import { LocalizedChapterList } from "@/components/text/LocalizedChapterList";
 import { buildBookJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
 // ISR — revalidate every 5 minutes. Combined with generateStaticParams()
@@ -22,7 +22,12 @@ export const revalidate = 300;
 // the contract is visible.
 export const dynamicParams = true;
 
-// SSR locale is fixed; client components localise post-hydration.
+// SSR is keyed to the English baseline so the page shell is the same across
+// all UI locales (cacheable once at the edge). LocalizedTextHeader and
+// LocalizedChapterList re-read locale via useLocale() and re-render with the
+// correct locale fields after client hydration. All locale variants already
+// come down with the page (titleZh, titleEs, descriptionZh, descriptionEs,
+// nameZh, nameEs, etc.) — no extra network call needed.
 const SSR_LOCALE: Locale = "en";
 
 // Enumerate every (lang, author, text) triple in the corpus so Next prerenders
@@ -99,7 +104,6 @@ export default async function TextPage({ params }: TextPageProps) {
 
   const trpc = await getPublicServerTRPC();
   const locale: Locale = SSR_LOCALE;
-  const t = getTranslator(locale);
 
   const textData = await trpc.texts.getBySlug({
     langCode: lang,
@@ -111,17 +115,15 @@ export default async function TextPage({ params }: TextPageProps) {
     notFound();
   }
 
+  // JSON-LD continues to render the English baseline; per-locale variants are
+  // discoverable via the hreflang alternates set in generateMetadata. Indexing
+  // each locale separately would require multiple JSON-LD blocks and isn't
+  // needed for the regression fix.
   const basePath = localePath(`/${lang}/${author}/${textSlug}`, locale);
-  const description = textData.description;
-  const titleDisplay = formatTextTitle(textData, locale);
-  const authorDisplay = formatAuthorName(textData.author, locale);
-
-  const localizedTextTitleForLd = textData.title;
-  const localizedAuthorNameForLd = textData.author.name;
   const bookJsonLd = buildBookJsonLd({
-    title: localizedTextTitleForLd,
-    authorName: localizedAuthorNameForLd,
-    description: description ?? null,
+    title: textData.title,
+    authorName: textData.author.name,
+    description: textData.description ?? null,
     sourceLangCode: lang,
     uiLocale: locale,
     textPath: `/${lang}/${author}/${textSlug}`,
@@ -130,8 +132,8 @@ export default async function TextPage({ params }: TextPageProps) {
   const breadcrumbJsonLd = buildBreadcrumbJsonLd([
     { name: "Home", url: localePath("/", locale) },
     { name: "Browse", url: localePath("/texts", locale) },
-    { name: localizedAuthorNameForLd, url: basePath.replace(`/${textSlug}`, "") },
-    { name: localizedTextTitleForLd, url: basePath },
+    { name: textData.author.name, url: basePath.replace(`/${textSlug}`, "") },
+    { name: textData.title, url: basePath },
   ]);
 
   return (
@@ -140,29 +142,7 @@ export default async function TextPage({ params }: TextPageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd) }} />
       {/* Text metadata */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">{titleDisplay.primary}</h1>
-        {titleDisplay.secondary && (
-          <p className="mt-1 text-xl text-muted-foreground">
-            {titleDisplay.secondary}
-          </p>
-        )}
-        <p className="mt-2 text-muted-foreground">
-          {locale !== "cn" && <>{t("common.by")} </>}
-          <span className="font-medium text-foreground">
-            {authorDisplay.primary}
-          </span>
-          {authorDisplay.secondary && (
-            <span className="ml-1">({authorDisplay.secondary})</span>
-          )}
-          {(() => { const y = localizedYearDisplay(textData, locale); return y && (
-            <span className="ml-2">&middot; {y}</span>
-          ); })()}
-        </p>
-        {description && (
-          <p className="mt-3 leading-relaxed text-muted-foreground">
-            {description}
-          </p>
-        )}
+        <LocalizedTextHeader text={textData} />
         <div className="mt-4">
           <ExportButtons textId={textData.id} textTitle={textData.title} textSlug={textData.slug} />
         </div>
@@ -170,43 +150,11 @@ export default async function TextPage({ params }: TextPageProps) {
 
       {/* Chapter list */}
       <div>
-        <h2 className="mb-4 text-xl font-semibold">
-          {t("textDetail.chaptersCount").replace("{count}", String(textData.chapters.length))}
-        </h2>
-        <div className="space-y-1">
-          {textData.chapters.map((chapter) => {
-            const { primary, secondary } = formatChapterTitle(chapter, locale, lang);
-            return (
-              <Link
-                key={chapter.chapterNumber}
-                href={`${basePath}/${chapter.slug}`}
-                className="block"
-              >
-                <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
-                  <div className="flex items-baseline gap-3">
-                    <span className="w-8 shrink-0 text-right text-sm text-muted-foreground">
-                      {chapter.chapterNumber}
-                    </span>
-                    <span>
-                      {primary}
-                      {secondary && (
-                        <span className="ml-2 text-sm text-muted-foreground">
-                          {secondary}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
-
-        {textData.chapters.length === 0 && (
-          <p className="py-8 text-center text-muted-foreground">
-            {t("textDetail.noChapters")}
-          </p>
-        )}
+        <LocalizedChapterList
+          chapters={textData.chapters}
+          textBasePath={`/${lang}/${author}/${textSlug}`}
+          sourceLangCode={lang}
+        />
       </div>
     </main>
   );
