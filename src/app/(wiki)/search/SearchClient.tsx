@@ -396,6 +396,7 @@ export default function SearchClient() {
                   <Link
                     key={result.textId}
                     href={localePath(`/${result.langCode}/${result.authorSlug}/${result.textSlug}`, locale)}
+                    prefetch={false}
                   >
                     <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                       <p className="font-medium">
@@ -442,6 +443,7 @@ export default function SearchClient() {
                   <Link
                     key={result.chapterId}
                     href={localePath(`/${result.langCode}/${result.authorSlug}/${result.textSlug}/${result.chapterSlug}${highlightParam}`, locale)}
+                    prefetch={false}
                   >
                     <Card className="px-4 py-3 transition-colors hover:bg-muted/50">
                       {(() => {

@@ -7,10 +7,12 @@ import { HighlightCards } from "@/components/home/HighlightCards";
 import { getTranslator, type Locale } from "@/i18n/shared";
 import { localePath, localeToTargetLang } from "@/lib/utils";
 
-// ISR — revalidate every 5 minutes. Combined with no dynamic-API calls in this
-// component or the root layout, this lets the page be statically prerendered
-// and edge-cacheable by Cloudflare + Vercel.
-export const revalidate = 300;
+// ISR — revalidate hourly. The homepage's data (text list, language/genre
+// counts) changes only when a text is seeded, and the underlying
+// texts.list unstable_cache has tag-based invalidation for that event.
+// Combined with no dynamic-API calls in this component or the root layout,
+// this lets the page be statically prerendered and edge-cacheable.
+export const revalidate = 3600;
 
 // Page is rendered once for all UI locales as the "English" baseline shell;
 // the LocaleProvider on the client switches header / footer / FeaturedTexts /
@@ -156,6 +158,7 @@ export default async function HomePage() {
               <li key={lang.code}>
                 <Link
                   href={localePath(`/texts?lang=${lang.code}`, locale)}
+                  prefetch={false}
                   className="text-sm text-foreground transition-colors hover:text-primary"
                 >
                   {lang.label}{" "}
@@ -173,6 +176,7 @@ export default async function HomePage() {
               <li key={genre.code}>
                 <Link
                   href={localePath(`/texts?genre=${genre.code}`, locale)}
+                  prefetch={false}
                   className="text-sm text-foreground transition-colors hover:text-primary"
                 >
                   {genre.label}{" "}

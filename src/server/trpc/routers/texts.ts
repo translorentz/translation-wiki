@@ -11,10 +11,13 @@ const TEXTS_LIST_TAG = "texts-list";
 const TEXT_TAG = "text";
 const TEXT_IDS_TAG = "text-ids";
 
-// 10-min TTL for global lists (front + browse pages).
-// 5-min TTL for per-text reads (chapter + text pages).
-// Editors get fresh content immediately via revalidateTag() from mutations;
-// TTL is just a fallback in case a mutation path forgets to invalidate.
+// Long TTLs — content is stable for hours/days and editors get fresh content
+// immediately via revalidateTag() from mutations; the TTL is only a fallback
+// in case a mutation path forgets to invalidate. Short TTLs just forfeit
+// cache hits (each miss = a Neon wake + query).
+//   texts.list (1 day): changes only when an admin seeds a new text.
+//   textIds (1 hour): shifts while a translation rollout is draining.
+//   textBySlug (1 day): text metadata + chapter titles; edits bust the tag.
 const cachedTextsList = unstable_cache(
   async () => {
     return await db.query.texts.findMany({
@@ -26,7 +29,7 @@ const cachedTextsList = unstable_cache(
     });
   },
   ["texts.list.v3"],
-  { revalidate: 600, tags: [TEXTS_LIST_TAG] }
+  { revalidate: 86400, tags: [TEXTS_LIST_TAG] }
 );
 
 const cachedTextIdsWithTranslation = unstable_cache(
@@ -44,7 +47,7 @@ const cachedTextIdsWithTranslation = unstable_cache(
     return result.map((r) => r.textId);
   },
   ["texts.getTextIdsWithTranslation.v1"],
-  { revalidate: 600, tags: [TEXT_IDS_TAG] }
+  { revalidate: 3600, tags: [TEXT_IDS_TAG] }
 );
 
 const cachedTextBySlug = unstable_cache(
@@ -71,7 +74,7 @@ const cachedTextBySlug = unstable_cache(
     return result ?? null;
   },
   ["texts.getBySlug.v2"],
-  { revalidate: 300, tags: [TEXT_TAG] }
+  { revalidate: 86400, tags: [TEXT_TAG] }
 );
 
 export const textsRouter = createTRPCRouter({

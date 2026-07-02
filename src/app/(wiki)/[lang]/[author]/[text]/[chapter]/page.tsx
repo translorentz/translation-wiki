@@ -10,10 +10,12 @@ import { Button } from "@/components/ui/button";
 import { ChapterEditAffordances } from "@/components/chapter/ChapterEditAffordances";
 import { buildChapterJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
-// ISR — revalidate every 5 minutes. Combined with generateStaticParams below,
-// this promotes the route from "ƒ Dynamic" to "● SSG with on-demand fallback".
-// Chapters not in the static list are rendered on first request and ISR-cached.
-export const revalidate = 300;
+// ISR — revalidate hourly. Combined with generateStaticParams below, this
+// promotes the route from "ƒ Dynamic" to "● SSG with on-demand fallback".
+// Chapters not in the static list are rendered on first request and
+// ISR-cached. 1h matches the chapters unstable_cache TTL — translation
+// pipeline scripts write directly to the DB and rely on TTL expiry.
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 // Server-render every chapter page as the English baseline. Non-English UI

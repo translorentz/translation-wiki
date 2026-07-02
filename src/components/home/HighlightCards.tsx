@@ -185,6 +185,7 @@ export function HighlightCards() {
           <Link
             key={h.slug}
             href={localePath(`/${h.langCode}/${h.authorSlug}/${h.slug}`, locale)}
+            prefetch={false}
           >
             <Card className="h-full gap-0 px-2 py-1.5 transition-all hover:-translate-y-0.5 hover:shadow-md sm:px-3 sm:py-2">
               <p className="text-sm leading-tight sm:text-base">{h.originalTitle}</p>

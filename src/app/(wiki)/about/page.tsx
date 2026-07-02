@@ -1,6 +1,7 @@
 import { getTranslator, type Locale } from "@/i18n/shared";
 
-export const revalidate = 300;
+// /about only changes on deploy — 1-day ISR TTL.
+export const revalidate = 86400;
 
 const SSR_LOCALE: Locale = "en";
 

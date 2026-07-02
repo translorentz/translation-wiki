@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { unstable_cache } from "next/cache";
 import { createTRPCRouter, publicProcedure } from "../init";
 import { db } from "@/server/db";
 import { chapters, texts, authors, languages, translations, translationVersions } from "@/server/db/schema";
@@ -14,9 +15,12 @@ const searchInputSchema = z.object({
   offset: z.number().min(0).default(0),
 });
 
-export const searchRouter = createTRPCRouter({
-  languages: publicProcedure.query(async () => {
-    const result = await db
+// The language list changes only when a text in a brand-new source language
+// is seeded — a rare, deploy-adjacent event. Cache for a day; the tag allows
+// seeding scripts / admin flows to bust it explicitly if ever needed.
+const cachedSearchLanguages = unstable_cache(
+  async () => {
+    return await db
       .selectDistinct({
         code: languages.code,
         name: languages.name,
@@ -25,7 +29,14 @@ export const searchRouter = createTRPCRouter({
       .from(languages)
       .innerJoin(texts, eq(texts.languageId, languages.id))
       .orderBy(languages.name);
-    return result;
+  },
+  ["search.languages.v1"],
+  { revalidate: 86400, tags: ["texts-list"] }
+);
+
+export const searchRouter = createTRPCRouter({
+  languages: publicProcedure.query(async () => {
+    return cachedSearchLanguages();
   }),
 
   // Fast query: text titles, author names, and chapter titles only

@@ -39,8 +39,14 @@ const cachedChapterByTextAndSlug = unstable_cache(
     });
     return chapter ?? null;
   },
+  // 1-hour TTL. Translation edits invalidate CHAPTER_TAG immediately via
+  // revalidateTag() from the mutations below, so a long TTL costs editors
+  // nothing — it only cuts recurring Neon revalidation queries. Kept at 1h
+  // (not longer) because translation pipeline scripts write new versions
+  // directly to the DB, bypassing the tRPC mutations, and rely on TTL expiry
+  // for their output to appear.
   ["chapters.getByTextAndSlug.v1"],
-  { revalidate: 300, tags: [CHAPTER_TAG] }
+  { revalidate: 3600, tags: [CHAPTER_TAG] }
 );
 
 export const chaptersRouter = createTRPCRouter({

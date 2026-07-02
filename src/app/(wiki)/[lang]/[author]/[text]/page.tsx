@@ -8,14 +8,15 @@ import { LocalizedTextHeader } from "@/components/text/LocalizedTextHeader";
 import { LocalizedChapterList } from "@/components/text/LocalizedChapterList";
 import { buildBookJsonLd, buildBreadcrumbJsonLd, jsonLdScript } from "@/lib/jsonld";
 
-// ISR — revalidate every 5 minutes. Combined with generateStaticParams()
-// below, this promotes the dynamic-segment route from "dynamic on demand"
-// (the Next 16 default for [param] segments without static params) to "SSG
-// with revalidate", which is the only way the response gets the
-// public, s-maxage=300 Cache-Control header that Cloudflare's Cache Rule
-// can honour. Without generateStaticParams, `revalidate` is dead code on
-// a dynamic-segment route.
-export const revalidate = 300;
+// ISR — revalidate hourly. Combined with generateStaticParams() below, this
+// promotes the dynamic-segment route from "dynamic on demand" (the Next 16
+// default for [param] segments without static params) to "SSG with
+// revalidate", which is the only way the response gets a public s-maxage
+// Cache-Control header that Cloudflare's Cache Rule can honour. Without
+// generateStaticParams, `revalidate` is dead code on a dynamic-segment
+// route. 1h matches the chapters unstable_cache TTL — pipeline scripts that
+// write translations directly to the DB rely on TTL expiry to surface.
+export const revalidate = 3600;
 
 // Allow newly seeded texts (added after the build) to render on-demand and
 // ISR-cache thereafter. This is the Next default; setting it explicitly so

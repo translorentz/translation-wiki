@@ -111,7 +111,10 @@ export async function GET(
     return new NextResponse(urlsetXml(urls), {
       headers: {
         "Content-Type": "application/xml; charset=utf-8",
-        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        // 24h edge cache — sitemap content changes only when texts/chapters
+        // are seeded. force-dynamic stays (see header comment); caching
+        // happens at the CDN via this header, not in Next's prerender cache.
+        "Cache-Control": "public, max-age=86400, s-maxage=86400",
       },
     });
   }
