@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/client";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
@@ -17,16 +17,14 @@ export function EndorseButton({
 }: EndorseButtonProps) {
   const trpc = useTRPC();
   const { t } = useTranslation();
+  // initialCount comes from the server-cached chapter payload — no
+  // mount-time COUNT query. It may lag by up to the chapter cache TTL;
+  // the toggle mutation returns the authoritative count, so the number
+  // self-corrects the moment anyone interacts with the button.
   const [optimisticCount, setOptimisticCount] = useState(initialCount);
   const [optimisticEndorsed, setOptimisticEndorsed] = useState(false);
 
-  const countQuery = useQuery(
-    trpc.endorsements.getCount.queryOptions({
-      translationVersionId,
-    })
-  );
-
-  const displayCount = countQuery.data ?? optimisticCount;
+  const displayCount = optimisticCount;
 
   const toggle = useMutation(
     trpc.endorsements.toggle.mutationOptions({

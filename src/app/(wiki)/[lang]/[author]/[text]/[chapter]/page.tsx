@@ -222,6 +222,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
           initialTranslationAuthorUsername={
             translation?.currentVersion?.author?.username ?? null
           }
+          initialEndorsementCount={chapter.endorsementCount ?? 0}
         />
 
         <nav className="mt-8 flex items-center justify-between border-t border-border pt-4">

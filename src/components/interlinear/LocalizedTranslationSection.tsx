@@ -26,6 +26,13 @@ interface Props {
   initialTranslationContent: ParagraphContent | null;
   initialTranslationVersionId: number | null;
   initialTranslationAuthorUsername: string | null;
+  /**
+   * Endorsement count computed server-side inside the cached chapter payload.
+   * Passing it here lets EndorseButton skip its mount-time COUNT query — the
+   * count may lag by up to the chapter cache TTL, but the toggle mutation
+   * returns the authoritative number so it self-corrects on interaction.
+   */
+  initialEndorsementCount?: number;
 }
 
 /**
@@ -48,6 +55,7 @@ export function LocalizedTranslationSection({
   initialTranslationContent,
   initialTranslationVersionId,
   initialTranslationAuthorUsername,
+  initialEndorsementCount = 0,
 }: Props) {
   const trpc = useTRPC();
   const { t } = useTranslation();
@@ -79,6 +87,9 @@ export function LocalizedTranslationSection({
   const versionId = refetchedVersion?.id ?? initialTranslationVersionId;
   const authorUsername =
     refetchedVersion?.author?.username ?? initialTranslationAuthorUsername;
+  // The locale refetch flows through the same cached tRPC procedure, so its
+  // payload carries the endorsement count for the locale-specific version.
+  const endorsementCount = query.data?.endorsementCount ?? initialEndorsementCount;
 
   return (
     <>
@@ -90,7 +101,11 @@ export function LocalizedTranslationSection({
       />
       {versionId !== null && (
         <div className="mt-4 flex items-center gap-2">
-          <EndorseButton translationVersionId={versionId} />
+          <EndorseButton
+            key={versionId}
+            translationVersionId={versionId}
+            initialCount={endorsementCount}
+          />
           {authorUsername && (
             <span className="text-xs text-muted-foreground">
               {t("chapter.translatedBy").replace("{name}", authorUsername)}

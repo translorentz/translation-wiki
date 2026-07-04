@@ -7,8 +7,9 @@ import {
   translations,
   translationVersions,
   sourceVersions,
+  endorsements,
 } from "@/server/db/schema";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, count } from "drizzle-orm";
 
 // Cache tag for chapter reads. Invalidated by source/translation mutations
 // below so editors see their changes on the very next render.
@@ -37,7 +38,24 @@ const cachedChapterByTextAndSlug = unstable_cache(
         },
       },
     });
-    return chapter ?? null;
+    if (!chapter) return null;
+
+    // Endorsement count for the current version, baked into the cached
+    // payload so the chapter page can pass it to EndorseButton as
+    // initialCount — eliminating the uncached per-view COUNT query the
+    // button used to fire on every chapter load. May lag reality by up to
+    // the TTL; the toggle mutation returns the authoritative count, so the
+    // number self-corrects the moment a user interacts with it.
+    const currentVersionId = chapter.translations?.[0]?.currentVersion?.id;
+    let endorsementCount = 0;
+    if (currentVersionId) {
+      const [result] = await db
+        .select({ count: count() })
+        .from(endorsements)
+        .where(eq(endorsements.translationVersionId, currentVersionId));
+      endorsementCount = result?.count ?? 0;
+    }
+    return { ...chapter, endorsementCount };
   },
   // 1-hour TTL. Translation edits invalidate CHAPTER_TAG immediately via
   // revalidateTag() from the mutations below, so a long TTL costs editors
@@ -50,38 +68,6 @@ const cachedChapterByTextAndSlug = unstable_cache(
 );
 
 export const chaptersRouter = createTRPCRouter({
-  getByTextAndNumber: publicProcedure
-    .input(
-      z.object({
-        textId: z.number(),
-        chapterNumber: z.number(),
-        targetLanguage: z.string().default("en"),
-      })
-    )
-    .query(async ({ input }) => {
-      const chapter = await db.query.chapters.findFirst({
-        where: and(
-          eq(chapters.textId, input.textId),
-          eq(chapters.chapterNumber, input.chapterNumber)
-        ),
-        with: {
-          translations: {
-            where: eq(translations.targetLanguage, input.targetLanguage),
-            with: {
-              currentVersion: {
-                with: {
-                  author: {
-                    columns: { id: true, username: true },
-                  },
-                },
-              },
-            },
-          },
-        },
-      });
-      return chapter ?? null;
-    }),
-
   getByTextAndSlug: publicProcedure
     .input(
       z.object({
