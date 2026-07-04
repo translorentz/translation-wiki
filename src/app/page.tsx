@@ -1,23 +1,13 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { getPublicServerTRPC } from "@/trpc/server";
-import { FeaturedTexts } from "@/components/home/FeaturedTexts";
-import { HighlightCards } from "@/components/home/HighlightCards";
-import { getTranslator, type Locale } from "@/i18n/shared";
-import { localePath, localeToTargetLang } from "@/lib/utils";
+import { HomeBody, type HomeText } from "@/components/home/HomeBody";
 
 // ISR — revalidate hourly. The homepage's data (text list, language/genre
-// counts) changes only when a text is seeded, and the underlying
-// texts.list unstable_cache has tag-based invalidation for that event.
-// Combined with no dynamic-API calls in this component or the root layout,
-// this lets the page be statically prerendered and edge-cacheable.
+// counts) changes only when a text is seeded, and the underlying texts.list
+// unstable_cache has tag-based invalidation for that event. The server
+// renders one locale-independent shell; HomeBody localises everything
+// client-side (labels, counts, native-language hiding) via useLocale().
 export const revalidate = 3600;
-
-// Page is rendered once for all UI locales as the "English" baseline shell;
-// the LocaleProvider on the client switches header / footer / FeaturedTexts /
-// HighlightCards labels post-hydration based on the URL prefix.
-const SSR_LOCALE: Locale = "en";
 
 const TITLE = "Deltoi — Interlinear Translations of Classical Texts";
 const DESCRIPTION =
@@ -42,53 +32,18 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   const trpc = await getPublicServerTRPC();
   const allTextsRaw = await trpc.texts.list();
-  const locale: Locale = SSR_LOCALE;
-  const t = getTranslator(locale);
 
-  // Hide texts whose source language matches the (default English) viewer's
-  // native language. The legacy locale-conditional translatedIds filter
-  // returns null for "en" (no filter applied), which the prior server-render
-  // code also did via the locale === "cn" | "hi" | "es" guard.
-  const nativeLang = localeToTargetLang(locale);
-  const allTexts = allTextsRaw.filter((t) => t.language.code !== nativeLang);
-
-  // Derive language links dynamically from the texts in the database.
-  // Count texts per language and sort by descending count (most prolific first).
-  const languageCounts = new Map<string, { name: string; count: number }>();
-  for (const text of allTexts) {
-    const existing = languageCounts.get(text.language.code);
-    if (existing) {
-      existing.count++;
-    } else {
-      languageCounts.set(text.language.code, { name: text.language.name, count: 1 });
-    }
-  }
-  const languageLinks = Array.from(languageCounts.entries())
-    .map(([code, data]) => ({ code, label: data.name, count: data.count }))
-    .sort((a, b) => b.count - a.count);
-
-  // Count texts per genre and sort by descending count.
-  const genreCounts = new Map<string, number>();
-  for (const text of allTexts) {
-    const genre = text.genre || "uncategorized";
-    genreCounts.set(genre, (genreCounts.get(genre) || 0) + 1);
-  }
-  const genreLinks = Array.from(genreCounts.entries())
-    .filter(([, count]) => count > 0)
-    .map(([code, count]) => ({
-      code,
-      label: t(`genre.${code}` as Parameters<typeof t>[0]) || code,
-      count,
-    }))
-    .sort((a, b) => b.count - a.count);
-
-  const featuredTexts = allTexts.map((text) => ({
+  // Flatten to a lean serialisable shape. No locale filtering here — the
+  // native-language hiding rule depends on the viewer's UI locale, which
+  // only the client knows; HomeBody applies it via useLocale().
+  const texts: HomeText[] = allTextsRaw.map((text) => ({
     title: text.title,
     titleOriginalScript: text.titleOriginalScript,
     titleZh: text.titleZh ?? null,
     titleEs: text.titleEs ?? null,
     slug: text.slug,
     totalChapters: text.totalChapters,
+    genre: text.genre || "uncategorized",
     compositionYear: text.compositionYear,
     compositionYearDisplay: text.compositionYearDisplay,
     compositionYearDisplayEs: text.compositionYearDisplayEs ?? null,
@@ -104,95 +59,7 @@ export default async function HomePage() {
       name: text.language.name,
       displayName: text.language.displayName,
     },
-    // Translation-availability badges left undefined; FeaturedTexts is a
-    // client component and can re-derive these from useLocale() if needed.
-    hasZhTranslation: undefined,
-    hasHiTranslation: undefined,
-    hasEsTranslation: undefined,
   }));
 
-  // Localise language labels for the sidebar.
-  const localizedLanguageLinks = languageLinks.map((lang) => {
-    const key = `sourcelang.${lang.code}` as Parameters<typeof t>[0];
-    const localized = t(key);
-    return {
-      ...lang,
-      label: localized !== key ? localized : lang.label,
-    };
-  });
-
-  return (
-    <div className="px-4 pt-6 pb-16 sm:px-6 sm:pt-10 lg:px-8">
-      {/* Hero */}
-      <div className="mx-auto mb-16 max-w-5xl">
-        <h1 className="font-[family-name:var(--font-lora)] text-4xl font-bold tracking-tight sm:text-5xl">
-          {t("home.title")}
-        </h1>
-        <p className="mt-4 max-w-2xl font-[family-name:var(--font-lora)] text-lg text-muted-foreground">
-          {t("home.subtitle")}
-        </p>
-        <div className="mt-8 flex gap-4">
-          <Button variant="outline" asChild>
-            <Link href={localePath("/texts", locale)}>{t("home.browseTexts")}</Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href={localePath("/search", locale)}>{t("home.searchTexts")}</Link>
-          </Button>
-        </div>
-      </div>
-
-      {/* Highlights */}
-      <div className="mx-auto mb-8 max-w-5xl">
-        <HighlightCards />
-      </div>
-
-      {/* Main content: sidebar + featured texts */}
-      <div className="mx-auto flex max-w-5xl gap-8">
-        {/* Sidebar */}
-        <aside className="hidden w-48 shrink-0 md:block">
-          <h2 className="mb-3 text-sm font-semibold uppercase text-muted-foreground">
-            {t("home.exploreByLanguage")}
-          </h2>
-          <ul className="space-y-2">
-            {localizedLanguageLinks.map((lang) => (
-              <li key={lang.code}>
-                <Link
-                  href={localePath(`/texts?lang=${lang.code}`, locale)}
-                  prefetch={false}
-                  className="text-sm text-foreground transition-colors hover:text-primary"
-                >
-                  {lang.label}{" "}
-                  <span className="text-muted-foreground">({lang.count})</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <h2 className="mb-3 mt-8 text-sm font-semibold uppercase text-muted-foreground">
-            {t("home.exploreByCategory")}
-          </h2>
-          <ul className="space-y-2">
-            {genreLinks.map((genre) => (
-              <li key={genre.code}>
-                <Link
-                  href={localePath(`/texts?genre=${genre.code}`, locale)}
-                  prefetch={false}
-                  className="text-sm text-foreground transition-colors hover:text-primary"
-                >
-                  {genre.label}{" "}
-                  <span className="text-muted-foreground">({genre.count})</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </aside>
-
-        {/* Featured texts */}
-        <section className="min-w-0 flex-1">
-          <h2 className="mb-4 text-2xl font-semibold">{t("home.featuredTexts")}</h2>
-          <FeaturedTexts texts={featuredTexts} />
-        </section>
-      </div>
-    </div>
-  );
+  return <HomeBody texts={texts} />;
 }
