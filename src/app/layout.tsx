@@ -4,8 +4,6 @@ import { TRPCReactProvider } from "@/trpc/client";
 import { LocaleProvider } from "./LocaleProvider";
 import { SiteHeader } from "@/components/navigation/SiteHeader";
 import { SiteFooter } from "@/components/navigation/SiteFooter";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { buildWebsiteJsonLd, jsonLdScript } from "@/lib/jsonld";
 import "./globals.css";
 
@@ -77,8 +75,11 @@ export default function RootLayout({
             <SiteFooter />
           </LocaleProvider>
         </TRPCReactProvider>
-        <Analytics />
-        <SpeedInsights />
+        {/* Vercel Analytics + Speed Insights removed 2026-07-05 (metered
+            beyond free allotments + extra client JS + per-view beacons).
+            Replacement: Cloudflare Web Analytics — needs a beacon token
+            from the CF dashboard (Analytics → Web Analytics → Add site);
+            add its <script> here when the User provisions one. */}
       </body>
     </html>
   );

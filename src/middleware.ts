@@ -41,9 +41,11 @@ function isCacheablePath(p: string): boolean {
   return true; // /, /texts, /about, /[lang]/[author]/[text], /[lang]/[author]/[text]/[chapter]
 }
 
-// Edge cache for 5 min, serve stale for 24h while revalidating in background.
-// No browser cache (users get fresh on hard-refresh).
-const CACHE_HEADER = "public, s-maxage=300, stale-while-revalidate=86400";
+// Edge cache for 1h (matching the pages' ISR revalidate), serve stale for 24h
+// while revalidating in background. No browser cache (users get fresh on
+// hard-refresh). Was 300s, which made Cloudflare re-fetch each page from
+// Vercel 12x more often than the underlying ISR content could change.
+const CACHE_HEADER = "public, s-maxage=3600, stale-while-revalidate=86400";
 const COOKIE_OPTS = { path: "/", maxAge: 365 * 24 * 60 * 60, sameSite: "lax" } as const;
 
 // Public-path handler. Does NOT invoke NextAuth, so no CSRF/callback-url
