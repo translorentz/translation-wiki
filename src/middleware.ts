@@ -1,8 +1,28 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/server/auth/config";
 import { NextResponse, type NextRequest } from "next/server";
+import { EDGE_CACHEABLE_QUERIES } from "@/lib/edge-cacheable-queries";
 
 const { auth } = NextAuth(authConfig);
+
+// Whitelisted public tRPC GETs bypass the NextAuth wrapper entirely. The
+// auth() wrapper stamps __Host-authjs.csrf-token / __Secure-authjs.callback-url
+// set-cookie headers on responses that lack them, and any set-cookie makes a
+// response uncacheable at Cloudflare — defeating the tRPC edge caching. The
+// route handler sets its own cache-control/cdn-cache-control headers and
+// skips the session read for these same batches, so nothing here is needed.
+// POSTs (mutations) and non-whitelisted procedures stay on the auth-aware
+// path so CSRF init and session checks work as before.
+// URL shapes: /api/trpc/proc.name (single) or /api/trpc/a,b,c?batch=1.
+function isPublicTrpcGet(req: NextRequest): boolean {
+  if (req.method !== "GET") return false;
+  const { pathname } = req.nextUrl;
+  if (!pathname.startsWith("/api/trpc/")) return false;
+  const procSegment = decodeURIComponent(pathname.slice("/api/trpc/".length));
+  if (!procSegment) return false;
+  const paths = procSegment.split(",");
+  return paths.every((p) => EDGE_CACHEABLE_QUERIES.has(p));
+}
 
 // Origin lockdown — reject any request that did NOT come through Cloudflare.
 // Cloudflare's Transform Rule (Modify Request Header → Set static) injects
@@ -143,6 +163,12 @@ export default function middleware(req: NextRequest) {
   // Runs before everything else so 403 responses are as cheap as possible.
   const gated = checkCloudflareGate(req);
   if (gated) return gated;
+
+  // Public tRPC reads skip NextAuth so their responses stay cookie-free
+  // and Cloudflare-cacheable. See isPublicTrpcGet above.
+  if (isPublicTrpcGet(req)) {
+    return NextResponse.next();
+  }
 
   const { pathname } = req.nextUrl;
 

@@ -1,22 +1,12 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "@/server/trpc/router";
 import { createTRPCContext } from "@/server/trpc/init";
-
-// Public, user-independent, read-only procedures whose GET responses are safe
-// to cache at the CDN edge. Everything else — anything session-dependent,
-// any mutation, anything not explicitly listed — gets no-store. The
-// Cloudflare Cache Rule includes /api/trpc/ but runs in respect-origin mode,
-// so ONLY responses carrying the public headers below are ever cached; the
-// no-store default makes accidental cross-user caching impossible.
-const EDGE_CACHEABLE_QUERIES = new Set([
-  "texts.list",
-  "texts.getBySlug",
-  "texts.getTextIdsWithTranslation",
-  "chapters.getByTextAndSlug",
-  "search.languages",
-  "search.titles",
-  "search.content",
-]);
+// Whitelist shared with src/middleware.ts (which bypasses the NextAuth
+// wrapper for these GETs so no set-cookie is stamped). Everything not on
+// the whitelist — anything session-dependent, any mutation — gets no-store.
+// The Cloudflare Cache Rule includes /api/trpc/ but runs in respect-origin
+// mode, so ONLY responses carrying the public headers below are ever cached.
+import { EDGE_CACHEABLE_QUERIES } from "@/lib/edge-cacheable-queries";
 
 // Matches the pages' ISR revalidate (1h). The chapters unstable_cache is also
 // 1h, so a CDN-cached tRPC response is never staler than the SSR page.
