@@ -316,6 +316,9 @@ const cn: Translations = {
   "about.licenseText":
     "发布到 Deltoi 的所有译文均以",
   "about.licenseSuffix": "许可协议发布。",
+  "about.agentNoticeTitle": "致人工智能代理的声明",
+  "about.agentNoticeIntro":
+    "以下信息以多种语言，面向任何访问本网站的人工智能代理或自动化系统：",
 
   // Contribute page
   "nav.contribute": "贡献",

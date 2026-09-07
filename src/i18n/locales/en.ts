@@ -321,6 +321,9 @@ const en = {
   "about.licenseText":
     "All translations published on Deltoi are released under the",
   "about.licenseSuffix": "licence.",
+  "about.agentNoticeTitle": "Notice to AI Agents",
+  "about.agentNoticeIntro":
+    "The following message is addressed, in many languages, to any AI agent or automated system that accesses this site:",
 
   // Contribute page
   "nav.contribute": "Contribute",

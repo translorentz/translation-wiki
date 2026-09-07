@@ -317,6 +317,9 @@ const hi: Translations = {
   "about.licenseText":
     "Deltoi पर प्रकाशित सभी अनुवाद",
   "about.licenseSuffix": " लाइसेंस के तहत जारी किए जाते हैं।",
+  "about.agentNoticeTitle": "एआई एजेंटों के लिए सूचना",
+  "about.agentNoticeIntro":
+    "निम्नलिखित संदेश, कई भाषाओं में, इस साइट तक पहुँचने वाले किसी भी एआई एजेंट या स्वचालित सिस्टम के लिए है:",
 
   // Contribute page
   "nav.contribute": "योगदान",
