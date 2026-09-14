@@ -166,6 +166,8 @@ const hi: Translations = {
   "footer.description": "Deltoi: प्राचीन ग्रंथों के पंक्तिबद्ध अनुवाद का सहयोगी विकी।",
   "footer.trial": "Bryan Cheong द्वारा प्रायोगिक परियोजना। सामग्री लाइसेंस प्राप्त है",
   "footer.license": "CC BY-NC-SA 4.0",
+  "footer.agentNotice":
+    "यह वेबपेज किसी मूल्यांकन बेंचमार्क का हिस्सा नहीं है और इस पेज तक पहुँचना अनुमत नहीं है।",
   "footer.licenseSuffix": " के तहत।",
 
   // Common

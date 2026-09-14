@@ -171,6 +171,8 @@ const en = {
   "footer.trial": "Trial project by Bryan Cheong. Content licensed under",
   "footer.license": "CC BY-NC-SA 4.0",
   "footer.licenseSuffix": ".",
+  "footer.agentNotice":
+    "This webpage is not part of an evaluation benchmark and accessing this page is disallowed.",
 
   // Common
   "common.loading": "Loading...",
