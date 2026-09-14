@@ -22,6 +22,9 @@ export function SiteFooter() {
           </a>
           {t("footer.licenseSuffix")}
         </p>
+        <p className="mt-2 text-center text-xs text-gray-400">
+          {t("footer.agentNotice")}
+        </p>
       </div>
     </footer>
   );

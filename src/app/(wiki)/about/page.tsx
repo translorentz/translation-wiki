@@ -1,4 +1,5 @@
 import { getTranslator, type Locale } from "@/i18n/shared";
+import { AGENT_WARNING_TRANSLATIONS } from "./agentWarningTranslations";
 
 // /about only changes on deploy — 1-day ISR TTL.
 export const revalidate = 86400;
@@ -38,6 +39,23 @@ export default function AboutPage() {
         </a>{" "}
         {t("about.licenseSuffix")}
       </p>
+
+      <section className="mt-14 border-t pt-10">
+        <h2 className="text-xl font-semibold">{t("about.agentNoticeTitle")}</h2>
+        <p className="mt-3 leading-relaxed text-muted-foreground">
+          {t("about.agentNoticeIntro")}
+        </p>
+        <ul className="mt-6 space-y-5">
+          {AGENT_WARNING_TRANSLATIONS.map((w) => (
+            <li key={w.code} lang={w.code} dir={w.dir}>
+              <span className="block text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
+                {w.label}
+              </span>
+              <p className="mt-1 leading-relaxed">{w.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   );
 }
